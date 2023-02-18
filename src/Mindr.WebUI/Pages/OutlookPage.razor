@@ -1,0 +1,114 @@
+﻿@page "/outlook"
+
+@using Microsoft.AspNetCore.Authorization;
+@using Mindr.Core.CalendarExtensions;
+
+@namespace Mindr.WebUI.Pages
+@inherits FluentComponentBase
+@attribute [Authorize]
+
+<Calendar>
+    <DayTemplate Context="day">
+        <td>
+            @{
+                string stringDayClass = day.BuildCssClasses(selectedDay);
+            }
+
+            <FluentCard Style="margin:3px; height: -webkit-fill-available;width: auto;">
+                <h3 style="margin-bottom: 3px;">
+                    @day.DayNumber
+                </h3>
+
+                @if (day.Events.Count > 0)
+                {
+                    @foreach (var item in day.Events)
+                    {
+                        <CalendarEventComp calendarEvent="@item" OnClick="OnOpen"/>
+                    }
+@*
+                    @if (day.Events.Count > MAX_ITEMS_THAT_FIT_DAY)
+                    {
+                        <div class="day-event">
+                            You got + @(day.Events.Count - MAX_ITEMS_THAT_FIT_DAY) events.
+                        </div>
+                    }*@
+                }
+            </FluentCard>
+            @*<div class="ms-fontSize-14 ms-fontWieght-regular notif-count-coll">
+            @day.Events.Count
+            </div>*@
+    @*
+                <div class="day shadow-effect @stringDayClass" @onclick="() => selectedDay = day" @key="day">
+                    <h3 class="ms-fontSize-24 ms-fontWieght-regular">@day.DayNumber</h3>
+
+                </div>*@
+        </td>
+    </DayTemplate>
+</Calendar>
+
+<div>
+    <FluentDialog @ref="MyFluentDialog" aria-label="Simple dialog" Modal=@Modal TrapFocus=@TrapFocus @ondialogdismiss=OnDismiss>
+        <h2>Event Name</h2>
+        <p>Event time [FROM: TO]</p>
+        <FluentButton Appearance="Appearance.Neutral">
+            Connector 1
+            <FluentBadge Appearance="Appearance.Accent" slot="end">New!</FluentBadge>
+        </FluentButton>
+        <FluentButton Appearance="Appearance.Neutral">
+            Connector 2
+            <FluentBadge Appearance="Appearance.Accent" slot="end">New!</FluentBadge>
+        </FluentButton>
+        <Stack Style="margin-top:5px">
+            <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="OnClose">Close dialog</FluentButton>
+            @*<FluentButton>Another button</FluentButton>*@
+        </Stack>
+    </FluentDialog>
+</div>
+
+
+@code {
+    private int MAX_ITEMS_THAT_FIT_DAY = 2;
+    private CalendarDay selectedDay = new CalendarDay
+    {
+        Date = DateTime.Now
+    };
+
+
+
+    private FluentDialog? MyFluentDialog;
+    public bool TrapFocus = true;
+    public bool Modal = true;
+    private string? status;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+            MyFluentDialog!.Hide();
+    }
+
+    private async Task OnOpen(CalendarEvent item)
+    {
+        status = "Dialog opened with button click";
+        MyFluentDialog!.Show();
+    }
+
+    private void OnClose()
+    {
+        status = $"Dialog dismissed with reason: Close button clicked";
+        MyFluentDialog!.Hide();
+
+    }
+
+    private void OnDismiss(DialogEventArgs args)
+    {
+        if (args is not null && args.Reason is not null && args.Reason == "dismiss")
+        {
+            status = $"Dialog dismissed with reason: Dismissed";
+            MyFluentDialog!.Hide();
+        }
+    }
+
+
+
+}
+

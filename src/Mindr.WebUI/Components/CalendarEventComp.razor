@@ -1,0 +1,20 @@
+﻿@using Mindr.WebUI.Models 
+@using Mindr.Core.CalendarExtensions
+
+<FluentButton Appearance="Appearance.Neutral" onclick="@(async () => await OnClick(CalendarEvent))">
+    <FluentBadge style="padding: 2px;margin: 2px;background-color: orange;border-radius: 4px;">
+        <b>@CalendarEvent.GetTruncatedSubject(18)</b>
+    </FluentBadge>
+</FluentButton>
+
+
+
+
+
+@code {
+    [Parameter]
+    public CalendarEvent CalendarEvent { get; set; }
+
+    [Parameter]
+    public Func<CalendarEvent, Task> OnClick { get; set; } = default!;
+}

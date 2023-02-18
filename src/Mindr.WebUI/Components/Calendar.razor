@@ -1,0 +1,143 @@
+@using Mindr.Core
+
+@inject CalendarController calendarController
+
+
+
+
+<div style="width:100%">
+    @*<div class="row">
+        <div class="col-sm-12 col-lg-2">
+            <select name="" id="" class="fluent-input" @onchange="OnYearSelectChanged">
+                @for (int i = 2010; i < 2030; i++)
+                {
+                    <option "@((i == 2023 ? "selected" : ""))">@i</option>
+                }
+            </select>
+        </div>
+        <MonthSelector OnMonthSelectChanged="OnMonthSelectChanged"></MonthSelector>
+    </div>*@
+
+
+    <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
+        <FluentSelect Items=@_Constants.Years
+                      OptionText="@(i => i.Text)"
+                      OptionValue="@(i => i.Value)"
+                      OptionSelected="@(i => i.Selected)"
+                      @bind-Value="@GetYear().Value" 
+                      @onchange="OnYearSelectChanged" />
+        <FluentSelect Items=@_Constants.Months
+                      OptionText="@(i => i.Text)"
+                      OptionValue="@(i => i.Value)"
+                      OptionSelected="@(i => i.Selected)"
+                      @bind-Value="@GetMonth().Value"
+                      @onchange="OnMonthSelectChanged" />
+    </Stack>
+
+
+    <table style="width:100%;height:100%">
+        <thead>
+            <tr>
+                <td>Sun</td>
+                <td>Mon</td>
+                <td>Tue</td>
+                <td>Wed</td>
+                <td>Thu</td>
+                <td>Fri</td>
+                <td>Sat</td>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < CalendarController.COUNT_DAYS_IN_CALENDAR; i++)
+            {
+                <tr>
+                    @foreach (var day in days.Skip(i * 7).Take(7))
+                    {
+                        @DayTemplate(day)
+                    }
+                </tr>    
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@code {
+
+    [Parameter]
+    public RenderFragment<CalendarDay> DayTemplate {get; set;}
+
+    private int year = DateTime.Now.Year;
+    private int month = DateTime.Now.Month;
+
+    Option<string> GetMonth()
+    {
+        return @_Constants.Months.First(item => item.Value == month.ToString());
+    }
+
+    Option<string> GetYear()
+    {
+        return @_Constants.Years.First(item => item.Value == year.ToString());
+    }
+
+    private List<CalendarDay> days = new List<CalendarDay>();
+    private IEnumerable<CalendarEvent> events {get; set;}
+
+
+    string? stringValue;
+    string? intValue;
+    Option<int>? selectedIntOption;
+    IEnumerable<Option<string>>? selectedStrings;
+
+
+    async Task OnYearSelectChanged(ChangeEventArgs e){
+        year = Convert.ToInt32(e.Value.ToString());
+        await UpdateCalendar();
+    }
+
+    async Task OnMonthSelectChanged(ChangeEventArgs e){
+        month = Convert.ToInt32(e.Value.ToString());
+        await UpdateCalendar();
+    }
+
+    protected override async Task OnInitializedAsync(){
+        await UpdateCalendar();
+
+        AddEvent.OnEventAdded += () => {
+            StateHasChanged();
+        };
+    }
+
+    private async Task UpdateCalendar(){
+        var events = await calendarController.GetEventsInMonthAsync(year, month);
+
+        days = calendarController.BuildMonthCalendarDays(year, month);
+        await AddEventsToCalendar(days, events);
+    }
+
+    private async Task AddEventsToCalendar(List<CalendarDay> days, IEnumerable<CalendarEvent> events){
+        if (events != null && events.Count() > 0){
+            await Task.Run(() => {
+                var nonEmptyDays = days.Where(d => !d.IsEmpty);
+
+                foreach (var nonEmptyDate in nonEmptyDays)
+                {
+                    var filteredEvents = events.Where(e => e.StartDate.Date == nonEmptyDate.Date.Date);
+                    foreach (CalendarEvent filteredEvent in filteredEvents)
+                    {
+                        nonEmptyDate.Events.Add(filteredEvent);
+                    };
+                }
+            });
+        }
+    }
+
+
+    private async Task HandleOnUpdateClick()
+    {
+
+        //if (!HasSelectableEntities || !OnUpdate.HasDelegate) return;
+
+        //await OnUpdate.InvokeAsync(SelectedItems);
+    }
+}
