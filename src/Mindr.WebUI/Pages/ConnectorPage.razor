@@ -1,0 +1,68 @@
+﻿@page "/connectors/{ConnectorId?}/{ConnectorNav?}"
+
+@using Microsoft.AspNetCore.Authorization;
+@using Mindr.Core.CalendarExtensions;
+@using Mindr.WebUI.Models;
+
+@namespace Mindr.WebUI.Pages
+@inherits FluentComponentBase
+@attribute [Authorize]
+
+
+<PageTitle>Connectors</PageTitle>
+
+@if(string.IsNullOrEmpty(ConnectorId))
+{
+    <div>
+        <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
+            <FluentButton Appearance="Appearance.Stealth" 
+                          Style="border-radius: 0;" 
+                          @onclick="OnCreateHandler"
+            >
+                <FluentIcon Slot="start" Name="@FluentIcons.TableInsertRow" Size="@IconSize.Size24" Variant="@IconVariant.Filled" Color="@Color.Accent" />
+                Create
+            </FluentButton>
+            <FluentButton Appearance="Appearance.Stealth"
+                          Style="border-radius: 0;"
+                          @onclick="OnDeleteHandler">
+                <FluentIcon Slot="start" Name="@FluentIcons.Delete" Size="@IconSize.Size24" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+                Delete
+            </FluentButton>
+        </Stack>
+        <FluentDataGrid RowsData="@Connectors">
+            <PropertyColumn Property="@(p => p.Name)" Sortable="true" />
+            <PropertyColumn Property="@(p => p.Description)"/>
+            <PropertyColumn Property="@(p => p.Status)"/>
+        </FluentDataGrid>
+    </div>
+}
+else
+{
+    <div>
+        <NavMenu class="nav-menu">
+            @foreach (Page _page in GetNavigation)
+            {
+                <NavMenuLink Icon="@_page.Icon" Text="@_page.Name" Href="@_page.Href" Disabled="@_page.Disabled" />
+            }
+        </NavMenu>
+        <Stack class="child-stack" Orientation="Orientation.Vertical" VerticalGap="0">
+            @if (string.IsNullOrEmpty(ConnectorNav))
+            {
+                <div>Overview</div>
+            }
+            else if (ConnectorNav == "pipeline")
+            {
+                <div>
+                    @*<FluentDataGrid RowsData="@Pipelines">
+                        <PropertyColumn Property="@(p => p.Name)" Sortable="true" />
+                        <PropertyColumn Property="@(p => p.Description)" />
+                        <PropertyColumn Property="@(p => p.Status)" />
+                    </FluentDataGrid>*@
+
+
+
+                </div>
+            }
+        </Stack>
+    </div>
+}
