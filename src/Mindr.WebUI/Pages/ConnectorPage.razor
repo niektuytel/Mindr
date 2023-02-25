@@ -14,7 +14,7 @@
     <Collection Data="@Collections" OnAddHandle="OnAddHandle"/>
     <Dropzone Items="HttpPipeline">
         <Stack Orientation="Orientation.Vertical" HorizontalAlignment="StackHorizontalAlignment.Center" VerticalGap="0">
-            <FluentCard class="overflow-ellipsis" Style="width:300px" title="@context.Description">
+            <FluentCard class="overflow-ellipsis step-card" Style="width:300px" title="@context.Description" onclick="@(() => OnSelectHandle(context))">
                 <Stack Orientation="Orientation.Horizontal" Style="padding: 5px;" HorizontalGap="0" HorizontalAlignment="StackHorizontalAlignment.Center">
                     <div style=@("border-right: ridge;padding-right:5px;" + GetMethodStyle(context.Request.method))>
                         @context.Request.method.ToUpper()
@@ -296,6 +296,21 @@
 
 
 
+    }
+
+    public void OnSelectHandle(HttpOverview item)
+    {
+        // create Variables property
+
+
+
+        //HttpPipeline.Add(item);
+
+
+
+
+        //SelectedHttpItem = item;
+        Console.WriteLine();
     }
 
     public void OnAddHandle(HttpOverview item)

@@ -12,5 +12,15 @@
     background: gray;
     margin: 5px;
 }
+/*
 
+::deep > .step-card {
+    border-color: none;
+    cursor: pointer;
+}
+
+::deep > .step-card :hover {
+    border-color: black;
+}
+*/
 
