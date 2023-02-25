@@ -1,68 +1,337 @@
-﻿@page "/connectors/{ConnectorId?}/{ConnectorNav?}"
+﻿@page "/connectors"
 
 @using Microsoft.AspNetCore.Authorization;
 @using Mindr.Core.CalendarExtensions;
 @using Mindr.WebUI.Models;
+@using Newtonsoft.Json;
+@using Plk.Blazor.DragDrop
 
 @namespace Mindr.WebUI.Pages
 @inherits FluentComponentBase
 @attribute [Authorize]
 
-
-<PageTitle>Connectors</PageTitle>
-
-@if(string.IsNullOrEmpty(ConnectorId))
-{
-    <div>
-        <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
-            <FluentButton Appearance="Appearance.Stealth" 
-                          Style="border-radius: 0;" 
-                          @onclick="OnCreateHandler"
-            >
-                <FluentIcon Slot="start" Name="@FluentIcons.TableInsertRow" Size="@IconSize.Size24" Variant="@IconVariant.Filled" Color="@Color.Accent" />
-                Create
-            </FluentButton>
-            <FluentButton Appearance="Appearance.Stealth"
-                          Style="border-radius: 0;"
-                          @onclick="OnDeleteHandler">
-                <FluentIcon Slot="start" Name="@FluentIcons.Delete" Size="@IconSize.Size24" Variant="@IconVariant.Regular" Color="@Color.Accent" />
-                Delete
-            </FluentButton>
+<Stack Orientation="Orientation.Horizontal">
+    <Collection Data="@Collections" OnAddHandle="OnAddHandle"/>
+    <Dropzone Items="HttpPipeline">
+        <Stack Orientation="Orientation.Vertical" HorizontalAlignment="StackHorizontalAlignment.Center" VerticalGap="0">
+            <FluentCard class="overflow-ellipsis" Style="width:300px" title="@context.Description">
+                <Stack Orientation="Orientation.Horizontal" Style="padding: 5px;" HorizontalGap="0" HorizontalAlignment="StackHorizontalAlignment.Center">
+                    <div style=@("border-right: ridge;padding-right:5px;" + GetMethodStyle(context.Request.method))>
+                        @context.Request.method.ToUpper()
+                    </div>
+                    <div class="overflow-ellipsis" style="padding-left:5px">
+                        @context.Request.url.raw
+                    </div>
+                </Stack>
+                <FluentDivider />
+                <Stack Orientation="Orientation.Horizontal" Style="padding: 5px;" HorizontalGap="0">
+                    <div class="overflow-ellipsis" style="padding: 5px;">
+                        @context.Name
+                    </div>
+                </Stack>
+            </FluentCard>
+            <div class="seperator" />
         </Stack>
-        <FluentDataGrid RowsData="@Connectors">
-            <PropertyColumn Property="@(p => p.Name)" Sortable="true" />
-            <PropertyColumn Property="@(p => p.Description)"/>
-            <PropertyColumn Property="@(p => p.Status)"/>
-        </FluentDataGrid>
-    </div>
+    </Dropzone>
+    <Stack Orientation="Orientation.Vertical" HorizontalAlignment="StackHorizontalAlignment.Center" VerticalGap="0">
+        @if(SelectedHttpItem.Request.Variables.Any())
+        {
+            <FluentCard class="overflow-ellipsis" title="Needed input">
+                <Stack Orientation="Orientation.Vertical" Style="padding: 5px;" HorizontalGap="0">
+                    @foreach (var input in SelectedHttpItem.Request.Variables)
+                    {
+                        <FluentTextField @bind-Value="@input.Value" title="@input.Key" style="width: 100%;" Placeholder="@input.Key"/>
+                    }
+                </Stack>
+            </FluentCard>
+        }
+    </Stack>
+</Stack>
+
+@code {
+
+    static HttpOverview SelectedHttpItem { get; set; } = new()
+    {
+        Name = "Send Sample Text Message",
+        Description = "You need to create a message template before you can send one. See [Create Template Using the WhatsApp Manager](https://developers.facebook.com/docs/whatsapp/message-templates/creation#step-1--create-template-using-the-whatsapp-manager) for more information. If your account is not verified yet, you can use one of our pre-approved templates.\n\nTo send a text-based message template, make a **POST** call to **`/{{Phone-Number-ID}}/messages`** and attach a message object with type = `template`. Then, add a template object.\n\n## Prerequisites\n- You need to create a message template through [WhatsApp Manager](https://developers.facebook.com/docs/whatsapp/message-templates/creation) or [BM API](https://developers.facebook.com/docs/whatsapp/business-management-api/message-templates#creating-message-templates)\n- For an unverified account, we have already [pre-created message templates](https://www.facebook.com/business/help/722393685250070) for you to use.\n\n## Message Objects\n\nMessage templates can contain the following `Message Objects`:\n\n* [Template Object](#fb5ad9b7-7991-443a-a1b5-97fdc5731673)\n* [Language Object](#d9272e38-c3db-458c-a23b-07953abc73a40)\n* [Component Object](#8225365a-acb8-48c7-8e57-079dfc532865)\n* [Parameter Object](#fe8db07c-27ad-49f3-bf33-472ee302c136)\n* [Currency Object](#424b70af-ced8-456d-b1e1-1360c5afb9e9)\n* [Date_Time Object](#ec955b05-7bd4-4273-ad87-ae755b580f6e)\n\n## Response\n\nA successful response includes an object with an identifier prefixed with **`wamid`**.",
+        Request = new()
+        {
+            // costom
+            Variables = new()
+            {
+                new()
+                {
+                    Location = "Path",
+                    Key = "Version",
+                    Value = "v15.0",
+                },
+                new()
+                {
+                    Location = "Path",
+                    Key = "Phone-Number-ID",
+                    Value = "113037821608895",
+                },
+                new()
+                {
+                    Location = "Header",
+                    Key = "User-Access-Token",
+                    Value = "EAALuL1ZAZBrfMBAKDEw5M7jplWwBK7yphuaaQVntcoiQMyr8NZBwRwv76wea5RFvLNZAWFYE66oJ47wdkECD0Njw91yM8uXGVHqyvRsPVOJMmpXOBcfcAKSHbYRdhGei3HrrCZA6yVMy4UiSa4TWMFEragyucBpbr1paMFTWZAHcTcBnYPAZCZBDKLNchltPlAxhba7PbGgWlhA8w5AkUZBZAQ",
+                },
+                new()
+                {
+                    Location = "Body",
+                    Key = "Recipient-Phone-Number",
+                    Value = "31618395668",
+                }
+            },
+
+            method = "POST",
+            url = new()
+            {
+                    raw = "https://graph.facebook.com/{{Version}}/{{Phone-Number-ID}}/messages",
+                    protocol = "https",
+                    host = new string[]
+                    {
+                            "graph",
+                            "facebook",
+                            "com"
+                    },
+                    path = new string[]
+                    {
+                        "{{Version}}",
+                        "{{Phone-Number-ID}}",
+                        "messages"
+                    }
+            },
+            header = new HttpHeader[]
+            {
+                new()
+                {
+                    key = "Content-Type",
+                    value = "application/json",
+                    type = "text"
+                }
+            },
+            body = new ()
+            {
+                mode = "raw",
+                    raw = "{\n    \"messaging_product\": \"whatsapp\",\n    \"to\": \"{{Recipient-Phone-Number}}\",\n    \"type\": \"template\",\n    \"template\": {\n        \"name\": \"hello_world\",\n        \"language\": {\n            \"code\": \"en_US\"\n        }\n    }\n}",
+                options = new()
+                {
+                    raw = new()
+                    {
+                        language = "json"
+                    }
+                }
+            }
+        }
+    };
+    
+    static HttpOverview SelectedHttpItem1 { get; set; } = new()
+    {
+        Name = "Send Sample Text Message",
+        Description = "Sample text 2",
+        Request = new()
+        {
+            // costom
+            Variables = new()
+            {
+                new()
+                {
+                    Location = "Path",
+                    Key = "Version",
+                    Value = "v15.0",
+                },
+                new()
+                {
+                    Location = "Path",
+                    Key = "Phone-Number-ID",
+                    Value = "113037821608895",
+                },
+                new()
+                {
+                    Location = "Header",
+                    Key = "User-Access-Token",
+                    Value = "EAALuL1ZAZBrfMBAKDEw5M7jplWwBK7yphuaaQVntcoiQMyr8NZBwRwv76wea5RFvLNZAWFYE66oJ47wdkECD0Njw91yM8uXGVHqyvRsPVOJMmpXOBcfcAKSHbYRdhGei3HrrCZA6yVMy4UiSa4TWMFEragyucBpbr1paMFTWZAHcTcBnYPAZCZBDKLNchltPlAxhba7PbGgWlhA8w5AkUZBZAQ",
+                },
+                new()
+                {
+                    Location = "Body",
+                    Key = "Recipient-Phone-Number",
+                    Value = "31618395668",
+                }
+            },
+
+            method = "POST",
+            url = new()
+            {
+                    raw = "https://graph.facebook.com/{{Version}}/{{Phone-Number-ID}}/messages",
+                    protocol = "https",
+                    host = new string[]
+                    {
+                            "graph",
+                            "facebook",
+                            "com"
+                    },
+                    path = new string[]
+                    {
+                        "{{Version}}",
+                        "{{Phone-Number-ID}}",
+                        "messages"
+                    }
+            },
+            header = new HttpHeader[]
+            {
+                new()
+                {
+                    key = "Content-Type",
+                    value = "application/json",
+                    type = "text"
+                }
+            },
+            body = new ()
+            {
+                mode = "raw",
+                    raw = "{\n    \"messaging_product\": \"whatsapp\",\n    \"to\": \"{{Recipient-Phone-Number}}\",\n    \"type\": \"template\",\n    \"template\": {\n        \"name\": \"hello_world\",\n        \"language\": {\n            \"code\": \"en_US\"\n        }\n    }\n}",
+                options = new()
+                {
+                    raw = new()
+                    {
+                        language = "json"
+                    }
+                }
+            }
+        }
+    };
+
+    static HttpOverview SelectedHttpItem2 { get; set; } = new()
+    {
+        Name = "Send Sample Text Message",
+        Description = "Sample text 2",
+        Request = new()
+        {
+            // costom
+            Variables = new()
+            {
+                new()
+                {
+                    Location = "Path",
+                    Key = "Version",
+                    Value = "v15.0",
+                },
+                new()
+                {
+                    Location = "Path",
+                    Key = "Phone-Number-ID",
+                    Value = "113037821608895",
+                },
+                new()
+                {
+                    Location = "Header",
+                    Key = "User-Access-Token",
+                    Value = "EAALuL1ZAZBrfMBAKDEw5M7jplWwBK7yphuaaQVntcoiQMyr8NZBwRwv76wea5RFvLNZAWFYE66oJ47wdkECD0Njw91yM8uXGVHqyvRsPVOJMmpXOBcfcAKSHbYRdhGei3HrrCZA6yVMy4UiSa4TWMFEragyucBpbr1paMFTWZAHcTcBnYPAZCZBDKLNchltPlAxhba7PbGgWlhA8w5AkUZBZAQ",
+                },
+                new()
+                {
+                    Location = "Body",
+                    Key = "Recipient-Phone-Number",
+                    Value = "31618395668",
+                }
+            },
+
+            method = "POST",
+            url = new()
+            {
+                    raw = "https://graph.facebook.com/{{Version}}/{{Phone-Number-ID}}/messages",
+                    protocol = "https",
+                    host = new string[]
+                    {
+                            "graph",
+                            "facebook",
+                            "com"
+                    },
+                    path = new string[]
+                    {
+                        "{{Version}}",
+                        "{{Phone-Number-ID}}",
+                        "messages"
+                    }
+            },
+            header = new HttpHeader[]
+            {
+                new()
+                {
+                    key = "Content-Type",
+                    value = "application/json",
+                    type = "text"
+                }
+            },
+            body = new ()
+            {
+                mode = "raw",
+                    raw = "{\n    \"messaging_product\": \"whatsapp\",\n    \"to\": \"{{Recipient-Phone-Number}}\",\n    \"type\": \"template\",\n    \"template\": {\n        \"name\": \"hello_world\",\n        \"language\": {\n            \"code\": \"en_US\"\n        }\n    }\n}",
+                options = new()
+                {
+                    raw = new()
+                    {
+                        language = "json"
+                    }
+                }
+            }
+        }
+    };
+
+    public List<HttpOverview> HttpPipeline { get; set; } = new()  
+    {
+        SelectedHttpItem,
+        SelectedHttpItem1,
+        SelectedHttpItem2
+    };
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var collection = JsonConvert.DeserializeObject<CollectionData>(_Constants.Json);
+        Collections.Add(collection);
+
+
+
+    }
+
+    public void OnAddHandle(HttpOverview item)
+    {
+        // create Variables property
+
+
+
+        HttpPipeline.Add(item);
+
+
+
+
+        SelectedHttpItem = item;
+    }
+
+    string GetMethodStyle(string method)
+    {
+        var value = method.ToLower();
+        if(value == "get")
+        {
+            return "font-weight: bold;color: green;";
+        }
+
+        if (value == "post")
+        {
+            return "font-weight: bold;color: orange;";
+        }
+
+        if (value == "delete")
+        {
+            return "font-weight: bold;color: red;";
+        }
+
+        return "";
+    }
+
 }
-else
-{
-    <div>
-        <NavMenu class="nav-menu">
-            @foreach (Page _page in GetNavigation)
-            {
-                <NavMenuLink Icon="@_page.Icon" Text="@_page.Name" Href="@_page.Href" Disabled="@_page.Disabled" />
-            }
-        </NavMenu>
-        <Stack class="child-stack" Orientation="Orientation.Vertical" VerticalGap="0">
-            @if (string.IsNullOrEmpty(ConnectorNav))
-            {
-                <div>Overview</div>
-            }
-            else if (ConnectorNav == "pipeline")
-            {
-                <div>
-                    @*<FluentDataGrid RowsData="@Pipelines">
-                        <PropertyColumn Property="@(p => p.Name)" Sortable="true" />
-                        <PropertyColumn Property="@(p => p.Description)" />
-                        <PropertyColumn Property="@(p => p.Status)" />
-                    </FluentDataGrid>*@
 
-
-
-                </div>
-            }
-        </Stack>
-    </div>
-}

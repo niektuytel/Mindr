@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Fast.Components.FluentUI;
 using Mindr.Core;
 using Mindr.Core.Services;
+using Plk.Blazor.DragDrop;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -15,6 +16,7 @@ builder.Services.AddHttpClient("Default", c =>
 });
 
 builder.Services.AddFluentUIComponents();
+builder.Services.AddBlazorDragDrop();
 builder.Services.AddMsalAuthentication(options =>
 {
     builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication);

@@ -1,0 +1,16 @@
+﻿
+.overflow-ellipsis {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+.seperator {
+    height: 20px;
+    width: 1px;
+    background: gray;
+    margin: 5px;
+}
+
+
