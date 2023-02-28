@@ -5,8 +5,8 @@
     {
         <FluentTreeItem Expanded="false">
             <FluentIcon Name="@FluentIcons.Collections" Slot="start" Size="@IconSize.Size20" Color=Color.Neutral />
-            @collection.info.name
-            @foreach(var folder in collection.Overview)
+            @collection.Info.Name
+            @foreach(var folder in collection.Items)
             {
                 <CollectionItem Data="@folder" OnAddHandle="OnAddHandle" />
             }
@@ -16,8 +16,8 @@
 
 @code {
     [Parameter, EditorRequired]
-    public IEnumerable<CollectionData> Data { get; set; } = default!;
+    public IEnumerable<HttpCollection> Data { get; set; } = default!;
 
     [Parameter, EditorRequired]
-    public Action<HttpOverview> OnAddHandle { get; set; } = default!;
+    public Action<HttpItem> OnAddHandle { get; set; } = default!;
 }

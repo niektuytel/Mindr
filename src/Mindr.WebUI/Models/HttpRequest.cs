@@ -4,5 +4,5 @@
 
 public class HttpRequest: PostmanRequest
 {
-    public List<HttpRequestVariable> Variables { get; set; }
+    public IEnumerable<HttpVariable>? Variables { get; set; } = null;
 }

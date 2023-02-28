@@ -24,3 +24,13 @@
 }
 */
 
+::deep > fluent-dialog::part(control) {
+    --dialog-width: 300px;
+    --dialog-height: 350px;
+    padding: 2rem;
+}
+
+::deep .editable-stack {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #00000026;
+}

@@ -2,25 +2,51 @@
 
 @using Microsoft.AspNetCore.Authorization;
 @using Mindr.Core.CalendarExtensions;
+@using Mindr.Core.Enums;
+@using Mindr.Core.Extensions;
 @using Mindr.WebUI.Models;
 @using Newtonsoft.Json;
 @using Plk.Blazor.DragDrop
+@using System.Text;
+@using System.Net.Http.Headers;
 
 @namespace Mindr.WebUI.Pages
 @inherits FluentComponentBase
 @attribute [Authorize]
 
+
+<Stack Orientation="Orientation.Horizontal" Class="editable-stack">
+    <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="AddHttpRequest">
+        <FluentIcon Slot="start" Name="@FluentIcons.Add" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+        Add
+    </FluentButton>
+    <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="AddHttpCollection">
+        <FluentIcon Slot="start" Name="@FluentIcons.ChannelAdd" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+        Add Collection
+    </FluentButton>
+    <FluentButton Disabled="@(SelectedHttpIndex == -1)" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OnHttpItemRemove">
+        <FluentIcon Slot="start" Name="@FluentIcons.Delete" Size="@IconSize.Size16" Variant="@IconVariant.Filled" Color="@Color.Accent" />
+        Remove
+    </FluentButton>
+    <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OnHttpPipelineRun">
+        <FluentIcon Slot="start" Name="@FluentIcons.Play" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+        Run
+    </FluentButton>
+    @*<FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OnHttpPipelineExport">
+        <FluentIcon Slot="start" Name="@FluentIcons.ArrowExportLTR" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+        Export
+    </FluentButton>*@
+</Stack>
 <Stack Orientation="Orientation.Horizontal">
-    <Collection Data="@Collections" OnAddHandle="OnAddHandle"/>
     <Dropzone Items="HttpPipeline">
         <Stack Orientation="Orientation.Vertical" HorizontalAlignment="StackHorizontalAlignment.Center" VerticalGap="0">
-            <FluentCard class="overflow-ellipsis step-card" Style="width:300px" title="@context.Description" onclick="@(() => OnSelectHandle(context))">
+            <FluentCard class="overflow-ellipsis step-card" Style="width:300px" title="@context.Description" onclick="@(() => OnSelectHandle(HttpPipeline.IndexOf(context)))">
                 <Stack Orientation="Orientation.Horizontal" Style="padding: 5px;" HorizontalGap="0" HorizontalAlignment="StackHorizontalAlignment.Center">
-                    <div style=@("border-right: ridge;padding-right:5px;" + GetMethodStyle(context.Request.method))>
-                        @context.Request.method.ToUpper()
+                    <div style=@("border-right: ridge;padding-right:5px;" + GetMethodStyle(context.Request.Method))>
+                        @context.Request.Method.ToUpper()
                     </div>
                     <div class="overflow-ellipsis" style="padding-left:5px">
-                        @context.Request.url.raw
+                        @context.Request.Url.Raw
                     </div>
                 </Stack>
                 <FluentDivider />
@@ -33,299 +59,168 @@
             <div class="seperator" />
         </Stack>
     </Dropzone>
-    <Stack Orientation="Orientation.Vertical" HorizontalAlignment="StackHorizontalAlignment.Center" VerticalGap="0">
-        @if(SelectedHttpItem.Request.Variables.Any())
-        {
+    @if (SelectedHttpIndex != -1 && HttpPipeline[SelectedHttpIndex].Request.Variables != null && HttpPipeline[SelectedHttpIndex].Request.Variables!.Any())
+    {
+        <Stack Orientation="Orientation.Vertical" HorizontalAlignment="StackHorizontalAlignment.Center" VerticalGap="0">
             <FluentCard class="overflow-ellipsis" title="Needed input">
                 <Stack Orientation="Orientation.Vertical" Style="padding: 5px;" HorizontalGap="0">
-                    @foreach (var input in SelectedHttpItem.Request.Variables)
+                    @foreach (var input in HttpPipeline[SelectedHttpIndex].Request.Variables!)
                     {
                         <FluentTextField @bind-Value="@input.Value" title="@input.Key" style="width: 100%;" Placeholder="@input.Key"/>
                     }
                 </Stack>
             </FluentCard>
-        }
-    </Stack>
+        </Stack>
+    }
 </Stack>
+<div>
+    <FluentDialog @ref="MyFluentDialog" aria-label="Simple dialog" Modal=@Modal TrapFocus=@TrapFocus @ondialogdismiss=OnDismiss>
+        <Collection Data="@Collections" OnAddHandle="OnHttpItemAdd" />
+        <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="OnClose">Close dialog</FluentButton>
+        <FluentButton>Another button</FluentButton>
+    </FluentDialog>
+</div>
+<div>
+    <FluentDialog @ref="MyPipelineFluentDialog" aria-label="Simple dialog" Modal=@Modal TrapFocus=@TrapFocus @ondialogdismiss=OnPipelineDismiss>
+        TODO: UPLOAD button with validation
+        <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="OnPipelineClose">Close dialog</FluentButton>
+        <FluentButton>Another button</FluentButton>
+    </FluentDialog>
+</div>
+
 
 @code {
 
-    static HttpOverview SelectedHttpItem { get; set; } = new()
+    public List<HttpCollection> Collections { get; set; } = new List<HttpCollection>();
+
+
+
+    private FluentDialog? MyFluentDialog;
+    private FluentDialog? MyPipelineFluentDialog;
+    public bool TrapFocus = true;
+    public bool Modal = true;
+    private string? status;
+
+    protected override void OnAfterRender(bool firstRender)
     {
-        Name = "Send Sample Text Message",
-        Description = "You need to create a message template before you can send one. See [Create Template Using the WhatsApp Manager](https://developers.facebook.com/docs/whatsapp/message-templates/creation#step-1--create-template-using-the-whatsapp-manager) for more information. If your account is not verified yet, you can use one of our pre-approved templates.\n\nTo send a text-based message template, make a **POST** call to **`/{{Phone-Number-ID}}/messages`** and attach a message object with type = `template`. Then, add a template object.\n\n## Prerequisites\n- You need to create a message template through [WhatsApp Manager](https://developers.facebook.com/docs/whatsapp/message-templates/creation) or [BM API](https://developers.facebook.com/docs/whatsapp/business-management-api/message-templates#creating-message-templates)\n- For an unverified account, we have already [pre-created message templates](https://www.facebook.com/business/help/722393685250070) for you to use.\n\n## Message Objects\n\nMessage templates can contain the following `Message Objects`:\n\n* [Template Object](#fb5ad9b7-7991-443a-a1b5-97fdc5731673)\n* [Language Object](#d9272e38-c3db-458c-a23b-07953abc73a40)\n* [Component Object](#8225365a-acb8-48c7-8e57-079dfc532865)\n* [Parameter Object](#fe8db07c-27ad-49f3-bf33-472ee302c136)\n* [Currency Object](#424b70af-ced8-456d-b1e1-1360c5afb9e9)\n* [Date_Time Object](#ec955b05-7bd4-4273-ad87-ae755b580f6e)\n\n## Response\n\nA successful response includes an object with an identifier prefixed with **`wamid`**.",
-        Request = new()
+        if (firstRender)
         {
-            // costom
-            Variables = new()
-            {
-                new()
-                {
-                    Location = "Path",
-                    Key = "Version",
-                    Value = "v15.0",
-                },
-                new()
-                {
-                    Location = "Path",
-                    Key = "Phone-Number-ID",
-                    Value = "113037821608895",
-                },
-                new()
-                {
-                    Location = "Header",
-                    Key = "User-Access-Token",
-                    Value = "EAALuL1ZAZBrfMBAKDEw5M7jplWwBK7yphuaaQVntcoiQMyr8NZBwRwv76wea5RFvLNZAWFYE66oJ47wdkECD0Njw91yM8uXGVHqyvRsPVOJMmpXOBcfcAKSHbYRdhGei3HrrCZA6yVMy4UiSa4TWMFEragyucBpbr1paMFTWZAHcTcBnYPAZCZBDKLNchltPlAxhba7PbGgWlhA8w5AkUZBZAQ",
-                },
-                new()
-                {
-                    Location = "Body",
-                    Key = "Recipient-Phone-Number",
-                    Value = "31618395668",
-                }
-            },
-
-            method = "POST",
-            url = new()
-            {
-                    raw = "https://graph.facebook.com/{{Version}}/{{Phone-Number-ID}}/messages",
-                    protocol = "https",
-                    host = new string[]
-                    {
-                            "graph",
-                            "facebook",
-                            "com"
-                    },
-                    path = new string[]
-                    {
-                        "{{Version}}",
-                        "{{Phone-Number-ID}}",
-                        "messages"
-                    }
-            },
-            header = new HttpHeader[]
-            {
-                new()
-                {
-                    key = "Content-Type",
-                    value = "application/json",
-                    type = "text"
-                }
-            },
-            body = new ()
-            {
-                mode = "raw",
-                    raw = "{\n    \"messaging_product\": \"whatsapp\",\n    \"to\": \"{{Recipient-Phone-Number}}\",\n    \"type\": \"template\",\n    \"template\": {\n        \"name\": \"hello_world\",\n        \"language\": {\n            \"code\": \"en_US\"\n        }\n    }\n}",
-                options = new()
-                {
-                    raw = new()
-                    {
-                        language = "json"
-                    }
-                }
-            }
+            MyFluentDialog!.Hide();
+            MyPipelineFluentDialog!.Hide();
         }
-    };
-    
-    static HttpOverview SelectedHttpItem1 { get; set; } = new()
+    }
+
+    private void AddHttpRequest()
     {
-        Name = "Send Sample Text Message",
-        Description = "Sample text 2",
-        Request = new()
+        if (Collections.Count() == 0)
         {
-            // costom
-            Variables = new()
-            {
-                new()
-                {
-                    Location = "Path",
-                    Key = "Version",
-                    Value = "v15.0",
-                },
-                new()
-                {
-                    Location = "Path",
-                    Key = "Phone-Number-ID",
-                    Value = "113037821608895",
-                },
-                new()
-                {
-                    Location = "Header",
-                    Key = "User-Access-Token",
-                    Value = "EAALuL1ZAZBrfMBAKDEw5M7jplWwBK7yphuaaQVntcoiQMyr8NZBwRwv76wea5RFvLNZAWFYE66oJ47wdkECD0Njw91yM8uXGVHqyvRsPVOJMmpXOBcfcAKSHbYRdhGei3HrrCZA6yVMy4UiSa4TWMFEragyucBpbr1paMFTWZAHcTcBnYPAZCZBDKLNchltPlAxhba7PbGgWlhA8w5AkUZBZAQ",
-                },
-                new()
-                {
-                    Location = "Body",
-                    Key = "Recipient-Phone-Number",
-                    Value = "31618395668",
-                }
-            },
-
-            method = "POST",
-            url = new()
-            {
-                    raw = "https://graph.facebook.com/{{Version}}/{{Phone-Number-ID}}/messages",
-                    protocol = "https",
-                    host = new string[]
-                    {
-                            "graph",
-                            "facebook",
-                            "com"
-                    },
-                    path = new string[]
-                    {
-                        "{{Version}}",
-                        "{{Phone-Number-ID}}",
-                        "messages"
-                    }
-            },
-            header = new HttpHeader[]
-            {
-                new()
-                {
-                    key = "Content-Type",
-                    value = "application/json",
-                    type = "text"
-                }
-            },
-            body = new ()
-            {
-                mode = "raw",
-                    raw = "{\n    \"messaging_product\": \"whatsapp\",\n    \"to\": \"{{Recipient-Phone-Number}}\",\n    \"type\": \"template\",\n    \"template\": {\n        \"name\": \"hello_world\",\n        \"language\": {\n            \"code\": \"en_US\"\n        }\n    }\n}",
-                options = new()
-                {
-                    raw = new()
-                    {
-                        language = "json"
-                    }
-                }
-            }
+            var collection = JsonConvert.DeserializeObject<HttpCollection>(_Constants.Json);
+            Collections.Add(collection);
         }
-    };
 
-    static HttpOverview SelectedHttpItem2 { get; set; } = new()
+        MyFluentDialog!.Show();
+    }
+
+    private void AddHttpCollection()
     {
-        Name = "Send Sample Text Message",
-        Description = "Sample text 2",
-        Request = new()
+        MyPipelineFluentDialog!.Show();
+    }
+
+    private void OnClose()
+    {
+        MyFluentDialog!.Hide();
+
+    }
+
+    private void OnPipelineClose()
+    {
+        MyPipelineFluentDialog!.Hide();
+
+    }
+
+    private void OnDismiss(DialogEventArgs args)
+    {
+        if (args is not null && args.Reason is not null && args.Reason == "dismiss")
         {
-            // costom
-            Variables = new()
-            {
-                new()
-                {
-                    Location = "Path",
-                    Key = "Version",
-                    Value = "v15.0",
-                },
-                new()
-                {
-                    Location = "Path",
-                    Key = "Phone-Number-ID",
-                    Value = "113037821608895",
-                },
-                new()
-                {
-                    Location = "Header",
-                    Key = "User-Access-Token",
-                    Value = "EAALuL1ZAZBrfMBAKDEw5M7jplWwBK7yphuaaQVntcoiQMyr8NZBwRwv76wea5RFvLNZAWFYE66oJ47wdkECD0Njw91yM8uXGVHqyvRsPVOJMmpXOBcfcAKSHbYRdhGei3HrrCZA6yVMy4UiSa4TWMFEragyucBpbr1paMFTWZAHcTcBnYPAZCZBDKLNchltPlAxhba7PbGgWlhA8w5AkUZBZAQ",
-                },
-                new()
-                {
-                    Location = "Body",
-                    Key = "Recipient-Phone-Number",
-                    Value = "31618395668",
-                }
-            },
-
-            method = "POST",
-            url = new()
-            {
-                    raw = "https://graph.facebook.com/{{Version}}/{{Phone-Number-ID}}/messages",
-                    protocol = "https",
-                    host = new string[]
-                    {
-                            "graph",
-                            "facebook",
-                            "com"
-                    },
-                    path = new string[]
-                    {
-                        "{{Version}}",
-                        "{{Phone-Number-ID}}",
-                        "messages"
-                    }
-            },
-            header = new HttpHeader[]
-            {
-                new()
-                {
-                    key = "Content-Type",
-                    value = "application/json",
-                    type = "text"
-                }
-            },
-            body = new ()
-            {
-                mode = "raw",
-                    raw = "{\n    \"messaging_product\": \"whatsapp\",\n    \"to\": \"{{Recipient-Phone-Number}}\",\n    \"type\": \"template\",\n    \"template\": {\n        \"name\": \"hello_world\",\n        \"language\": {\n            \"code\": \"en_US\"\n        }\n    }\n}",
-                options = new()
-                {
-                    raw = new()
-                    {
-                        language = "json"
-                    }
-                }
-            }
+            MyFluentDialog!.Hide();
         }
-    };
+    }
 
-    public List<HttpOverview> HttpPipeline { get; set; } = new()  
+    private void OnPipelineDismiss(DialogEventArgs args)
     {
-        SelectedHttpItem,
-        SelectedHttpItem1,
-        SelectedHttpItem2
-    };
+        if (args is not null && args.Reason is not null && args.Reason == "dismiss")
+        {
+            MyPipelineFluentDialog!.Hide();
+        }
+    }
+}
 
+@code {
+    public int SelectedHttpIndex { get; set; } = -1;
+    public bool HttpPipelineLoading { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
-        var collection = JsonConvert.DeserializeObject<CollectionData>(_Constants.Json);
-        Collections.Add(collection);
 
 
 
     }
 
-    public void OnSelectHandle(HttpOverview item)
+    public void OnSelectHandle(int index)
     {
-        // create Variables property
+        SelectedHttpIndex = index;
+        if (HttpPipeline[index].Request.Variables == null)
+        {
+            HttpPipeline[index].Request.Variables = HttpPipeline[index].Request.GetVariables();
+        }
 
-
-
-        //HttpPipeline.Add(item);
-
-
-
-
-        //SelectedHttpItem = item;
-        Console.WriteLine();
+        base.StateHasChanged();
     }
 
-    public void OnAddHandle(HttpOverview item)
+    public void OnHttpItemAdd(HttpItem item)
     {
-        // create Variables property
-
-
-
         HttpPipeline.Add(item);
+        SelectedHttpIndex++;
 
-
-
-
-        SelectedHttpItem = item;
+        MyFluentDialog!.Hide();
+        base.StateHasChanged();
     }
+
+    public void OnHttpPipelineAdd(IEnumerable<HttpItem> items)
+    {
+        HttpPipeline.AddRange(items);
+        SelectedHttpIndex++;
+
+        MyPipelineFluentDialog!.Hide();
+        base.StateHasChanged();
+    }
+
+    public void OnHttpItemRemove()
+    {
+        HttpPipeline.RemoveAt(SelectedHttpIndex);
+        SelectedHttpIndex = -1;
+
+        base.StateHasChanged();
+    }
+
+    public async Task OnHttpPipelineRun()
+    {
+        HttpPipelineLoading = true;
+        foreach (var httpItem in HttpPipeline)
+        {
+            await HttpRun(httpItem.Request);
+        }
+        HttpPipelineLoading = false;
+    }
+
+    public async Task OnHttpPipelineExport()
+    {
+        HttpCollection.Items = HttpPipeline.ToArray();
+
+        // TODO: export file
+    }
+
+
 
     string GetMethodStyle(string method)
     {
@@ -348,5 +243,50 @@
         return "";
     }
 
+    public async Task HttpRun(HttpRequest http)
+    {
+        http = http.SetVariables();
+
+        var client = new HttpClient();
+        //HttpClient client = new HttpClient();
+        //client.BaseAddress = new Uri(uri);
+
+        client.DefaultRequestHeaders
+              .Accept
+              .Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
+
+        foreach (var item in http.Header)
+        {
+            if (item.Key == "Content-Type") continue;
+
+            client.DefaultRequestHeaders.Add(item.Key, item.Value);
+        }
+
+
+        var request = new HttpRequestMessage();
+        if (http.Method.ToLower() == "get")
+        {
+            request = new HttpRequestMessage(HttpMethod.Get, http.Url.Raw);
+        }
+        else if (http.Method.ToLower() == "post")
+        {
+            request = new HttpRequestMessage(HttpMethod.Post, http.Url.Raw);
+            request.Content = new StringContent(http.Body.Raw, Encoding.UTF8, "application/json");//CONTENT-TYPE header
+        }
+        else if (http.Method.ToLower() == "delete")
+        {
+            request = new HttpRequestMessage(HttpMethod.Delete, http.Url.Raw);
+        }
+
+        try
+        {
+            var response = await client.SendAsync(request);
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+
+    }
 }
 

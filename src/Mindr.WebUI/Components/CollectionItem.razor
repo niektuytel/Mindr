@@ -1,11 +1,11 @@
 ﻿@using Mindr.WebUI.Models;
 
-@if (Data.Overview != null && Data.Overview.Any())
+@if (Data.Items != null && Data.Items.Any())
 {
     <FluentTreeItem Expanded="false">
         <FluentIcon Name="@FluentIcons.Folder" Slot="start" Size="@IconSize.Size16" Color=Color.Neutral/>
         @Data.Name
-        @foreach (var data in Data.Overview)
+        @foreach (var data in Data.Items)
         {
             <CollectionItem Data="@data" OnAddHandle="OnAddHandle" />
         }
@@ -21,8 +21,8 @@ else if(Data.Request != null)
 
 @code {
     [Parameter, EditorRequired]
-    public HttpOverview Data { get; set; } = default!;
+    public HttpItem Data { get; set; } = default!;
 
     [Parameter, EditorRequired]
-    public Action<HttpOverview> OnAddHandle { get; set; } = default!;
+    public Action<HttpItem> OnAddHandle { get; set; } = default!;
 }

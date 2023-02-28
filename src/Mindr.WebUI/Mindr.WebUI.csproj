@@ -21,7 +21,21 @@
 	<ItemGroup>
 	  <Compile Remove="Models\CalendarDay.cs" />
 	  <Compile Remove="Models\CalendarEvent.cs" />
+	  <Compile Remove="Models\CollectionData.cs" />
+	  <Compile Remove="Models\CollectionInfo.cs" />
+	  <Compile Remove="Models\CollectionVariable.cs" />
 	  <Compile Remove="Models\GraphModels.cs" />
+	  <Compile Remove="Models\HttpBody.cs" />
+	  <Compile Remove="Models\HttpBodyOption.cs" />
+	  <Compile Remove="Models\HttpBodyOptionRaw.cs" />
+	  <Compile Remove="Models\HttpHeader.cs" />
+	  <Compile Remove="Models\HttpOverview.cs" />
+	  <Compile Remove="Models\HttpRequest.cs" />
+	  <Compile Remove="Models\HttpRequestUrl.cs" />
+	  <Compile Remove="Models\HttpRequestUrlQuery.cs" />
+	  <Compile Remove="Models\HttpResponse.cs" />
+	  <Compile Remove="Models\HttpVariable.cs" />
+	  <Compile Remove="Models\PostmanRequest.cs" />
 	  <Compile Remove="Models\Project.cs" />
 	  <Compile Remove="Models\ProjectGroup.cs" />
 	  <Compile Remove="Pages\MyCalendar.cs" />
