@@ -10,12 +10,12 @@
     height: 20px;
     width: 1px;
     background: gray;
-    margin: 5px;
+/*    margin: 5px;*/
 }
 /*
 
 ::deep > .step-card {
-    border-color: none;
+    border-fill: none;
     cursor: pointer;
 }
 
@@ -33,4 +33,15 @@
 ::deep .editable-stack {
     margin-bottom: 10px;
     border-bottom: 1px solid #00000026;
+}
+
+::deep > fluent-badge {
+    --badge-fill-highlight: #009105;
+    --badge-fill-lowlight: #df0000;
+    --badge-color-highlight: #000;
+    --badge-color-lowlight: #fff;
+
+    font-weight: bold;
+    color: white;
+    margin: 3px;
 }

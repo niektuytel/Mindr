@@ -84,10 +84,4 @@
 	  <ProjectReference Include="..\Plk.Blazor.DragDrop\Plk.Blazor.DragDrop.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Content Update="wwwroot\sample-data\whatsapp-cloud-api.postman_collection.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
-	</ItemGroup>
-
 </Project>

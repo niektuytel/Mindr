@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Mindr.Core.Models;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Newtonsoft.Json;
+using Mindr.Core.Interfaces;
 
 namespace Mindr.Core.Services
 {

@@ -2,8 +2,8 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Mindr.Core.Interfaces;
 using Mindr.Core.Models;
-using Mindr.Core.Services;
 
 namespace Mindr.Core
 {

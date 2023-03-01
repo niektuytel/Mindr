@@ -5,6 +5,7 @@ using Microsoft.Fast.Components.FluentUI;
 using Mindr.Core;
 using Mindr.Core.Services;
 using Plk.Blazor.DragDrop;
+using Mindr.Core.Interfaces;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -27,6 +28,10 @@ builder.Services.AddMsalAuthentication(options =>
     options.ProviderOptions.LoginMode = "redirect";
     options.ProviderOptions.Cache.CacheLocation = "localStorage";
 });
+
+builder.Services.AddSingleton<IHttpCollectionClient, HttpCollectionClient>();
+
+
 builder.Services.AddTransient<ICalendarEventsProvider, MicrosoftCalendarEventsProvider>();
 builder.Services.AddTransient<CalendarController>();
 

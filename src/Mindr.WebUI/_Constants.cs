@@ -2192,6 +2192,11 @@ internal static class _Constants
         								"method": "POST",
         								"header": [
         									{
+        										"key": "Authorization",
+        										"value": "Bearer {{User-Access-Token}}",
+        										"type": "text"
+        									},
+        									{
         										"key": "Content-Type",
         										"value": "application/json",
         										"type": "text"

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Mindr.Core.Models;
 
-namespace Mindr.Core.Services
+namespace Mindr.Core.Interfaces
 {
-    public interface ICalendarEventsProvider 
+    public interface ICalendarEventsProvider
     {
 
         Task<ConcurrentBag<CalendarEvent>> GetEventsInMonthAsync(int year, int month);

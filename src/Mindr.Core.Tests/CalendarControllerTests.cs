@@ -1,5 +1,5 @@
-﻿using Mindr.Core.Models;
-using Mindr.Core.Services;
+﻿using Mindr.Core.Interfaces;
+using Mindr.Core.Models;
 using Moq;
 using NUnit.Framework;
 using System;
