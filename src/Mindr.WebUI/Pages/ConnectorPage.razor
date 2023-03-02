@@ -34,99 +34,7 @@
         Run Pipeline
     </FluentButton>
 </Stack>
-<Stack Orientation="Orientation.Horizontal">
-    <Dropzone Items="Pipeline">
-        <Stack Orientation="Orientation.Horizontal" HorizontalGap="0">
-            <Stack Orientation="Orientation.Vertical" VerticalAlignment="StackVerticalAlignment.Bottom" VerticalGap="0">
-                <FluentButton Appearance="Appearance.Stealth" onclick="@(() => OnItemRemove(context))">
-                    <FluentIcon Name="@FluentIcons.Delete" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
-                </FluentButton>
-            </Stack>
-            <Stack Orientation="Orientation.Vertical" HorizontalAlignment="StackHorizontalAlignment.Center" VerticalGap="0">
-                <FluentCard class="overflow-ellipsis step-card" Style="width:300px" title="@context.Description" onclick="@(() => OnItemSelect(Pipeline.IndexOf(context)))">
-                    <Stack Orientation="Orientation.Horizontal" Style="padding: 5px;" HorizontalGap="0" HorizontalAlignment="StackHorizontalAlignment.Center">
-                        <div style=@("border-right: ridge;padding-right:5px;" + GetMethodStyle(context.Request.Method))>
-                            @context.Request.Method.ToUpper()
-                        </div>
-                        <div class="overflow-ellipsis" style="padding-left:5px">
-                            @context.Request.Url.Raw
-                        </div>
-                    </Stack>
-                    <FluentDivider />
-                    <Stack Orientation="Orientation.Horizontal" Style="padding: 5px;" HorizontalGap="0">
-                        <div class="overflow-ellipsis" style="padding: 5px;">
-                            @context.Name
-                        </div>
-                    </Stack>
-                </FluentCard>
-                @if (context.Result != null)
-                {
-                    var color = context.Result.IsSuccessStatusCode ? "highlight" : "lowlight";
-                    <div>
-                        <FluentBadge Fill=@color Color="white">
-                            @((int)context.Result.StatusCode) @context.Result.StatusCode
-                        </FluentBadge>
-                    </div>
-                }
-                else if(PipelineIsLoading)
-                {
-                    <div style="width: 90%; height:20px">
-                        <FluentProgress></FluentProgress>
-                    </div>
-                }
-                <div class="seperator" />
-            </Stack>
-            @if (context.Request.Variables != null && context.Request.Variables.Where(value => string.IsNullOrEmpty(value.Value)).Any())
-            {
-                <Stack Orientation="Orientation.Vertical" VerticalAlignment="StackVerticalAlignment.Center" VerticalGap="0">
-                    <FluentIcon 
-                        Name="@FluentIcons.Warning" 
-                        Size="@IconSize.Size24" 
-                        Variant="@IconVariant.Regular" 
-                        Color="@Color.Accent" 
-                        Style="--accent-fill-rest: darkorange;margin:4px" 
-                    />
-                </Stack>
-            }
-        </Stack>
-    </Dropzone>
-    @if (SelectedIndex != -1 && Pipeline[SelectedIndex].Request.Variables != null && Pipeline[SelectedIndex].Request.Variables!.Any())
-    {
-        <Stack Orientation="Orientation.Vertical" HorizontalAlignment="StackHorizontalAlignment.Center" VerticalGap="0">
-            <FluentCard class="overflow-ellipsis" title="Needed input">
-                <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
-                    <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OnItemRun">
-                        <FluentIcon Slot="start" Name="@FluentIcons.Play" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
-                        Run
-                    </FluentButton>
-                </Stack>
-                <Stack Orientation="Orientation.Vertical" Style="padding: 5px;" HorizontalGap="0">
-                    @foreach (var input in Pipeline[SelectedIndex].Request.Variables!)
-                    {
-                        <FluentTextField @bind-Value="@input.Value" title="@input.Key" style="width: 100%;" Placeholder="@input.Key"/>
-                    }
-                </Stack>
-                @if (Pipeline[SelectedIndex].Result != null)
-                {
-                    <pre style="border: solid 1px lightgray;">@Pipeline[SelectedIndex].Result!.ToString()</pre>
-                }
-                Output variables
-                <Stack Orientation="Orientation.Vertical" Style="padding: 5px;margin-top:40px" HorizontalGap="0">
-                    @{
-                        var resvars = GetResponseVariables();
-                    }
-                    @if (resvars != null)
-                    {
-                        foreach (var input in resvars)
-                        {
-                            <FluentTextField @bind-Value="@input.Value" title="@input.Key" style="width: 100%;" Placeholder="@input.Key" />
-                        }
-                    }
-                </Stack>
-            </FluentCard>
-        </Stack>
-    }
-</Stack>
+<HttpPipeline/>
 <div>
     <FluentDialog @ref="AddRequestDialog" aria-label="Simple dialog" Modal="true" TrapFocus="true" @ondialogdismiss=DismissRequestDialog>
         <Collection Data="@Collections" OnAddHandle="OnPipelineAdd" />
@@ -140,25 +48,5 @@
 
     public List<HttpCollection> Collections { get; set; } = new List<HttpCollection>();
 
-    string GetMethodStyle(string method)
-    {
-        var value = method.ToLower();
-        if (value == "get")
-        {
-            return "font-weight: bold;color: green;";
-        }
-
-        if (value == "post")
-        {
-            return "font-weight: bold;color: orange;";
-        }
-
-        if (value == "delete")
-        {
-            return "font-weight: bold;color: red;";
-        }
-
-        return "";
-    }
 }
 

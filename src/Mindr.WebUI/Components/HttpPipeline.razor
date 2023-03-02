@@ -1,0 +1,46 @@
+﻿
+@namespace Mindr.WebUI.Components
+@inherits FluentComponentBase
+
+<Stack Orientation="Orientation.Horizontal">
+    <Dropzone Items="Pipeline">
+        <HttpPipelineItem Data="@context"/>
+    </Dropzone>
+    @if (SelectedIndex != -1 && Pipeline[SelectedIndex].Request.Variables != null && Pipeline[SelectedIndex].Request.Variables!.Any())
+    {
+        <Stack Orientation="Orientation.Vertical" HorizontalAlignment="StackHorizontalAlignment.Center" VerticalGap="0">
+            <FluentCard class="overflow-ellipsis" title="Needed input">
+                <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
+                    <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OnItemRun">
+                        <FluentIcon Slot="start" Name="@FluentIcons.Play" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+                        Run
+                    </FluentButton>
+                </Stack>
+                <Stack Orientation="Orientation.Vertical" Style="padding: 5px;" HorizontalGap="0">
+                    @foreach (var input in Pipeline[SelectedIndex].Request.Variables!)
+                    {
+                        <FluentTextField @bind-Value="@input.Value" title="@input.Key" style="width: 100%;" Placeholder="@input.Key" />
+                    }
+                </Stack>
+                @if (Pipeline[SelectedIndex].Result != null)
+                {
+                    <pre style="border: solid 1px lightgray;">@Pipeline[SelectedIndex].Result!.ToString()</pre>
+                }
+                Output variables
+                <Stack Orientation="Orientation.Vertical" Style="padding: 5px;margin-top:40px" HorizontalGap="0">
+                    @{
+                        var resvars = GetResponseVariables();
+                    }
+                    @if (resvars != null)
+                    {
+                        foreach (var input in resvars)
+                        {
+                            <FluentTextField @bind-Value="@input.Value" title="@input.Key" style="width: 100%;" Placeholder="@input.Key" />
+                        }
+                    }
+                </Stack>
+            </FluentCard>
+        </Stack>
+    }
+</Stack>
+

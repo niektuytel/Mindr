@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Fast.Components.FluentUI;
 using Mindr.Core;
 using Mindr.Core.Services;
-using Plk.Blazor.DragDrop;
 using Mindr.Core.Interfaces;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);

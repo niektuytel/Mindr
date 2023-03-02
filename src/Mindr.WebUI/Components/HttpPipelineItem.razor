@@ -1,0 +1,79 @@
+﻿
+@namespace Mindr.WebUI.Components
+@inherits FluentComponentBase
+
+<Stack Orientation="Orientation.Horizontal" HorizontalGap="0">
+    <Stack Orientation="Orientation.Vertical" VerticalAlignment="StackVerticalAlignment.Bottom" VerticalGap="0">
+        <FluentButton Appearance="Appearance.Stealth" onclick="@(() => OnHandleRemove(Data))">
+            <FluentIcon Name="@FluentIcons.Delete" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+        </FluentButton>
+    </Stack>
+    <Stack Orientation="Orientation.Vertical" HorizontalAlignment="StackHorizontalAlignment.Center" VerticalGap="0">
+        <FluentCard class="overflow-ellipsis step-card" Style="width:300px" title="@Data.Description" onclick="@(() => OnHandleSelect(Pipeline.IndexOf(Data)))">
+            <Stack Orientation="Orientation.Horizontal" Style="padding: 5px;" HorizontalGap="0" HorizontalAlignment="StackHorizontalAlignment.Center">
+                <div style=@("border-right: ridge;padding-right:5px;" + GetMethodStyle(Data.Request.Method))>
+                    @Data.Request.Method.ToUpper()
+                </div>
+                <div class="overflow-ellipsis" style="padding-left:5px">
+                    @Data.Request.Url.Raw
+                </div>
+            </Stack>
+            <FluentDivider />
+            <Stack Orientation="Orientation.Horizontal" Style="padding: 5px;" HorizontalGap="0">
+                <div class="overflow-ellipsis" style="padding: 5px;">
+                    @Data.Name
+                </div>
+            </Stack>
+        </FluentCard>
+        @if (Data.Result != null)
+        {
+            var color = Data.Result.IsSuccessStatusCode ? "highlight" : "lowlight";
+            <div>
+                <FluentBadge Fill=@color Color="white">
+                    @((int)Data.Result.StatusCode) @Data.Result.StatusCode
+                </FluentBadge>
+            </div>
+        }
+        else if (PipelineIsLoading)
+        {
+            <div style="width: 90%; height:20px">
+                <FluentProgress></FluentProgress>
+            </div>
+        }
+        <div class="seperator" />
+    </Stack>
+    @if (Data.Request.Variables != null && Data.Request.Variables.Where(value => string.IsNullOrEmpty(value.Value)).Any())
+    {
+        <Stack Orientation="Orientation.Vertical" VerticalAlignment="StackVerticalAlignment.Center" VerticalGap="0">
+            <FluentIcon Name="@FluentIcons.Warning"
+                    Size="@IconSize.Size24"
+                    Variant="@IconVariant.Regular"
+                    Color="@Color.Accent"
+                    Style="--accent-fill-rest: darkorange;margin:4px" />
+        </Stack>
+    }
+</Stack>
+
+@code {
+
+    string GetMethodStyle(string method)
+    {
+        var value = method.ToLower();
+        if (value == "get")
+        {
+            return "font-weight: bold;color: green;";
+        }
+
+        if (value == "post")
+        {
+            return "font-weight: bold;color: orange;";
+        }
+
+        if (value == "delete")
+        {
+            return "font-weight: bold;color: red;";
+        }
+
+        return "";
+    }
+}
