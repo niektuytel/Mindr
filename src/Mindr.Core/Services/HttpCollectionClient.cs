@@ -73,12 +73,18 @@ namespace Mindr.Core.Services
             for (int i = 0; i < pipeline.Count; i++)
             {
                 pipeline[i] = await SendAsync(pipeline[i]);
+
+                // break pipeline if failed request sended
+                if (!pipeline[i].Result.IsSuccessStatusCode)
+                {
+                    break;
+                }
             }
 
             return pipeline;
         }
 
-
+        // TODO: <HttpItemFactory> CreateHttpItem
 
     }
 }

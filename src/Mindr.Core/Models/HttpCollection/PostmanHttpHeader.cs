@@ -12,5 +12,8 @@ namespace Mindr.Core.Models.HttpCollection
 
         [JsonProperty("type")]
         public string Type { get; set; }
+
+        [JsonProperty("description")]
+        public string Description { get; set; }
     }
 }

@@ -37,9 +37,11 @@
 <Stack Orientation="Orientation.Horizontal">
     <Dropzone Items="Pipeline">
         <Stack Orientation="Orientation.Horizontal" HorizontalGap="0">
-            <FluentButton Appearance="Appearance.Stealth" onclick="@(() => OnItemRemove(context))">
-                <FluentIcon Name="@FluentIcons.Delete" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
-            </FluentButton>
+            <Stack Orientation="Orientation.Vertical" VerticalAlignment="StackVerticalAlignment.Bottom" VerticalGap="0">
+                <FluentButton Appearance="Appearance.Stealth" onclick="@(() => OnItemRemove(context))">
+                    <FluentIcon Name="@FluentIcons.Delete" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+                </FluentButton>
+            </Stack>
             <Stack Orientation="Orientation.Vertical" HorizontalAlignment="StackHorizontalAlignment.Center" VerticalGap="0">
                 <FluentCard class="overflow-ellipsis step-card" Style="width:300px" title="@context.Description" onclick="@(() => OnItemSelect(Pipeline.IndexOf(context)))">
                     <Stack Orientation="Orientation.Horizontal" Style="padding: 5px;" HorizontalGap="0" HorizontalAlignment="StackHorizontalAlignment.Center">
@@ -74,6 +76,18 @@
                 }
                 <div class="seperator" />
             </Stack>
+            @if (context.Request.Variables != null && context.Request.Variables.Where(value => string.IsNullOrEmpty(value.Value)).Any())
+            {
+                <Stack Orientation="Orientation.Vertical" VerticalAlignment="StackVerticalAlignment.Center" VerticalGap="0">
+                    <FluentIcon 
+                        Name="@FluentIcons.Warning" 
+                        Size="@IconSize.Size24" 
+                        Variant="@IconVariant.Regular" 
+                        Color="@Color.Accent" 
+                        Style="--accent-fill-rest: darkorange;margin:4px" 
+                    />
+                </Stack>
+            }
         </Stack>
     </Dropzone>
     @if (SelectedIndex != -1 && Pipeline[SelectedIndex].Request.Variables != null && Pipeline[SelectedIndex].Request.Variables!.Any())
@@ -96,6 +110,19 @@
                 {
                     <pre style="border: solid 1px lightgray;">@Pipeline[SelectedIndex].Result!.ToString()</pre>
                 }
+                Output variables
+                <Stack Orientation="Orientation.Vertical" Style="padding: 5px;margin-top:40px" HorizontalGap="0">
+                    @{
+                        var resvars = GetResponseVariables();
+                    }
+                    @if (resvars != null)
+                    {
+                        foreach (var input in resvars)
+                        {
+                            <FluentTextField @bind-Value="@input.Value" title="@input.Key" style="width: 100%;" Placeholder="@input.Key" />
+                        }
+                    }
+                </Stack>
             </FluentCard>
         </Stack>
     }

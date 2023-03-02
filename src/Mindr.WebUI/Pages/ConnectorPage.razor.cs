@@ -44,10 +44,6 @@ public partial class ConnectorPage : FluentComponentBase
     public void OnItemSelect(int index)
     {
         SelectedIndex = index;
-        if (Pipeline[index].Request.Variables == null)
-        {
-            Pipeline[index].Request.Variables = Pipeline[index].Request.GetVariables();
-        }
 
         base.StateHasChanged();
     }
@@ -71,8 +67,40 @@ public partial class ConnectorPage : FluentComponentBase
         PipelineIsLoading = false;
     }
 
-    public void OnPipelineAdd(HttpItem item)
+    public void OnPipelineAdd(HttpItem item, HttpVariable[] globalVariables)
     {
+        // TODO: set global key on global values that are set in requests
+        // set item variables
+        if (item.Request.Variables == null)
+        {
+            item.Request.Variables = item.Request.GetVariables();
+        }
+
+        foreach (var variable in item.Request.Variables)
+        {
+            // set other matching variables to this call
+            foreach (var pipeItem in Pipeline)
+            {
+                var res = pipeItem.Request.Variables.FirstOrDefault(i => (i.Key == variable.Key && !string.IsNullOrEmpty(i.Value)));
+                if(res != null)
+                {
+                    variable.Value = res.Value;
+                    break;
+                }
+            }
+
+            // set global variable to this call
+            if(string.IsNullOrEmpty(variable.Value))
+            {
+                var res = globalVariables.FirstOrDefault(i => (i.Key == variable.Key && !string.IsNullOrEmpty(i.Value)));
+                if (res != null)
+                {
+                    variable.Value = res.Value;
+                }
+            }
+        }
+
+
         Pipeline.Add(item);
 
         SelectedIndex++;
@@ -97,6 +125,40 @@ public partial class ConnectorPage : FluentComponentBase
         Pipeline = await CollectionClient.SendAsync(Pipeline);
 
         PipelineIsLoading = false;
+    }
+
+    public IEnumerable<HttpVariable>? GetResponseVariables()
+    {
+        if(SelectedIndex == -1) return null;
+        var responses = Pipeline[SelectedIndex].Response;
+        if (responses == null) return null;
+
+        // TODO: Add more options to respond on: [201, 302, 404, 500, etc.]
+        var response = responses.FirstOrDefault(item => item.Code == 200);
+        if (response != null)
+        {
+            // set item variables
+            if (response.Variables == null)
+            {
+                response.Variables = response.GetVariables();
+            }
+
+            foreach (var variable in response.Variables)
+            {
+                // set other matching variables to this call
+                foreach (var pipeItem in Pipeline)
+                {
+                    var res = response.Variables.FirstOrDefault(i => (i.Key == variable.Key && !string.IsNullOrEmpty(i.Value)));
+                    if (res != null)
+                    {
+                        variable.Value = res.Value;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return response?.Variables;
     }
 
     public void OpenRequestDialog()

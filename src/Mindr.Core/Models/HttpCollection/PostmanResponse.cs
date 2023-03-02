@@ -21,10 +21,10 @@ namespace Mindr.Core.Models.HttpCollection
         public string PostmanPreviewLanguage { get; set; }
 
         [JsonProperty("header")]
-        public object Header { get; set; }
+        public HttpHeader[] Header { get; set; }
 
         [JsonProperty("cookie")]
-        public object[] Cookie { get; set; }
+        public HttpCookie[] Cookie { get; set; }
 
         [JsonProperty("body")]
         public string Body { get; set; }

@@ -8,7 +8,7 @@
             @collection.Info.Name
             @foreach(var folder in collection.Items)
             {
-                <CollectionItem Data="@folder" OnAddHandle="OnAddHandle" />
+                <CollectionItem Data="@folder" OnAddHandle="(item) => OnAddHandle(item, collection.Variable)" />
             }
         </FluentTreeItem>
     }
@@ -19,5 +19,5 @@
     public IEnumerable<HttpCollection> Data { get; set; } = default!;
 
     [Parameter, EditorRequired]
-    public Action<HttpItem> OnAddHandle { get; set; } = default!;
+    public Action<HttpItem, HttpVariable[]> OnAddHandle { get; set; } = default!;
 }

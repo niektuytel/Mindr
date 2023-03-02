@@ -12,6 +12,9 @@ namespace Mindr.Core.Extensions
 {
     public static class HttpVariableExtensions
     {
+
+        // TODO: Bring to <HttpItemFactory>
+
         public const string PrefixOpen = "{{";
         public const string PrefixClose = "}}";
 
@@ -60,6 +63,18 @@ namespace Mindr.Core.Extensions
             variables.AddRange(request.Url.Raw.GetVariables(VariablePosition.Uri));
             variables.AddRange(request.Header.GetVariables(VariablePosition.Header));
             variables.AddRange(request.Body.Raw.GetVariables(VariablePosition.Body));
+
+            return variables;
+        }
+
+        public static IEnumerable<HttpVariable> GetVariables(this HttpResponse response)
+        {
+            if (response.Variables != null) return response.Variables;
+            var variables = new List<HttpVariable>();
+
+            // TODO: can't find sample how cookie is been set (so idk how to retrieve information)
+            variables.AddRange(response.Header.GetVariables(VariablePosition.Header));
+            variables.AddRange(response.Body.GetVariables(VariablePosition.Body));
 
             return variables;
         }
