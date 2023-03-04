@@ -1,4 +1,4 @@
-﻿using Mindr.Core.Models.HttpCollection;
+﻿using Mindr.Core.Models.Connector.Http;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;

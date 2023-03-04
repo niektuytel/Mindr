@@ -1,7 +1,7 @@
 ﻿using Mindr.WebUI.Models;
 using Microsoft.Fast.Components.FluentUI;
-using Mindr.Core.Models.HttpCollection;
 using Mindr.Core.Enums;
+using Mindr.Core.Models.Connector.Http;
 
 namespace Mindr.WebUI;
 
@@ -16,21 +16,37 @@ internal static class _Constants
             Href = "/",
         },
         new Page(){
-            Name = "Outlook",
+            Name = "Agenda",
             Icon = @FluentIcons.CalendarEmpty,
-            Href = "/outlook",
+            Href = "/agenda",
         },
         new Page(){
-            Name = "Connectors",
+            Name = "Connector",
             Icon = @FluentIcons.CalendarAgenda,
-            Href = "/connectors",
+            Href = "/connector",
+        }
+        //
+        //new Page(){
+        //    Name = "Collections",
+        //    Icon = @FluentIcons.Database,
+        //    Href = "/collections",
+        //    UseBreadcrumb = false,
+        //    Disabled = true
+        //}
+    };
+
+
+    public static List<Page> ConnectorPage = new()
+    {
+        new Page(){
+            Name = "Overview",
+            Icon = @FluentIcons.Info,
+            Href = "/connector",
         },
         new Page(){
-            Name = "Collections",
-            Icon = @FluentIcons.Database,
-            Href = "/collections",
-            UseBreadcrumb = false,
-            Disabled = true
+            Name = "Pipeline",
+            Icon = @FluentIcons.PipelinePlay,
+            Href = "/connector/pipeline",
         }
     };
 
@@ -59,6 +75,88 @@ internal static class _Constants
     };
 
     internal static HttpItem DefaultTestSample { get; set; } = new()
+    {
+        Name = "Send Sample Text Message",
+        Description = "Sample text",
+        Request = new()
+        {
+            Variables = new List<HttpVariable>()
+            {
+                new()
+                {
+                    Location = VariablePosition.Uri,
+                    Key = "Version",
+                    Value = "v15.0"
+                },
+                new()
+                {
+                    Location = VariablePosition.Uri,
+                    Key = "Phone-Number-ID",
+                    Value = "113037821608895"
+                },
+                new()
+                {
+                    Location = VariablePosition.Header,
+                    Key = "User-Access-Token",
+                    Value = "EAALuL1ZAZBrfMBAExyTHn1XOJN9SCkZAyLkkwvfgAF34gDtIIIgF5VEn4iihUsHSSgbICtzLGhZBMfpwOZA1f0KzZA7DcmKWIW1nnsyOoWJgFknicQI0OvfrbW4c31rABm9RKR8Bq3EckyUYROWeX1iSipaPEJdlC6LHH5I9ILHMzC4ZAcUaZBshmtZBNyHQO8yRZBZCSToD0GG4wPZC7TDt46he"
+                },
+                new()
+                {
+                    Location = VariablePosition.Body,
+                    Key = "Recipient-Phone-Number",
+                    Value = "31618395668"
+                }
+            },
+
+            Method = "POST",
+            Url = new()
+            {
+                Raw = "https://graph.facebook.com/{{Version}}/{{Phone-Number-ID}}/messages",
+                Protocol = "https",
+                Host = new string[]
+                    {
+                            "graph",
+                            "facebook",
+                            "com"
+                    },
+                Path = new string[]
+                    {
+                        "{{Version}}",
+                        "{{Phone-Number-ID}}",
+                        "messages"
+                    }
+            },
+            Header = new HttpHeader[]
+            {
+                new()
+                {
+                    Key = "Authorization",
+                    Value = "Bearer {{User-Access-Token}}",
+                    Type = "text"
+                },
+                new()
+                {
+                    Key = "Content-Type",
+                    Value = "application/json",
+                    Type = "text"
+                }
+            },
+            Body = new()
+            {
+                Mode = "raw",
+                Raw = "{\n    \"messaging_product\": \"whatsapp\",\n    \"to\": \"{{Recipient-Phone-Number}}\",\n    \"type\": \"template\",\n    \"template\": {\n        \"name\": \"hello_world\",\n        \"language\": {\n            \"code\": \"en_US\"\n        }\n    }\n}",
+                Options = new()
+                {
+                    Raw = new()
+                    {
+                        Language = "json"
+                    }
+                }
+            }
+        }
+    };
+
+    internal static HttpItem DefaultTestSample2 { get; set; } = new()
     {
         Name = "Send Sample Text Message",
         Description = "Sample text 2",

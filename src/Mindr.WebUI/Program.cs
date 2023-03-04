@@ -28,10 +28,11 @@ builder.Services.AddMsalAuthentication(options =>
     options.ProviderOptions.Cache.CacheLocation = "localStorage";
 });
 
+builder.Services.AddTransient<ICalendarEventsProvider, MicrosoftCalendarEventsProvider>();
+builder.Services.AddTransient<CalendarController>();
+builder.Services.AddSingleton<IHttpCollectionFactory, HttpCollectionFactory>();
 builder.Services.AddSingleton<IHttpCollectionClient, HttpCollectionClient>();
 
 
-builder.Services.AddTransient<ICalendarEventsProvider, MicrosoftCalendarEventsProvider>();
-builder.Services.AddTransient<CalendarController>();
 
 await builder.Build().RunAsync();

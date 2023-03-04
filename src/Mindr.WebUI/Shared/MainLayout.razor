@@ -9,7 +9,7 @@
 <div id="page-container" @ref="Container">
     <Header Container="Container" />
     <main id="content-wrap">
-        <NavMenu class="nav-menu" Expanded="true">
+        <NavMenu Class="nav-menu" Expanded="true">
             @foreach (Page _page in @_Constants.Pages)
             {
                 <NavMenuLink Icon="@_page.Icon" Text="@_page.Name" Href="@_page.Href" Disabled="@_page.Disabled" />

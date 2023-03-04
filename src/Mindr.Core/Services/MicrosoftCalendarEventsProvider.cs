@@ -106,19 +106,29 @@ namespace Mindr.Core.Services
 
         private async Task<string> GetAccessTokenAsync()
         {
-            var tokenRequest = await _accessTokenProvider.RequestAccessToken(new AccessTokenRequestOptions
-            {
-                Scopes = new[] { "https://graph.microsoft.com/Calendars.ReadWrite" }
-            });
 
-            // Try to fetch the token 
-            if(tokenRequest.TryGetToken(out var token))
+            try
             {
-                if(token != null)
+                var tokenRequest = await _accessTokenProvider.RequestAccessToken(new AccessTokenRequestOptions
                 {
-                    return token.Value;
+                    Scopes = new[] { "https://graph.microsoft.com/Calendars.ReadWrite" }
+                });
+
+                // Try to fetch the token 
+                if(tokenRequest.TryGetToken(out var token))
+                {
+                    if(token != null)
+                    {
+                        return token.Value;
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
 
             return null; 
         }

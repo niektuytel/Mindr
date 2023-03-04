@@ -6,7 +6,7 @@
 
 @if(Page != null && Page.UseBreadcrumb)
 {
-    <Stack Orientation="Orientation.Horizontal" HorizontalGap=0>
+    <Stack Orientation="Orientation.Horizontal" HorizontalGap=0 Style="margin-bottom: 10px">
         <FluentIcon Name="@Page.Icon" Size="@IconSize.Size24" Color=Color.Neutral Style="margin-top:6px;margin-right:6px;" />
         <Stack Orientation="Orientation.Horizontal" VerticalAlignment="StackVerticalAlignment.Bottom">
             @if(!string.IsNullOrEmpty(Path))

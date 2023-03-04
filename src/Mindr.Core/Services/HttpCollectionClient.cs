@@ -1,7 +1,7 @@
 ﻿using Force.DeepCloner;
 using Mindr.Core.Extensions;
 using Mindr.Core.Interfaces;
-using Mindr.Core.Models.HttpCollection;
+using Mindr.Core.Models.Connector.Http;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -16,54 +16,22 @@ namespace Mindr.Core.Services
     public class HttpCollectionClient : IHttpCollectionClient
     {
         private readonly HttpClient _client;
+        private readonly IHttpCollectionFactory _factory;
 
-        public HttpCollectionClient(IHttpClientFactory client)
+        public HttpCollectionClient(IHttpClientFactory client, IHttpCollectionFactory factory)
         {
             _client = client.CreateClient(nameof(HttpCollectionClient));
-        }
-
-        private HttpMethod GetMethod(string method)
-        {
-            var key = method.Trim().ToLower();
-
-            return key switch
-            {
-                "get" => HttpMethod.Get,
-                "post" => HttpMethod.Post,
-                "put" => HttpMethod.Put,
-                "patch" => HttpMethod.Patch,
-                "delete" => HttpMethod.Delete,
-                "options" => HttpMethod.Options,
-                "head" => HttpMethod.Head,
-                _ => throw new NotImplementedException($"Method {method} is not supported"),
-            };
-        }
-
-        private HttpRequestMessage CreateHttpMessage(HttpRequest input)
-        {
-            var request = input.DeepClone();
-            request.SetVariables();
-
-            var httpMessage = new HttpRequestMessage(GetMethod(request.Method), request.Url.Raw);
-            foreach (var item in request.Header)
-            {
-                if (item.Key == "Content-Type")
-                {
-                    httpMessage.Content = new StringContent(request.Body.Raw, Encoding.UTF8, item.Value);
-                }
-                else
-                {
-                    httpMessage.Headers.Add(item.Key, item.Value);
-                }
-            }
-
-            return httpMessage;
+            _factory = factory;
         }
 
         public async Task<HttpItem> SendAsync(HttpItem item)
         {
-            var httpMessage = CreateHttpMessage(item.Request);
+            var httpMessage = _factory.CreateHttpMessage(item.Request);
+
+            item.IsLoading = true;
+            item.Result = null;
             item.Result = await _client.SendAsync(httpMessage);
+            item.IsLoading = false;
 
             return item;
         }
@@ -77,6 +45,7 @@ namespace Mindr.Core.Services
                 // break pipeline if failed request sended
                 if (!pipeline[i].Result.IsSuccessStatusCode)
                 {
+                    pipeline.ForEach(item => item.IsLoading = false);
                     break;
                 }
             }
@@ -84,7 +53,6 @@ namespace Mindr.Core.Services
             return pipeline;
         }
 
-        // TODO: <HttpItemFactory> CreateHttpItem
 
     }
 }

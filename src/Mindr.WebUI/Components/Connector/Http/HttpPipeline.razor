@@ -1,0 +1,93 @@
+﻿
+@namespace Mindr.WebUI.Components
+@inherits FluentComponentBase
+
+<Stack Orientation="Orientation.Vertical" VerticalGap="0">
+    <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
+        <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OpenItemDialog">
+            <FluentIcon Slot="start" Name="@FluentIcons.Add" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+            Add
+        </FluentButton>
+        <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OnHandleRun">
+            <FluentIcon Slot="start" Name="@FluentIcons.Play" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+            Run Pipeline
+        </FluentButton>
+    </Stack>
+    <Stack Orientation="Orientation.Horizontal">
+        <Dropzone Items="Pipeline">
+            <HttpPipelineItem 
+                Data="@context" 
+                IsSelected="@(SelectedItem?.Id == context.Id)"
+                OnHandleSelect="@OnItemSelect" 
+                OnHandleRemove="@OnItemRemove"
+            />
+        </Dropzone>
+        @if(SelectedItem != null)
+        {
+            <Stack 
+                Orientation="Orientation.Vertical" 
+                HorizontalAlignment="StackHorizontalAlignment.Center" 
+                VerticalGap="0"
+            >
+                <FluentCard class="overflow-ellipsis" title="Needed input">
+                    <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
+                        <FluentButton 
+                            Disabled="false" 
+                            Appearance="Appearance.Stealth" 
+                            Style="border-radius: 0;" 
+                            @onclick="OnItemRun"
+                        >
+                            <FluentIcon 
+                                Slot="start" 
+                                Name="@FluentIcons.Play" 
+                                Size="@IconSize.Size16" 
+                                Variant="@IconVariant.Regular" 
+                                Color="@Color.Accent" 
+                            />
+                            Run
+                        </FluentButton>
+                    </Stack>
+                    @if (GetItemRequestVariables()?.Any() == true)
+                    {
+                        <div>
+                            Input:
+                            <Stack Orientation="Orientation.Vertical" Style="padding: 5px;" HorizontalGap="0">
+                            @foreach (var variable in GetItemRequestVariables()!)
+                                {
+                                    <FluentTextField @bind-Value="@variable.Value" title="@variable.Key" style="width: 100%;" Placeholder="@variable.Key" />
+                                }
+                            </Stack>
+                        </div>
+                    }
+                    @if (SelectedItem?.Result != null)
+                    {
+                        <pre style="border: solid 1px lightgray;">@SelectedItem?.Result!.ToString()</pre>
+                    }
+                    @if(GetItemResponseVariables()?.Any() == true)
+                    {
+                        <div>
+                            Output:
+                            <Stack Orientation="Orientation.Vertical" Style="padding: 5px;margin-top:40px" HorizontalGap="0">
+                                @foreach (var variable in GetItemResponseVariables()!)
+                                {
+                                    <FluentTextField @bind-Value="@variable.Value" title="@variable.Key" style="width: 100%;" Placeholder="@variable.Key" />
+                                }
+                            </Stack> 
+                        </div>
+                    }
+                </FluentCard>
+            </Stack>
+        }
+    </Stack>
+    <div>
+    <FluentDialog 
+        Modal="true" 
+        TrapFocus="true" 
+        @ref="AddItemDialog" 
+        @ondialogdismiss="DismissItemDialog"
+    >
+        <Collection Data="@Collection" OnAddHandle="OnHandleAdd"/>
+        <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="CloseItemDialog">Close dialog</FluentButton>
+    </FluentDialog>
+</div>
+</Stack>

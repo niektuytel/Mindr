@@ -1,52 +1,36 @@
-﻿@page "/connectors"
-
+﻿@page "/connector/{NavName?}"
 @using Microsoft.AspNetCore.Authorization;
-@using Mindr.Core.CalendarExtensions;
-@using Mindr.Core.Enums;
-@using Mindr.Core.Extensions;
-@using Mindr.Core.Services;
+@using Mindr.Core.Models.Connector.Http;
 @using Mindr.WebUI.Models;
-@using Newtonsoft.Json;
-@using Plk.Blazor.DragDrop
-@using System.Text;
-@using System.Net.Http.Headers;
 
-@namespace Mindr.WebUI.Pages
 @inherits FluentComponentBase
 @attribute [Authorize]
 
 
-<Stack Orientation="Orientation.Horizontal" Class="editable-stack">
-    <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OpenRequestDialog">
-        <FluentIcon Slot="start" Name="@FluentIcons.Add" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
-        Add
-    </FluentButton>
-    <FluentButton Disabled="true" Appearance="Appearance.Stealth" Style="border-radius: 0;">@* @onclick="AddHttpCollection">*@
-        <FluentIcon Slot="start" Name="@FluentIcons.ChannelAdd" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
-        Add Collection
-    </FluentButton>
-    @*<FluentButton Disabled="@(SelectedIndex == -1)" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OnItemRemove">
-        <FluentIcon Slot="start" Name="@FluentIcons.Delete" Size="@IconSize.Size16" Variant="@IconVariant.Filled" Color="@Color.Accent" />
-        Remove
-    </FluentButton>*@
-    <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OnPipelineRun">
-        <FluentIcon Slot="start" Name="@FluentIcons.Play" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
-        Run Pipeline
-    </FluentButton>
+<Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="height:100%">
+    <NavMenu Class="nav-menu" Expanded="false" Collapsible="false" Style="height: 100%;">
+        @foreach (Page _page in @_Constants.ConnectorPage)
+        {
+            <NavMenuLink Icon="@_page.Icon" Text="@_page.Name" Href="@_page.Href" Disabled="@_page.Disabled" />
+        }
+    </NavMenu>
+
+    @if(string.IsNullOrEmpty(NavName))
+    {
+        <div>
+            Overview
+        </div>
+    }
+    else if(NavName.ToLower() == "pipeline")
+    {
+        <HttpPipeline Pipeline="@Pipeline" />
+    }
 </Stack>
-<HttpPipeline/>
-<div>
-    <FluentDialog @ref="AddRequestDialog" aria-label="Simple dialog" Modal="true" TrapFocus="true" @ondialogdismiss=DismissRequestDialog>
-        <Collection Data="@Collections" OnAddHandle="OnPipelineAdd" />
-        <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="CloseRequestDialog">Close dialog</FluentButton>
-        <FluentButton>Another button</FluentButton>
-    </FluentDialog>
-</div>
+
 
 
 @code {
 
-    public List<HttpCollection> Collections { get; set; } = new List<HttpCollection>();
+    public List<HttpItem> Pipeline { get; set; } = new() { _Constants.DefaultTestSample, _Constants.DefaultTestSample2 };
 
 }
-
