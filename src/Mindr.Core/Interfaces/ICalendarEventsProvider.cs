@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,6 +11,8 @@ namespace Mindr.Core.Interfaces
 
         Task<ConcurrentBag<CalendarEvent>> GetEventsInMonthAsync(int year, int month);
 
-        Task AddEventAsync(CalendarEvent calendarEvent);
+        //Task<ConcurrentBag<CalendarEvent>> GetEventsInDayAsync(DateTime time);
+
+        //Task AddEventAsync(CalendarEvent calendarEvent);
     }
 }

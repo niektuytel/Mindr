@@ -1,4 +1,5 @@
 @using Mindr.Core
+@using Mindr.Core.CalendarExtensions;
 
 @inject CalendarController calendarController
 
@@ -18,7 +19,7 @@
         <MonthSelector OnMonthSelectChanged="OnMonthSelectChanged"></MonthSelector>
     </div>*@
 
-
+@*
     <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
         <FluentSelect Items=@_Constants.Years
                       OptionText="@(i => i.Text)"
@@ -33,18 +34,27 @@
                       @bind-Value="@GetMonth().Value"
                       @onchange="OnMonthSelectChanged" />
     </Stack>
-
-
-    <table style="width:100%;height:100%">
+*@
+    <style>
+        .dot {
+            height: 5px;
+            width: 5px;
+            margin: 1px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+        }
+    </style>
+    <table>
         <thead>
             <tr>
-                <td>Sun</td>
-                <td>Mon</td>
-                <td>Tue</td>
-                <td>Wed</td>
-                <td>Thu</td>
-                <td>Fri</td>
-                <td>Sat</td>
+                <td style="text-align-last: center;">Sun</td>
+                <td style="text-align-last: center;">Mon</td>
+                <td style="text-align-last: center;">Tue</td>
+                <td style="text-align-last: center;">Wed</td>
+                <td style="text-align-last: center;">Thu</td>
+                <td style="text-align-last: center;">Fri</td>
+                <td style="text-align-last: center;">Sat</td>
             </tr>
         </thead>
         <tbody>
@@ -53,7 +63,67 @@
                 <tr>
                     @foreach (var day in days.Skip(i * 7).Take(7))
                     {
-                        @DayTemplate(day)
+                        if(day.Date.Month == month)
+                        {
+                            <td>
+                                <div style="border-radius:10px;box-shadow: 0px 0px 5px 2px #0000001f;width: 40px;height: 40px;cursor: pointer;margin:5px">
+                                    <b style="margin:2px">@day.DayNumber</b>
+                                    @if(day.Events.Any())
+                                    {
+                                        <Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="height: -webkit-fill-available;">
+                                            @foreach (var item in day.Events)
+                                            {
+                                                <span class="dot"></span>
+                                            }
+                                        </Stack>
+                                    }
+                                </div>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <div style="border-radius:10px;box-shadow: 0px 0px 5px 2px #0000001f;width: 40px;height: 40px;cursor: pointer;margin:5px;background-color: #80808014;">
+                                    <b style="margin:2px">@day.DayNumber</b>
+                                    @if(day.Events.Any())
+                                    {
+                                        <Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="height: -webkit-fill-available;">
+                                            @foreach (var item in day.Events)
+                                            {
+                                                <span class="dot"></span>
+                                            }
+                                        </Stack>
+                                    }
+                                </div>
+                            </td>
+                        }
+
+
+
+                            @*
+                                background-color: #80808014;
+                            *@
+@*
+
+
+                            @{
+                                string stringDayClass = day.BuildCssClasses(selectedDay);
+                            }
+
+                            <FluentCard Style="margin:3px; height: -webkit-fill-available;width: auto;">
+                                <h3 style="margin-bottom: 3px;">
+                                    @day.DayNumber
+                                </h3>
+
+                                @if (day.Events.Count > 0)
+                                {
+                                    @foreach (var item in day.Events)
+                                    {
+                                        <CalendarEventComp calendarEvent="@item" OnClick="OnOpen"/>
+                                    }
+                                }
+                            </FluentCard>*@
+                        
                     }
                 </tr>    
             }
@@ -63,6 +133,13 @@
 
 
 @code {
+
+
+
+    private CalendarDay selectedDay = new CalendarDay
+        {
+            Date = DateTime.Now
+        };
 
     [Parameter]
     public RenderFragment<CalendarDay> DayTemplate {get; set;}
@@ -89,31 +166,36 @@
     Option<int>? selectedIntOption;
     IEnumerable<Option<string>>? selectedStrings;
 
-
-    async Task OnYearSelectChanged(ChangeEventArgs e){
-        year = Convert.ToInt32(e.Value.ToString());
-        await UpdateCalendar();
+    private async Task OnOpen(CalendarEvent item)
+    {
+        //status = "Dialog opened with button click";
+        //MyFluentDialog!.Show();
     }
 
-    async Task OnMonthSelectChanged(ChangeEventArgs e){
-        month = Convert.ToInt32(e.Value.ToString());
-        await UpdateCalendar();
-    }
+    //async Task OnYearSelectChanged(ChangeEventArgs e){
+    //    year = Convert.ToInt32(e.Value.ToString());
+    //    await UpdateCalendar();
+    //}
 
-    protected override async Task OnInitializedAsync(){
-        await UpdateCalendar();
+    //async Task OnMonthSelectChanged(ChangeEventArgs e){
+    //    month = Convert.ToInt32(e.Value.ToString());
+    //    await UpdateCalendar();
+    //}
 
-        AddEvent.OnEventAdded += () => {
-            StateHasChanged();
-        };
-    }
+    //protected override async Task OnInitializedAsync(){
+    //    await UpdateCalendar();
 
-    private async Task UpdateCalendar(){
-        var events = await calendarController.GetEventsInMonthAsync(year, month);
+    //    AddEvent.OnEventAdded += () => {
+    //        StateHasChanged();
+    //    };
+    //}
 
-        days = calendarController.BuildMonthCalendarDays(year, month);
-        await AddEventsToCalendar(days, events);
-    }
+    //private async Task UpdateCalendar(){
+    //    var events = await calendarController.GetEventsInMonthAsync(year, month);
+
+    //    days = calendarController.BuildMonthCalendarDays(year, month);
+    //    await AddEventsToCalendar(days, events);
+    //}
 
     private async Task AddEventsToCalendar(List<CalendarDay> days, IEnumerable<CalendarEvent> events){
         if (events != null && events.Count() > 0){

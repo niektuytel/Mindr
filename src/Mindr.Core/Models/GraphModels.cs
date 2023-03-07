@@ -12,6 +12,7 @@ namespace Mindr.Core.Models
         public string Subject {get; set;}
         public DateTimeTimeZone Start {get; set;}
         public DateTimeTimeZone End {get; set;}
+        public string Color { get; set; }
     }
 
     public class DateTimeTimeZone 

@@ -56,53 +56,95 @@ namespace Mindr.Core.Services
                 {
                     Subject = item.Subject,
                     StartDate = item.Start.ConvertToLocalDateTime(),
-                    EndDate = item.End.ConvertToLocalDateTime()
+                    EndDate = item.End.ConvertToLocalDateTime(),
+                    //Color = "blue"
                 });
             }
 
             return events;
         }
 
-        public async Task AddEventAsync(CalendarEvent calendarEvent)
-        {
-             // 1- Get Token 
-            var accessToken = await GetAccessTokenAsync();
-            if(accessToken == null)
-            {
-                Console.WriteLine("Access Token is not available");
-                return;
-            }
+        //public async Task<ConcurrentBag<CalendarEvent>> GetEventsInDayAsync(int year, int month)
+        //{
+        //    // 1- Get Token 
+        //    var accessToken = await GetAccessTokenAsync();
+        //    if (accessToken == null)
+        //        return null;
 
-            // 2- Set the access token in the authorization header 
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", accessToken);
+        //    // 2- Set the access token in the authorization header 
+        //    _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", accessToken);
 
-            // 3- Initialize the content of the post request 
-            string eventAsJson = JsonConvert.SerializeObject(new MicrosoftGraphEvent
-            {
-                Subject = calendarEvent.Subject,
-                Start = new DateTimeTimeZone 
-                {
-                    DateTime = calendarEvent.StartDate.ToString(),
-                    TimeZone = TimeZoneInfo.Local.Id
-                },
-                End = new DateTimeTimeZone 
-                {
-                    DateTime = calendarEvent.EndDate.ToString(),
-                    TimeZone = TimeZoneInfo.Local.Id,
-                }
-            });
+        //    // 3-  Send the request 
+        //    var url = ConstructGraphUrl(year, month);
+        //    var response = await _httpClient.GetAsync(url);
 
-            var content = new StringContent(eventAsJson);
-            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json"); 
+        //    if (!response.IsSuccessStatusCode)
+        //    {
+        //        return null;
+        //    }
 
-            // Send the request
-            var response = await _httpClient.PostAsync(BASE_URL, content);
+        //    // 4- Read the content 
+        //    var contentAsString = await response.Content.ReadAsStringAsync();
 
-            if(response.IsSuccessStatusCode)
-                Console.WriteLine("Event has been added successfully!");
-            else
-                Console.WriteLine(response.StatusCode);
-        }
+        //    var microsoftEvents = JsonConvert.DeserializeObject<GraphEventsResponse>(contentAsString);
+
+        //    // Convert the Microsoft Event object into CalendarEvent object
+        //    var events = new ConcurrentBag<CalendarEvent>();
+        //    foreach (var item in microsoftEvents.Value)
+        //    {
+        //        events.Add(new CalendarEvent
+        //        {
+        //            Subject = item.Subject,
+        //            StartDate = item.Start.ConvertToLocalDateTime(),
+        //            EndDate = item.End.ConvertToLocalDateTime(),
+        //            Color = "blue"
+        //        });
+        //    }
+
+        //    return events;
+        //}
+
+        //public async Task AddEventAsync(CalendarEvent calendarEvent)
+        //{
+        //     // 1- Get Token 
+        //    var accessToken = await GetAccessTokenAsync();
+        //    if(accessToken == null)
+        //    {
+        //        Console.WriteLine("Access Token is not available");
+        //        return;
+        //    }
+
+        //    // 2- Set the access token in the authorization header 
+        //    _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", accessToken);
+
+        //    // 3- Initialize the content of the post request 
+        //    string eventAsJson = JsonConvert.SerializeObject(new MicrosoftGraphEvent
+        //    {
+        //        Subject = calendarEvent.Subject,
+        //        Start = new DateTimeTimeZone 
+        //        {
+        //            DateTime = calendarEvent.StartDate.ToString(),
+        //            TimeZone = TimeZoneInfo.Local.Id
+        //        },
+        //        End = new DateTimeTimeZone 
+        //        {
+        //            DateTime = calendarEvent.EndDate.ToString(),
+        //            TimeZone = TimeZoneInfo.Local.Id,
+        //        },
+        //        Color = calendarEvent.Color
+        //    });
+
+        //    var content = new StringContent(eventAsJson);
+        //    content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json"); 
+
+        //    // Send the request
+        //    var response = await _httpClient.PostAsync(BASE_URL, content);
+
+        //    if(response.IsSuccessStatusCode)
+        //        Console.WriteLine("Event has been added successfully!");
+        //    else
+        //        Console.WriteLine(response.StatusCode);
+        //}
 
         private async Task<string> GetAccessTokenAsync()
         {
