@@ -8,9 +8,11 @@ namespace Mindr.Core.Models.Connector
     public class ConnectorEvent
     {
         public Guid Id { get; set; }
-        public bool Recurring { get; set; }
-        public PostmanVariable[] Input { get; set; }
-        //public CollectionBriefDTO Collection { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Color { get; set; }
+        public ConnectorEventInput[] Input { get; set; }
+        public ConnectorBriefDTO Connector { get; set; }
 
     }
 }
