@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Mindr.Core.Models.Connector
 {
-    public class ConnectorEventInput: PostmanVariable
+    public class ConnectorVariable: PostmanVariable
     {
 
     }
