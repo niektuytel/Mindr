@@ -8,12 +8,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Data\**" />
 	  <Compile Remove="Services\**" />
 	  <Compile Remove="wwwroot\NewFolder\**" />
+	  <Content Remove="Data\**" />
 	  <Content Remove="Services\**" />
 	  <Content Remove="wwwroot\NewFolder\**" />
+	  <EmbeddedResource Remove="Data\**" />
 	  <EmbeddedResource Remove="Services\**" />
 	  <EmbeddedResource Remove="wwwroot\NewFolder\**" />
+	  <None Remove="Data\**" />
 	  <None Remove="Services\**" />
 	  <None Remove="wwwroot\NewFolder\**" />
 	</ItemGroup>
@@ -38,13 +42,11 @@
 	  <Compile Remove="Models\PostmanRequest.cs" />
 	  <Compile Remove="Models\Project.cs" />
 	  <Compile Remove="Models\ProjectGroup.cs" />
-	  <Compile Remove="Pages\ConnectorsPage.razor.cs" />
 	  <Compile Remove="Pages\MyCalendar.cs" />
 	  <Compile Remove="Shared\Header\AdministratorsMenu.razor.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Remove="Pages\ConnectorsPage.razor" />
 	  <Content Remove="Pages\Counter.razor" />
 	  <Content Remove="Pages\FetchData.razor" />
 	  <Content Remove="Shared\Header\AdministratorsMenu.razor" />

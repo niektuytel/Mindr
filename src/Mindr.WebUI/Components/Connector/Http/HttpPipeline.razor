@@ -80,14 +80,14 @@
         }
     </Stack>
     <div>
-    <FluentDialog 
-        Modal="true" 
-        TrapFocus="true" 
-        @ref="AddItemDialog" 
-        @ondialogdismiss="DismissItemDialog"
-    >
-        <Collection Data="@Collection" OnAddHandle="OnHandleAdd"/>
-        <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="CloseItemDialog">Close dialog</FluentButton>
-    </FluentDialog>
-</div>
+        <FluentDialog 
+            Modal="true" 
+            TrapFocus="true" 
+            @ref="AddItemDialog" 
+            @ondialogdismiss="DismissItemDialog"
+        >
+            <Collection Data="@Collection" OnAddHandle="OnHandleAdd"/>
+            <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="CloseItemDialog">Close dialog</FluentButton>
+        </FluentDialog>
+    </div>
 </Stack>

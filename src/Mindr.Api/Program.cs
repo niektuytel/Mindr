@@ -15,6 +15,8 @@ namespace Mindr.Api
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -30,11 +32,15 @@ namespace Mindr.Api
             }
 
             app.UseHttpsRedirection();
-
+            app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
-
+            app.UseCors(cors => cors
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .SetIsOriginAllowed(origin => true)
+                    .AllowCredentials()
+            );
             app.MapControllers();
 
             app.Run();

@@ -1,9 +1,6 @@
 ﻿@page "/"
 
 @using Microsoft.AspNetCore.Authorization;
-@using Mindr.WebUI.Data
-@using Plk.Blazor.DragDrop
-@using Plk.Blazor.DragDrop.Demo.Data;
 
 @inherits FluentComponentBase
 @attribute [Authorize]
@@ -12,41 +9,8 @@
 
 <div id="main" class="container-fluid">
 
-    <input placeholder="Something todo" @bind="newTodo" />
-    <button @onclick="AddTodo" class="btn btn-success">Add</button>
-
-    <hr />
-@*
-    <Dropzone Items="MyToDoList">
-        <Todo OnRemoveClick="(item)=>MyToDoList.Remove(item)" Item="@context"></Todo>
-    </Dropzone>
-*@
 </div>
 
 @code{
-
-    private string newTodo;
-
-    private void AddTodo()
-    {
-        if (!string.IsNullOrWhiteSpace(newTodo))
-        {
-            MyToDoList.Add(new TodoItem { Title = newTodo });
-            newTodo = string.Empty;
-        }
-    }
-
-
-
-    public List<TodoItem> MyToDoList = new List<TodoItem>()
-    {
-            new TodoItem(){Title = "Drag this item"},
-            new TodoItem(){Title = "Add another item"},
-            new TodoItem(){Title = "Remove this item"},
-            new TodoItem(){Title = "Style this list"},
-            new TodoItem(){Title = "Fix a bug"},
-            new TodoItem(){Title = "Build a feature"},
-            new TodoItem(){Title = "Create a PR"},
-    };
 
 }

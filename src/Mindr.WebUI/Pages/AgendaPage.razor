@@ -3,6 +3,8 @@
 @using Microsoft.AspNetCore.Authorization;
 @using Mindr.Core.CalendarExtensions;
 @using System.Globalization;
+@using Mindr.Core.Models.Connector;
+@using Newtonsoft.Json;
 
 @namespace Mindr.WebUI.Pages
 
@@ -100,30 +102,66 @@
         {
             foreach (var item in items)
             {
-                <div style=@("cursor: pointer;width: -webkit-fill-available;height: 75px;border-radius: 5px;box-shadow: 0px 0px 5px 2px #0000001f;margin: 10px;" + "border-color:" + item.Color) onclick="@(() => OnEventOpen(item))">
+                <div style=@("width: -webkit-fill-available;border-radius: 5px;box-shadow: 0px 0px 5px 2px #0000001f;margin: 10px;" + "border-color:" + item.Color)>
                     <div>@item.StartDate.ToString() - @item.EndDate.ToString()</div>
                     @item.Subject
+                    <FluentButton Appearance="Appearance.Neutral" @onclick="OpenConnectorDialog">
+                        Send Whatsapp Text Message
+                    </FluentButton>
+
+                    <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
+                        <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OpenConnectorDialog">
+                            <FluentIcon Slot="start" Name="@FluentIcons.Add" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+                            Add Connector
+                        </FluentButton>
+                    </Stack>
+                    
                 </div>
             }
         }
     </div>
 </Stack>
 <div>
-    <FluentDialog @ref="EventDialog" aria-label="Simple dialog" Modal=@Modal TrapFocus=@TrapFocus @ondialogdismiss=OnEventDismiss>
-        @if (SelectedEvent != null)
+    <FluentDialog Modal="true"
+                  TrapFocus="true"
+                  @ref="AddConnectorDialog"
+                  @ondialogdismiss="DismissConnectorDialog">
+        
+        <FluentCombobox 
+            Placeholder="Whatsapp message..."
+            Style="width: 100%;"
+            Items=@SearchResults
+            TOption="ConnectorBriefDTO"
+            OptionText="@(i => i.Name)"
+            OptionValue="@(i => i.Id.ToString())"
+            @bind-SelectedOption="@SelectedConnector"
+            @bind-Text="@SearchQuery" 
+            @oninput="@HandleSearchInput" />
+        
+        @if(SelectedConnector != null)
         {
-            <h2>@SelectedEvent.Subject</h2>
-            <FluentButton Appearance="Appearance.Neutral">
-                Connector 1
-                <FluentBadge Appearance="Appearance.Accent" slot="end">New!</FluentBadge>
-            </FluentButton>
-            <FluentButton Appearance="Appearance.Neutral">
-                Connector 2
-                <FluentBadge Appearance="Appearance.Accent" slot="end">New!</FluentBadge>
-            </FluentButton>
-            <Stack Style="margin-top:5px">
-                <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="OnEventClose">Close dialog</FluentButton>
-                @*<FluentButton>Another button</FluentButton>*@
+            foreach (var variable in SelectedConnector.Variables)
+            {
+                <FluentTextField 
+                    title="@variable.Description"
+                    Placeholder="Required" 
+                    Style="width: 100%;"
+                    @bind-Value="@variable.Value"
+                >
+                    @variable.Name
+                </FluentTextField>
+            }
+            <Stack HorizontalAlignment="StackHorizontalAlignment.Right" Style="margin-top:5px">
+                <FluentButton @onclick="@GotoConnector">
+                    <FluentIcon Name="@FluentIcons.Link" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+                </FluentButton>
+                <FluentButton 
+                    Appearance="Appearance.Accent" 
+                    Autofocus="true" 
+                    @onclick="CreateConnector"
+                >
+                    Create
+                </FluentButton>
             </Stack>
         }
     </FluentDialog>
@@ -131,8 +169,102 @@
 
 
 @code {
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
+
+    //bool DisableList = false;
+
+    string? SearchQuery = string.Empty;
+
+    private IEnumerable<ConnectorBriefDTO> SearchResults = new List<ConnectorBriefDTO>();
+
+    public bool SearchIsLoading { get; set; }
+
+    public ConnectorBriefDTO? SelectedConnector { get; set; } = null;
+
+    async Task HandleSearchInput(ChangeEventArgs args)
+    {
+        if (args is not null && args.Value is not null)
+        {
+            string searchTerm = args.Value.ToString()!.ToLower();
+
+            if (searchTerm.Length > 0)
+            {
+                SearchIsLoading = true;
+
+                var client = new HttpClient();
+                var request = new HttpRequestMessage(HttpMethod.Get, $"https://localhost:7155/api/connector?query={searchTerm}");
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                var json = await response.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(json))
+                {
+                    var value = JsonConvert.DeserializeObject<IEnumerable<ConnectorBriefDTO>>(json);
+                    if (value != null)
+                    {
+                        SearchResults = value;
+                    }
+                }
+
+                SearchIsLoading = false;
+            }
+        }
+
+        base.StateHasChanged();
+    }
+
+    public void GotoConnector()
+    {
+        if (SelectedConnector == null) return;
+
+        NavigationManager.NavigateTo($"/connector/{SelectedConnector!.Id}");
+        base.StateHasChanged();
+    }
+
+    public async Task CreateConnector()
+    {
+        var client = new HttpClient();
+        var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7155/api/ConnectorHook");
+        request.Headers.Add("accept", "*/*");
+
+        var json = JsonConvert.SerializeObject(SelectedConnector);
+        var content = new StringContent(json, null, "application/json");
+        request.Content = content;
+        var response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+        Console.WriteLine(await response.Content.ReadAsStringAsync());
+
+        // add hook to event
 
 
+        AddConnectorDialog.Hide();
+    }
+
+
+
+
+
+
+    public FluentDialog AddConnectorDialog = default!;
+
+    public void DismissConnectorDialog(DialogEventArgs args)
+    {
+        if (args is not null && args.Reason is not null && args.Reason == "dismiss")
+        {
+            AddConnectorDialog.Hide();
+        }
+    }
+
+    public void OpenConnectorDialog()
+    {
+        //if (Collection == null)
+        //{
+        //    Collection = JsonConvert.DeserializeObject<HttpCollection>(_Constants.Json);
+        //}
+
+        AddConnectorDialog.Show();
+    }
 
     private int MAX_ITEMS_THAT_FIT_DAY = 2;
     private CalendarDay selectedDay = new CalendarDay
@@ -150,38 +282,77 @@
     public bool Modal = true;
     private string? status;
 
-    //protected override void OnAfterRender(bool firstRender)
-    //{
-    //    if (firstRender)
-    //    {
-    //        MyFluentDialog!.Hide();
-    //    }
-    //}
 
-    //private async Task OnOpen(CalendarEvent item)
-    //{
-    //    status = "Dialog opened with button click";
-    //    MyFluentDialog!.Show();
-    //}
+    FluentSearch? searchTest;
 
-    //private void OnClose()
-    //{
-    //    status = $"Dialog dismissed with reason: Close button clicked";
-    //    MyFluentDialog!.Hide();
-    //    EventDialog!.Hide();
+    List<string> searchData = new()
+    {
+        "Alabama",
+        "Alaska",
+        "Arizona",
+        "Arkansas",
+        "California",
+        "Colorado",
+        "Connecticut",
+        "Delaware",
+        "Florida",
+        "Georgia",
+        "Hawaii",
+        "Idaho",
+        "Illinois",
+        "Indiana",
+        "Iowa",
+        "Kansas",
+        "Kentucky",
+        "Louisiana",
+        "Maine",
+        "Maryland",
+        "Massachussets",
+        "Michigain",
+        "Minnesota",
+        "Mississippi",
+        "Missouri",
+        "Montana",
+        "Nebraska",
+        "Nevada",
+        "New Hampshire",
+        "New Jersey",
+        "New Mexico",
+        "New York",
+        "North Carolina",
+        "North Dakota",
+        "Ohio",
+        "Oklahoma",
+        "Oregon",
+        "Pennsylvania",
+        "Rhode Island",
+        "South Carolina",
+        "South Dakota",
+        "Texas",
+        "Tennessee",
+        "Utah",
+        "Vermont",
+        "Virginia",
+        "Washington",
+        "Wisconsin",
+        "West Virginia",
+        "Wyoming"
+    };
 
-    //}
 
-    //private void OnDismiss(DialogEventArgs args)
-    //{
-    //    if (args is not null && args.Reason is not null && args.Reason == "dismiss")
-    //    {
-    //        status = $"Dialog dismissed with reason: Dismissed";
-    //        MyFluentDialog!.Hide();
-    //        EventDialog!.Hide();
-    //    }
-    //}
+    static string defaultResultsText = "no results";
+    static List<string> defaultResults()
+    {
+        return new() { defaultResultsText };
+    }
 
+    void handleClear(ChangeEventArgs args)
+    {
+        if (args is not null)
+        {
+            //SearchResults = defaultResults();
+        }
+    }
 
 
 }

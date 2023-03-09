@@ -1,15 +1,11 @@
 ﻿using Mindr.Core.Models.Connector.Http;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Text;
+using System;
 
 namespace Mindr.Core.Models.Connector
 {
-    /// <summary>
-    /// Used to execute pipeline with etc.
-    /// </summary>
-    public class Connector
+    public class ConnectorBriefDTO
     {
         [JsonProperty("id")]
         public Guid Id { get; set; }
@@ -20,14 +16,8 @@ namespace Mindr.Core.Models.Connector
         [JsonProperty("name")]
         public string Name { get; set; }
 
-        [JsonProperty("description")]
-        public string Description { get; set; }
-
         [JsonProperty("variables")]
         public IEnumerable<ConnectorVariable> Variables { get; set; }
-
-        [JsonProperty("pipeline")]
-        public IEnumerable<HttpItem> Pipeline { get; set; }
 
     }
 }

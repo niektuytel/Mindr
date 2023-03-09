@@ -90,7 +90,7 @@ public partial class AgendaPage: FluentComponentBase
     {
         if (firstRender)
         {
-            EventDialog!.Hide();
+            //EventDialog!.Hide();
         }
     }
 
@@ -106,23 +106,23 @@ public partial class AgendaPage: FluentComponentBase
         base.StateHasChanged();
     }
 
-    public void OnEventOpen(CalendarEvent item)
-    {
-        SelectedEvent = item;
-        EventDialog!.Show();
-    }
+    //public void OnEventOpen(CalendarEvent item)
+    //{
+    //    SelectedEvent = item;
+    //    EventDialog!.Show();
+    //}
 
-    public void OnEventClose()
-    {
-        EventDialog!.Hide();
-    }
+    //public void OnEventClose()
+    //{
+    //    EventDialog!.Hide();
+    //}
 
-    private void OnEventDismiss(DialogEventArgs args)
-    {
-        if (args is not null && args.Reason is not null && args.Reason == "dismiss")
-        {
-            EventDialog!.Hide();
-        }
-    }
+    //private void OnEventDismiss(DialogEventArgs args)
+    //{
+    //    if (args is not null && args.Reason is not null && args.Reason == "dismiss")
+    //    {
+    //        EventDialog!.Hide();
+    //    }
+    //}
 
 }

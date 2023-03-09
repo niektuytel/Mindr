@@ -7,6 +7,8 @@ namespace Mindr.Core.Models.Connector
 {
     public class ConnectorVariable: PostmanVariable
     {
+        public string Name { get; set; }
+        public string Description { get; set; }
 
     }
 }

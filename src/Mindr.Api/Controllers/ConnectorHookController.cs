@@ -1,26 +1,56 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 using Mindr.Core.Models.Connector;
 
 namespace Mindr.Api.Controllers;
 
-//[Authorize]
-//[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-[ApiController]
-[Route("[controller]")]
-public class ConnectorHookController : ControllerBase
+public class ConnectorHookController : BaseController
 {
-    [HttpGet("all")]
-    public IEnumerable<ConnectorHook> GetAllHooks()
+    private readonly IMapper _mapper;
+
+    public ConnectorHookController(IMapper mapper)
     {
-        return Enumerable.Range(1, 5).Select(index => new ConnectorHook
+        _mapper = mapper;
+    }
+
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        var items = ItemHooks;
+        return Ok(items);
+    }
+
+    [HttpGet("{eventId}")]
+    public IActionResult GetByEventId(string eventId)
+    {
+        var items = ItemHooks.Where(item => item.EventId == eventId);
+        if (items == null)
         {
-            Id = Guid.NewGuid(),
-            UserId = Guid.Empty,
-            EventId = $"Identifier {index}",
-            ConnectorId = Guid.NewGuid()
-        });
+            return NotFound();
+        }
+
+        return Ok(items);
+    }
+
+    [HttpPost]
+    public IActionResult Insert([FromBody]ConnectorHook payload)
+    {
+        ItemHooks.Add(payload);
+        return Ok();
+    }
+
+    [HttpPut]
+    public IActionResult Update(Connector payload)
+    {
+        return Ok();
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(Guid id)
+    {
+        return Ok();
     }
 
 }
