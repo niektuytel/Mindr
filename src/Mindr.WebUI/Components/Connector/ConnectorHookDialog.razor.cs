@@ -8,20 +8,14 @@ namespace Mindr.WebUI.Components.Connector;
 
 public partial class ConnectorHookDialog: FluentComponentBase
 {
-    //[Parameter, EditorRequired]
-    //public Func<ConnectorHook, Task> OpenDialog { get; set; } = default!;
-
-    //[Parameter, EditorRequired]
-    //public Func<ConnectorHook, Task> OnDelete { get; set; } = default!;
-
-    //[Parameter, EditorRequired]
-    //public AgendaEvent AgendaData { get; set; } = default!;
-
-    [Parameter]
-    public ConnectorBriefDTO? Data { get; set; } = null;
+    [Parameter, EditorRequired]
+    public Func<Task> OnChanged { get; set; } = default!;
 
     [Parameter]
     public ConnectorHook? CurrentHook { get; set; } = null;
+
+    [Parameter]
+    public ConnectorBriefDTO? Data { get; set; } = null;
 
     [Inject]
     public NavigationManager NavigationManager { get; set; }
@@ -33,8 +27,6 @@ public partial class ConnectorHookDialog: FluentComponentBase
     public IEnumerable<ConnectorBriefDTO> Results { get; set; } = new List<ConnectorBriefDTO>();
 
     public FluentDialog Dialog = default!;
-
-    //private bool isUpdating = default!;
 
     async Task HandleOnSearch(ChangeEventArgs args)
     {
@@ -67,24 +59,14 @@ public partial class ConnectorHookDialog: FluentComponentBase
     
     public async Task HandleOnUpsert()
     {
-        //if(CurrentHook == null)
-        //{
-        //    CurrentHook = new ConnectorHook(AgendaData.Id, Data);
-        //}
-        //else
-        //{
-        //    CurrentHook.EventId = AgendaData.Id;
-        //    CurrentHook.ConnectorId = Data!.Id;
-        //    CurrentHook.Variables = Data.Variables;
-        //}
-
+        var hook = new ConnectorHook(CurrentHook, Data);
         IsLoading = true;
 
         var client = new HttpClient();
         var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7155/api/connectorhook");
         request.Headers.Add("accept", "*/*");
 
-        var json = JsonConvert.SerializeObject(CurrentHook);
+        var json = JsonConvert.SerializeObject(hook);
         var content = new StringContent(json, null, "application/json");
         request.Content = content;
         var response = await client.SendAsync(request);
@@ -94,7 +76,7 @@ public partial class ConnectorHookDialog: FluentComponentBase
 
         Dialog.Hide();
         IsLoading = false;
-        //await OpenDialog(CurrentHook!);
+        await OnChanged();
         base.StateHasChanged();
     }
 
@@ -112,7 +94,7 @@ public partial class ConnectorHookDialog: FluentComponentBase
 
         Dialog.Hide();
         IsLoading = false;
-        //await OnDelete(CurrentHook!);
+        await OnChanged();
         base.StateHasChanged();
     }
 

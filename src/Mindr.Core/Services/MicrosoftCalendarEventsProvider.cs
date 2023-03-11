@@ -142,13 +142,14 @@ namespace Mindr.Core.Services
             {
                 var tokenRequest = await _accessTokenProvider.RequestAccessToken(new AccessTokenRequestOptions
                 {
-                    Scopes = new[] { "https://graph.microsoft.com/Calendars.ReadWrite" }
+                    //Scopes = new[] { "https://graph.microsoft.com/Calendars.ReadWrite" }
                 });
 
                 // Try to fetch the token 
                 if(tokenRequest.TryGetToken(out var token))
                 {
-                    if(token != null)
+                    Console.WriteLine(token.Value);
+                    if (token != null)
                     {
                         return token.Value;
                     }

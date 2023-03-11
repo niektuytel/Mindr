@@ -14,6 +14,14 @@ namespace Mindr.Core.Models.Connector
         {
             
         }
+        public ConnectorHook(ConnectorHook hook, ConnectorBriefDTO connector)
+        {
+            Id = hook.Id;
+            UserId = hook.UserId;
+            EventId = hook.EventId;
+            ConnectorId = connector.Id;
+            Variables = connector.Variables;
+        }
 
         public ConnectorHook(Guid userId, string eventId, Connector connector)
         {

@@ -10,38 +10,13 @@
         {
             <AgendaEventItem Data="@item" HookDialogRef="@_connectorHookDialog"/>
         }
-        <ConnectorHookDialog @ref="@_connectorHookDialog" />
     }
 </div>
+<ConnectorHookDialog @ref="@_connectorHookDialog" OnChanged="OnChanged"/>
 
 @code {
-    //  OpenDialog="@(async (agendaEvent, element) => await HandleOnEventUpsert(agendaEvent, element))"
-    //async Task HandleOnEventUpsert(AgendaEvent agendaEvent, ConnectorBriefDTO? connector = null)
-    //{
-    //    if (connector != null)
-    //    {
-    //        _connectorHookDialog.Query = connector.Name;
-    //    }
-    //    _connectorHookDialog.Data = connector;
-    //    _connectorHookDialog.OnUpdate = (connector != null);
-    //    _connectorHookDialog.Dialog.Show();
-    //    base.StateHasChanged();
-    //}
-
-    async Task OnUpsertConnector(ConnectorHook hook)
+    async Task OnChanged()
     {
-        //var entity = Data.Remove(item => item.Id == CurrentEvent.Id);
-        //if(entity == null)
-        //{
-        //    Data.Add(entity);
-        //}
-        //if (item != null)
-        //{
-        //    _connectorHookDialog.Query = item.Name;
-        //}
-        //_connectorHookDialog.Data = item;
-        //_connectorHookDialog.OnUpdate = (item != null);
-        //_connectorHookDialog.Dialog.Show();
-        //base.StateHasChanged();
+        base.StateHasChanged();
     }
 }

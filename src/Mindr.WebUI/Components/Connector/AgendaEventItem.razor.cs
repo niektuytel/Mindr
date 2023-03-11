@@ -15,13 +15,12 @@ public partial class AgendaEventItem: FluentComponentBase
     [Parameter, EditorRequired]
     public ConnectorHookDialog HookDialogRef { get; set; } = default!;
 
-    private IEnumerable<ConnectorBriefDTO>? Connectors { get; set; } = null;
-
     private ConnectorBriefDTO? SelectedConnector { get; set; } = null;
+
+    private IEnumerable<ConnectorBriefDTO>? Connectors { get; set; } = null;
 
     private bool IsLoading { get; set; } = true;
 
-    
     protected override async Task OnInitializedAsync()
     {
         IsLoading = true;
@@ -40,4 +39,5 @@ public partial class AgendaEventItem: FluentComponentBase
         IsLoading = false;
     }
 
+    
 }

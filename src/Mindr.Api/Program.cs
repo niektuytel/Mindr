@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
+using Mindr.Api.Persistence;
+using Mindr.Api.Swagger;
 
 namespace Mindr.Api
 {
@@ -14,22 +17,21 @@ namespace Mindr.Api
             // Add services to the container.
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
-
+            builder.Services.AddDbContext<IApplicationContext, ApplicationContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+            );
+            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            builder.Services.AddControllers().AddNewtonsoftJson();
+            builder.Services.AddSwaggerTools(builder.Configuration);
+            builder.Services.AddHealthChecks();
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            // Services
+
+
 
             var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            app.UseSwaggerTools(builder.Configuration);
 
             app.UseHttpsRedirection();
             app.UseRouting();
@@ -42,7 +44,7 @@ namespace Mindr.Api
                     .AllowCredentials()
             );
             app.MapControllers();
-
+            app.UseHealthChecks("/healthy");
             app.Run();
         }
     }
