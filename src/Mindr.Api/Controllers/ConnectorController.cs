@@ -18,10 +18,15 @@ public class ConnectorController : BaseController
     }
 
     [HttpGet]
-    public IActionResult GetAll([FromQuery]string? query = null)
+    public IActionResult GetAll([FromQuery] string? eventId = null, [FromQuery] string? query = null)
     {
         var items = Items;
-        if (!string.IsNullOrEmpty(query))
+        if(!string.IsNullOrEmpty(eventId))
+        {
+            var connectorIds = ItemHooks.Where(item => item.EventId == eventId && item.UserId == Guid.Parse("2cf632fd-c055-4ecf-abcc-6d9c29e919ec")).Select(item => item.ConnectorId);
+            items = Items.Where(item => connectorIds.Contains(item.Id));
+        }
+        else if (!string.IsNullOrEmpty(query))
         {
             items = Items.Where(item => item.Name.ToLower().Contains(query));
         }

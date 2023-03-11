@@ -31,17 +31,29 @@ namespace Mindr.Core.Models.Connector
             Variables = connector.Variables;
         }
 
+        public ConnectorHook(string eventId)
+        {
+            EventId = eventId;
+        }
+
+        public ConnectorHook(string eventId, ConnectorBriefDTO connector)
+        {
+            EventId = eventId;
+            ConnectorId = connector.Id;
+            Variables = connector.Variables;
+        }
+
         [JsonProperty("id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [JsonProperty("userid")]
-        public Guid UserId { get; set; }
+        public Guid? UserId { get; set; } = Guid.Empty;
 
-        [JsonProperty("userid")]
+        [JsonProperty("eventid")]
         public string EventId { get; set; }
 
         [JsonProperty("connectorid")]
-        public Guid ConnectorId { get; set; }
+        public Guid? ConnectorId { get; set; } = null;
 
         [JsonProperty("variables")]
         public IEnumerable<ConnectorVariable> Variables { get; set; }

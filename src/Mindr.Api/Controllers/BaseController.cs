@@ -264,10 +264,9 @@ public class BaseController : ControllerBase
     { Connector1, Connector2 };
     protected List<ConnectorHook> ItemHooks { get; set; } = new List<ConnectorHook>()
     {
-        new ConnectorHook(Guid.Parse("2cf632fd-c055-4ecf-abcc-6d9c29e919ec"), "EventHookId 1", Connector1),
-        new ConnectorHook(Guid.Parse("2cf632fd-c055-4ecf-abcc-6d9c29e919ec"), "EventHookId 1", Connector2),
-        new ConnectorHook(Guid.Parse("2cf632fd-c055-4ecf-abcc-6d9c29e919ec"), "EventHookId 2", Connector1),
-        new ConnectorHook(Guid.Parse("2cf632fd-c055-4ecf-abcc-6d9c29e919ec"), "EventHookId 3", Connector2)
+        new ConnectorHook(Guid.Parse("2cf632fd-c055-4ecf-abcc-6d9c29e919ec"), "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", Connector1),//Test 1
+        new ConnectorHook(Guid.Parse("2cf632fd-c055-4ecf-abcc-6d9c29e919ec"), "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMQAAAA==", Connector2),//Test 2
+        new ConnectorHook(Guid.Parse("2cf632fd-c055-4ecf-abcc-6d9c29e919ec"), "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMQAAAA==", Connector1)//Test 2
     };
 
 

@@ -8,88 +8,115 @@ namespace Mindr.WebUI.Components.Connector;
 
 public partial class ConnectorHookDialog: FluentComponentBase
 {
+    //[Parameter, EditorRequired]
+    //public Func<ConnectorHook, Task> OpenDialog { get; set; } = default!;
+
+    //[Parameter, EditorRequired]
+    //public Func<ConnectorHook, Task> OnDelete { get; set; } = default!;
+
+    //[Parameter, EditorRequired]
+    //public AgendaEvent AgendaData { get; set; } = default!;
+
+    [Parameter]
+    public ConnectorBriefDTO? Data { get; set; } = null;
+
+    [Parameter]
+    public ConnectorHook? CurrentHook { get; set; } = null;
 
     [Inject]
     public NavigationManager NavigationManager { get; set; }
 
-
     public bool IsLoading { get; set; } = false;
 
-    public ConnectorBriefDTO? SelectedItem { get; set; } = null;
+    public string? Query { get; set; } = string.Empty;
 
-    public string? SearchQuery { get; set; } = string.Empty;
-
+    public IEnumerable<ConnectorBriefDTO> Results { get; set; } = new List<ConnectorBriefDTO>();
 
     public FluentDialog Dialog = default!;
 
-
-    //bool DisableList = false;
-
-
-    private IEnumerable<ConnectorBriefDTO> SearchResults = new List<ConnectorBriefDTO>();
-
-
+    //private bool isUpdating = default!;
 
     async Task HandleOnSearch(ChangeEventArgs args)
     {
+        Results = new List<ConnectorBriefDTO>();
+
         if (args is not null && args.Value is not null)
         {
             string searchTerm = args.Value.ToString()!.ToLower();
 
-            if (searchTerm.Length > 0)
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Get, $"https://localhost:7155/api/connector?query={searchTerm}");
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+            if (!string.IsNullOrEmpty(json))
             {
-                IsLoading = true;
-
-                var client = new HttpClient();
-                var request = new HttpRequestMessage(HttpMethod.Get, $"https://localhost:7155/api/connector?query={searchTerm}");
-                var response = await client.SendAsync(request);
-                response.EnsureSuccessStatusCode();
-
-                var json = await response.Content.ReadAsStringAsync();
-                if (!string.IsNullOrEmpty(json))
+                var value = JsonConvert.DeserializeObject<IEnumerable<ConnectorBriefDTO>>(json);
+                if (value != null)
                 {
-                    var value = JsonConvert.DeserializeObject<IEnumerable<ConnectorBriefDTO>>(json);
-                    if (value != null)
-                    {
-                        SearchResults = value;
-                    }
+                    Results = value;
                 }
-
-                IsLoading = false;
             }
+
         }
 
+        IsLoading = false;
         base.StateHasChanged();
     }
-
-    public void GoToConnector()
+    
+    public async Task HandleOnUpsert()
     {
-        if (SelectedItem == null) return;
+        //if(CurrentHook == null)
+        //{
+        //    CurrentHook = new ConnectorHook(AgendaData.Id, Data);
+        //}
+        //else
+        //{
+        //    CurrentHook.EventId = AgendaData.Id;
+        //    CurrentHook.ConnectorId = Data!.Id;
+        //    CurrentHook.Variables = Data.Variables;
+        //}
 
-        NavigationManager.NavigateTo($"/connector/{SelectedItem!.Id}");
-        base.StateHasChanged();
-    }
+        IsLoading = true;
 
-    public async Task HandleOnCreate()
-    {
         var client = new HttpClient();
-        var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7155/api/ConnectorHook");
+        var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7155/api/connectorhook");
         request.Headers.Add("accept", "*/*");
 
-        var json = JsonConvert.SerializeObject(SelectedItem);
+        var json = JsonConvert.SerializeObject(CurrentHook);
         var content = new StringContent(json, null, "application/json");
         request.Content = content;
         var response = await client.SendAsync(request);
         response.EnsureSuccessStatusCode();
         Console.WriteLine(await response.Content.ReadAsStringAsync());
 
-        // add hook to event
-
 
         Dialog.Hide();
+        IsLoading = false;
+        //await OpenDialog(CurrentHook!);
+        base.StateHasChanged();
     }
 
-    public void OnDismiss(DialogEventArgs args)
+    public async Task HandleOnDelete()
+    {
+        if (CurrentHook == null) return;
+
+        IsLoading = true;
+
+        var client = new HttpClient();
+        var request = new HttpRequestMessage(HttpMethod.Delete, $"https://localhost:7155/api/connectorhook/{CurrentHook.Id}");
+        var response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+        Console.WriteLine(await response.Content.ReadAsStringAsync());
+
+        Dialog.Hide();
+        IsLoading = false;
+        //await OnDelete(CurrentHook!);
+        base.StateHasChanged();
+    }
+
+    public void HandleOnDismiss(DialogEventArgs args)
     {
         if (args is not null && args.Reason is not null && args.Reason == "dismiss")
         {
@@ -97,18 +124,29 @@ public partial class ConnectorHookDialog: FluentComponentBase
         }
     }
 
-    public void OpenConnectorDialog()
+    public void GoToConnector()
     {
-        //if (Collection == null)
-        //{
-        //    Collection = JsonConvert.DeserializeObject<HttpCollection>(_Constants.Json);
-        //}
+        if (Data == null) return;
 
-        Dialog.Show();
+        NavigationManager.NavigateTo($"/connector/{Data!.Id}");
+        base.StateHasChanged();
     }
 
+    public async Task OpenDialog(AgendaEvent agendaEvent, ConnectorBriefDTO? connector = null)
+    {
+        Data = connector;
+        if (connector != null)
+        {
+            Query = connector.Name;
+            CurrentHook = new ConnectorHook(agendaEvent.Id, connector);
+        }
+        else
+        {
+            CurrentHook = new ConnectorHook(agendaEvent.Id);
+        }
 
-
-
+        Dialog.Show();
+        base.StateHasChanged();
+    }
 
 }

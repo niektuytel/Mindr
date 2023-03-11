@@ -158,7 +158,7 @@
     }
 
     private List<CalendarDay> days = new List<CalendarDay>();
-    private IEnumerable<CalendarEvent> events {get; set;}
+    private IEnumerable<AgendaEvent> events {get; set;}
 
 
     string? stringValue;
@@ -166,7 +166,7 @@
     Option<int>? selectedIntOption;
     IEnumerable<Option<string>>? selectedStrings;
 
-    private async Task OnOpen(CalendarEvent item)
+    private async Task OnOpen(AgendaEvent item)
     {
         //status = "Dialog opened with button click";
         //MyFluentDialog!.Show();
@@ -197,22 +197,22 @@
     //    await AddEventsToCalendar(days, events);
     //}
 
-    private async Task AddEventsToCalendar(List<CalendarDay> days, IEnumerable<CalendarEvent> events){
-        if (events != null && events.Count() > 0){
-            await Task.Run(() => {
-                var nonEmptyDays = days.Where(d => !d.IsEmpty);
+    //private async Task AddEventsToCalendar(List<CalendarDay> days, IEnumerable<AgendaEvent> events){
+    //    if (events != null && events.Count() > 0){
+    //        await Task.Run(() => {
+    //            var nonEmptyDays = days.Where(d => !d.IsEmpty);
 
-                foreach (var nonEmptyDate in nonEmptyDays)
-                {
-                    var filteredEvents = events.Where(e => e.StartDate.Date == nonEmptyDate.Date.Date);
-                    foreach (CalendarEvent filteredEvent in filteredEvents)
-                    {
-                        nonEmptyDate.Events.Add(filteredEvent);
-                    };
-                }
-            });
-        }
-    }
+    //            foreach (var nonEmptyDate in nonEmptyDays)
+    //            {
+    //                var filteredEvents = events.Where(e => e.StartDate.Date == nonEmptyDate.Date.Date);
+    //                foreach (AgendaEvent filteredEvent in filteredEvents)
+    //                {
+    //                    nonEmptyDate.Events.Add(filteredEvent);
+    //                };
+    //            }
+    //        });
+    //    }
+    //}
 
 
     private async Task HandleOnUpdateClick()

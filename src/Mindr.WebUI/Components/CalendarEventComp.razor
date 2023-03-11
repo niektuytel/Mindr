@@ -13,8 +13,8 @@
 
 @code {
     [Parameter]
-    public CalendarEvent CalendarEvent { get; set; }
+    public AgendaEvent CalendarEvent { get; set; }
 
     [Parameter]
-    public Func<CalendarEvent, Task> OnClick { get; set; } = default!;
+    public Func<AgendaEvent, Task> OnClick { get; set; } = default!;
 }

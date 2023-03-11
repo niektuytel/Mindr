@@ -1,0 +1,47 @@
+﻿@using Mindr.Core.Models.Connector;
+@inherits FluentComponentBase
+
+
+<div style="width: -webkit-fill-available;">
+    @DateTime.ToShortDateString() Events
+    @if (Data?.Any() == true)
+    {
+        foreach (var item in Data)
+        {
+            <AgendaEventItem Data="@item" HookDialogRef="@_connectorHookDialog"/>
+        }
+        <ConnectorHookDialog @ref="@_connectorHookDialog" />
+    }
+</div>
+
+@code {
+    //  OpenDialog="@(async (agendaEvent, element) => await HandleOnEventUpsert(agendaEvent, element))"
+    //async Task HandleOnEventUpsert(AgendaEvent agendaEvent, ConnectorBriefDTO? connector = null)
+    //{
+    //    if (connector != null)
+    //    {
+    //        _connectorHookDialog.Query = connector.Name;
+    //    }
+    //    _connectorHookDialog.Data = connector;
+    //    _connectorHookDialog.OnUpdate = (connector != null);
+    //    _connectorHookDialog.Dialog.Show();
+    //    base.StateHasChanged();
+    //}
+
+    async Task OnUpsertConnector(ConnectorHook hook)
+    {
+        //var entity = Data.Remove(item => item.Id == CurrentEvent.Id);
+        //if(entity == null)
+        //{
+        //    Data.Add(entity);
+        //}
+        //if (item != null)
+        //{
+        //    _connectorHookDialog.Query = item.Name;
+        //}
+        //_connectorHookDialog.Data = item;
+        //_connectorHookDialog.OnUpdate = (item != null);
+        //_connectorHookDialog.Dialog.Show();
+        //base.StateHasChanged();
+    }
+}

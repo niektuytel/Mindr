@@ -22,28 +22,10 @@ public class ConnectorHookController : BaseController
         return Ok(items);
     }
 
-    [HttpGet("{eventId}")]
-    public IActionResult GetByEventId(string eventId)
-    {
-        var items = ItemHooks.Where(item => item.EventId == eventId);
-        if (items == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(items);
-    }
-
     [HttpPost]
-    public IActionResult Insert([FromBody]ConnectorHook payload)
+    public IActionResult Upsert([FromBody]ConnectorHook payload)
     {
         ItemHooks.Add(payload);
-        return Ok();
-    }
-
-    [HttpPut]
-    public IActionResult Update(Connector payload)
-    {
         return Ok();
     }
 

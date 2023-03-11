@@ -4,6 +4,7 @@
 @using Mindr.Core.CalendarExtensions;
 @using System.Globalization;
 @using Mindr.Core.Models.Connector;
+@using Mindr.WebUI.Components.Connector
 @using Newtonsoft.Json;
 
 @namespace Mindr.WebUI.Pages
@@ -40,7 +41,7 @@
                     <tr>
                         @foreach (var day in Days.Skip(i * 7).Take(7))
                         {
-                            var eventItems = Events?.Where(item => day.Date >= item.StartDate.Date && day.Date <= item.EndDate.Date);
+                            var eventItems = Events?.Where(item => day.Date >= item.StartDate.DateTime && day.Date <= item.EndDate.DateTime);
     
                             if (day.Date.Month == SelectedDate.Month)
                             {
@@ -93,266 +94,31 @@
             </FluentButton>
         </Stack>
     </div>
-    <div style="width: -webkit-fill-available;">
+   @* <div style="width: -webkit-fill-available;">
         @SelectedDate.ToShortDateString() Events
         @{
-            var items = Events?.Where(item => SelectedDate.Date >= item.StartDate.Date && SelectedDate.Date <= item.EndDate.Date);
+            var items = Events?.Where(item => SelectedDate.Date >= item.StartDate.DateTime && SelectedDate.Date <= item.EndDate.DateTime);
         }
-        @if(items?.Any() == true)
+        @if (items?.Any() == true)
         {
             foreach (var item in items)
             {
-                <div style=@("width: -webkit-fill-available;border-radius: 5px;box-shadow: 0px 0px 5px 2px #0000001f;margin: 10px;" + "border-color:" + item.Color)>
-                    <div>@item.StartDate.ToString() - @item.EndDate.ToString()</div>
-                    @item.Subject
-                    <FluentButton Appearance="Appearance.Neutral" @onclick="OpenConnectorDialog">
-                        Send Whatsapp Text Message
-                    </FluentButton>
-
-                    <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
-                        <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OpenConnectorDialog">
-                            <FluentIcon Slot="start" Name="@FluentIcons.Add" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
-                            Add Connector
-                        </FluentButton>
-                    </Stack>
-                    
-                </div>
+                <AgendaEventItem Data="@item" OnUpsert="@HandleOnEventUpsert"/>
             }
         }
     </div>
+    <ConnectorHookDialog @ref="@_connectorHookDialog" OnUpsert="OnUpsertConector" />*@
+    <AgendaEvents Data="@GetEventsInSelectedDate()" DateTime="@SelectedDate"/>
 </Stack>
-<div>
-    <FluentDialog Modal="true"
-                  TrapFocus="true"
-                  @ref="AddConnectorDialog"
-                  @ondialogdismiss="DismissConnectorDialog">
-        
-        <FluentCombobox 
-            Placeholder="Whatsapp message..."
-            Style="width: 100%;"
-            Items=@SearchResults
-            TOption="ConnectorBriefDTO"
-            OptionText="@(i => i.Name)"
-            OptionValue="@(i => i.Id.ToString())"
-            @bind-SelectedOption="@SelectedConnector"
-            @bind-Text="@SearchQuery" 
-            @oninput="@HandleSearchInput" />
-        
-        @if(SelectedConnector != null)
-        {
-            foreach (var variable in SelectedConnector.Variables)
-            {
-                <FluentTextField 
-                    title="@variable.Description"
-                    Placeholder="Required" 
-                    Style="width: 100%;"
-                    @bind-Value="@variable.Value"
-                >
-                    @variable.Name
-                </FluentTextField>
-            }
-            <Stack HorizontalAlignment="StackHorizontalAlignment.Right" Style="margin-top:5px">
-                <FluentButton @onclick="@GotoConnector">
-                    <FluentIcon Name="@FluentIcons.Link" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
-                </FluentButton>
-                <FluentButton 
-                    Appearance="Appearance.Accent" 
-                    Autofocus="true" 
-                    @onclick="CreateConnector"
-                >
-                    Create
-                </FluentButton>
-            </Stack>
-        }
-    </FluentDialog>
-</div>
-
 
 @code {
-    [Inject]
-    public NavigationManager NavigationManager { get; set; }
-
-    //bool DisableList = false;
-
-    string? SearchQuery = string.Empty;
-
-    private IEnumerable<ConnectorBriefDTO> SearchResults = new List<ConnectorBriefDTO>();
-
-    public bool SearchIsLoading { get; set; }
-
-    public ConnectorBriefDTO? SelectedConnector { get; set; } = null;
-
-    async Task HandleSearchInput(ChangeEventArgs args)
-    {
-        if (args is not null && args.Value is not null)
-        {
-            string searchTerm = args.Value.ToString()!.ToLower();
-
-            if (searchTerm.Length > 0)
-            {
-                SearchIsLoading = true;
-
-                var client = new HttpClient();
-                var request = new HttpRequestMessage(HttpMethod.Get, $"https://localhost:7155/api/connector?query={searchTerm}");
-                var response = await client.SendAsync(request);
-                response.EnsureSuccessStatusCode();
-
-                var json = await response.Content.ReadAsStringAsync();
-                if (!string.IsNullOrEmpty(json))
-                {
-                    var value = JsonConvert.DeserializeObject<IEnumerable<ConnectorBriefDTO>>(json);
-                    if (value != null)
-                    {
-                        SearchResults = value;
-                    }
-                }
-
-                SearchIsLoading = false;
-            }
-        }
-
-        base.StateHasChanged();
-    }
-
-    public void GotoConnector()
-    {
-        if (SelectedConnector == null) return;
-
-        NavigationManager.NavigateTo($"/connector/{SelectedConnector!.Id}");
-        base.StateHasChanged();
-    }
-
-    public async Task CreateConnector()
-    {
-        var client = new HttpClient();
-        var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7155/api/ConnectorHook");
-        request.Headers.Add("accept", "*/*");
-
-        var json = JsonConvert.SerializeObject(SelectedConnector);
-        var content = new StringContent(json, null, "application/json");
-        request.Content = content;
-        var response = await client.SendAsync(request);
-        response.EnsureSuccessStatusCode();
-        Console.WriteLine(await response.Content.ReadAsStringAsync());
-
-        // add hook to event
-
-
-        AddConnectorDialog.Hide();
-    }
-
-
-
-
-
-
-    public FluentDialog AddConnectorDialog = default!;
-
-    public void DismissConnectorDialog(DialogEventArgs args)
-    {
-        if (args is not null && args.Reason is not null && args.Reason == "dismiss")
-        {
-            AddConnectorDialog.Hide();
-        }
-    }
-
-    public void OpenConnectorDialog()
-    {
-        //if (Collection == null)
-        //{
-        //    Collection = JsonConvert.DeserializeObject<HttpCollection>(_Constants.Json);
-        //}
-
-        AddConnectorDialog.Show();
-    }
-
     private int MAX_ITEMS_THAT_FIT_DAY = 2;
     private CalendarDay selectedDay = new CalendarDay
     {
         Date = DateTime.Now
     };
-
-
     private int year = DateTime.Now.Year;
     private int month = DateTime.Now.Month;
-
-
-    //private FluentDialog? MyFluentDialog;
-    public bool TrapFocus = true;
-    public bool Modal = true;
-    private string? status;
-
-
-    FluentSearch? searchTest;
-
-    List<string> searchData = new()
-    {
-        "Alabama",
-        "Alaska",
-        "Arizona",
-        "Arkansas",
-        "California",
-        "Colorado",
-        "Connecticut",
-        "Delaware",
-        "Florida",
-        "Georgia",
-        "Hawaii",
-        "Idaho",
-        "Illinois",
-        "Indiana",
-        "Iowa",
-        "Kansas",
-        "Kentucky",
-        "Louisiana",
-        "Maine",
-        "Maryland",
-        "Massachussets",
-        "Michigain",
-        "Minnesota",
-        "Mississippi",
-        "Missouri",
-        "Montana",
-        "Nebraska",
-        "Nevada",
-        "New Hampshire",
-        "New Jersey",
-        "New Mexico",
-        "New York",
-        "North Carolina",
-        "North Dakota",
-        "Ohio",
-        "Oklahoma",
-        "Oregon",
-        "Pennsylvania",
-        "Rhode Island",
-        "South Carolina",
-        "South Dakota",
-        "Texas",
-        "Tennessee",
-        "Utah",
-        "Vermont",
-        "Virginia",
-        "Washington",
-        "Wisconsin",
-        "West Virginia",
-        "Wyoming"
-    };
-
-
-    static string defaultResultsText = "no results";
-    static List<string> defaultResults()
-    {
-        return new() { defaultResultsText };
-    }
-
-    void handleClear(ChangeEventArgs args)
-    {
-        if (args is not null)
-        {
-            //SearchResults = defaultResults();
-        }
-    }
 
 
 }

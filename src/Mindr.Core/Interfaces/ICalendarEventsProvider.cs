@@ -9,7 +9,7 @@ namespace Mindr.Core.Interfaces
     public interface ICalendarEventsProvider
     {
 
-        Task<ConcurrentBag<CalendarEvent>> GetEventsInMonthAsync(int year, int month);
+        Task<IEnumerable<AgendaEvent>> GetEventsInMonthAsync(int year, int month);
 
         //Task<ConcurrentBag<CalendarEvent>> GetEventsInDayAsync(DateTime time);
 

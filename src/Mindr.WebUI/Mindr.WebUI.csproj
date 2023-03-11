@@ -47,6 +47,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Remove="Components\AddEvent.razor" />
+	  <Content Remove="Components\Calendar.razor" />
+	  <Content Remove="Components\EventList.razor" />
 	  <Content Remove="Pages\Counter.razor" />
 	  <Content Remove="Pages\FetchData.razor" />
 	  <Content Remove="Shared\Header\AdministratorsMenu.razor" />

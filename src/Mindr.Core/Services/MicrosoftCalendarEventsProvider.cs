@@ -24,7 +24,7 @@ namespace Mindr.Core.Services
             _httpClient = HttpClientFactory.CreateClient("Default");
         }
 
-        public async Task<ConcurrentBag<CalendarEvent>> GetEventsInMonthAsync(int year, int month)
+        public async Task<IEnumerable<AgendaEvent>> GetEventsInMonthAsync(int year, int month)
         {
             // 1- Get Token 
             var accessToken = await GetAccessTokenAsync();
@@ -49,18 +49,7 @@ namespace Mindr.Core.Services
             var microsoftEvents = JsonConvert.DeserializeObject<GraphEventsResponse>(contentAsString);
 
             // Convert the Microsoft Event object into CalendarEvent object
-            var events = new ConcurrentBag<CalendarEvent>();
-            foreach (var item in microsoftEvents.Value)
-            {
-                events.Add(new CalendarEvent
-                {
-                    Subject = item.Subject,
-                    StartDate = item.Start.ConvertToLocalDateTime(),
-                    EndDate = item.End.ConvertToLocalDateTime(),
-                    //Color = "blue"
-                });
-            }
-
+            var events = microsoftEvents.Value;
             return events;
         }
 

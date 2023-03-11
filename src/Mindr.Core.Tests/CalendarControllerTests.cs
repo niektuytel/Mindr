@@ -27,16 +27,16 @@ namespace Mindr.Core.Tests
             
             calendarEventsProviderMock.Setup(p => p.GetEventsInMonthAsync(It.IsAny<int>(), It.IsAny<int>())).Returns(() =>  {
                 
-                var cal = new CalendarEvent()
+                var cal = new AgendaEvent()
                 {
                     Subject = "MySubject",
                     StartDate = new DateTime(2020, 6, 1),
                     EndDate = new DateTime(2020, 6, 1)
                 };
 
-                var result = new ConcurrentBag<CalendarEvent>();
+                var result = new ConcurrentBag<AgendaEvent>();
                 result.Add(cal);
-                return Task.FromResult<ConcurrentBag<CalendarEvent>>(result);
+                return Task.FromResult<ConcurrentBag<AgendaEvent>>(result);
 
             });
             var result = await calendarController.GetEventsInMonthAsync(2020, 6);
@@ -47,8 +47,8 @@ namespace Mindr.Core.Tests
 
         [TestCase]
         public async Task ShallAddCalendarEvents() {
-            await calendarController.AddEventAsync(new CalendarEvent { Subject = "Mock"});
-            calendarEventsProviderMock.Verify(p => p.AddEventAsync(It.IsAny<CalendarEvent>()), Times.Once);
+            await calendarController.AddEventAsync(new AgendaEvent { Subject = "Mock"});
+            calendarEventsProviderMock.Verify(p => p.AddEventAsync(It.IsAny<AgendaEvent>()), Times.Once);
         }
 
         [TestCase]

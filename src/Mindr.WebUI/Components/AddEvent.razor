@@ -16,10 +16,10 @@
     [Parameter]
     public CalendarDay SelectedDay { get; set; }
 
-    private CalendarEvent model = new CalendarEvent();
+    private AgendaEvent model = new AgendaEvent();
 
     private void AddEventSelectedDay(){
-        SelectedDay.Events.Add(new CalendarEvent() {
+        SelectedDay.Events.Add(new AgendaEvent() {
             Subject = model.Subject,
             StartDate =  new DateTime(SelectedDay.Date.Year, SelectedDay.Date.Month, SelectedDay.Date.Day, model.StartDate.Hour, model.StartDate.Minute, 0),
             EndDate = new DateTime(SelectedDay.Date.Year, SelectedDay.Date.Month, SelectedDay.Date.Day, model.EndDate.Hour, model.EndDate.Minute, 0)

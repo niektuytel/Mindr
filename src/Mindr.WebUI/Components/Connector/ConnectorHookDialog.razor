@@ -5,39 +5,61 @@
     <FluentDialog Modal="true"
                   TrapFocus="true"
                   @ref="Dialog"
-                  @ondialogdismiss="OnDismiss">
+                  @ondialogdismiss="HandleOnDismiss">
 
         <FluentCombobox Placeholder="Whatsapp message..."
                         Style="width: 100%;"
-                        Items=@SearchResults
+                        Items=@Results
                         TOption="ConnectorBriefDTO"
                         OptionText="@(i => i.Name)"
                         OptionValue="@(i => i.Id.ToString())"
-                        @bind-SelectedOption="@SelectedItem"
-                        @bind-Text="@SearchQuery"
-                        @oninput="@HandleOnSearch" />
-
-        @if (SelectedItem != null)
+                        Autocomplete="ComboboxAutocomplete.Both" 
+                        @bind-SelectedOption="@Data"
+                        @bind-Text="@Query"
+                        @oninput="@(async (input) => await HandleOnSearch(input))" />
+        @if (Data != null)
         {
-            foreach (var variable in SelectedItem.Variables)
-            {
-                <FluentTextField title="@variable.Description"
-                         Placeholder="Required"
-                         Style="width: 100%;"
-                         @bind-Value="@variable.Value">
-                    @variable.Name
-                </FluentTextField>
-            }
-            <Stack HorizontalAlignment="StackHorizontalAlignment.Right" Style="margin-top:5px">
-                <FluentButton @onclick="@GoToConnector">
-                    <FluentIcon Name="@FluentIcons.Link" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
-                </FluentButton>
-                <FluentButton Appearance="Appearance.Accent"
-                          Autofocus="true"
-                          @onclick="HandleOnCreate">
-                    Create
-                </FluentButton>
-            </Stack>
+            <div style="margin:10px">
+                @foreach (var variable in Data.Variables)
+                {
+                    <FluentTextField title="@variable.Description"
+                                     Placeholder="Required"
+                                     Style="width: 100%;"
+                                     @bind-Value="@variable.Value">
+                        @variable.Name
+                    </FluentTextField>
+                }
+                <Stack HorizontalAlignment="StackHorizontalAlignment.Right" Style="margin-top:5px">
+                    @if (IsLoading)
+                    {
+                        <FluentProgressRing Style="width: 24px; height: 24px;"></FluentProgressRing>
+                    }
+                    else
+                    {
+                        <FluentButton @onclick="@GoToConnector">
+                            <FluentIcon Name="@FluentIcons.Link" 
+                                        Size="@IconSize.Size16" 
+                                        Variant="@IconVariant.Regular" 
+                                        Color="@Color.Accent" 
+                            />
+                        </FluentButton>
+                        if (CurrentHook?.ConnectorId != null)
+                        {
+                            <FluentButton Appearance="Appearance.Accent"
+                                  Autofocus="true"
+                                  @onclick="HandleOnDelete">
+                                Delete
+                            </FluentButton>
+                        }
+                        <FluentButton Appearance="Appearance.Accent"
+                                      Autofocus="true"
+                                      @onclick="HandleOnUpsert"
+                        >
+                            @(CurrentHook?.ConnectorId != null ? "Update" : "Create")
+                        </FluentButton>
+                    }
+                </Stack>
+            </div>
         }
     </FluentDialog>
 </div>

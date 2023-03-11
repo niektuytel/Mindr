@@ -43,7 +43,7 @@ namespace Mindr.Core.Tests
 
         [TestCase]
         public void ShallTruncateTooBigSubjects() {
-            var calEvent = new CalendarEvent { Subject = "This is a very big subject and needs to be truncated" };
+            var calEvent = new AgendaEvent { Subject = "This is a very big subject and needs to be truncated" };
             string subject = calEvent.GetTruncatedSubject(5);
             Assert.That(subject.Length, Is.EqualTo(8));
             Assert.That(subject.EndsWith("..."));
@@ -51,7 +51,7 @@ namespace Mindr.Core.Tests
 
         [TestCase]
         public void ShallReturnStringIfNotTooBig() {
-            var calEvent = new CalendarEvent { Subject = "Small description" };
+            var calEvent = new AgendaEvent { Subject = "Small description" };
             string subject = calEvent.GetTruncatedSubject(18);
             Assert.That(subject, Is.EqualTo(calEvent.Subject));
         }
