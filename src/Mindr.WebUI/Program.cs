@@ -28,6 +28,9 @@ builder.Services.AddMsalAuthentication(options =>
     options.ProviderOptions.Cache.CacheLocation = "localStorage";
 });
 
+builder.Services.AddSingleton<IConnectorHookClient, ConnectorHookClient>();
+
+
 builder.Services.AddTransient<ICalendarEventsProvider, MicrosoftCalendarEventsProvider>();
 builder.Services.AddTransient<CalendarController>();
 builder.Services.AddSingleton<IHttpCollectionFactory, HttpCollectionFactory>();

@@ -66,10 +66,14 @@ internal static class SwaggerConfiguration
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
+            //c.OAuthClientSecret(configuration["AzureAd:SlientSecret"]);
+
+            var clientId = configuration["AzureAd:ClientId"];
+            var scope = $"api://{clientId}/access_as_user";
+
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "ATM Api(v1)");
-            c.OAuthClientSecret(configuration["AzureAd:SlientSecret"]);
-            c.OAuthClientId(configuration["AzureAd:ClientId"]);
-            c.OAuthScopes("openid profile");
+            c.OAuthClientId(clientId);
+            c.OAuthScopes(scope);
         });
     }
 }

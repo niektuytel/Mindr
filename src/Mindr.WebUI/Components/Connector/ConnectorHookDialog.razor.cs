@@ -3,6 +3,8 @@ using Microsoft.Fast.Components.FluentUI;
 using Mindr.Core.Models.Connector;
 using Mindr.Core.Models;
 using Newtonsoft.Json;
+using Mindr.Core.Services;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
 namespace Mindr.WebUI.Components.Connector;
 
@@ -19,6 +21,12 @@ public partial class ConnectorHookDialog: FluentComponentBase
 
     [Inject]
     public NavigationManager NavigationManager { get; set; }
+
+    [Inject]
+    public IConnectorHookClient HookClient { get; set; } = default!;
+
+    [Inject]
+    public IAccessTokenProvider TokenProvider { get; set; } = default!;
 
     public bool IsLoading { get; set; } = false;
 
@@ -59,20 +67,14 @@ public partial class ConnectorHookDialog: FluentComponentBase
     
     public async Task HandleOnUpsert()
     {
-        var hook = new ConnectorHook(CurrentHook, Data);
         IsLoading = true;
 
-        var client = new HttpClient();
-        var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7155/api/connectorhook");
-        request.Headers.Add("accept", "*/*");
-
-        var json = JsonConvert.SerializeObject(hook);
-        var content = new StringContent(json, null, "application/json");
-        request.Content = content;
-        var response = await client.SendAsync(request);
-        response.EnsureSuccessStatusCode();
-        Console.WriteLine(await response.Content.ReadAsStringAsync());
-
+        var tokenResult = await TokenProvider.RequestAccessToken();
+        if (tokenResult.TryGetToken(out var accessToken))
+        {
+            var hook = new ConnectorHook(CurrentHook, Data);
+            await HookClient.Upsert(hook, accessToken.Value);
+        }
 
         Dialog.Hide();
         IsLoading = false;
@@ -86,11 +88,11 @@ public partial class ConnectorHookDialog: FluentComponentBase
 
         IsLoading = true;
 
-        var client = new HttpClient();
-        var request = new HttpRequestMessage(HttpMethod.Delete, $"https://localhost:7155/api/connectorhook/{CurrentHook.Id}");
-        var response = await client.SendAsync(request);
-        response.EnsureSuccessStatusCode();
-        Console.WriteLine(await response.Content.ReadAsStringAsync());
+        var tokenResult = await TokenProvider.RequestAccessToken();
+        if (tokenResult.TryGetToken(out var accessToken))
+        {
+            await HookClient.Delete(CurrentHook.Id, accessToken.Value);
+        }
 
         Dialog.Hide();
         IsLoading = false;
