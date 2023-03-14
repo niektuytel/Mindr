@@ -9,6 +9,12 @@ public class ApplicationContext : DbContext, IApplicationContext
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     { }
 
+
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //{
+    //    optionsBuilder.UseInMemoryDatabase(databaseName: "AuthorDb");
+    //}
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

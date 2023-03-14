@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Fast.Components.FluentUI;
-using Microsoft.Graph.TermStore;
 using Mindr.Core;
 using Mindr.Core.Interfaces;
 using Mindr.Core.Models;
@@ -22,7 +21,7 @@ public partial class AgendaPage: FluentComponentBase
     public CalendarController CalendarController { get; set; } = default!;
 
     [Inject]
-    ICalendarEventsProvider CalendarEventsProvider { get; set; } = default!;
+    IMicrosoftGraphProvider CalendarEventsProvider { get; set; } = default!;
 
     public IEnumerable<CalendarDay> Days { get; set; } = default!;
 
@@ -36,7 +35,7 @@ public partial class AgendaPage: FluentComponentBase
     protected override async Task OnInitializedAsync()
     {
         Days = CalendarController.BuildMonthCalendarDays(SelectedDate.Year, SelectedDate.Month);
-        Events = await CalendarEventsProvider.GetEventsInMonthAsync(SelectedDate.Year, SelectedDate.Month);
+        // TODO: Events = await CalendarEventsProvider.GetEventsInMonthAsync(SelectedDate.Year, SelectedDate.Month);
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -67,7 +66,7 @@ public partial class AgendaPage: FluentComponentBase
         if (SelectedDate.Month != date.Month)
         {
             Days = CalendarController.BuildMonthCalendarDays(date.Year, date.Month);
-            Events = await CalendarEventsProvider.GetEventsInMonthAsync(date.Year, date.Month);
+            // TODO: Events = await CalendarEventsProvider.GetEventsInMonthAsync(date.Year, date.Month);
         }
 
         SelectedDate = date;
@@ -79,7 +78,7 @@ public partial class AgendaPage: FluentComponentBase
         //if (SelectedDate.Month != date.Month)
         //{
         //    Days = CalendarController.BuildMonthCalendarDays(date.Year, date.Month);
-        //    Events = await CalendarEventsProvider.GetEventsInMonthAsync(date.Year, date.Month);
+        //    Events = await CalendarEventsProvider.GetEventsAsync(date.Year, date.Month);
         //}
 
         //SelectedDate = date;
