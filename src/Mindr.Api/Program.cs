@@ -5,9 +5,6 @@ using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
 using Mindr.Api.Persistence;
 using Mindr.Api.Swagger;
-using Mindr.API;
-using Mindr.Core.Interfaces;
-using Mindr.Core.Services;
 
 namespace Mindr.Api
 {
@@ -24,17 +21,15 @@ namespace Mindr.Api
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
             );
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-            builder.Services.AddGraphClient(builder.Configuration);
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-            // Services
-            builder.Services.AddScoped<IMicrosoftGraphProvider, MicrosoftGraphProvider>();
-
-
-
             builder.Services.AddControllers().AddNewtonsoftJson();
             builder.Services.AddSwaggerTools(builder.Configuration);
             builder.Services.AddHealthChecks();
+
+            // Services
+
+
+
             var app = builder.Build();
             app.UseSwaggerTools(builder.Configuration);
 

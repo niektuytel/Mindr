@@ -69,16 +69,9 @@ public partial class ConnectorHookDialog: FluentComponentBase
     {
         IsLoading = true;
 
-        //
-
-        var tokenResult = await TokenProvider.RequestAccessToken(new AccessTokenRequestOptions
-        {
-            Scopes = new[] { "api://832f0468-7f76-4fb3-8d5c-7e5bd70d17ea/access_as_user" }
-        });
-
+        var tokenResult = await TokenProvider.RequestAccessToken();
         if (tokenResult.TryGetToken(out var accessToken))
         {
-            await Console.Out.WriteLineAsync(accessToken.Value);
             var hook = new ConnectorHook(CurrentHook, Data);
             await HookClient.Upsert(hook, accessToken.Value);
         }
@@ -95,14 +88,9 @@ public partial class ConnectorHookDialog: FluentComponentBase
 
         IsLoading = true;
 
-        var tokenResult = await TokenProvider.RequestAccessToken(new AccessTokenRequestOptions
-        {
-            Scopes = new[] { "api://832f0468-7f76-4fb3-8d5c-7e5bd70d17ea/access_as_user" }
-        });
-
+        var tokenResult = await TokenProvider.RequestAccessToken();
         if (tokenResult.TryGetToken(out var accessToken))
         {
-            await Console.Out.WriteLineAsync(accessToken.Value);
             await HookClient.Delete(CurrentHook.Id, accessToken.Value);
         }
 

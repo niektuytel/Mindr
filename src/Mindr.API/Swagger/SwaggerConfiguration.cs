@@ -73,7 +73,6 @@ internal static class SwaggerConfiguration
 
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "ATM Api(v1)");
             c.OAuthClientId(clientId);
-            c.OAuthClientSecret(configuration["AzureAd:ClientSecret"]);
             c.OAuthScopes(scope);
         });
     }

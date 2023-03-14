@@ -76,7 +76,8 @@
 		<PackageReference Include="DutchGrit.AfasClient" Version="1.0.0.67" />
 		<PackageReference Include="Microsoft.Fast.Components.FluentUI" Version="2.0.1" />
 		<PackageReference Include="Microsoft.Fast.Components.FluentUI.DataGrid.EntityFrameworkAdapter" Version="2.0.1" />
-		<PackageReference Include="Microsoft.Graph" Version="5.1.0" />
+		<PackageReference Include="Microsoft.Graph" Version="4.54.0" />
+		<PackageReference Include="Microsoft.Graph.Core" Version="2.0.15" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
 		<PackageReference Include="RestSharp" Version="108.0.3" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization">

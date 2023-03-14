@@ -18,9 +18,9 @@ namespace Mindr.Core
         //    this.calendarEventsProvider = calendarEventsProvider;
         //}
 
-        //public async Task<ConcurrentBag<CalendarEvent>> GetEventsAsync(int year, int month)
+        //public async Task<ConcurrentBag<CalendarEvent>> GetEventsInMonthAsync(int year, int month)
         //{
-        //    var events = await calendarEventsProvider.GetEventsAsync(year, month);
+        //    var events = await calendarEventsProvider.GetEventsInMonthAsync(year, month);
 
         //    return events;
         //}

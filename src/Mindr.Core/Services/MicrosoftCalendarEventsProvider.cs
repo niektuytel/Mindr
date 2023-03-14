@@ -1,0 +1,174 @@
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Mindr.Core.Models;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using Newtonsoft.Json;
+using Mindr.Core.Interfaces;
+
+namespace Mindr.Core.Services
+{
+    public class MicrosoftCalendarEventsProvider: ICalendarEventsProvider
+    {
+        // Get Access token 
+        private readonly IAccessTokenProvider _accessTokenProvider;
+        private readonly HttpClient _httpClient;
+
+        private const string BASE_URL = "https://graph.microsoft.com/v1.0/me/events";
+
+        public MicrosoftCalendarEventsProvider(IAccessTokenProvider accessTokenProvider, IHttpClientFactory HttpClientFactory)
+        {
+            _accessTokenProvider = accessTokenProvider;
+            _httpClient = HttpClientFactory.CreateClient("Default");
+        }
+
+        public async Task<IEnumerable<AgendaEvent>> GetEventsInMonthAsync(int year, int month)
+        {
+            // 1- Get Token 
+            var accessToken = await GetAccessTokenAsync();
+            if(accessToken == null)
+                return null;
+
+            // 2- Set the access token in the authorization header 
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", accessToken);
+
+            // 3-  Send the request 
+            var url = ConstructGraphUrl(year, month);
+            var response = await _httpClient.GetAsync(url);
+
+            if(!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            // 4- Read the content 
+            var contentAsString = await response.Content.ReadAsStringAsync(); 
+
+            var microsoftEvents = JsonConvert.DeserializeObject<GraphEventsResponse>(contentAsString);
+
+            // Convert the Microsoft Event object into CalendarEvent object
+            var events = microsoftEvents.Value;
+            return events;
+        }
+
+        //public async Task<ConcurrentBag<CalendarEvent>> GetEventsInDayAsync(int year, int month)
+        //{
+        //    // 1- Get Token 
+        //    var accessToken = await GetAccessTokenAsync();
+        //    if (accessToken == null)
+        //        return null;
+
+        //    // 2- Set the access token in the authorization header 
+        //    _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", accessToken);
+
+        //    // 3-  Send the request 
+        //    var url = ConstructGraphUrl(year, month);
+        //    var response = await _httpClient.GetAsync(url);
+
+        //    if (!response.IsSuccessStatusCode)
+        //    {
+        //        return null;
+        //    }
+
+        //    // 4- Read the content 
+        //    var contentAsString = await response.Content.ReadAsStringAsync();
+
+        //    var microsoftEvents = JsonConvert.DeserializeObject<GraphEventsResponse>(contentAsString);
+
+        //    // Convert the Microsoft Event object into CalendarEvent object
+        //    var events = new ConcurrentBag<CalendarEvent>();
+        //    foreach (var item in microsoftEvents.Value)
+        //    {
+        //        events.Add(new CalendarEvent
+        //        {
+        //            Subject = item.Subject,
+        //            StartDate = item.Start.ConvertToLocalDateTime(),
+        //            EndDate = item.End.ConvertToLocalDateTime(),
+        //            Color = "blue"
+        //        });
+        //    }
+
+        //    return events;
+        //}
+
+        //public async Task AddEventAsync(CalendarEvent calendarEvent)
+        //{
+        //     // 1- Get Token 
+        //    var accessToken = await GetAccessTokenAsync();
+        //    if(accessToken == null)
+        //    {
+        //        Console.WriteLine("Access Token is not available");
+        //        return;
+        //    }
+
+        //    // 2- Set the access token in the authorization header 
+        //    _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", accessToken);
+
+        //    // 3- Initialize the content of the post request 
+        //    string eventAsJson = JsonConvert.SerializeObject(new MicrosoftGraphEvent
+        //    {
+        //        Subject = calendarEvent.Subject,
+        //        Start = new DateTimeTimeZone 
+        //        {
+        //            DateTime = calendarEvent.StartDate.ToString(),
+        //            TimeZone = TimeZoneInfo.Local.Id
+        //        },
+        //        End = new DateTimeTimeZone 
+        //        {
+        //            DateTime = calendarEvent.EndDate.ToString(),
+        //            TimeZone = TimeZoneInfo.Local.Id,
+        //        },
+        //        Color = calendarEvent.Color
+        //    });
+
+        //    var content = new StringContent(eventAsJson);
+        //    content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json"); 
+
+        //    // Send the request
+        //    var response = await _httpClient.PostAsync(BASE_URL, content);
+
+        //    if(response.IsSuccessStatusCode)
+        //        Console.WriteLine("Event has been added successfully!");
+        //    else
+        //        Console.WriteLine(response.StatusCode);
+        //}
+
+        private async Task<string> GetAccessTokenAsync()
+        {
+
+            try
+            {
+                var tokenRequest = await _accessTokenProvider.RequestAccessToken(new AccessTokenRequestOptions
+                {
+                    //Scopes = new[] { "https://graph.microsoft.com/Calendars.ReadWrite" }
+                });
+
+                // Try to fetch the token 
+                if(tokenRequest.TryGetToken(out var token))
+                {
+                    Console.WriteLine(token.Value);
+                    if (token != null)
+                    {
+                        return token.Value;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
+
+            return null; 
+        }
+
+        private string ConstructGraphUrl(int year, int month)
+        {
+            var lastDayInMonth = DateTime.DaysInMonth(year, month);
+            return $"{BASE_URL}?$filter=start/datetime ge '{year}-{month}-01T00:00' and end/dateTime le '{year}-{month}-{lastDayInMonth}T00:00'&$select=subject,start,end";
+        }
+    }
+}

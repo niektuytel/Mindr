@@ -16,12 +16,23 @@ public class ConnectorHookController : BaseController
         _mapper = mapper;
     }
 
+    /// <summary>
+    /// Required role: 'ATM Admin'
+    /// </summary>
     /// <remarks>
-    /// Get all connector hooks.
+    /// Get the details of a registered Afas AppConnector.  
+    /// 
+    /// AfasEnv types:
+    /// - Production = 0 (default)
+    /// - Test       = 1
+    /// - Accept     = 2
+    /// 
     /// </remarks>
-    /// <item code="200">Found hooks</item>
+    /// <item code="200">Found connector</item>
     /// <item code="400">Invalid item</item>
     /// <item code="401">Unauthorized</item>
+    /// <item code="403">Forbidden, Missing role 'Atm.Admin'</item>
+    /// <item code="404">AppConnector not found</item>
     [HttpGet]
     [Produces("application/json")]
     [ProducesResponseType(typeof(IEnumerable<ConnectorHook>), 200)]
@@ -33,12 +44,23 @@ public class ConnectorHookController : BaseController
         return Ok(items);
     }
 
+    /// <summary>
+    /// Required role: 'ATM Admin'
+    /// </summary>
     /// <remarks>
-    /// Update/Insert Connector hook
+    /// Get the details of a registered Afas AppConnector.  
+    /// 
+    /// AfasEnv types:
+    /// - Production = 0 (default)
+    /// - Test       = 1
+    /// - Accept     = 2
+    /// 
     /// </remarks>
     /// <item code="200">Found connector</item>
     /// <item code="400">Invalid item</item>
     /// <item code="401">Unauthorized</item>
+    /// <item code="403">Forbidden, Missing role 'Atm.Admin'</item>
+    /// <item code="404">AppConnector not found</item>
     [HttpPost]
     [ProducesResponseType(typeof(IEnumerable<ConnectorHook>), 200)]
     //[ProducesResponseType(typeof(AppConnectorError), 400)]
