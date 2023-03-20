@@ -1,14 +1,16 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using DutchGrit.Afas.Refinery;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Fast.Components.FluentUI;
+using Microsoft.Graph;
 using Microsoft.Graph.TermStore;
 using Mindr.Core;
-using Mindr.Core.Interfaces;
 using Mindr.Core.Models;
 using Mindr.Core.Models.Connector;
 using Mindr.WebUI.Components;
 using Mindr.WebUI.Components.Connector;
 using Mindr.WebUI.Models;
+using Mindr.WebUI.Services;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Json;
@@ -22,21 +24,99 @@ public partial class AgendaPage: FluentComponentBase
     public CalendarController CalendarController { get; set; } = default!;
 
     [Inject]
-    ICalendarEventsProvider CalendarEventsProvider { get; set; } = default!;
+    IMicrosoftCalendarEventsProvider CalendarEventsProvider { get; set; } = default!;
+
+    [Inject]
+    IHttpClientFactory ClientFactory { get; set; } = default!;
+
+    [Inject]
+    IConfiguration Config { get; set; } = default!;
 
     public IEnumerable<CalendarDay> Days { get; set; } = default!;
 
-    public IEnumerable<AgendaEvent> Events { get; set; } = default!;
+    public List<AgendaEvent> Events { get; set; } = default!;
 
     public DateTime SelectedDate { get; set; } = DateTime.Now;
 
     //public AgendaEvent? SelectedEvent { get; set; } = null;
 
 
+    //private string ConstructGraphUrl(int year, int month)
+    //{
+    //    var lastDayInMonth = DateTime.DaysInMonth(year, month);
+    //    return $"{BASE_URL}?$filter=start/datetime ge '{year}-{month}-01T00:00' and end/dateTime le '{year}-{month}-{lastDayInMonth}T00:00'&$select=subject,start,end";
+    //}
+
     protected override async Task OnInitializedAsync()
     {
         Days = CalendarController.BuildMonthCalendarDays(SelectedDate.Year, SelectedDate.Month);
-        Events = await CalendarEventsProvider.GetEventsInMonthAsync(SelectedDate.Year, SelectedDate.Month);
+
+        try
+        {
+            var client = ClientFactory.CreateClient("GraphAPI");
+
+            var lastDayInMonth = DateTime.DaysInMonth(SelectedDate.Year, SelectedDate.Month);
+
+            //Events = new();
+            var response = await client.GetFromJsonAsync<Core.Models.AgendaEvents>($"{Config.GetSection("MicrosoftGraph")["Version"]}/me/events?$filter=start/datetime ge '{SelectedDate.Year}-{SelectedDate.Month}-01T00:00' and end/dateTime le '{SelectedDate.Year}-{SelectedDate.Month}-{lastDayInMonth}T00:00'&$select=subject,start,end");
+            if (response != null) 
+            {
+                Events = response.Events.ToList();
+
+                //foreach (var item in response)
+                //{
+                //    Events.Add(new AgendaEvent()
+                //    {
+                //        Id = item.Id,
+                //        Subject = item.Subject,
+                //        StartDate = new AgendaEventDateTime()
+                //        {
+                //            DateTime = DateTime.Parse(item.Start.DateTime),
+                //            TimeZone = item.Start.TimeZone
+
+                //        },
+                //        EndDate = new AgendaEventDateTime()
+                //        {
+                //            DateTime = DateTime.Parse(item.End.DateTime),
+                //            TimeZone = item.End.TimeZone
+                //        }
+                //    });
+                //}
+
+                //Events = response.Value;
+            }
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+
+        //var events = await CalendarEventsProvider.GetEventsInMonthAsync(SelectedDate.Year, SelectedDate.Month);
+
+        //Events = new List<AgendaEvent>();
+        //foreach (var item in events)
+        //{
+        //    Events.Add(new AgendaEvent()
+        //    {
+        //        Id = item.Id,
+        //        Subject = item.Subject,
+        //        StartDate = new AgendaEventDateTime()
+        //        {
+        //            DateTime = DateTime.Parse(item.Start.DateTime),
+        //            TimeZone = item.Start.TimeZone
+
+        //        },
+        //        EndDate = new AgendaEventDateTime()
+        //        {
+        //            DateTime = DateTime.Parse(item.End.DateTime),
+        //            TimeZone = item.End.TimeZone
+        //        }
+        //    });
+            
+        //}
+
+
+
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -66,8 +146,47 @@ public partial class AgendaPage: FluentComponentBase
     {
         if (SelectedDate.Month != date.Month)
         {
-            Days = CalendarController.BuildMonthCalendarDays(date.Year, date.Month);
-            Events = await CalendarEventsProvider.GetEventsInMonthAsync(date.Year, date.Month);
+
+            Days = CalendarController.BuildMonthCalendarDays(SelectedDate.Year, SelectedDate.Month);
+
+            try
+            {
+                var client = ClientFactory.CreateClient("GraphAPI");
+
+                var lastDayInMonth = DateTime.DaysInMonth(SelectedDate.Year, SelectedDate.Month);
+                Events = new();
+                var response = await client.GetFromJsonAsync<Core.Models.AgendaEvents>($"{Config.GetSection("MicrosoftGraph")["Version"]}/me/events?$filter=start/datetime ge '{SelectedDate.Year}-{SelectedDate.Month}-01T00:00' and end/dateTime le '{SelectedDate.Year}-{SelectedDate.Month}-{lastDayInMonth}T00:00'&$select=subject,start,end");
+                if (response != null)
+                {
+                    Events = response.Events.ToList();
+                    //foreach (var item in response)
+                    //{
+                    //    Events.Add(new AgendaEvent()
+                    //    {
+                    //        Id = item.Id,
+                    //        Subject = item.Subject,
+                    //        StartDate = new AgendaEventDateTime()
+                    //        {
+                    //            DateTime = DateTime.Parse(item.Start.DateTime),
+                    //            TimeZone = item.Start.TimeZone
+
+                    //        },
+                    //        EndDate = new AgendaEventDateTime()
+                    //        {
+                    //            DateTime = DateTime.Parse(item.End.DateTime),
+                    //            TimeZone = item.End.TimeZone
+                    //        }
+                    //    });
+                    //}
+
+                    //Events = response.Value;
+                }
+            }
+            catch (AccessTokenNotAvailableException exception)
+            {
+                exception.Redirect();
+            }
+
         }
 
         SelectedDate = date;

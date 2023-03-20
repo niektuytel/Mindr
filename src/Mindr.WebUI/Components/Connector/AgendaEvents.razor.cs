@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
-using Mindr.Core.Interfaces;
 using Mindr.Core;
 using Mindr.Core.Models;
 

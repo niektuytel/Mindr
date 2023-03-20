@@ -8,6 +8,7 @@ using Mindr.Core.Models.Connector.Http;
 
 namespace Mindr.Api.Controllers;
 
+[Authorize]
 public class ConnectorController : BaseController
 {
     private readonly IMapper _mapper;

@@ -1,7 +1,6 @@
 ﻿using Force.DeepCloner;
 using Mindr.Core.Enums;
 using Mindr.Core.Extensions;
-using Mindr.Core.Interfaces;
 using Mindr.Core.Models.Connector.Http;
 using System;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 
-namespace Mindr.Core.Services
+namespace Mindr.Core.Services.Connector
 {
     public class HttpCollectionFactory : IHttpCollectionFactory
     {
@@ -66,7 +65,7 @@ namespace Mindr.Core.Services
                 // set other matching variables to this call
                 foreach (var pipeItem in httpPipeline)
                 {
-                    var res = pipeItem.Request.Variables.FirstOrDefault(i => (i.Key == variable.Key && !string.IsNullOrEmpty(i.Value)));
+                    var res = pipeItem.Request.Variables.FirstOrDefault(i => i.Key == variable.Key && !string.IsNullOrEmpty(i.Value));
                     if (res != null)
                     {
                         variable.Value = res.Value;
@@ -77,7 +76,7 @@ namespace Mindr.Core.Services
                 // set global variable to this call
                 if (string.IsNullOrEmpty(variable.Value))
                 {
-                    var res = postmanCollection.Variable.FirstOrDefault(i => (i.Key == variable.Key && !string.IsNullOrEmpty(i.Value)));
+                    var res = postmanCollection.Variable.FirstOrDefault(i => i.Key == variable.Key && !string.IsNullOrEmpty(i.Value));
                     if (res != null)
                     {
                         variable.Value = res.Value;

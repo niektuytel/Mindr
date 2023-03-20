@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Mindr.Core.Interfaces
+namespace Mindr.Core.Services.Connector
 {
     public interface IHttpCollectionClient
     {

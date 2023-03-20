@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
 using Mindr.Core.Extensions;
-using Mindr.Core.Interfaces;
 using Mindr.Core.Models.Connector.Http;
+using Mindr.Core.Services.Connector;
 using Newtonsoft.Json;
 
 namespace Mindr.WebUI.Components

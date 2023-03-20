@@ -1,6 +1,5 @@
 ﻿using Force.DeepCloner;
 using Mindr.Core.Extensions;
-using Mindr.Core.Interfaces;
 using Mindr.Core.Models.Connector.Http;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Net.WebRequestMethods;
 
-namespace Mindr.Core.Services
+namespace Mindr.Core.Services.Connector
 {
     public class HttpCollectionClient : IHttpCollectionClient
     {

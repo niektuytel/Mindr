@@ -1,20 +1,20 @@
-using Newtonsoft.Json;
 using System;
+using System.Text.Json.Serialization;
 
 namespace Mindr.Core.Models
 {
     public class AgendaEvent
     {
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; }
 
-        [JsonProperty("subject")]
+        [JsonPropertyName("subject")]
         public string Subject { get; set; }
 
-        [JsonProperty("start")]
+        [JsonPropertyName("start")]
         public AgendaEventDateTime StartDate { get; set; }
 
-        [JsonProperty("end")]
+        [JsonPropertyName("end")]
         public AgendaEventDateTime EndDate { get; set; }
 
         public string Color { get; set; } = GetRandomColorClass();
@@ -26,3 +26,24 @@ namespace Mindr.Core.Models
         }
     }
 }
+
+//public class Value
+//{
+//    public string odataetag { get; set; }
+//    public string id { get; set; }
+//    public string subject { get; set; }
+//    public Start start { get; set; }
+//    public End end { get; set; }
+//}
+
+//public class Start
+//{
+//    public DateTime dateTime { get; set; }
+//    public string timeZone { get; set; }
+//}
+
+//public class End
+//{
+//    public DateTime dateTime { get; set; }
+//    public string timeZone { get; set; }
+//}
