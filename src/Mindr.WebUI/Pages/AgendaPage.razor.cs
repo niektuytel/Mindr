@@ -54,7 +54,7 @@ public partial class AgendaPage: FluentComponentBase
 
         try
         {
-            var client = ClientFactory.CreateClient(nameof(AuthorizationApiMessageHandler));
+            var client = ClientFactory.CreateClient(nameof(AuthorizationGraphMessageHandler));
 
             var lastDayInMonth = DateTime.DaysInMonth(SelectedDate.Year, SelectedDate.Month);
 
@@ -152,7 +152,7 @@ public partial class AgendaPage: FluentComponentBase
 
             try
             {
-                var client = ClientFactory.CreateClient(nameof(AuthorizationApiMessageHandler));
+                var client = ClientFactory.CreateClient(nameof(AuthorizationGraphMessageHandler));
 
                 var lastDayInMonth = DateTime.DaysInMonth(SelectedDate.Year, SelectedDate.Month);
                 Events = new();
