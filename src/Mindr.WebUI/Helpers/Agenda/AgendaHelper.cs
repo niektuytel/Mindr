@@ -5,9 +5,9 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Mindr.Core.Models;
 
-namespace Mindr.Core
+namespace Mindr.WebUI.Helpers.Agenda
 {
-    public class CalendarController
+    public class AgendaHelper : IAgendaHelper
     {
         public static readonly int COUNT_DAYS_IN_CALENDAR = 42; //todo: must do better. enum instead?
 

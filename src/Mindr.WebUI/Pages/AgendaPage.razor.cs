@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Fast.Components.FluentUI;
 using Microsoft.Graph;
 using Microsoft.Graph.TermStore;
-using Mindr.Core;
 using Mindr.Core.Models;
 using Mindr.Core.Models.Connector;
 using Mindr.WebUI.Components;
 using Mindr.WebUI.Components.Connector;
+using Mindr.WebUI.Handlers;
+using Mindr.WebUI.Helpers.Agenda;
 using Mindr.WebUI.Models;
 using Mindr.WebUI.Services;
 using System.Collections.Concurrent;
@@ -21,10 +22,10 @@ namespace Mindr.WebUI.Pages;
 public partial class AgendaPage: FluentComponentBase
 {
     [Inject]
-    public CalendarController CalendarController { get; set; } = default!;
+    public IAgendaHelper AgendaHelper { get; set; } = default!;
 
-    [Inject]
-    IMicrosoftCalendarEventsProvider CalendarEventsProvider { get; set; } = default!;
+    //[Inject]
+    //IMicrosoftCalendarEventsProvider CalendarEventsProvider { get; set; } = default!;
 
     [Inject]
     IHttpClientFactory ClientFactory { get; set; } = default!;
@@ -49,11 +50,11 @@ public partial class AgendaPage: FluentComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        Days = CalendarController.BuildMonthCalendarDays(SelectedDate.Year, SelectedDate.Month);
+        Days = AgendaHelper.BuildMonthCalendarDays(SelectedDate.Year, SelectedDate.Month);
 
         try
         {
-            var client = ClientFactory.CreateClient("GraphAPI");
+            var client = ClientFactory.CreateClient(nameof(AuthorizationApiMessageHandler));
 
             var lastDayInMonth = DateTime.DaysInMonth(SelectedDate.Year, SelectedDate.Month);
 
@@ -147,11 +148,11 @@ public partial class AgendaPage: FluentComponentBase
         if (SelectedDate.Month != date.Month)
         {
 
-            Days = CalendarController.BuildMonthCalendarDays(SelectedDate.Year, SelectedDate.Month);
+            Days = AgendaHelper.BuildMonthCalendarDays(SelectedDate.Year, SelectedDate.Month);
 
             try
             {
-                var client = ClientFactory.CreateClient("GraphAPI");
+                var client = ClientFactory.CreateClient(nameof(AuthorizationApiMessageHandler));
 
                 var lastDayInMonth = DateTime.DaysInMonth(SelectedDate.Year, SelectedDate.Month);
                 Events = new();
@@ -197,7 +198,7 @@ public partial class AgendaPage: FluentComponentBase
     {
         //if (SelectedDate.Month != date.Month)
         //{
-        //    Days = CalendarController.BuildMonthCalendarDays(date.Year, date.Month);
+        //    Days = AgendaHelper.BuildMonthCalendarDays(date.Year, date.Month);
         //    Events = await CalendarEventsProvider.GetEventsInMonthAsync(date.Year, date.Month);
         //}
 

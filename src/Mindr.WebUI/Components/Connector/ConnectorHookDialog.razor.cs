@@ -5,7 +5,8 @@ using Mindr.Core.Models;
 using Newtonsoft.Json;
 using Mindr.Core.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using Mindr.WebUI.Services;
+using Mindr.WebUI.Services.ConnectorHook;
+using Mindr.WebUI.Services.Connector;
 
 namespace Mindr.WebUI.Components.Connector;
 

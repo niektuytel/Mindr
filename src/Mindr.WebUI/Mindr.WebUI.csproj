@@ -40,6 +40,9 @@
 	  <Compile Remove="Models\ProjectGroup.cs" />
 	  <Compile Remove="Pages\MyCalendar.cs" />
 	  <Compile Remove="Services\GraphApiAuthorizationRequestMessageHandler.cs" />
+	  <Compile Remove="Services\GraphClientFactory.cs" />
+	  <Compile Remove="Services\IMicrosoftCalendarEventsProvider.cs" />
+	  <Compile Remove="Services\MicrosoftCalendarEventsProvider.cs" />
 	  <Compile Remove="Shared\Header\AdministratorsMenu.razor.cs" />
 	</ItemGroup>
 

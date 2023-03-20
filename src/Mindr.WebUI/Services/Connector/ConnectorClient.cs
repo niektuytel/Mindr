@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Mindr.Core.Models.Connector;
+using Mindr.WebUI.Handlers;
+using Mindr.WebUI.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -11,7 +14,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mindr.WebUI.Services;
+namespace Mindr.WebUI.Services.Connector;
 
 public class ConnectorClient : IConnectorClient
 {
@@ -20,10 +23,10 @@ public class ConnectorClient : IConnectorClient
     private readonly IAccessTokenProvider _tokenProvider;
 
 
-    public ConnectorClient(IHttpClientFactory factory, IConfiguration configuration, IAccessTokenProvider tokenProvider)
+    public ConnectorClient(IHttpClientFactory factory, IAccessTokenProvider tokenProvider, IOptions<ApiOptions> options)
     {
-        _httpClient = factory.CreateClient("ProductsApi");
-        _baseUrl = configuration["BaseUrl"];
+        _httpClient = factory.CreateClient(nameof(AuthorizationApiMessageHandler));
+        _baseUrl = options.Value.BaseUrl;
         _tokenProvider = tokenProvider;
     }
 

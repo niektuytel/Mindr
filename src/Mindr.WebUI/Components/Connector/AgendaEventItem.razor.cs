@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Fast.Components.FluentUI;
 using Mindr.Core.Models;
 using Mindr.Core.Models.Connector;
-using Mindr.WebUI.Services;
+using Mindr.WebUI.Services.Connector;
 using Newtonsoft.Json;
 
 namespace Mindr.WebUI.Components.Connector;

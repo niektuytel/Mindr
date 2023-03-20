@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Mindr.Core.Models.Connector;
+using Mindr.WebUI.Handlers;
+using Mindr.WebUI.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,20 +11,20 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mindr.WebUI.Services;
+namespace Mindr.WebUI.Services.ConnectorHook;
 
 public class ConnectorHookClient : IConnectorHookClient
 {
     private readonly HttpClient _httpClient;
     private readonly string _baseUrl;
 
-    public ConnectorHookClient(IHttpClientFactory factory, IConfiguration configuration)
+    public ConnectorHookClient(IHttpClientFactory factory, IOptions<ApiOptions> options)
     {
-        _httpClient = factory.CreateClient(nameof(ConnectorHookClient));
-        _baseUrl = configuration["BaseUrl"];
+        _httpClient = factory.CreateClient(nameof(AuthorizationApiMessageHandler));
+        _baseUrl = options.Value.BaseUrl!;
     }
 
-    public async Task<HttpResponseMessage> Upsert(ConnectorHook hook, string aztoken)
+    public async Task<HttpResponseMessage> Upsert(Mindr.Core.Models.Connector.ConnectorHook hook, string aztoken)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/connectorhook");
         request.Headers.Add("accept", "*/*");

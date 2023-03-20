@@ -1,4 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
+using Mindr.WebUI.Interfaces;
+using Mindr.WebUI.Options;
 
 namespace Mindr.WebUI;
 
@@ -8,4 +10,12 @@ public static class ServiceCollectionExtensions
     {
         return services.AddScoped(typeof(DragDropService<>));
     }
+
+    public static IServiceCollection Configure<TModel>(this IServiceCollection services, IConfiguration config)
+        where TModel : class, IHasPosition
+    {
+        services = services.Configure<TModel>(options => config.GetSection(options.Position).Bind(options));
+        return services;
+    }
+
 }

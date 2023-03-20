@@ -3,10 +3,10 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Mindr.WebUI.Services;
+namespace Mindr.WebUI.Services.ConnectorHook;
 
 public interface IConnectorHookClient
 {
     Task<HttpResponseMessage> Delete(Guid hookid, string aztoken);
-    Task<HttpResponseMessage> Upsert(ConnectorHook hook, string aztoken);
+    Task<HttpResponseMessage> Upsert(Mindr.Core.Models.Connector.ConnectorHook hook, string aztoken);
 }

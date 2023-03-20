@@ -1,4 +1,4 @@
-﻿namespace Mindr.WebUI.Services
+﻿namespace Mindr.WebUI.Services.Connector
 {
     public interface IConnectorClient
     {

@@ -6,6 +6,7 @@
 @using Mindr.Core.Models.Connector;
 @using Mindr.WebUI.Components.Connector
 @using Newtonsoft.Json;
+@using Mindr.WebUI.Helpers.Agenda;
 
 @namespace Mindr.WebUI.Pages
 
@@ -36,10 +37,10 @@
                 </tr>
             </thead>
             <tbody>
-                @for (int i = 0; i < CalendarController.COUNT_DAYS_IN_CALENDAR; i++)
+                @for (int i = 0; i < Helpers.Agenda.AgendaHelper.COUNT_DAYS_IN_CALENDAR; i++)
                 {
                     <tr>
-                        @foreach (var day in Days.Skip(i * 7).Take(7))
+                        @foreach (var day in Days.Skip(i * 7).Take<CalendarDay>(7))
                         {
                             var eventItems = Events?.Where(item => day.Date >= item.StartDate.DateTime && day.Date <= item.EndDate.DateTime);
     
