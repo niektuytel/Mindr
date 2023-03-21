@@ -3,7 +3,7 @@
 @inherits FluentComponentBase
 
 <div style="width: -webkit-fill-available;">
-    @DateTime.ToShortDateString() Events
+    @Date.ToShortDateString() Events
     @if (Data?.Any() == true)
     {
         foreach (var item in Data)

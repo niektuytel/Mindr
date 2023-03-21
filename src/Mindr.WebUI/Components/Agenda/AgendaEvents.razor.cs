@@ -12,7 +12,7 @@ public partial class AgendaEvents: FluentComponentBase
     public IEnumerable<AgendaEvent> Data { get; set; } = default!;
 
     [Parameter, EditorRequired]
-    public DateTime DateTime { get; set; } = default!;
+    public DateTime Date { get; set; } = default!;
 
     private ConnectorHookDialog _connectorHookDialog = default!;
 
