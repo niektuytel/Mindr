@@ -8,10 +8,9 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication.Internal;
 using Mindr.WebUI.Handlers;
 using Mindr.WebUI.Options;
-using Microsoft.Extensions.DependencyInjection;
-using Mindr.WebUI.Helpers.Agenda;
-using Mindr.WebUI.Services.ConnectorHook;
 using Mindr.WebUI.Services.Connector;
+using Mindr.WebUI.Services.Agenda;
+using Mindr.WebUI.Extensions;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -31,7 +30,7 @@ builder.Services.AddHttpClient(nameof(AuthorizationApiMessageHandler), client =>
                 .AddHttpMessageHandler<AuthorizationApiMessageHandler>();
 
 // Services
-builder.Services.AddTransient<IAgendaHelper, AgendaHelper>();
+builder.Services.AddTransient<IAgendaClient, AgendaClient>();
 builder.Services.AddTransient<IConnectorClient, ConnectorClient>();
 builder.Services.AddTransient<IConnectorHookClient, ConnectorHookClient>();
 builder.Services.AddTransient<IHttpCollectionFactory, HttpCollectionFactory>();

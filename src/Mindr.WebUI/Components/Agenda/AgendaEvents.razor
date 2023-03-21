@@ -1,6 +1,6 @@
 ﻿@using Mindr.Core.Models.Connector;
+@using Mindr.WebUI.Components.Connector;
 @inherits FluentComponentBase
-
 
 <div style="width: -webkit-fill-available;">
     @DateTime.ToShortDateString() Events
@@ -13,10 +13,3 @@
     }
 </div>
 <ConnectorHookDialog @ref="@_connectorHookDialog" OnChanged="OnChanged"/>
-
-@code {
-    async Task OnChanged()
-    {
-        base.StateHasChanged();
-    }
-}

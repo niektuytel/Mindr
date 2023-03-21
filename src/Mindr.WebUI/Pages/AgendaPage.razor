@@ -4,9 +4,9 @@
 @using Mindr.Core.CalendarExtensions;
 @using System.Globalization;
 @using Mindr.Core.Models.Connector;
+@using Mindr.WebUI.Components.Agenda
 @using Mindr.WebUI.Components.Connector
 @using Newtonsoft.Json;
-@using Mindr.WebUI.Helpers.Agenda;
 
 @namespace Mindr.WebUI.Pages
 
@@ -37,90 +37,40 @@
                 </tr>
             </thead>
             <tbody>
-                @for (int i = 0; i < Helpers.Agenda.AgendaHelper.COUNT_DAYS_IN_CALENDAR; i++)
+                @for (int i = 0; i < Services.Agenda.AgendaClient.COUNT_DAYS_IN_CALENDAR; i++)
                 {
                     <tr>
                         @foreach (var day in Days.Skip(i * 7).Take<CalendarDay>(7))
                         {
-                            var eventItems = Events?.Where(item => day.Date >= item.StartDate.DateTime && day.Date <= item.EndDate.DateTime);
-    
-                            if (day.Date.Month == SelectedDate.Month)
-                            {
-                                <td>
-                                    <div style=@($"border-radius:10px;box-shadow: {(day.Date == SelectedDate.Date ? "0px 0px 3px 1px #1c7dce" : "0px 0px 5px 2px #0000001f")};width: 40px;height: 40px;cursor: pointer;margin:5px") onclick="@(async () => await OnSelectDate(day.Date))">
-                                        <b style="margin:2px">@day.DayNumber</b>
-                                        @if (eventItems?.Any() == true)
-                                        {
-                                            <Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="height: -webkit-fill-available;">
-                                                @foreach (var item in eventItems)
-                                                {
-                                                    <span class="dot" style=@($"background-color: {item.Color};")></span>
-                                                }
-                                            </Stack>
-                                        }
-                                    </div>
-                                </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <div style="border-radius:10px;box-shadow: 0px 0px 5px 2px #0000001f;width: 40px;height: 40px;cursor: pointer;margin:5px;background-color: #80808014;" onclick="@(async () => await OnSelectDate(day.Date))">
-                                        <b style="margin:2px">@day.DayNumber</b>
-                                        @if (eventItems?.Any() == true)
-                                        {
-                                            <Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="height: -webkit-fill-available;">
-                                                @foreach (var item in eventItems)
-                                                {
-                                                    <span class="dot" style=@($"background-color: {item.Color};")></span>
-                                                }
-                                            </Stack>
-                                        }
-                                    </div>
-                                </td>
-                            }
+                            <td>
+                                <AgendaDay 
+                                    IsSelectedMonth="@(day.Date.Month == SelectedDate.Month)" 
+                                    IsSelectedDay="@(day.Date == SelectedDate)"
+                                    Date="@day.Date" 
+                                    Data="Events?.Where(item => 
+                                        item != null && 
+                                        day.Date.Date >= item.StartDate.DateTime.Date && 
+                                        day.Date.Date <= item.EndDate.DateTime.Date
+                                    )"
+                                   HandleClick="HandleOnSelect" />
+                            </td>
                         }
                     </tr>
                 }
             </tbody>
         </table>
         <Stack Orientation="Orientation.Horizontal" HorizontalAlignment="StackHorizontalAlignment.Right" VerticalGap="0">
-            <FluentButton onclick="@(async () => await OnSelectDate(SelectedDate.Date.AddMonths(-1)))">
+            <FluentButton onclick="@(async () => await OnSelectMonth(SelectedDate.AddMonths(-1)))">
                 <FluentIcon Name="@FluentIcons.ChevronCircleLeft" Size="@IconSize.Size24" Variant="@IconVariant.Regular" Color="@Color.Accent" />
             </FluentButton>
             <div style="align-self: center;">
                 @DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(SelectedDate.Month)
             </div>
-            <FluentButton onclick="@(async () => await OnSelectDate(SelectedDate.Date.AddMonths(1)))">
+            <FluentButton onclick="@(async () => await OnSelectMonth(SelectedDate.AddMonths(1)))">
                 <FluentIcon Name="@FluentIcons.ChevronCircleRight" Size="@IconSize.Size24" Variant="@IconVariant.Regular" Color="@Color.Accent" />
             </FluentButton>
         </Stack>
     </div>
-   @* <div style="width: -webkit-fill-available;">
-        @SelectedDate.ToShortDateString() Events
-        @{
-            var items = Events?.Where(item => SelectedDate.Date >= item.StartDate.DateTime && SelectedDate.Date <= item.EndDate.DateTime);
-        }
-        @if (items?.Any() == true)
-        {
-            foreach (var item in items)
-            {
-                <AgendaEventItem Data="@item" OnUpsert="@HandleOnEventUpsert"/>
-            }
-        }
-    </div>
-    <ConnectorHookDialog @ref="@_connectorHookDialog" OnUpsert="OnUpsertConector" />*@
-    <AgendaEvents Data="@GetEventsInSelectedDate()" DateTime="@SelectedDate"/>
+    <AgendaEvents Data="@CurrentEvents" DateTime="@SelectedDate" />
 </Stack>
-
-@code {
-    private int MAX_ITEMS_THAT_FIT_DAY = 2;
-    private CalendarDay selectedDay = new CalendarDay
-    {
-        Date = DateTime.Now
-    };
-    private int year = DateTime.Now.Year;
-    private int month = DateTime.Now.Month;
-
-
-}
 

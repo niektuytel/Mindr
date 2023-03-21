@@ -49,13 +49,16 @@
 	<ItemGroup>
 	  <Content Remove="Components\AddEvent.razor" />
 	  <Content Remove="Components\Calendar.razor" />
+	  <Content Remove="Components\CalendarEventComp.razor" />
 	  <Content Remove="Components\EventList.razor" />
+	  <Content Remove="Components\MonthSelector.razor" />
 	  <Content Remove="Pages\Counter.razor" />
 	  <Content Remove="Pages\FetchData.razor" />
 	  <Content Remove="Shared\Header\AdministratorsMenu.razor" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Components\CalendarEventComp.razor.css" />
 	  <None Remove="Pages\ConnectorsPage.razor.css" />
 	</ItemGroup>
 
@@ -97,10 +100,6 @@
 	<ItemGroup>
 		<TrimmerRootAssembly Include="Microsoft.Authentication.WebAssembly.Msal" />
 		<TrimmerRootAssembly Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Services\Agenda\" />
 	</ItemGroup>
 
 </Project>

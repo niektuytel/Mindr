@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Fast.Components.FluentUI;
 using Mindr.Core.Models;
 using Mindr.Core.Models.Connector;
+using Mindr.WebUI.Components.Connector;
 using Mindr.WebUI.Services.Connector;
 using Newtonsoft.Json;
 
-namespace Mindr.WebUI.Components.Connector;
+namespace Mindr.WebUI.Components.Agenda;
 
 public partial class AgendaEventItem: FluentComponentBase
 {
@@ -18,12 +19,7 @@ public partial class AgendaEventItem: FluentComponentBase
     public ConnectorHookDialog HookDialogRef { get; set; } = default!;
 
     [Inject]
-    public IAccessTokenProvider TokenProvider { get; set; } = default!;
-
-    [Inject]
     public IConnectorClient ConnectorClient { get; set; } = default!;
-
-    private ConnectorBriefDTO? SelectedConnector { get; set; } = null;
 
     private IEnumerable<ConnectorBriefDTO>? Connectors { get; set; } = null;
 
@@ -33,34 +29,18 @@ public partial class AgendaEventItem: FluentComponentBase
     {
         IsLoading = true;
 
-        var response = await ConnectorClient.GetAll(eventId:Data.Id);
-        response.EnsureSuccessStatusCode();
+        var response = await ConnectorClient.GetAll(eventId: Data.Id);
+        if (response == null)
+        {
+            // Failed request
+            throw new NotImplementedException();
+        }
 
         var json = await response.Content.ReadAsStringAsync();
         if (!string.IsNullOrEmpty(json))
         {
             Connectors = JsonConvert.DeserializeObject<IEnumerable<ConnectorBriefDTO>>(json);
         }
-
-
-        await Console.Out.WriteLineAsync();
-
-
-        //var tokenResult = await TokenProvider.RequestAccessToken(new AccessTokenRequestOptions
-        //{
-        //    Scopes = new[] { "api://832f0468-7f76-4fb3-8d5c-7e5bd70d17ea/access_as_user" }
-        //});
-
-        //if (tokenResult.TryGetToken(out var accessToken))
-        //{
-        //    response.EnsureSuccessStatusCode();
-
-        //    var json = await response.Content.ReadAsStringAsync();
-        //    if (!string.IsNullOrEmpty(json))
-        //    {
-        //        Connectors = JsonConvert.DeserializeObject<IEnumerable<ConnectorBriefDTO>>(json);
-        //    }
-        //}
 
         IsLoading = false;
     }

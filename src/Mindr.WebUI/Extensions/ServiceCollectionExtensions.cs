@@ -1,8 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
+using Mindr.WebUI.Extensions;
 using Mindr.WebUI.Interfaces;
 using Mindr.WebUI.Options;
+using Mindr.WebUI.Services;
 
-namespace Mindr.WebUI;
+namespace Mindr.WebUI.Extensions;
 
 public static class ServiceCollectionExtensions
 {

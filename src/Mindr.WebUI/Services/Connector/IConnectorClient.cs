@@ -2,6 +2,6 @@
 {
     public interface IConnectorClient
     {
-        Task<HttpResponseMessage> GetAll(string query = "", string eventId = "");
+        Task<HttpResponseMessage?> GetAll(string query = "", string eventId = "");
     }
 }

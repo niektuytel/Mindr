@@ -2,8 +2,9 @@
 using Microsoft.Fast.Components.FluentUI;
 using Mindr.Core;
 using Mindr.Core.Models;
+using Mindr.WebUI.Components.Connector;
 
-namespace Mindr.WebUI.Components.Connector;
+namespace Mindr.WebUI.Components.Agenda;
 
 public partial class AgendaEvents: FluentComponentBase
 {
@@ -13,9 +14,10 @@ public partial class AgendaEvents: FluentComponentBase
     [Parameter, EditorRequired]
     public DateTime DateTime { get; set; } = default!;
 
-    private ConnectorHookDialog _connectorHookDialog;
+    private ConnectorHookDialog _connectorHookDialog = default!;
 
-    protected override async Task OnInitializedAsync()
+    public async Task OnChanged()
     {
+        base.StateHasChanged();
     }
 }

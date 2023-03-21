@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("namespace Mindr.WebUI.Test")]
-namespace Mindr.WebUI;
+namespace Mindr.WebUI.Services;
 
 internal class DragDropService<T>
 {
