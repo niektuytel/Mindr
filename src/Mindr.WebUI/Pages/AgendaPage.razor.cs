@@ -59,6 +59,7 @@ public partial class AgendaPage: FluentComponentBase
             date.Date <= item.EndDate.DateTime.Date
         );
 
+        SelectedDate = date;
         base.StateHasChanged();
         return CurrentEvents;
     }
