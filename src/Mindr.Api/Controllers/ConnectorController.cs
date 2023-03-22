@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
+using Mindr.Api.Persistence;
 using Mindr.Core.Enums;
 using Mindr.Core.Models.Connector;
 using Mindr.Core.Models.Connector.Http;
@@ -12,10 +13,12 @@ namespace Mindr.Api.Controllers;
 public class ConnectorController : BaseController
 {
     private readonly IMapper _mapper;
+    private readonly ApplicationContext _context;
 
-    public ConnectorController(IMapper mapper)
+    public ConnectorController(IMapper mapper, ApplicationContext context)
     {
         _mapper = mapper;
+        _context = context;
     }
 
     [HttpGet]
@@ -24,7 +27,8 @@ public class ConnectorController : BaseController
         var items = Items;
         if(!string.IsNullOrEmpty(eventId))
         {
-            var connectorIds = ItemHooks.Where(item => item.EventId == eventId && item.UserId == Guid.Parse("2cf632fd-c055-4ecf-abcc-6d9c29e919ec")).Select(item => item.ConnectorId);
+            var connectorIds = _context.ConnectorHooks.Where(item => item.EventId == eventId && item.UserId == Guid.Parse("2cf632fd-c055-4ecf-abcc-6d9c29e919ec")).Select(item => item.ConnectorId);
+
             items = Items.Where(item => connectorIds.Contains(item.Id));
         }
         else if (!string.IsNullOrEmpty(query))

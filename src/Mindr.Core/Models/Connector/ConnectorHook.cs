@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Mindr.Core.Models.Connector
@@ -14,6 +15,7 @@ namespace Mindr.Core.Models.Connector
         {
             
         }
+
         public ConnectorHook(ConnectorHook hook, ConnectorBriefDTO connector)
         {
             Id = hook.Id;
@@ -51,6 +53,7 @@ namespace Mindr.Core.Models.Connector
             Variables = connector.Variables;
         }
 
+        [Key]
         [JsonProperty("id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 

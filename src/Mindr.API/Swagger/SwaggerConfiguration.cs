@@ -61,13 +61,11 @@ internal static class SwaggerConfiguration
 
     internal static void UseSwaggerTools(this WebApplication? app, IConfiguration configuration)
     {
-        //// WARN: Configure the HTTP request pipeline. >> if (app.Environment.IsDevelopment())
+        // TODO: WARN: Configure the HTTP request pipeline. >> if (app.Environment.IsDevelopment())
 
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
-            //c.OAuthClientSecret(configuration["AzureAd:SlientSecret"]);
-
             var clientId = configuration["AzureAd:ClientId"];
             var scope = $"api://{clientId}/access_as_user";
 

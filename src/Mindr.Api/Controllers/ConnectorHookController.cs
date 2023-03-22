@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
+using Mindr.Api.Persistence;
 using Mindr.Core.Models.Connector;
 
 namespace Mindr.Api.Controllers;
@@ -10,15 +11,14 @@ namespace Mindr.Api.Controllers;
 public class ConnectorHookController : BaseController
 {
     private readonly IMapper _mapper;
+    private readonly ApplicationContext _context;
 
-    public ConnectorHookController(IMapper mapper)
+    public ConnectorHookController(IMapper mapper, ApplicationContext context)
     {
         _mapper = mapper;
+        _context = context;
     }
 
-    /// <summary>
-    /// Required role: 'ATM Admin'
-    /// </summary>
     /// <remarks>
     /// Get the details of a registered Afas AppConnector.  
     /// 
@@ -40,13 +40,10 @@ public class ConnectorHookController : BaseController
     //[ProducesResponseType(typeof(AppConnectorError), 404)]
     public IActionResult GetAll()
     {
-        var items = ItemHooks;
+        var items = _context.ConnectorHooks.ToArray();
         return Ok(items);
     }
 
-    /// <summary>
-    /// Required role: 'ATM Admin'
-    /// </summary>
     /// <remarks>
     /// Get the details of a registered Afas AppConnector.  
     /// 
@@ -67,13 +64,12 @@ public class ConnectorHookController : BaseController
     //[ProducesResponseType(typeof(AppConnectorError), 404)]
     public IActionResult Upsert([FromBody]ConnectorHook payload)
     {
-        ItemHooks.Add(payload);
+        _context.ConnectorHooks.Add(payload);
+        _context.SaveChanges();
+
         return Ok();
     }
 
-    /// <summary>
-    /// Required role: 'ATM Admin'
-    /// </summary>
     /// <remarks>
     /// Get the details of a registered Afas AppConnector.  
     /// 
@@ -94,6 +90,14 @@ public class ConnectorHookController : BaseController
     //[ProducesResponseType(typeof(AppConnectorError), 404)]
     public IActionResult Delete(Guid id)
     {
+        var entity = _context.ConnectorHooks.FirstOrDefault(x => x.Id == id);
+        if (entity == null) 
+        {
+            return NotFound();
+        }
+
+        _context.ConnectorHooks.Remove(entity);
+        _context.SaveChanges();
         return Ok();
     }
 
