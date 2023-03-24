@@ -19,6 +19,9 @@ public class ConnectorEventController : BaseController
         _context = context;
     }
 
+
+    // TODO: Play responses to user from exception
+
     /// <remarks>
     /// Get the details of a registered Afas AppConnector.  
     /// 

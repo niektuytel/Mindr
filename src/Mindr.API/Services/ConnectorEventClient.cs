@@ -65,6 +65,8 @@ public class ConnectorEventClient : IConnectorEventClient
             throw new ApiRequestException(ApiResponse.BadRequest, $"entity parameter '{nameof(Core.Enums.EventType.OnDateTime)}'");
         }
 
+        // TODO: is time still valid to continue time < datetime.now?
+
         // avoid duplicated jobs
         if (!string.IsNullOrEmpty(entity.JobId))
         {
@@ -125,6 +127,8 @@ public class ConnectorEventClient : IConnectorEventClient
 
     }
 
+
+    // TODO: Create Delete Method!
 
 
 
