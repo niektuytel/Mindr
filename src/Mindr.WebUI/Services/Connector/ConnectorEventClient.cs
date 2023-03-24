@@ -16,20 +16,20 @@ using System.Threading.Tasks;
 
 namespace Mindr.WebUI.Services.Connector;
 
-public class ConnectorHookClient : IConnectorHookClient
+public class ConnectorEventClient : IConnectorEventClient
 {
     private readonly HttpClient _httpClient;
     private readonly ApiOptions _options;
     private readonly IAccessTokenProvider _tokenProvider;
 
-    public ConnectorHookClient(IHttpClientFactory factory, IAccessTokenProvider tokenProvider, IOptions<ApiOptions> options)
+    public ConnectorEventClient(IHttpClientFactory factory, IAccessTokenProvider tokenProvider, IOptions<ApiOptions> options)
     {
         _httpClient = factory.CreateClient(nameof(AuthorizationApiMessageHandler));
         _tokenProvider = tokenProvider;
         _options = options.Value!;
     }
 
-    private string ControllerUrl => $"{_options.BaseUrl}/connectorhook";
+    private string ControllerUrl => $"{_options.BaseUrl}/connectorevent";
 
     private async Task<bool> TrySetAuthorization(HttpRequestMessage request)
     {
@@ -45,7 +45,7 @@ public class ConnectorHookClient : IConnectorHookClient
         return false;
     }
 
-    public async Task<HttpResponseMessage?> Upsert(ConnectorHook hook)
+    public async Task<HttpResponseMessage?> Upsert(ConnectorEvent @event)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, ControllerUrl);
         var validAuth = await TrySetAuthorization(request);
@@ -53,16 +53,16 @@ public class ConnectorHookClient : IConnectorHookClient
 
         request.Headers.Add("accept", "*/*");
 
-        var json = JsonConvert.SerializeObject(hook);
+        var json = JsonConvert.SerializeObject(@event);
         request.Content = new StringContent(json);
 
         var response = await _httpClient.SendAsync(request);
         return response;
     }
 
-    public async Task<HttpResponseMessage?> Delete(Guid hookid)
+    public async Task<HttpResponseMessage?> Delete(Guid eventid)
     {
-        var request = new HttpRequestMessage(HttpMethod.Delete, $"{ControllerUrl}/{hookid}");
+        var request = new HttpRequestMessage(HttpMethod.Delete, $"{ControllerUrl}/{eventid}");
         var validAuth = await TrySetAuthorization(request);
         if (!validAuth) return null;
 

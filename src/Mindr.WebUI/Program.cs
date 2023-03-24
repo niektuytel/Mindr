@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Fast.Components.FluentUI;
 using Mindr.WebUI.Services;
-using Mindr.Core.Services.Connector;
+using Mindr.Core.Services.Connectors;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication.Internal;
 using Mindr.WebUI.Handlers;
@@ -32,7 +32,7 @@ builder.Services.AddHttpClient(nameof(AuthorizationApiMessageHandler), client =>
 // Services
 builder.Services.AddTransient<IAgendaClient, AgendaClient>();
 builder.Services.AddTransient<IConnectorClient, ConnectorClient>();
-builder.Services.AddTransient<IConnectorHookClient, ConnectorHookClient>();
+builder.Services.AddTransient<IConnectorEventClient, ConnectorEventClient>();
 builder.Services.AddTransient<IHttpCollectionFactory, HttpCollectionFactory>();
 builder.Services.AddTransient<IHttpCollectionClient, HttpCollectionClient>();
 

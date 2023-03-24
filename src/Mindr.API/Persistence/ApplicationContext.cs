@@ -14,6 +14,9 @@ public class ApplicationContext : DbContext, IApplicationContext
         base.OnModelCreating(modelBuilder);
     }
 
-    public virtual DbSet<ConnectorHook> ConnectorHooks => Set<ConnectorHook>();
+    public virtual DbSet<Connector> Connectors => Set<Connector>();
+
+    public virtual DbSet<ConnectorEvent> ConnectorEvents => Set<ConnectorEvent>();
+
 
 }

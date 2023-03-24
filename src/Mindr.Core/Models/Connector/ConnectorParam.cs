@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Mindr.Core.Models.Connector
 {
-    public class ConnectorVariable: PostmanVariable
+    public class ConnectorParam: PostmanVariable
     {
         [Key]
         public int Id { get; set; }

@@ -14,7 +14,7 @@ public partial class AgendaEvents: FluentComponentBase
     [Parameter, EditorRequired]
     public DateTime Date { get; set; } = default!;
 
-    private ConnectorHookDialog _connectorHookDialog = default!;
+    private ConnectorEventDialog _connectorEventDialog = default!;
 
     public async Task OnChanged()
     {

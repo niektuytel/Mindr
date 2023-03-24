@@ -8,7 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 
-namespace Mindr.Core.Services.Connector
+namespace Mindr.Core.Services.Connectors
 {
     public class HttpCollectionFactory : IHttpCollectionFactory
     {

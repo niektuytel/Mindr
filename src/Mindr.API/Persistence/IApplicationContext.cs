@@ -5,6 +5,6 @@ namespace Mindr.Api.Persistence
 {
     public interface IApplicationContext
     {
-        DbSet<ConnectorHook> ConnectorHooks { get; }
+        DbSet<ConnectorEvent> ConnectorEvents { get; }
     }
 }

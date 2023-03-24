@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Mindr.Core.Models.Connector
@@ -11,8 +12,11 @@ namespace Mindr.Core.Models.Connector
     /// </summary>
     public class Connector
     {
+        public Connector() { }
+
+        [Key]
         [JsonProperty("id")]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [JsonProperty("color")]
         public string Color { get; set; }
@@ -24,7 +28,7 @@ namespace Mindr.Core.Models.Connector
         public string Description { get; set; }
 
         [JsonProperty("variables")]
-        public IEnumerable<ConnectorVariable> Variables { get; set; }
+        public IEnumerable<ConnectorParam> Variables { get; set; }
 
         [JsonProperty("pipeline")]
         public IEnumerable<HttpItem> Pipeline { get; set; }

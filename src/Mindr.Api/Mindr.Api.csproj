@@ -42,10 +42,17 @@
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 	  <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.4.0" />
+	  <PackageReference Include="Hangfire.Core" Version="1.7.*" />
+	  <PackageReference Include="Hangfire.SqlServer" Version="1.7.*" />
+	  <PackageReference Include="Hangfire.AspNetCore" Version="1.7.*" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Mindr.Core\Mindr.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

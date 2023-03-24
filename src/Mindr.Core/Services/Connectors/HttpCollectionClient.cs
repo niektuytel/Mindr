@@ -1,5 +1,6 @@
 ﻿using Force.DeepCloner;
 using Mindr.Core.Extensions;
+using Mindr.Core.Models.Connector;
 using Mindr.Core.Models.Connector.Http;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Net.WebRequestMethods;
 
-namespace Mindr.Core.Services.Connector
+namespace Mindr.Core.Services.Connectors
 {
     public class HttpCollectionClient : IHttpCollectionClient
     {
@@ -37,6 +38,8 @@ namespace Mindr.Core.Services.Connector
 
         public async Task<List<HttpItem>> SendAsync(List<HttpItem> pipeline)
         {
+            pipeline ??= new List<HttpItem>();
+
             for (int i = 0; i < pipeline.Count; i++)
             {
                 pipeline[i] = await SendAsync(pipeline[i]);
@@ -52,6 +55,9 @@ namespace Mindr.Core.Services.Connector
             return pipeline;
         }
 
-
+        public Task SendAsync(Connector connector)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

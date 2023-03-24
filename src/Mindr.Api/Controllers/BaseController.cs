@@ -181,7 +181,7 @@ public class BaseController : ControllerBase
         Color = "orange",
         Name = "Send Whatsapp Text Message",
         Description = "Some description explain the product",
-        Variables = new ConnectorVariable[]
+        Variables = new ConnectorParam[]
             {
                 new()
                 {
@@ -220,7 +220,7 @@ public class BaseController : ControllerBase
         Color = "blue",
         Name = "Send WhatsApp Sample Text Message",
         Description = "Some description explain the product",
-        Variables = new ConnectorVariable[]
+        Variables = new ConnectorParam[]
             {
                 new()
                 {

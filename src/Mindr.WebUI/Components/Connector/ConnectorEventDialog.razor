@@ -43,7 +43,7 @@
                                         Color="@Color.Accent" 
                             />
                         </FluentButton>
-                        if (CurrentHook?.ConnectorId != null)
+                        if (CurrentEvent?.ConnectorId != null)
                         {
                             <FluentButton Appearance="Appearance.Accent"
                                   Autofocus="true"
@@ -55,7 +55,7 @@
                                       Autofocus="true"
                                       @onclick="HandleOnUpsert"
                         >
-                            @(CurrentHook?.ConnectorId != null ? "Update" : "Create")
+                            @(CurrentEvent?.ConnectorId != null ? "Update" : "Create")
                         </FluentButton>
                     }
                 </Stack>

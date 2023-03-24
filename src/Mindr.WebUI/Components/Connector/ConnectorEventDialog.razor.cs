@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿
+using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
 using Mindr.Core.Models.Connector;
 using Mindr.Core.Models;
@@ -7,16 +8,17 @@ using Mindr.Core.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Mindr.WebUI.Services.Connector;
 using Azure;
+using Mindr.Core.Enums;
 
 namespace Mindr.WebUI.Components.Connector;
 
-public partial class ConnectorHookDialog: FluentComponentBase
+public partial class ConnectorEventDialog: FluentComponentBase
 {
     [Parameter, EditorRequired]
     public Func<Task> OnChanged { get; set; } = default!;
 
     [Parameter]
-    public ConnectorHook? CurrentHook { get; set; } = null;
+    public ConnectorEvent? CurrentEvent { get; set; } = null;
 
     [Parameter]
     public ConnectorBriefDTO? Data { get; set; } = null;
@@ -25,7 +27,7 @@ public partial class ConnectorHookDialog: FluentComponentBase
     public NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public IConnectorHookClient HookClient { get; set; } = default!;
+    public IConnectorEventClient EventClient { get; set; } = default!;
 
     [Inject]
     public IConnectorClient ConnectorClient { get; set; } = default!;
@@ -67,8 +69,8 @@ public partial class ConnectorHookDialog: FluentComponentBase
     {
         IsLoading = true;
 
-        var hook = new ConnectorHook(CurrentHook, Data);
-        var response = await HookClient.Upsert(hook);
+        var @event = new ConnectorEvent(CurrentEvent, Data);
+        var response = await EventClient.Upsert(@event);
         if (response == null) 
         {
             // Failed request
@@ -83,10 +85,10 @@ public partial class ConnectorHookDialog: FluentComponentBase
 
     public async Task HandleOnDelete()
     {
-        if (CurrentHook == null) return;
+        if (CurrentEvent == null) return;
         IsLoading = true;
 
-        var response = await HookClient.Delete(CurrentHook.Id);
+        var response = await EventClient.Delete(CurrentEvent.Id);
         if (response == null)
         {
             // Failed request
@@ -102,14 +104,24 @@ public partial class ConnectorHookDialog: FluentComponentBase
     public void HandleOnDialogOpen(AgendaEvent agendaEvent, ConnectorBriefDTO? connector = null)
     {
         Data = connector;
+        var events = new List<EventParam>
+        {
+            new EventParam()
+            {
+                Type = EventType.OnDateTime,
+                Value = agendaEvent.StartDate.DateTime.ToLongDateString()
+            }
+        };
+
         if (connector != null)
         {
             Query = connector.Name;
-            CurrentHook = new ConnectorHook(agendaEvent.Id, connector);
+
+            CurrentEvent = new ConnectorEvent(agendaEvent.Id, events, connector);
         }
         else
         {
-            CurrentHook = new ConnectorHook(agendaEvent.Id);
+            CurrentEvent = new ConnectorEvent(agendaEvent.Id, events);
         }
 
         Dialog.Show();

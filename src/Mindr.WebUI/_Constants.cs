@@ -21,7 +21,7 @@ internal static class _Constants
             Href = "/agenda",
         },
         new Page(){
-            Name = "Connector",
+            Name = "Connectors",
             Icon = @FluentIcons.CalendarAgenda,
             Href = "/connector",
         },

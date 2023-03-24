@@ -16,7 +16,7 @@ public partial class AgendaEventItem: FluentComponentBase
     public AgendaEvent Data { get; set; } = default!;
 
     [Parameter, EditorRequired]
-    public ConnectorHookDialog HookDialogRef { get; set; } = default!;
+    public ConnectorEventDialog EventDialogRef { get; set; } = default!;
 
     [Inject]
     public IConnectorClient ConnectorClient { get; set; } = default!;

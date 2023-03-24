@@ -27,7 +27,7 @@ public class ConnectorController : BaseController
         var items = Items;
         if(!string.IsNullOrEmpty(eventId))
         {
-            var connectorIds = _context.ConnectorHooks.Where(item => item.EventId == eventId && item.UserId == Guid.Parse("2cf632fd-c055-4ecf-abcc-6d9c29e919ec")).Select(item => item.ConnectorId);
+            var connectorIds = _context.ConnectorEvents.Where(item => item.EventId == eventId && item.UserId == Guid.Parse("2cf632fd-c055-4ecf-abcc-6d9c29e919ec")).Select(item => item.ConnectorId);
 
             items = Items.Where(item => connectorIds.Contains(item.Id));
         }

@@ -8,8 +8,8 @@
     {
         foreach (var item in Data)
         {
-            <AgendaEventItem Data="@item" HookDialogRef="@_connectorHookDialog"/>
+            <AgendaEventItem Data="@item" EventDialogRef="@_connectorEventDialog"/>
         }
     }
 </div>
-<ConnectorHookDialog @ref="@_connectorHookDialog" OnChanged="OnChanged"/>
+<ConnectorEventDialog @ref="@_connectorEventDialog" OnChanged="OnChanged"/>
