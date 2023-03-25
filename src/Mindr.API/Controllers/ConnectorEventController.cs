@@ -2,7 +2,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
+using Microsoft.OpenApi.Expressions;
+using Mindr.Api.Extensions;
 using Mindr.Api.Persistence;
+using Mindr.API.Exceptions;
+using Mindr.API.Services;
 using Mindr.Core.Models.Connector;
 
 namespace Mindr.Api.Controllers;
@@ -10,98 +14,83 @@ namespace Mindr.Api.Controllers;
 [Authorize]
 public class ConnectorEventController : BaseController
 {
-    private readonly IMapper _mapper;
-    private readonly ApplicationContext _context;
-
-    public ConnectorEventController(IMapper mapper, ApplicationContext context)
+    private readonly IConnectorEventClient _connectorEventClient;
+    
+    public ConnectorEventController(IConnectorEventClient connectorEventClient)
     {
-        _mapper = mapper;
-        _context = context;
+        _connectorEventClient = connectorEventClient;
     }
 
-
-    // TODO: Play responses to user from exception
-
     /// <remarks>
-    /// Get the details of a registered Afas AppConnector.  
-    /// 
-    /// AfasEnv types:
-    /// - Production = 0 (default)
-    /// - Test       = 1
-    /// - Accept     = 2
-    /// 
+    /// Get all connector events from user.
     /// </remarks>
-    /// <item code="200">Found connector</item>
-    /// <item code="400">Invalid item</item>
-    /// <item code="401">Unauthorized</item>
-    /// <item code="403">Forbidden, Missing role 'Atm.Admin'</item>
-    /// <item code="404">AppConnector not found</item>
+    /// <credentials code="200">All related events</credentials>
+    /// <credentials code="400">Invalid credentials</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
     [HttpGet]
     [Produces("application/json")]
     [ProducesResponseType(typeof(IEnumerable<ConnectorEvent>), 200)]
-    //[ProducesResponseType(typeof(AppConnectorError), 400)]
-    //[ProducesResponseType(typeof(AppConnectorError), 404)]
-    public IActionResult GetAll()
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    public async Task<IActionResult> GetAll()
     {
-        var items = _context.ConnectorEvents.ToArray();
-        return Ok(items);
+        var response = await HandleRequest(
+            async () => {
+                var (tenantId, userId, mail) = User.GetInfo();
+                
+                return await _connectorEventClient.GetAll(userId);
+            }
+        );
+
+        return response;
     }
 
     /// <remarks>
-    /// Get the details of a registered Afas AppConnector.  
-    /// 
-    /// AfasEnv types:
-    /// - Production = 0 (default)
-    /// - Test       = 1
-    /// - Accept     = 2
-    /// 
+    /// Update or Insert Connector Event.
     /// </remarks>
-    /// <item code="200">Found connector</item>
-    /// <item code="400">Invalid item</item>
-    /// <item code="401">Unauthorized</item>
-    /// <item code="403">Forbidden, Missing role 'Atm.Admin'</item>
-    /// <item code="404">AppConnector not found</item>
+    /// <credentials code="200">Successfully requested</credentials>
+    /// <credentials code="400">Invalid request</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
     [HttpPost]
-    [ProducesResponseType(typeof(IEnumerable<ConnectorEvent>), 200)]
-    //[ProducesResponseType(typeof(AppConnectorError), 400)]
-    //[ProducesResponseType(typeof(AppConnectorError), 404)]
-    public IActionResult Upsert([FromBody]ConnectorEvent payload)
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    public async Task<IActionResult> Upsert([FromBody]ConnectorEvent payload)
     {
-        _context.ConnectorEvents.Add(payload);
-        _context.SaveChanges();
+        var response = await HandleRequest(
+            async () => {
+                var (tenantId, userId, mail) = User.GetInfo();
+                payload.UserId = userId;
 
-        return Ok();
+                await _connectorEventClient.Upsert(payload);
+            }
+        );
+
+        return response;
     }
 
     /// <remarks>
-    /// Get the details of a registered Afas AppConnector.  
-    /// 
-    /// AfasEnv types:
-    /// - Production = 0 (default)
-    /// - Test       = 1
-    /// - Accept     = 2
-    /// 
+    /// Delete connector event.
     /// </remarks>
-    /// <item code="200">Found connector</item>
-    /// <item code="400">Invalid item</item>
-    /// <item code="401">Unauthorized</item>
-    /// <item code="403">Forbidden, Missing role 'Atm.Admin'</item>
-    /// <item code="404">AppConnector not found</item>
+    /// <credentials code="200">Successfull delete connector</credentials>
+    /// <credentials code="400">Bad request</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
+    /// <credentials code="404">Not Found</credentials>
     [HttpDelete("{id}")]
-    [ProducesResponseType(typeof(IEnumerable<ConnectorEvent>), 200)]
-    //[ProducesResponseType(typeof(AppConnectorError), 400)]
-    //[ProducesResponseType(typeof(AppConnectorError), 404)]
-    public IActionResult Delete(Guid id)
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> Delete(Guid id)
     {
-        var entity = _context.ConnectorEvents.FirstOrDefault(x => x.Id == id);
-        if (entity == null) 
-        {
-            return NotFound();
-        }
+        var response = await HandleRequest(
+            async () => {
+                var (tenantId, userId, mail) = User.GetInfo();
+                await _connectorEventClient.Delete(id, userId);
+            }
+        );
 
-        _context.ConnectorEvents.Remove(entity);
-        _context.SaveChanges();
-        return Ok();
+        return response;
     }
 
 }

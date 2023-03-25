@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
+using Mindr.Api.Persistence;
+using Mindr.API.Exceptions;
 using Mindr.Core.Enums;
 using Mindr.Core.Models.Connector;
 using Mindr.Core.Models.Connector.Http;
@@ -13,6 +16,59 @@ namespace Mindr.Api.Controllers;
 [Route("api/[controller]")]
 public class BaseController : ControllerBase
 {
+    /// <summary>
+    /// Handles the request.
+    /// </summary>
+    /// <param name="onFunction">The function that will been handle in the response</param>
+    /// <returns></returns>
+    protected async Task<IActionResult> HandleRequest(Func<Task> onFunction)
+    {
+        try
+        {
+            await onFunction();
+            return Ok();
+        }
+        catch (ApiRequestException ex)
+        {
+            return ex.ResponseCode switch
+            {
+                API.Enums.ApiResponse.InternalServerError => new StatusCodeResult(StatusCodes.Status500InternalServerError),
+                API.Enums.ApiResponse.BadRequest => BadRequest(ex.Message),
+                API.Enums.ApiResponse.NotFound => NotFound(ex.Message),
+                API.Enums.ApiResponse.Created => new StatusCodeResult(StatusCodes.Status201Created),
+                API.Enums.ApiResponse.Ok => Ok(ex.Message),
+                _ => throw new NotImplementedException($"Unknown response: {ex.ResponseCode}, message:{ex.Message}"),
+            };
+        }
+    }
+
+    /// <summary>
+    /// Handles the request.
+    /// </summary>
+    /// <param name="onFunction">The function that will been handle in the response</param>
+    /// <returns></returns>
+    protected async Task<IActionResult> HandleRequest(Func<Task<object>> onFunction)
+    {
+        try
+        {
+            var response = await onFunction();
+            return Ok(response!);
+        }
+        catch (ApiRequestException ex)
+        {
+            return ex.ResponseCode switch
+            {
+                API.Enums.ApiResponse.InternalServerError => new StatusCodeResult(StatusCodes.Status500InternalServerError),
+                API.Enums.ApiResponse.BadRequest => BadRequest(ex.Message),
+                API.Enums.ApiResponse.NotFound => NotFound(ex.Message),
+                API.Enums.ApiResponse.Created => new StatusCodeResult(StatusCodes.Status201Created),
+                API.Enums.ApiResponse.Ok => Ok(ex.Message),
+                _ => throw new NotImplementedException($"Unknown response: {ex.ResponseCode}, message:{ex.Message}"),
+            };
+        }
+    }
+
+
     protected static HttpItem HttpItem1 = new()
     {
         Name = "Send Sample Text Message",

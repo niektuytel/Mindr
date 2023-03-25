@@ -26,7 +26,7 @@ namespace Mindr.Core.Models.Connector
             ConnectorParams = connector.Variables;
         }
 
-        public ConnectorEvent(Guid userId, string eventId, Connector connector)
+        public ConnectorEvent(string userId, string eventId, Connector connector)
         {
             UserId = userId;
             EventId = eventId;
@@ -53,7 +53,7 @@ namespace Mindr.Core.Models.Connector
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [JsonProperty("userid")]
-        public Guid? UserId { get; set; } = Guid.Empty;
+        public string? UserId { get; set; } = "";
 
         [JsonProperty("job_id")]
         public string JobId { get; set; } = "";

@@ -160,9 +160,9 @@ public class Program
                 };
 
                 // seed database
-                context.ConnectorEvents.Add(new ConnectorEvent(Guid.Parse("2cf632fd-c055-4ecf-abcc-6d9c29e919ec"), "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", Connector1)); //Test 1
-                context.ConnectorEvents.Add(new ConnectorEvent(Guid.Parse("2cf632fd-c055-4ecf-abcc-6d9c29e919ec"), "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", Connector2)); //Test 2
-                //context.ConnectorEvents.Add(new ConnectorHook(Guid.Parse("2cf632fd-c055-4ecf-abcc-6d9c29e919ec"), "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", Connector2)); //Test 2
+                context.ConnectorEvents.Add(new ConnectorEvent("2cf632fd-c055-4ecf-abcc-6d9c29e919ec", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", Connector1)); //Test 1
+                context.ConnectorEvents.Add(new ConnectorEvent("2cf632fd-c055-4ecf-abcc-6d9c29e919ec", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", Connector2)); //Test 2
+                //context.ConnectorEvents.Add(new ConnectorHook("2cf632fd-c055-4ecf-abcc-6d9c29e919ec", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", Connector2)); //Test 2
 
                 context.SaveChanges();
             }

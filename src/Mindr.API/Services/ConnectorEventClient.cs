@@ -15,14 +15,12 @@ public class ConnectorEventClient : IConnectorEventClient
 {
     private readonly IHttpCollectionClient _connectorClient;
     private readonly IBackgroundJobClient _backgroundJobs;
-    private readonly IMapper _mapper;
     private readonly ApplicationContext _context;
 
-    public ConnectorEventClient(IHttpCollectionClient collectionClient, IBackgroundJobClient backgroundJobs, IMapper mapper, ApplicationContext context)
+    public ConnectorEventClient(IHttpCollectionClient collectionClient, IBackgroundJobClient backgroundJobs, ApplicationContext context)
     {
         _connectorClient = collectionClient;
         _backgroundJobs = backgroundJobs;
-        _mapper = mapper;
         _context = context;
     }
 
@@ -62,7 +60,7 @@ public class ConnectorEventClient : IConnectorEventClient
         var isvalid = DateTime.TryParse(schedule.Value, out DateTime datetime);
         if (!isvalid)
         {
-            throw new ApiRequestException(ApiResponse.BadRequest, $"entity parameter '{nameof(Core.Enums.EventType.OnDateTime)}'");
+            throw new ApiRequestException(ApiResponse.BadRequest, $"items parameter '{nameof(Core.Enums.EventType.OnDateTime)}'");
         }
 
         // TODO: is time still valid to continue time < datetime.now?
@@ -92,6 +90,17 @@ public class ConnectorEventClient : IConnectorEventClient
         return true;
     }
 
+    public async Task<IEnumerable<ConnectorEvent>> GetAll(string userId)
+    {
+        var items = _context.ConnectorEvents.Where(x => x.UserId == userId);
+        if (items?.Any() != true)
+        {
+            throw new ApiRequestException(ApiResponse.NotFound, $"Connector event on user {userId}");
+        }
+
+        return items.AsEnumerable();
+    }
+
     public async Task Upsert(ConnectorEvent @event)
     {
         if (@event == null)
@@ -109,7 +118,7 @@ public class ConnectorEventClient : IConnectorEventClient
         }
         else
         {
-            // TODO: validate: entity
+            // TODO: validate: items
             entity!.Update(@event);
         }
 
@@ -126,6 +135,22 @@ public class ConnectorEventClient : IConnectorEventClient
         }
 
     }
+
+    public async Task Delete(Guid id, string userId)
+    {
+        var entity = _context.ConnectorEvents.FirstOrDefault(x => x.Id == id && x.UserId == userId) 
+            ?? throw new ApiRequestException(ApiResponse.NotFound, $"Connector event {id}");
+
+        _context.ConnectorEvents.Remove(entity);
+        await _context.SaveChangesAsync();
+        
+        // remove from background queue
+        if (!string.IsNullOrEmpty(entity.JobId))
+        {
+            _backgroundJobs.Delete(entity.JobId);
+        }
+    }
+
 
 
     // TODO: Create Delete Method!

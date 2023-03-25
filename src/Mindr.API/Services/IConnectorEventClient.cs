@@ -1,9 +1,10 @@
 ﻿using Mindr.Core.Models.Connector;
 
-namespace Mindr.API.Services
+namespace Mindr.API.Services;
+
+public interface IConnectorEventClient
 {
-    public interface IConnectorEventClient
-    {
-        Task Upsert(ConnectorEvent @event);
-    }
+    Task<IEnumerable<ConnectorEvent>> GetAll(string userId);
+    Task Upsert(ConnectorEvent @event);
+    Task Delete(Guid id, string userId);
 }
