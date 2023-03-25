@@ -8,7 +8,7 @@ using Mindr.Api.Persistence;
 
 #nullable disable
 
-namespace Mindr.API.Migrations
+namespace Mindr.Api.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
     partial class ApplicationContextModelSnapshot : ModelSnapshot
@@ -57,8 +57,8 @@ namespace Mindr.API.Migrations
                     b.Property<string>("JobId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

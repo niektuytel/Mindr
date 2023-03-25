@@ -9,11 +9,11 @@ using Mindr.Api.Persistence;
 
 #nullable disable
 
-namespace Mindr.API.Migrations
+namespace Mindr.Api.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20230323235833_Initial")]
-    partial class Initial
+    [Migration("20230325153554_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -59,8 +59,8 @@ namespace Mindr.API.Migrations
                     b.Property<string>("JobId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

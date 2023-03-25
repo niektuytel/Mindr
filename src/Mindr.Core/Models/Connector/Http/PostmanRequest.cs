@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Mindr.Core.Models.Connector.Http
 {
@@ -8,7 +9,7 @@ namespace Mindr.Core.Models.Connector.Http
         public string Method { get; set; }
 
         [JsonProperty("header")]
-        public HttpHeader[] Header { get; set; }
+        public IEnumerable<HttpHeader> Header { get; set; }
 
         [JsonProperty("body")]
         public HttpBody Body { get; set; }

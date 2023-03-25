@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Hangfire;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Graph;
 using Mindr.Api.Persistence;
 using Mindr.API.Enums;
@@ -32,7 +33,10 @@ public class ConnectorEventClient : IConnectorEventClient
             return false;
         }
 
-        var connector = _context.Connectors.FirstOrDefault(item => item.Id == entity.ConnectorId);
+        var connector = _context.Connectors
+            .Include(item => item.Pipeline)
+            .Include(item => item.Variables)
+            .FirstOrDefault(item => item.Id == entity.ConnectorId);
         if (connector == null)
         {
             throw new ApiRequestException(ApiResponse.BadRequest, $"connector on id: '{entity.ConnectorId}' is unknown");
@@ -51,7 +55,10 @@ public class ConnectorEventClient : IConnectorEventClient
             return false;
         }
 
-        var connector = _context.Connectors.FirstOrDefault(item => item.Id == entity.ConnectorId);
+        var connector = _context.Connectors
+            .Include(item => item.Pipeline)
+            .Include(item => item.Variables)
+            .FirstOrDefault(item => item.Id == entity.ConnectorId);
         if (connector == null)
         {
             throw new ApiRequestException(ApiResponse.BadRequest, $"connector on id: '{entity.ConnectorId}' is unknown");

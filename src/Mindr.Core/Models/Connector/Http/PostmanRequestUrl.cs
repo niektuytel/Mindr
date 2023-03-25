@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Mindr.Core.Models.Connector.Http
@@ -23,7 +24,7 @@ namespace Mindr.Core.Models.Connector.Http
         public string[] Path { get; set; }
 
         [JsonProperty("query")]
-        public HttpRequestUrlQuery[] Query { get; set; }
+        public IEnumerable<HttpRequestUrlQuery> Query { get; set; }
 
     }
 }

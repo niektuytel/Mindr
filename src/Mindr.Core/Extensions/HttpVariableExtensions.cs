@@ -42,7 +42,7 @@ namespace Mindr.Core.Extensions
             return variables;
         }
 
-        public static IEnumerable<HttpVariable> GetVariables(this HttpHeader[] lines, VariablePosition location)
+        public static IEnumerable<HttpVariable> GetVariables(this IEnumerable<HttpHeader> lines, VariablePosition location)
         {
             var variables = new List<HttpVariable>();
             foreach (var line in lines)
@@ -94,7 +94,7 @@ namespace Mindr.Core.Extensions
             return output;
         }
 
-        public static HttpHeader[] SetVariables(this IEnumerable<HttpVariable> variables, HttpHeader[] lines, VariablePosition location)
+        public static IEnumerable<HttpHeader> SetVariables(this IEnumerable<HttpVariable> variables, IEnumerable<HttpHeader> lines, VariablePosition location)
         {
             var output = lines;
             if (variables != null)

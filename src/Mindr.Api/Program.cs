@@ -13,6 +13,7 @@ using Microsoft.Graph.ExternalConnectors;
 using Mindr.API.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Mindr.Core.Services.Connectors;
+using Mindr.Core.Enums;
 
 namespace Mindr.Api;
 
@@ -73,6 +74,169 @@ public class Program
             var created = context.Database.EnsureCreated();
             if(created)
             {
+                var httpItem1 = new HttpItem()
+                {
+                    Name = "Send Sample Text Message",
+                    Description = "Sample text",
+                    Request = new()
+                    {
+                        Variables = new List<HttpVariable>()
+                        {
+                            new()
+                            {
+                                Location = VariablePosition.Uri,
+                                Key = "Version",
+                                Value = "v15.0"
+                            },
+                            new()
+                            {
+                                Location = VariablePosition.Uri,
+                                Key = "Phone-Number-ID",
+                                Value = "113037821608895"
+                            },
+                            new()
+                            {
+                                Location = VariablePosition.Header,
+                                Key = "User-Access-Token",
+                                Value = "EAALuL1ZAZBrfMBAExyTHn1XOJN9SCkZAyLkkwvfgAF34gDtIIIgF5VEn4iihUsHSSgbICtzLGhZBMfpwOZA1f0KzZA7DcmKWIW1nnsyOoWJgFknicQI0OvfrbW4c31rABm9RKR8Bq3EckyUYROWeX1iSipaPEJdlC6LHH5I9ILHMzC4ZAcUaZBshmtZBNyHQO8yRZBZCSToD0GG4wPZC7TDt46he"
+                            },
+                            new()
+                            {
+                                Location = VariablePosition.Body,
+                                Key = "Recipient-Phone-Number",
+                                Value = "31618395668"
+                            }
+                        },
+
+                        Method = "POST",
+                        Url = new()
+                        {
+                            Raw = "https://graph.facebook.com/{{Version}}/{{Phone-Number-ID}}/messages",
+                            Protocol = "https",
+                            Host = new string[]
+                                {
+                                        "graph",
+                                        "facebook",
+                                        "com"
+                                },
+                            Path = new string[]
+                                {
+                                    "{{Version}}",
+                                    "{{Phone-Number-ID}}",
+                                    "messages"
+                                }
+                        },
+                        Header = new HttpHeader[]
+                        {
+                            new()
+                            {
+                                Key = "Authorization",
+                                Value = "Bearer {{User-Access-Token}}",
+                                Type = "text"
+                            },
+                            new()
+                            {
+                                Key = "Content-Type",
+                                Value = "application/json",
+                                Type = "text"
+                            }
+                        },
+                        Body = new()
+                        {
+                            Mode = "raw",
+                            Raw = "{\n    \"messaging_product\": \"whatsapp\",\n    \"to\": \"{{Recipient-Phone-Number}}\",\n    \"type\": \"template\",\n    \"template\": {\n        \"name\": \"hello_world\",\n        \"language\": {\n            \"code\": \"en_US\"\n        }\n    }\n}",
+                            Options = new()
+                            {
+                                Raw = new()
+                                {
+                                    Language = "json"
+                                }
+                            }
+                        }
+                    }
+                };
+                var httpItem2 = new HttpItem()
+                {
+                    Name = "Send Sample Text Message",
+                    Description = "Sample text 2",
+                    Request = new()
+                    {
+                        Variables = new List<HttpVariable>()
+                        {
+                            new()
+                            {
+                                Location = VariablePosition.Uri,
+                                Key = "Version",
+                                Value = "v15.0"
+                            },
+                            new()
+                            {
+                                Location = VariablePosition.Uri,
+                                Key = "Phone-Number-ID",
+                                Value = "113037821608895"
+                            },
+                            new()
+                            {
+                                Location = VariablePosition.Header,
+                                Key = "User-Access-Token",
+                                Value = "EAALuL1ZAZBrfMBAExyTHn1XOJN9SCkZAyLkkwvfgAF34gDtIIIgF5VEn4iihUsHSSgbICtzLGhZBMfpwOZA1f0KzZA7DcmKWIW1nnsyOoWJgFknicQI0OvfrbW4c31rABm9RKR8Bq3EckyUYROWeX1iSipaPEJdlC6LHH5I9ILHMzC4ZAcUaZBshmtZBNyHQO8yRZBZCSToD0GG4wPZC7TDt46he"
+                            },
+                            new()
+                            {
+                                Location = VariablePosition.Body,
+                                Key = "Recipient-Phone-Number",
+                                Value = "31618395668"
+                            }
+                        },
+
+                        Method = "POST",
+                        Url = new()
+                        {
+                            Raw = "https://graph.facebook.com/{{Version}}/{{Phone-Number-ID}}/messages",
+                            Protocol = "https",
+                            Host = new string[]
+                                {
+                                        "graph",
+                                        "facebook",
+                                        "com"
+                                },
+                            Path = new string[]
+                                {
+                                    "{{Version}}",
+                                    "{{Phone-Number-ID}}",
+                                    "messages"
+                                }
+                        },
+                        Header = new HttpHeader[]
+                        {
+                            new()
+                            {
+                                Key = "Authorization",
+                                Value = "Bearer {{User-Access-Token}}",
+                                Type = "text"
+                            },
+                            new()
+                            {
+                                Key = "Content-Type",
+                                Value = "application/json",
+                                Type = "text"
+                            }
+                        },
+                        Body = new()
+                        {
+                            Mode = "raw",
+                            Raw = "{\n    \"messaging_product\": \"whatsapp\",\n    \"to\": \"{{Recipient-Phone-Number}}\",\n    \"type\": \"template\",\n    \"template\": {\n        \"name\": \"hello_world\",\n        \"language\": {\n            \"code\": \"en_US\"\n        }\n    }\n}",
+                            Options = new()
+                            {
+                                Raw = new()
+                                {
+                                    Language = "json"
+                                }
+                            }
+                        }
+                    }
+                };
+
                 var Connector1 = new Connector()
                 {
                     Id = Guid.Parse("c98d9b51-cf20-4938-b7cb-76e8743f673c"),
@@ -110,8 +274,10 @@ public class Program
                                 Value = "31618395668"
                             }
                         },
-                    //Pipeline = new List<HttpItem>() { HttpItem1, HttpItem2 }
+                    Pipeline = new List<HttpItem>() { httpItem1, httpItem2 }
                 };
+                context.Connectors.Add(Connector1);
+
                 var Connector2 = new Connector()
                 {
                     Id = Guid.Parse("60994748-0cf3-452b-bbbc-44930e8fb052"),
@@ -156,14 +322,17 @@ public class Program
                             Value = "unser inputed content"
                         }
                         },
-                    //Pipeline = new List<HttpItem>() { HttpItem1, HttpItem2 }
+                        Pipeline = new List<HttpItem>() { httpItem1, httpItem2 }
                 };
+                context.Connectors.Add(Connector2);
 
                 // seed database
-                context.ConnectorEvents.Add(new ConnectorEvent("2cf632fd-c055-4ecf-abcc-6d9c29e919ec", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", Connector1)); //Test 1
-                context.ConnectorEvents.Add(new ConnectorEvent("2cf632fd-c055-4ecf-abcc-6d9c29e919ec", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", Connector2)); //Test 2
-                //context.ConnectorEvents.Add(new ConnectorHook("2cf632fd-c055-4ecf-abcc-6d9c29e919ec", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", Connector2)); //Test 2
+                var event1 = new ConnectorEvent("00000000-0000-0000-aacc-c311156d0357", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", Connector1);
+                context.ConnectorEvents.Add(event1); //Test 1
 
+                var event2 = new ConnectorEvent("00000000-0000-0000-aacc-c311156d0357", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", Connector2);
+                context.ConnectorEvents.Add(event2); //Test 2
+                
                 context.SaveChanges();
             }
         }

@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Mindr.API.Migrations
+namespace Mindr.Api.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,7 +14,7 @@ namespace Mindr.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     JobId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EventId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConnectorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)

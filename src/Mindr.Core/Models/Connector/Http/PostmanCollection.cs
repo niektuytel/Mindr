@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
+using System.Collections.Generic;
 
 namespace Mindr.Core.Models.Connector.Http
 {
@@ -11,10 +11,10 @@ namespace Mindr.Core.Models.Connector.Http
         public HttpCollectionInfo Info { get; set; }
 
         [JsonProperty("item")]
-        public HttpItem[] Items { get; set; }
+        public IEnumerable<HttpItem> Items { get; set; }
 
         [JsonProperty("variable")]
-        public HttpVariable[] Variable { get; set; }
+        public IEnumerable<HttpVariable> Variable { get; set; }
 
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Mindr.Core.Models.Connector.Http
 {
@@ -6,7 +7,7 @@ namespace Mindr.Core.Models.Connector.Http
     {
         // nested items
         [JsonProperty("item")]
-        public HttpItem[] Items { get; set; } = null;
+        public IEnumerable<HttpItem> Items { get; set; } = null;
 
         [JsonProperty("name"), JsonRequired]
         public string Name { get; set; }
@@ -18,6 +19,6 @@ namespace Mindr.Core.Models.Connector.Http
         public HttpRequest Request { get; set; } = null;
 
         [JsonProperty("response")]
-        public HttpResponse[] Response { get; set; } = null;
+        public IEnumerable<HttpResponse> Response { get; set; } = null;
     }
 }
