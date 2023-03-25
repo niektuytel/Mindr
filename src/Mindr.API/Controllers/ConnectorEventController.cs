@@ -36,7 +36,7 @@ public class ConnectorEventController : BaseController
     {
         var response = await HandleRequest(
             async () => {
-                var (tenantId, userId, mail) = User.GetInfo();
+                var userId = User.GetInfo();
                 
                 return await _connectorEventClient.GetAll(userId);
             }
@@ -59,7 +59,7 @@ public class ConnectorEventController : BaseController
     {
         var response = await HandleRequest(
             async () => {
-                var (tenantId, userId, mail) = User.GetInfo();
+                var userId = User.GetInfo();
                 payload.UserId = userId;
 
                 await _connectorEventClient.Upsert(payload);
@@ -85,7 +85,7 @@ public class ConnectorEventController : BaseController
     {
         var response = await HandleRequest(
             async () => {
-                var (tenantId, userId, mail) = User.GetInfo();
+                var userId = User.GetInfo();
                 await _connectorEventClient.Delete(id, userId);
             }
         );
