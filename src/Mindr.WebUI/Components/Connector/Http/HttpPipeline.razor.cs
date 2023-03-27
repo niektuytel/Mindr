@@ -62,7 +62,7 @@ namespace Mindr.WebUI.Components
             base.StateHasChanged();
         }
         
-        public void OnHandleAdd(HttpItem item, HttpVariable[] globalVariables)
+        public void OnHandleAdd(HttpItem item, IEnumerable<HttpVariable> globalVariables)
         {
             SelectedItem = item = CollectionFactory.PrepareHttpItem(item, Pipeline.AsEnumerable(), Collection);
 

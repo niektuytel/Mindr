@@ -108,13 +108,13 @@ public class BaseController : ControllerBase
             {
                 Raw = "https://graph.facebook.com/{{Version}}/{{Phone-Number-ID}}/messages",
                 Protocol = "https",
-                Host = new string[]
+                Hosts = new string[]
                     {
                             "graph",
                             "facebook",
                             "com"
                     },
-                Path = new string[]
+                Paths = new string[]
                     {
                         "{{Version}}",
                         "{{Phone-Number-ID}}",
@@ -189,13 +189,13 @@ public class BaseController : ControllerBase
             {
                 Raw = "https://graph.facebook.com/{{Version}}/{{Phone-Number-ID}}/messages",
                 Protocol = "https",
-                Host = new string[]
+                Hosts = new string[]
                     {
                             "graph",
                             "facebook",
                             "com"
                     },
-                Path = new string[]
+                Paths = new string[]
                     {
                         "{{Version}}",
                         "{{Phone-Number-ID}}",
@@ -237,7 +237,7 @@ public class BaseController : ControllerBase
         Color = "orange",
         Name = "Send Whatsapp Text Message",
         Description = "Some description explain the product",
-        Variables = new ConnectorParam[]
+        Variables = new ConnectorVariable[]
             {
                 new()
                 {
@@ -276,7 +276,7 @@ public class BaseController : ControllerBase
         Color = "blue",
         Name = "Send WhatsApp Sample Text Message",
         Description = "Some description explain the product",
-        Variables = new ConnectorParam[]
+        Variables = new ConnectorVariable[]
             {
                 new()
                 {

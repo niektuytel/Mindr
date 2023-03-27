@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
+using Mindr.Api.Extensions;
 using Mindr.Api.Persistence;
+using Mindr.Api.Services;
 using Mindr.Core.Enums;
 using Mindr.Core.Models.Connector;
 using Mindr.Core.Models.Connector.Http;
@@ -12,32 +14,29 @@ namespace Mindr.Api.Controllers;
 [Authorize]
 public class ConnectorController : BaseController
 {
+    private readonly IConnectorClient _connectorClient;
     private readonly IMapper _mapper;
     private readonly ApplicationContext _context;
 
-    public ConnectorController(IMapper mapper, ApplicationContext context)
+    public ConnectorController(IConnectorClient connectorClient, IMapper mapper, ApplicationContext context)
     {
+        _connectorClient = connectorClient;
         _mapper = mapper;
         _context = context;
     }
 
     [HttpGet]
-    public IActionResult GetAll([FromQuery] string? eventId = null, [FromQuery] string? query = null)
+    public async Task<IActionResult> GetAll([FromQuery] string? eventId = null, [FromQuery] string? query = null)
     {
-        var items = Items;
-        if(!string.IsNullOrEmpty(eventId))
-        {
-            var connectorIds = _context.ConnectorEvents.Where(item => item.EventId == eventId && item.UserId == "2cf632fd-c055-4ecf-abcc-6d9c29e919ec").Select(item => item.ConnectorId);
+        var response = await HandleRequest(
+            async () => {
+                var userId = User.GetInfo();
 
-            items = Items.Where(item => connectorIds.Contains(item.Id));
-        }
-        else if (!string.IsNullOrEmpty(query))
-        {
-            items = Items.Where(item => item.Name.ToLower().Contains(query));
-        }
+                return await _connectorClient.GetAll(userId, eventId, query);
+            }
+        );
 
-        var response = _mapper.Map<IEnumerable<ConnectorBriefDTO>>(items);
-        return Ok(response);
+        return response;
     }
 
     [HttpGet("{id}")]

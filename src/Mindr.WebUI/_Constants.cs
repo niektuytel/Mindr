@@ -123,13 +123,13 @@ internal static class _Constants
             {
                 Raw = "https://graph.facebook.com/{{Version}}/{{Phone-Number-ID}}/messages",
                 Protocol = "https",
-                Host = new string[]
+                Hosts = new string[]
                     {
                             "graph",
                             "facebook",
                             "com"
                     },
-                Path = new string[]
+                Paths = new string[]
                     {
                         "{{Version}}",
                         "{{Phone-Number-ID}}",
@@ -205,13 +205,13 @@ internal static class _Constants
             {
                 Raw = "https://graph.facebook.com/{{Version}}/{{Phone-Number-ID}}/messages",
                 Protocol = "https",
-                Host = new string[]
+                Hosts = new string[]
                     {
                             "graph",
                             "facebook",
                             "com"
                     },
-                Path = new string[]
+                Paths = new string[]
                     {
                         "{{Version}}",
                         "{{Phone-Number-ID}}",

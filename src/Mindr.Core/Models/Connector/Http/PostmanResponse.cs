@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Mindr.Core.Models.Connector.Http
 {
@@ -20,10 +22,10 @@ namespace Mindr.Core.Models.Connector.Http
         public string PostmanPreviewLanguage { get; set; }
 
         [JsonProperty("header")]
-        public HttpHeader[] Header { get; set; }
+        public IEnumerable<HttpHeader> Header { get; set; }
 
         [JsonProperty("cookie")]
-        public HttpCookie[] Cookie { get; set; }
+        public IEnumerable<HttpCookie> Cookie { get; set; }
 
         [JsonProperty("body")]
         public string Body { get; set; }

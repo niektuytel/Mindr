@@ -17,7 +17,7 @@ namespace Mindr.Core.Models.Connector
         public string Name { get; set; }
 
         [JsonProperty("variables")]
-        public IEnumerable<ConnectorParam> Variables { get; set; }
+        public IEnumerable<ConnectorVariable> Variables { get; set; }
 
     }
 }

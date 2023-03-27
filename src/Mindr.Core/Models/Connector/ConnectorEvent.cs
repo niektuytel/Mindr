@@ -23,7 +23,7 @@ namespace Mindr.Core.Models.Connector
             EventId = @event.EventId;
             EventParams = @event.EventParams;
             ConnectorId = connector.Id;
-            ConnectorParams = connector.Variables;
+            Variables = connector.Variables;
         }
 
         public ConnectorEvent(string userId, string eventId, Connector connector)
@@ -31,7 +31,7 @@ namespace Mindr.Core.Models.Connector
             UserId = userId;
             EventId = eventId;
             ConnectorId = connector.Id;
-            ConnectorParams = connector.Variables;
+            Variables = connector.Variables;
         }
 
         public ConnectorEvent(string eventId, IEnumerable<EventParam> eventParams)
@@ -45,7 +45,7 @@ namespace Mindr.Core.Models.Connector
             EventId = eventId;
             EventParams = eventParams;
             ConnectorId = connector.Id;
-            ConnectorParams = connector.Variables;
+            Variables = connector.Variables;
         }
 
         [Key]
@@ -68,7 +68,7 @@ namespace Mindr.Core.Models.Connector
         public Guid? ConnectorId { get; set; } = null;
 
         [JsonProperty("connector_params")]
-        public IEnumerable<ConnectorParam> ConnectorParams { get; set; }
+        public IEnumerable<ConnectorVariable> Variables { get; set; }
 
         public void Update(ConnectorEvent @event)
         {

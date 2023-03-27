@@ -65,7 +65,7 @@ namespace Mindr.Api.Migrations
                     b.ToTable("ConnectorEvents");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.ConnectorParam", b =>
+            modelBuilder.Entity("Mindr.Core.Models.Connector.ConnectorVariable", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -97,7 +97,7 @@ namespace Mindr.Api.Migrations
 
                     b.HasIndex("ConnectorId");
 
-                    b.ToTable("ConnectorParam");
+                    b.ToTable("ConnectorVariable");
                 });
 
             modelBuilder.Entity("Mindr.Core.Models.Connector.EventParam", b =>
@@ -293,6 +293,12 @@ namespace Mindr.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Host")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Protocol")
                         .HasColumnType("nvarchar(max)");
 
@@ -395,10 +401,10 @@ namespace Mindr.Api.Migrations
                     b.ToTable("HttpVariable");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.ConnectorParam", b =>
+            modelBuilder.Entity("Mindr.Core.Models.Connector.ConnectorVariable", b =>
                 {
                     b.HasOne("Mindr.Core.Models.Connector.ConnectorEvent", null)
-                        .WithMany("ConnectorParams")
+                        .WithMany("Variables")
                         .HasForeignKey("ConnectorEventId");
 
                     b.HasOne("Mindr.Core.Models.Connector.Connector", null)
@@ -521,9 +527,9 @@ namespace Mindr.Api.Migrations
 
             modelBuilder.Entity("Mindr.Core.Models.Connector.ConnectorEvent", b =>
                 {
-                    b.Navigation("ConnectorParams");
-
                     b.Navigation("EventParams");
+
+                    b.Navigation("Variables");
                 });
 
             modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpItem", b =>

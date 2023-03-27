@@ -58,6 +58,7 @@ namespace Mindr.Core.Services.Connectors
         public Task SendAsync(Connector connector)
         {
             throw new NotImplementedException();
+
         }
     }
 }

@@ -14,6 +14,7 @@ using Mindr.API.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Mindr.Core.Services.Connectors;
 using Mindr.Core.Enums;
+using Mindr.Api.Services;
 
 namespace Mindr.Api;
 
@@ -60,6 +61,7 @@ public class Program
         builder.Services.AddScoped<IHttpCollectionFactory, HttpCollectionFactory>();
         builder.Services.AddScoped<IHttpCollectionClient, HttpCollectionClient>();
         builder.Services.AddScoped<IConnectorEventClient, ConnectorEventClient>();
+        builder.Services.AddScoped<IConnectorClient, ConnectorClient>();
 
 
         var app = builder.Build();
@@ -113,13 +115,13 @@ public class Program
                         {
                             Raw = "https://graph.facebook.com/{{Version}}/{{Phone-Number-ID}}/messages",
                             Protocol = "https",
-                            Host = new string[]
+                            Hosts = new string[]
                                 {
                                         "graph",
                                         "facebook",
                                         "com"
                                 },
-                            Path = new string[]
+                            Paths = new string[]
                                 {
                                     "{{Version}}",
                                     "{{Phone-Number-ID}}",
@@ -194,13 +196,13 @@ public class Program
                         {
                             Raw = "https://graph.facebook.com/{{Version}}/{{Phone-Number-ID}}/messages",
                             Protocol = "https",
-                            Host = new string[]
+                            Hosts = new string[]
                                 {
                                         "graph",
                                         "facebook",
                                         "com"
                                 },
-                            Path = new string[]
+                            Paths = new string[]
                                 {
                                     "{{Version}}",
                                     "{{Phone-Number-ID}}",
@@ -243,7 +245,7 @@ public class Program
                     Color = "orange",
                     Name = "Send Whatsapp Text Message",
                     Description = "Some description explain the product",
-                    Variables = new ConnectorParam[]
+                    Variables = new ConnectorVariable[]
                         {
                             new()
                             {
@@ -284,7 +286,7 @@ public class Program
                     Color = "blue",
                     Name = "Send WhatsApp Sample Text Message",
                     Description = "Some description explain the product",
-                    Variables = new ConnectorParam[]
+                    Variables = new ConnectorVariable[]
                         {
                         new()
                         {
