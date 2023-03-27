@@ -30,9 +30,9 @@ builder.Services.AddHttpClient(nameof(AuthorizationApiMessageHandler), client =>
                 .AddHttpMessageHandler<AuthorizationApiMessageHandler>();
 
 // Services
-builder.Services.AddTransient<IAgendaClient, AgendaClient>();
-builder.Services.AddTransient<IConnectorClient, ConnectorClient>();
-builder.Services.AddTransient<IConnectorEventClient, ConnectorEventClient>();
+builder.Services.AddTransient<IHttpAgendaHttpClient, HttpAgendaHttpClient>();
+builder.Services.AddTransient<IHttpConnectorClient, HttpConnectorHttpClient>();
+builder.Services.AddTransient<IHttpConnectorEventClient, HttpConnectorEventClient>();
 builder.Services.AddTransient<IHttpCollectionFactory, HttpCollectionFactory>();
 builder.Services.AddTransient<IHttpCollectionClient, HttpCollectionClient>();
 

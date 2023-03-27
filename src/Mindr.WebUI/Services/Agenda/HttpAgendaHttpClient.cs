@@ -11,7 +11,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Mindr.WebUI.Services.Agenda;
 
-public class AgendaClient : IAgendaClient
+public class HttpAgendaHttpClient : IHttpAgendaHttpClient
 {
     public static readonly int COUNT_DAYS_IN_CALENDAR = 42; //todo: must do better. enum instead?
 
@@ -19,7 +19,7 @@ public class AgendaClient : IAgendaClient
     private readonly MicrosoftGraphOptions _options;
     private readonly IAccessTokenProvider _tokenProvider;
 
-    public AgendaClient(IHttpClientFactory factory, IAccessTokenProvider tokenProvider, IOptions<MicrosoftGraphOptions> options)
+    public HttpAgendaHttpClient(IHttpClientFactory factory, IAccessTokenProvider tokenProvider, IOptions<MicrosoftGraphOptions> options)
     {
         _httpClient = factory.CreateClient(nameof(AuthorizationGraphMessageHandler));
         _tokenProvider = tokenProvider;

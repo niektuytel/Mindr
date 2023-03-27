@@ -2,6 +2,8 @@
 @using Microsoft.AspNetCore.Authorization;
 @using Mindr.Core.Models.Connector;
 @using System.Collections.ObjectModel;
+@using Mindr.WebUI.Services.Connector;
+@using Newtonsoft.Json;
 
 @inherits FluentComponentBase
 
@@ -49,6 +51,8 @@
     [Inject]
     public NavigationManager NavigationManager { get; set; }
 
+    [Inject]
+    public IHttpConnectorClient ConnectorClient { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -111,6 +115,20 @@
         Pagination = new PaginationState { ItemsPerPage = ItemsPerPage };
         DataProvider = async req =>
         {
+            var response = await ConnectorClient.GetAll();
+            if (response == null)
+            {
+                // Failed request
+                throw new NotImplementedException();
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            if (!string.IsNullOrEmpty(json))
+            {
+                DataCollection = JsonConvert.DeserializeObject<ICollection<Connector>>(json);
+            }
+
+
             //await UpdateOnRequest(req);
 
             // +1 to add space to to 1 filled space,

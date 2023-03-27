@@ -16,13 +16,13 @@ using System.Threading.Tasks;
 
 namespace Mindr.WebUI.Services.Connector;
 
-public class ConnectorClient : IConnectorClient
+public class HttpConnectorHttpClient : IHttpConnectorClient
 {
     private readonly HttpClient _httpClient;
     private readonly ApiOptions _options;
     private readonly IAccessTokenProvider _tokenProvider;
 
-    public ConnectorClient(IHttpClientFactory factory, IAccessTokenProvider tokenProvider, IOptions<ApiOptions> options)
+    public HttpConnectorHttpClient(IHttpClientFactory factory, IAccessTokenProvider tokenProvider, IOptions<ApiOptions> options)
     {
         _httpClient = factory.CreateClient(nameof(AuthorizationApiMessageHandler));
         _tokenProvider = tokenProvider;

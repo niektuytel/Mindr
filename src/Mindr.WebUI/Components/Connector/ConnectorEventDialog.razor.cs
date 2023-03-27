@@ -27,10 +27,10 @@ public partial class ConnectorEventDialog: FluentComponentBase
     public NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public IConnectorEventClient EventClient { get; set; } = default!;
+    public IHttpConnectorEventClient EventClient { get; set; } = default!;
 
     [Inject]
-    public IConnectorClient ConnectorClient { get; set; } = default!;
+    public IHttpConnectorClient ConnectorClient { get; set; } = default!;
 
     public bool IsLoading { get; set; } = false;
 

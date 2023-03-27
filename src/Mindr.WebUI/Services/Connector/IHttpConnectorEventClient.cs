@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace Mindr.WebUI.Services.Connector;
 
-public interface IConnectorEventClient
+public interface IHttpConnectorEventClient
 {
-    Task<HttpResponseMessage?> Delete(Guid eventId);
+    Task<HttpResponseMessage?> GetAll();
     Task<HttpResponseMessage?> Upsert(ConnectorEvent @event);
+    Task<HttpResponseMessage?> Delete(Guid eventId);
 }

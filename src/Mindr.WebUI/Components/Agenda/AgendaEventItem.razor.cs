@@ -19,7 +19,7 @@ public partial class AgendaEventItem: FluentComponentBase
     public ConnectorEventDialog EventDialogRef { get; set; } = default!;
 
     [Inject]
-    public IConnectorClient ConnectorClient { get; set; } = default!;
+    public IHttpConnectorClient ConnectorClient { get; set; } = default!;
 
     private IEnumerable<ConnectorBriefDTO>? Connectors { get; set; } = null;
 

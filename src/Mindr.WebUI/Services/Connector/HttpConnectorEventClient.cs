@@ -16,13 +16,13 @@ using System.Threading.Tasks;
 
 namespace Mindr.WebUI.Services.Connector;
 
-public class ConnectorEventClient : IConnectorEventClient
+public class HttpConnectorEventClient : IHttpConnectorEventClient
 {
     private readonly HttpClient _httpClient;
     private readonly ApiOptions _options;
     private readonly IAccessTokenProvider _tokenProvider;
 
-    public ConnectorEventClient(IHttpClientFactory factory, IAccessTokenProvider tokenProvider, IOptions<ApiOptions> options)
+    public HttpConnectorEventClient(IHttpClientFactory factory, IAccessTokenProvider tokenProvider, IOptions<ApiOptions> options)
     {
         _httpClient = factory.CreateClient(nameof(AuthorizationApiMessageHandler));
         _tokenProvider = tokenProvider;
@@ -43,6 +43,16 @@ public class ConnectorEventClient : IConnectorEventClient
         }
 
         return false;
+    }
+
+    public async Task<HttpResponseMessage?> GetAll()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{ControllerUrl}");
+        var validAuth = await TrySetAuthorization(request);
+        if (!validAuth) return null;
+
+        var response = await _httpClient.SendAsync(request);
+        return response;
     }
 
     public async Task<HttpResponseMessage?> Upsert(ConnectorEvent @event)

@@ -1,6 +1,6 @@
 ﻿namespace Mindr.WebUI.Services.Connector
 {
-    public interface IConnectorClient
+    public interface IHttpConnectorClient
     {
         Task<HttpResponseMessage?> GetAll(string query = "", string eventId = "");
     }
