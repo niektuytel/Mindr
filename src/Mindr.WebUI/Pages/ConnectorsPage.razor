@@ -1,35 +1,129 @@
 ﻿@page "/connectors"
 @using Microsoft.AspNetCore.Authorization;
-@using Mindr.Core.Models.Connector.Http;
-@using Mindr.WebUI.Models;
+@using Mindr.Core.Models.Connector;
+@using System.Collections.ObjectModel;
 
 @inherits FluentComponentBase
+
+@*
+    // TODO: Page is only for developers.
+*@
 @attribute [Authorize]
 
+// TODO: Create connector button
 
 <Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="height:100%">
-    @*<NavMenu Class="nav-menu" Expanded="false" Collapsible="false" Style="height: 100%;">
-        @foreach (Page _page in @_Constants.ConnectorPage)
-        {
-            <NavMenuLink Icon="@_page.Icon" Text="@_page.Name" Href="@_page.Href" Disabled="@_page.Disabled" />
-        }
-    </NavMenu>
-
-    @if (string.IsNullOrEmpty(NavName))
-    {
-        <div>
-            Overview
-        </div>
-    }
-    else if (NavName.ToLower() == "pipeline")
-    {
-        <HttpPipeline Pipeline="@Pipeline" />
-    }*@
+    <FluentDataGrid TGridItem="Connector"
+        RowsDataProvider="@DataProvider"
+        OnCellFocus="HandleCellFocus"
+    >
+        <PropertyColumn Property="@(p => p.Name)"/>
+        <PropertyColumn Property="@(p => p.Color)"/>
+        <PropertyColumn Property="@(p => p.Description)"/>
+    </FluentDataGrid>
 </Stack>
-
-
-
 
 @code {
 
+    private bool FirstRender = true;
+
+    public int ItemsPerPage { get; set; } = 10;
+
+    public PaginationState Pagination { get; set; } = new() { ItemsPerPage = 10 };
+
+    private GridItemsProviderRequest<Connector> DataProviderRequest { get; set; } = default!;
+
+    private GridItemsProvider<Connector> DataProvider { get; set; } = default!;
+
+    private ICollection<Connector>? DataCollection { get; set; } = new Collection<Connector>(new List<Connector>()
+    {
+        new Connector() { Id=Guid.Parse("c98d9b51-cf20-4938-b7cb-76e8743f673c"), Name="Connector 1", Color="blue", Description="Description 1"},
+        new Connector() { Id=Guid.Parse("60994748-0cf3-452b-bbbc-44930e8fb052"), Name="Connector 2", Color="red", Description="Description 2"},
+        new Connector() { Id=Guid.Parse("c98d9b51-cf20-4938-b7cb-76e8743f673c"), Name="Connector 3", Color="orange", Description="Description 3"},
+        new Connector() { Id=Guid.Parse("60994748-0cf3-452b-bbbc-44930e8fb052"), Name="Connector 4", Color="gray", Description="Description 4"},
+        new Connector() { Id=Guid.Parse("c98d9b51-cf20-4938-b7cb-76e8743f673c"), Name="Connector 5", Color="black", Description="Description 5"},
+        new Connector() { Id=Guid.Parse("60994748-0cf3-452b-bbbc-44930e8fb052"), Name="Connector 6", Color="white", Description="Description 6"},
+    });
+
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        FirstRender = firstRender;
+        if (firstRender)
+        {
+            await UpdateDataProvider();
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+
+    private async Task HandleRowClick(Connector? item)
+    {
+        if (item == null) return;
+
+        NavigationManager.NavigateTo($"/connectors/{item!.Id}/{_Constants.ConnectorPage.First().Name}");
+
+        base.StateHasChanged();
+
+        //if (HasSelectableEntities)
+        //{
+        //    ((IRowSelectable)item).IsChecked = !((IRowSelectable)item).IsChecked;
+        //}
+
+        //if (OnRowClick.HasDelegate)
+        //{
+        //    await OnRowClick.InvokeAsync(item);
+        //}
+    }
+
+    private async Task HandleCellFocus(FluentDataGridCell<Connector> cell)
+    {
+        if (cell.CellType == DataGridCellType.Default)
+        {
+            // checkbox row
+            //if (HasSelectableEntities && cell.GridColumn == 1)
+            //{
+            //    return;
+            //}
+
+            var value = cell.Owner.AdditionalAttributes?.GetValueOrDefault("aria-rowindex");
+            if (value != null)
+            {
+                var index = (System.Index)((int)value - 2);
+                var item = DataCollection?.ElementAtOrDefault(index);
+                await HandleRowClick(item);
+            }
+        }
+
+        base.StateHasChanged();
+    }
+
+    private async Task UpdateDataProvider()
+    {
+        //await UpdateFilterEquals();
+        //UpdateFilterContains(filterCheck: false);
+
+        Pagination = new PaginationState { ItemsPerPage = ItemsPerPage };
+        DataProvider = async req =>
+        {
+            //await UpdateOnRequest(req);
+
+            // +1 to add space to to 1 filled space,
+            // The provide now knows that he need to add a next page
+            var total = (DataProviderRequest.StartIndex + (DataCollection!.Count + 1));
+
+            return GridItemsProviderResult.From(DataCollection, total);
+        };
+
+        base.StateHasChanged();
+    }
+
 }
+
+
+

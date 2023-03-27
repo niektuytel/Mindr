@@ -7,6 +7,9 @@ namespace Mindr.WebUI.Pages
     {
 
         [Parameter]
+        public string ConnectorId { get; set; } = default!;
+
+        [Parameter]
         public string? NavName { get; set; }
 
     }

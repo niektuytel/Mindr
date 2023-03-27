@@ -1,16 +1,36 @@
 ﻿@page "/"
 
 @using Microsoft.AspNetCore.Authorization;
+@using Mindr.Core.Models.Connector;
 
 @inherits FluentComponentBase
 @attribute [Authorize]
 
-<PageTitle>Outlook</PageTitle>
+<PageTitle>Overview</PageTitle>
+@*
+    // TODO: extra tab to display clicked connector event
+*@
 
-<div id="main" class="container-fluid">
+<Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="height:100%">
+    <FluentDataGrid RowsData="@events">
+        <PropertyColumn Property="@(p => p.Id)"/>
+        <PropertyColumn Property="@(p => p.UserId)" />
+        <PropertyColumn Property="@(p => p.EventId)" />
+        <PropertyColumn Property="@(p => p.ConnectorId)" />
+        <PropertyColumn Property="@(p => p.JobId)" />
+    </FluentDataGrid>
+</Stack>
 
-</div>
-
-@code{
-
+@code {
+    IQueryable<ConnectorEvent> events = new[]
+    {
+        new ConnectorEvent() { UserId = "User id 1", EventId="Event id 1", ConnectorId = Guid.NewGuid(), JobId="Job id 1"},
+        new ConnectorEvent() { UserId = "User id 2", EventId="Event id 2", ConnectorId = Guid.NewGuid(), JobId="Job id 2"},
+        new ConnectorEvent() { UserId = "User id 3", EventId="Event id 3", ConnectorId = Guid.NewGuid(), JobId="Job id 3"},
+        new ConnectorEvent() { UserId = "User id 4", EventId="Event id 4", ConnectorId = Guid.NewGuid(), JobId="Job id 4"},
+        new ConnectorEvent() { UserId = "User id 5", EventId="Event id 5", ConnectorId = Guid.NewGuid(), JobId="Job id 5"},
+        new ConnectorEvent() { UserId = "User id 6", EventId="Event id 6", ConnectorId = Guid.NewGuid(), JobId="Job id 6"},
+        new ConnectorEvent() { UserId = "User id 7", EventId="Event id 7", ConnectorId = Guid.NewGuid(), JobId="Job id 7"},
+    }.AsQueryable();
 }
+

@@ -61,8 +61,8 @@ namespace Mindr.Core.Services.Connectors
             var pipeline = connector.Pipeline.ToList();
             pipeline = await SendAsync(pipeline);
 
-            // safe current outputted response
-            throw new NotImplementedException();
+            // TODO: safe current outputted response
+            //throw new NotImplementedException();
 
         }
     }

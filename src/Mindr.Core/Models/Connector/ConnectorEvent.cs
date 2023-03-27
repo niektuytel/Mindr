@@ -72,6 +72,7 @@ namespace Mindr.Core.Models.Connector
 
         public void Update(ConnectorEvent @event)
         {
+            // TODO: Update this.*!
             throw new NotImplementedException();
         }
     }

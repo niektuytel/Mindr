@@ -1,4 +1,4 @@
-﻿@page "/connector/{NavName?}"
+﻿@page "/connectors/{ConnectorId}/{NavName?}"
 @using Microsoft.AspNetCore.Authorization;
 @using Mindr.Core.Models.Connector.Http;
 @using Mindr.WebUI.Models;
@@ -11,13 +11,14 @@
     <NavMenu Class="nav-menu" Expanded="false" Collapsible="false" Style="height: 100%;">
         @foreach (Page _page in @_Constants.ConnectorPage)
         {
-            <NavMenuLink Icon="@_page.Icon" Text="@_page.Name" Href="@_page.Href" Disabled="@_page.Disabled" />
+            <NavMenuLink Icon="@_page.Icon" Text="@_page.Name" Href=@($"/connectors/{ConnectorId}/{_page.Name}") Disabled="@_page.Disabled" />
         }
     </NavMenu>
 
     @if(string.IsNullOrEmpty(NavName))
     {
         <div>
+            TODO: Delete button to delete this connector
             Overview
         </div>
     }

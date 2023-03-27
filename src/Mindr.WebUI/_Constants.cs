@@ -11,7 +11,7 @@ internal static class _Constants
     public static List<Page> Pages = new()
     {
         new Page(){
-            Name = "Home",
+            Name = "Overview",
             Icon = @FluentIcons.Home,
             Href = "/",
         },
@@ -23,18 +23,18 @@ internal static class _Constants
         new Page(){
             Name = "Connectors",
             Icon = @FluentIcons.CalendarAgenda,
-            Href = "/connector",
-        },
-        new Page(){
-            Name = "Connectors",
-            Icon = @FluentIcons.CalendarAgenda,
             Href = "/connectors",
         },
-        new Page(){
-            Name = "ConnectorHooks",
-            Icon = @FluentIcons.CalendarAgenda,
-            Href = "/connectorhooks",
-        }
+        //new Page(){
+        //    Name = "Connectors",
+        //    Icon = @FluentIcons.CalendarAgenda,
+        //    Href = "/connector",
+        //},
+        //new Page(){
+        //    Name = "ConnectorHooks",
+        //    Icon = @FluentIcons.CalendarAgenda,
+        //    Href = "/connectorhooks",
+        //}
         //
         //new Page(){
         //    Name = "Collections",
@@ -51,12 +51,12 @@ internal static class _Constants
         new Page(){
             Name = "Overview",
             Icon = @FluentIcons.Info,
-            Href = "/connector",
+            Href = "",
         },
         new Page(){
             Name = "Pipeline",
             Icon = @FluentIcons.PipelinePlay,
-            Href = "/connector/pipeline",
+            Href = "",
         }
     };
 
