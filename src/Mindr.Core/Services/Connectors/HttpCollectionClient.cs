@@ -4,6 +4,7 @@ using Mindr.Core.Models.Connector;
 using Mindr.Core.Models.Connector.Http;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
@@ -55,8 +56,12 @@ namespace Mindr.Core.Services.Connectors
             return pipeline;
         }
 
-        public Task SendAsync(Connector connector)
+        public async Task SendAsync(Connector connector)
         {
+            var pipeline = connector.Pipeline.ToList();
+            pipeline = await SendAsync(pipeline);
+
+            // safe current outputted response
             throw new NotImplementedException();
 
         }

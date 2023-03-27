@@ -24,7 +24,7 @@ namespace Mindr.Core.Models.Connector.Http
         [JsonProperty("host")]
         public string[] Hosts
         {
-            get => Host.Split(".").ToArray();
+            get => Host?.Split(".")?.ToArray();
             set => Host = string.Join(".", value);
         }
 
@@ -36,7 +36,7 @@ namespace Mindr.Core.Models.Connector.Http
         [JsonProperty("path")]
         public string[] Paths
         {
-            get => Path.Split("/").ToArray();
+            get => Path?.Split("/")?.ToArray();
             set => Path = string.Join("/", value);
         }
 
