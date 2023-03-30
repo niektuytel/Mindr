@@ -6,6 +6,7 @@ using Mindr.Core.Models.Connector;
 using Mindr.Core.Services.Connectors;
 using Microsoft.AspNetCore.Mvc;
 using Mindr.API.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Mindr.Api.Services
 {
@@ -41,56 +42,47 @@ namespace Mindr.Api.Services
             return items2;
         }
 
-        //public async Task Upsert(ConnectorEvent @event)
-        //{
-        //    if (@event == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(@event));
-        //    }
+        public async Task<IEnumerable<Connector>> GetAllBriefly(string userId)
+        {
+            return _context.Connectors.Where(x => x.CreatedBy == userId);
+        }
 
-        //    // TODO: validate: @event
+        public async Task<Connector> Insert(string userId, Connector payload)
+        {
+            payload.CreatedBy = userId;
+            var entity = _context.Connectors.FirstOrDefault(item => 
+                item.CreatedBy == payload.CreatedBy && 
+                item.Id == payload.Id
+            );
 
-        //    var entity = _context.ConnectorEvents.FirstOrDefault(x => x.Id == @event.Id);
-        //    var onInsert = entity == null;
-        //    if (onInsert)
-        //    {
-        //        entity = @event;
-        //    }
-        //    else
-        //    {
-        //        // TODO: validate: items
-        //        entity!.Update(@event);
-        //    }
+            // insert
+            if (entity == null)
+            {
+                _context.Connectors.Add(payload);
+                _context.SaveChanges();
+                return payload;
+            }
 
-        //    var exists = await TryDefaultCall(entity);
-        //    if (exists)
-        //    {
-        //        return;
-        //    }
 
-        //    exists = await TryCallOnSchedule(entity, onInsert);
-        //    if (exists)
-        //    {
-        //        return;
-        //    }
+            return entity;
+        }
 
-        //}
+        public async Task Delete(string userId, Guid id)
+        {
+            var entity = _context.Connectors.FirstOrDefault(item =>
+                item.Id == id &&
+                item.CreatedBy == userId
+            );
 
-        //public async Task Delete(Guid id, string userId)
-        //{
-        //    var entity = _context.ConnectorEvents.FirstOrDefault(x => x.Id == id && x.UserId == userId)
-        //        ?? throw new ApiRequestException(ApiResponse.NotFound, $"Connector event {id}");
+            // insert
+            if (entity == null)
+            {
+                throw new ApiRequestException(ApiResponse.NotFound, $"Missing connector: {id} on user: {userId}");
+            }
 
-        //    _context.ConnectorEvents.Remove(entity);
-        //    await _context.SaveChangesAsync();
-
-        //    // remove from background queue
-        //    if (!string.IsNullOrEmpty(entity.JobId))
-        //    {
-        //        _backgroundJobs.Delete(entity.JobId);
-        //    }
-        //}
-
+            _context.Connectors.Remove(entity);
+            await _context.SaveChangesAsync();
+        }
 
 
 

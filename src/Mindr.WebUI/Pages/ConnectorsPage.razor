@@ -1,147 +1,86 @@
-﻿@page "/connectors"
+﻿@page "/connectors/{ConnectorId?}/{NavName?}"
 @using Microsoft.AspNetCore.Authorization;
 @using Mindr.Core.Models.Connector;
 @using System.Collections.ObjectModel;
-@using Mindr.WebUI.Services.Connector;
+@using Mindr.WebUI.Models;
+@using Mindr.WebUI.Services.ApiClients;
 @using Newtonsoft.Json;
 
 @inherits FluentComponentBase
-
+@attribute [Authorize]
 @*
     // TODO: Page is only for developers.
 *@
-@attribute [Authorize]
 
-// TODO: Create connector button
-
-<Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="height:100%">
-    <FluentDataGrid TGridItem="Connector"
-        RowsDataProvider="@DataProvider"
-        OnCellFocus="HandleCellFocus"
-    >
-        <PropertyColumn Property="@(p => p.Name)"/>
-        <PropertyColumn Property="@(p => p.Color)"/>
-        <PropertyColumn Property="@(p => p.Description)"/>
-    </FluentDataGrid>
-</Stack>
-
-@code {
-
-    private bool FirstRender = true;
-
-    public int ItemsPerPage { get; set; } = 10;
-
-    public PaginationState Pagination { get; set; } = new() { ItemsPerPage = 10 };
-
-    private GridItemsProviderRequest<Connector> DataProviderRequest { get; set; } = default!;
-
-    private GridItemsProvider<Connector> DataProvider { get; set; } = default!;
-
-    private ICollection<Connector>? DataCollection { get; set; } = new Collection<Connector>(new List<Connector>()
-    {
-        new Connector() { Id=Guid.Parse("c98d9b51-cf20-4938-b7cb-76e8743f673c"), Name="Connector 1", Color="blue", Description="Description 1"},
-        new Connector() { Id=Guid.Parse("60994748-0cf3-452b-bbbc-44930e8fb052"), Name="Connector 2", Color="red", Description="Description 2"},
-        new Connector() { Id=Guid.Parse("c98d9b51-cf20-4938-b7cb-76e8743f673c"), Name="Connector 3", Color="orange", Description="Description 3"},
-        new Connector() { Id=Guid.Parse("60994748-0cf3-452b-bbbc-44930e8fb052"), Name="Connector 4", Color="gray", Description="Description 4"},
-        new Connector() { Id=Guid.Parse("c98d9b51-cf20-4938-b7cb-76e8743f673c"), Name="Connector 5", Color="black", Description="Description 5"},
-        new Connector() { Id=Guid.Parse("60994748-0cf3-452b-bbbc-44930e8fb052"), Name="Connector 6", Color="white", Description="Description 6"},
-    });
-
-
-    [Inject]
-    public NavigationManager NavigationManager { get; set; }
-
-    [Inject]
-    public IHttpConnectorClient ConnectorClient { get; set; }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        FirstRender = firstRender;
-        if (firstRender)
+@if (string.IsNullOrEmpty(ConnectorId))
+{
+    <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
+        <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="HandleDialogOpen">
+            <FluentIcon Slot="start" Name="@FluentIcons.Add" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+            Add
+        </FluentButton>
+    </Stack>
+    <Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="height:100%">
+        @if (!IsLoadingData)
         {
-            await UpdateDataProvider();
+            <FluentDataGrid TGridItem="Connector"
+                RowsDataProvider="@DataProvider"
+                OnCellFocus="HandleCellFocus"
+            >
+                <PropertyColumn Property="@(p => p.Name)"/>
+                <PropertyColumn Property="@(p => p.Color)"/>
+                <PropertyColumn Property="@(p => p.Description)"/>
+            </FluentDataGrid>
         }
-
-        await base.OnAfterRenderAsync(firstRender);
-    }
-
-
-    private async Task HandleRowClick(Connector? item)
-    {
-        if (item == null) return;
-
-        NavigationManager.NavigateTo($"/connectors/{item!.Id}/{_Constants.ConnectorPage.First().Name}");
-
-        base.StateHasChanged();
-
-        //if (HasSelectableEntities)
-        //{
-        //    ((IRowSelectable)item).IsChecked = !((IRowSelectable)item).IsChecked;
-        //}
-
-        //if (OnRowClick.HasDelegate)
-        //{
-        //    await OnRowClick.InvokeAsync(item);
-        //}
-    }
-
-    private async Task HandleCellFocus(FluentDataGridCell<Connector> cell)
-    {
-        if (cell.CellType == DataGridCellType.Default)
+        else
         {
-            // checkbox row
-            //if (HasSelectableEntities && cell.GridColumn == 1)
-            //{
-            //    return;
-            //}
-
-            var value = cell.Owner.AdditionalAttributes?.GetValueOrDefault("aria-rowindex");
-            if (value != null)
-            {
-                var index = (System.Index)((int)value - 2);
-                var item = DataCollection?.ElementAtOrDefault(index);
-                await HandleRowClick(item);
-            }
+            <Stack HorizontalAlignment="StackHorizontalAlignment.Center" VerticalAlignment="StackVerticalAlignment.Center">
+                <FluentProgressRing/>
+            </Stack>
         }
-
-        base.StateHasChanged();
-    }
-
-    private async Task UpdateDataProvider()
-    {
-        //await UpdateFilterEquals();
-        //UpdateFilterContains(filterCheck: false);
-
-        Pagination = new PaginationState { ItemsPerPage = ItemsPerPage };
-        DataProvider = async req =>
-        {
-            var response = await ConnectorClient.GetAll();
-            if (response == null)
+    </Stack>
+    <div>
+        <FluentDialog Modal="true" TrapFocus="true" @ref="AddItemDialog" @ondialogdismiss="HandleDialogDismiss" Style="height:fit-content">
+            @if (!IsLoadingDialog)
             {
-                // Failed request
-                throw new NotImplementedException();
+                <FluentTextField @bind-Value="@AddItemData.Name" Placeholder="Title" style="width: 100%;" />
+                <FluentTextArea @bind-Value="@AddItemData.Description" Placeholder="Description" style="width: 100%;"/>
+                <Stack Orientation="Orientation.Horizontal" HorizontalAlignment="StackHorizontalAlignment.Right" Style="padding:5px">
+                    <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="HandleDialogClose">Close</FluentButton>
+                    <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="OnConnectorAdd">Create New</FluentButton>
+                </Stack>
             }
-
-            var json = await response.Content.ReadAsStringAsync();
-            if (!string.IsNullOrEmpty(json))
+            else
             {
-                DataCollection = JsonConvert.DeserializeObject<ICollection<Connector>>(json);
+                <Stack HorizontalAlignment="StackHorizontalAlignment.Center" VerticalAlignment="StackVerticalAlignment.Center">
+                    <FluentProgressRing />
+                </Stack>
             }
-
-
-            //await UpdateOnRequest(req);
-
-            // +1 to add space to to 1 filled space,
-            // The provide now knows that he need to add a next page
-            var total = (DataProviderRequest.StartIndex + (DataCollection!.Count + 1));
-
-            return GridItemsProviderResult.From(DataCollection, total);
-        };
-
-        base.StateHasChanged();
-    }
-
+        </FluentDialog>
+    </div>
 }
+else
+{
+    <Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="height:100%">
+        <NavMenu Class="nav-menu" Expanded="false" Collapsible="false" Style="height: 100%;">
+            @foreach (Page _page in @_Constants.ConnectorPage)
+            {
+                <NavMenuLink Icon="@_page.Icon" Text="@_page.Name" Href=@($"/connectors/{ConnectorId}/{_page.Name.ToLower()}") Disabled="@_page.Disabled" />
+            }
+        </NavMenu>
+        @if (string.IsNullOrEmpty(NavName) || NavName.ToLower() == "overview")
+        {
+            <ConnectorOverview ConnectorId="@ConnectorId" />
+        }
+        else if (NavName.ToLower() == "pipeline")
+        {
+            <ConnectorPipeline ConnectorId="@ConnectorId" />
+        }
+    </Stack>
+}
+
+
+
 
 
 

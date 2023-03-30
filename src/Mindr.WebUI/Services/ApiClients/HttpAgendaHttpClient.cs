@@ -9,12 +9,10 @@ using Mindr.WebUI.Options;
 using System.Net.Http.Json;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
-namespace Mindr.WebUI.Services.Agenda;
+namespace Mindr.WebUI.Services.ApiClients;
 
 public class HttpAgendaHttpClient : IHttpAgendaHttpClient
 {
-    public static readonly int COUNT_DAYS_IN_CALENDAR = 42; //todo: must do better. enum instead?
-
     private readonly HttpClient _httpClient;
     private readonly MicrosoftGraphOptions _options;
     private readonly IAccessTokenProvider _tokenProvider;
@@ -73,7 +71,7 @@ public class HttpAgendaHttpClient : IHttpAgendaHttpClient
             });
         }
 
-        int remainingDays = COUNT_DAYS_IN_CALENDAR - days.Count;
+        int remainingDays = _Constants.COUNT_DAYS_IN_CALENDAR - days.Count;
         for (int i = 0; i < remainingDays; i++)
         {
             days.Add(new CalendarDay

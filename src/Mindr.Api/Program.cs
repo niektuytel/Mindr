@@ -242,6 +242,7 @@ public class Program
                 var Connector1 = new Connector()
                 {
                     Id = Guid.Parse("c98d9b51-cf20-4938-b7cb-76e8743f673c"),
+                    CreatedBy = "00000000-0000-0000-aacc-c311156d0357",
                     Color = "orange",
                     Name = "Send Whatsapp Text Message",
                     Description = "Some description explain the product",
@@ -283,6 +284,7 @@ public class Program
                 var Connector2 = new Connector()
                 {
                     Id = Guid.Parse("60994748-0cf3-452b-bbbc-44930e8fb052"),
+                    CreatedBy = "00000000-0000-0000-aacc-c311156d0357",
                     Color = "blue",
                     Name = "Send WhatsApp Sample Text Message",
                     Description = "Some description explain the product",

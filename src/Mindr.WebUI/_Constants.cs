@@ -7,6 +7,8 @@ namespace Mindr.WebUI;
 
 internal static class _Constants
 {
+    public static readonly int COUNT_DAYS_IN_CALENDAR = 42; //todo: must do better. enum instead?
+
     public static string Logo = "https://www.lucrasoft.nl//media/xrrbm1vl/lucrasoft-ict-groep-white.png";
     public static List<Page> Pages = new()
     {

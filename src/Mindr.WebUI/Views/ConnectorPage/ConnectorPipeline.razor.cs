@@ -8,10 +8,13 @@ using Newtonsoft.Json;
 
 namespace Mindr.WebUI.Components
 {
-    public partial class HttpPipeline: FluentComponentBase
+    public partial class ConnectorPipeline: FluentComponentBase
     {
         [Parameter, EditorRequired]
-        public List<HttpItem> Pipeline { get; set; } = default!;
+        public string ConnectorId { get; set; }
+
+        public List<HttpItem> Pipeline { get; set; } = new() { _Constants.DefaultTestSample, _Constants.DefaultTestSample2 };
+
 
         public HttpItem? SelectedItem { get; set; } = null;
 

@@ -18,6 +18,9 @@ namespace Mindr.Core.Models.Connector
         [JsonProperty("id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
+        [JsonProperty("created_by")]
+        public string CreatedBy { get; set; }
+
         [JsonProperty("color")]
         public string Color { get; set; }
 
@@ -28,10 +31,10 @@ namespace Mindr.Core.Models.Connector
         public string Description { get; set; }
 
         [JsonProperty("variables")]
-        public IEnumerable<ConnectorVariable> Variables { get; set; }
+        public IEnumerable<ConnectorVariable> Variables { get; set; } = new List<ConnectorVariable>();
 
         [JsonProperty("pipeline")]
-        public IEnumerable<HttpItem> Pipeline { get; set; }
+        public IEnumerable<HttpItem> Pipeline { get; set; } = new List<HttpItem>();
 
     }
 }

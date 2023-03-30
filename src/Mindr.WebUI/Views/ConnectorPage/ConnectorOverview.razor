@@ -1,0 +1,23 @@
+﻿
+@namespace Mindr.WebUI.Components
+@inherits FluentComponentBase
+
+<Stack Orientation="Orientation.Vertical" VerticalGap="0">
+    <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
+        <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="HandleDialogOpen">
+            <FluentIcon Slot="start" Name="@FluentIcons.Add" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+            Delete
+        </FluentButton>
+    </Stack>
+    <div>
+        <FluentDialog Modal="true" TrapFocus="true" @ref="RemoveItemDialog" @ondialogdismiss="HandleDialogDismiss" Style="height:fit-content">
+            <div>
+                Are you sure to delete this connector?
+            </div>
+            <Stack Orientation="Orientation.Horizontal" HorizontalAlignment="StackHorizontalAlignment.Right" Style="padding:5px">
+                <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="HandleDialogClose">Close</FluentButton>
+                <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="OnRemove">Confirm</FluentButton>
+            </Stack>
+        </FluentDialog>
+    </div>
+</Stack>

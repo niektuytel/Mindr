@@ -6,7 +6,7 @@ using Mindr.Core.Models;
 using Newtonsoft.Json;
 using Mindr.Core.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using Mindr.WebUI.Services.Connector;
+using Mindr.WebUI.Services.ApiClients;
 using Azure;
 using Mindr.Core.Enums;
 

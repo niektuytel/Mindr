@@ -1,35 +1,37 @@
-﻿using Azure.Core;
+﻿using DutchGrit.Afas;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Graph;
 using Mindr.Core.Models.Connector;
 using Mindr.WebUI.Handlers;
 using Mindr.WebUI.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
-namespace Mindr.WebUI.Services.Connector;
+namespace Mindr.WebUI.Services.ApiClients;
 
-public class HttpConnectorEventClient : IHttpConnectorEventClient
+public class HttpConnectorHttpClient : IHttpConnectorClient
 {
     private readonly HttpClient _httpClient;
     private readonly ApiOptions _options;
     private readonly IAccessTokenProvider _tokenProvider;
 
-    public HttpConnectorEventClient(IHttpClientFactory factory, IAccessTokenProvider tokenProvider, IOptions<ApiOptions> options)
+    public HttpConnectorHttpClient(IHttpClientFactory factory, IAccessTokenProvider tokenProvider, IOptions<ApiOptions> options)
     {
         _httpClient = factory.CreateClient(nameof(AuthorizationApiMessageHandler));
         _tokenProvider = tokenProvider;
         _options = options.Value!;
     }
 
-    private string ControllerUrl => $"{_options.BaseUrl}/connectorevent";
+    private string ControllerUrl => $"{_options.BaseUrl}/connector";
 
     private async Task<bool> TrySetAuthorization(HttpRequestMessage request)
     {
@@ -45,9 +47,19 @@ public class HttpConnectorEventClient : IHttpConnectorEventClient
         return false;
     }
 
-    public async Task<HttpResponseMessage?> GetAll()
+    public async Task<HttpResponseMessage?> GetAll(string query = "", string eventId = "")
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{ControllerUrl}");
+        if (!string.IsNullOrEmpty(query))
+        {
+            query = $"&query={query}";
+        }
+
+        if (!string.IsNullOrEmpty(eventId))
+        {
+            eventId = $"&eventId={eventId}";
+        }
+
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{ControllerUrl}?{query}{eventId}");
         var validAuth = await TrySetAuthorization(request);
         if (!validAuth) return null;
 
@@ -55,7 +67,7 @@ public class HttpConnectorEventClient : IHttpConnectorEventClient
         return response;
     }
 
-    public async Task<HttpResponseMessage?> Upsert(ConnectorEvent @event)
+    public async Task<HttpResponseMessage?> Create(Connector content)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, ControllerUrl);
         var validAuth = await TrySetAuthorization(request);
@@ -63,16 +75,16 @@ public class HttpConnectorEventClient : IHttpConnectorEventClient
 
         request.Headers.Add("accept", "*/*");
 
-        var json = JsonConvert.SerializeObject(@event);
-        request.Content = new StringContent(json);
+        var json = JsonConvert.SerializeObject(content);
+        request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
         var response = await _httpClient.SendAsync(request);
         return response;
     }
 
-    public async Task<HttpResponseMessage?> Delete(Guid eventid)
+    public async Task<HttpResponseMessage?> Delete(Guid id)
     {
-        var request = new HttpRequestMessage(HttpMethod.Delete, $"{ControllerUrl}/{eventid}");
+        var request = new HttpRequestMessage(HttpMethod.Delete, $"{ControllerUrl}/{id}");
         var validAuth = await TrySetAuthorization(request);
         if (!validAuth) return null;
 

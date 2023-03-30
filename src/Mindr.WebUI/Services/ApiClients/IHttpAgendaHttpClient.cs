@@ -1,6 +1,6 @@
 ﻿using Mindr.Core.Models;
 
-namespace Mindr.WebUI.Services.Agenda
+namespace Mindr.WebUI.Services.ApiClients
 {
     public interface IHttpAgendaHttpClient
     {

@@ -12,7 +12,7 @@ using Mindr.Api.Persistence;
 namespace Mindr.Api.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20230327213516_Init")]
+    [Migration("20230330210446_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,6 +31,9 @@ namespace Mindr.Api.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")

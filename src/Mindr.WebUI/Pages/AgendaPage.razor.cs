@@ -11,7 +11,7 @@ using Mindr.WebUI.Components.Connector;
 using Mindr.WebUI.Handlers;
 using Mindr.WebUI.Models;
 using Mindr.WebUI.Services;
-using Mindr.WebUI.Services.Agenda;
+using Mindr.WebUI.Services.ApiClients;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Json;

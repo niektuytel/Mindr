@@ -5,7 +5,7 @@ using Microsoft.Fast.Components.FluentUI;
 using Mindr.Core.Models;
 using Mindr.Core.Models.Connector;
 using Mindr.WebUI.Components.Connector;
-using Mindr.WebUI.Services.Connector;
+using Mindr.WebUI.Services.ApiClients;
 using Newtonsoft.Json;
 
 namespace Mindr.WebUI.Components.Agenda;

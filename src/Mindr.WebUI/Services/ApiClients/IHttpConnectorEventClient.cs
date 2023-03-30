@@ -3,7 +3,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Mindr.WebUI.Services.Connector;
+namespace Mindr.WebUI.Services.ApiClients;
 
 public interface IHttpConnectorEventClient
 {
