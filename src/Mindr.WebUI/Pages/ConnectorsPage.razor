@@ -4,6 +4,7 @@
 @using System.Collections.ObjectModel;
 @using Mindr.WebUI.Models;
 @using Mindr.WebUI.Services.ApiClients;
+@using Mindr.WebUI.Views.ConnectorViews
 @using Newtonsoft.Json;
 
 @inherits FluentComponentBase
@@ -15,74 +16,15 @@
     // TODO: Validate on creating connector
     // TODO: Error message on bottom of screen display action error
     // TODO: Dialog generic type for all dialogs
-    // TODO: Connectors | Guid >>change to>> Connector | Name
 *@
 
 @if (string.IsNullOrEmpty(ConnectorId))
 {
-    <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
-        <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="HandleDialogOpen">
-            <FluentIcon Slot="start" Name="@FluentIcons.Add" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
-            Add
-        </FluentButton>
-    </Stack>
-    <Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="height:100%">
-        @if (!IsLoadingData)
-        {
-            <FluentDataGrid TGridItem="Connector"
-                RowsDataProvider="@DataProvider"
-                OnCellFocus="HandleCellFocus"
-            >
-                <PropertyColumn Property="@(p => p.Name)"/>
-                <PropertyColumn Property="@(p => p.Color)"/>
-                <PropertyColumn Property="@(p => p.Description)"/>
-            </FluentDataGrid>
-        }
-        else
-        {
-            <Stack HorizontalAlignment="StackHorizontalAlignment.Center" VerticalAlignment="StackVerticalAlignment.Center">
-                <FluentProgressRing/>
-            </Stack>
-        }
-    </Stack>
-    <div>
-        <FluentDialog Modal="true" TrapFocus="true" @ref="AddItemDialog" @ondialogdismiss="HandleDialogDismiss" Style="height:fit-content">
-            @if (!IsLoadingDialog)
-            {
-                <FluentTextField @bind-Value="@AddItemData.Name" Placeholder="Title" style="width: 100%;" />
-                <FluentTextArea @bind-Value="@AddItemData.Description" Placeholder="Description" style="width: 100%;"/>
-                <Stack Orientation="Orientation.Horizontal" HorizontalAlignment="StackHorizontalAlignment.Right" Style="padding:5px">
-                    <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="HandleDialogClose">Close</FluentButton>
-                    <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="OnConnectorAdd">Create New</FluentButton>
-                </Stack>
-            }
-            else
-            {
-                <Stack HorizontalAlignment="StackHorizontalAlignment.Center" VerticalAlignment="StackVerticalAlignment.Center">
-                    <FluentProgressRing />
-                </Stack>
-            }
-        </FluentDialog>
-    </div>
+    <ConnectorsView/>
 }
 else
 {
-    <Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="height:100%">
-        <NavMenu Class="nav-menu" Expanded="false" Collapsible="false" Style="height: 100%;">
-            @foreach (Page _page in @_Constants.ConnectorPage)
-            {
-                <NavMenuLink Icon="@_page.Icon" Text="@_page.Name" Href=@($"/connectors/{ConnectorId}/{_page.Name.ToLower()}") Disabled="@_page.Disabled" />
-            }
-        </NavMenu>
-        @if (string.IsNullOrEmpty(NavName) || NavName.ToLower() == "overview")
-        {
-            <ConnectorOverview ConnectorId="@ConnectorId" />
-        }
-        else if (NavName.ToLower() == "pipeline")
-        {
-            <ConnectorPipeline ConnectorId="@ConnectorId" />
-        }
-    </Stack>
+    <ConnectorView ConnectorId="@ConnectorId" NavName="@NavName"/>
 }
 
 

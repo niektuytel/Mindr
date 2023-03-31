@@ -6,7 +6,7 @@ using Mindr.Core.Models.Connector.Http;
 using Mindr.Core.Services.Connectors;
 using Newtonsoft.Json;
 
-namespace Mindr.WebUI.Components
+namespace Mindr.WebUI.Views.ConnectorViews
 {
     public partial class ConnectorPipeline: FluentComponentBase
     {

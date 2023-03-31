@@ -67,6 +67,16 @@ public class HttpConnectorHttpClient : IHttpConnectorClient
         return response;
     }
 
+    public async Task<HttpResponseMessage?> GetBriefly(string connectorId)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{ControllerUrl}/{connectorId}");
+        var validAuth = await TrySetAuthorization(request);
+        if (!validAuth) return null;
+
+        var response = await _httpClient.SendAsync(request);
+        return response;
+    }
+
     public async Task<HttpResponseMessage?> Create(Connector content)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, ControllerUrl);
@@ -82,9 +92,9 @@ public class HttpConnectorHttpClient : IHttpConnectorClient
         return response;
     }
 
-    public async Task<HttpResponseMessage?> Delete(Guid id)
+    public async Task<HttpResponseMessage?> Delete(string connectorId)
     {
-        var request = new HttpRequestMessage(HttpMethod.Delete, $"{ControllerUrl}/{id}");
+        var request = new HttpRequestMessage(HttpMethod.Delete, $"{ControllerUrl}/{connectorId}");
         var validAuth = await TrySetAuthorization(request);
         if (!validAuth) return null;
 

@@ -12,6 +12,12 @@ public partial class Breadcrumb: FluentComponentBase
     [Inject]
     public NavigationManager NavigationManager { get; set; }
 
+    [Parameter]
+    public string DisplayValue { get; set; } = "";
+
+    [Parameter]
+    public int DisplayValueOnIndex { get; set; } = 1;
+
     private string Path { get; set; } = "";
 
     private Page Page { get; set; } = null;

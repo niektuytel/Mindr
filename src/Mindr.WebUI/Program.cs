@@ -10,7 +10,6 @@ using Mindr.WebUI.Handlers;
 using Mindr.WebUI.Options;
 using Mindr.WebUI.Services.ApiClients;
 using Mindr.WebUI.Extensions;
-using Mindr.WebUI.Services.ApiClients;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

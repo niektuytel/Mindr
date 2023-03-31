@@ -6,6 +6,7 @@ namespace Mindr.WebUI.Services.ApiClients
     {
         Task<HttpResponseMessage?> GetAll(string query = "", string eventId = "");
         Task<HttpResponseMessage?> Create(Connector content);
-        Task<HttpResponseMessage?> Delete(Guid id);
+        Task<HttpResponseMessage?> Delete(string connectorId);
+        Task<HttpResponseMessage?> GetBriefly(string connectorId);
     }
 }

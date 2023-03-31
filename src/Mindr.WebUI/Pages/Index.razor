@@ -5,6 +5,7 @@
 @using Mindr.WebUI.Services.ApiClients;
 @using System.Collections.ObjectModel;
 @using Newtonsoft.Json;
+@using Mindr.WebUI.Interfaces;
 
 @inherits FluentComponentBase
 @attribute [Authorize]
@@ -14,6 +15,7 @@
     // TODO: extra tab to display clicked connector event
 *@
 
+<Breadcrumb />
 <Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="height:100%">
     <FluentDataGrid TGridItem="ConnectorEvent"
                     RowsDataProvider="@DataProvider"

@@ -16,12 +16,12 @@
             }
         </NavMenu>
         <Stack class="child-stack" Orientation="Orientation.Vertical" VerticalGap="0">
-            <Breadcrumb />
             <ErrorBoundary @ref="ErrorBoundary">
                 <ChildContent>
                     @Body
                 </ChildContent>
                 <ErrorContent Context="ex">
+                    <Breadcrumb />
                     <div class="blazor-error-boundary">
                         @ex.Message
                     </div>

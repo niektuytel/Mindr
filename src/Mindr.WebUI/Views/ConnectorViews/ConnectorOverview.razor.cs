@@ -7,7 +7,7 @@ using Mindr.Core.Services.Connectors;
 using Mindr.WebUI.Services.ApiClients;
 using Newtonsoft.Json;
 
-namespace Mindr.WebUI.Components
+namespace Mindr.WebUI.Views.ConnectorViews
 {
     public partial class ConnectorOverview: FluentComponentBase
     {
@@ -24,20 +24,13 @@ namespace Mindr.WebUI.Components
 
         public async Task OnRemove()
         {
-            //IsLoadingData = true;
+            //IsLoading = true;
 
-            if(Guid.TryParse(ConnectorId, out var id))
-            {
-                await ConnectorClient.Delete(id);
-                NavigationManager.NavigateTo($"/connectors");
-            }
-            else
-            {
-                // TODO: Display Error "id not been guid" 
-            }
+            await ConnectorClient.Delete(ConnectorId);
+            NavigationManager.NavigateTo($"/connectors");
 
 
-            //IsLoadingData = false;
+            //IsLoading = false;
             //HandleDialogClose();
             base.StateHasChanged();
         }

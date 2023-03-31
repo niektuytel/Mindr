@@ -13,7 +13,14 @@
             {        
                 <h3><a href="@Page.Name.ToLower()">@Page.Name</a></h3>
                 <div class="breadcrumb-devider"/>
-                <h3 class="breadcrumb-child">@Path</h3>
+                @if(string.IsNullOrEmpty(DisplayValue))
+                {
+                    <h3 class="breadcrumb-child">@Path</h3>
+                }
+                else
+                {
+                    <h3 class="breadcrumb-child">@DisplayValue</h3>
+                }
             }
             else
             {
