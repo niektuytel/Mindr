@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
 using Mindr.Core.Extensions;
+using Mindr.Core.Models.Connector;
 using Mindr.Core.Models.Connector.Http;
 using Mindr.Core.Services.Connectors;
 using Mindr.WebUI.Services.ApiClients;
@@ -17,16 +18,32 @@ namespace Mindr.WebUI.Views.ConnectorViews
         [Inject]
         public IHttpConnectorClient ConnectorClient { get; set; }
 
-        [Parameter]
-        public string ConnectorId { get; set; } = default!;
+        [Parameter, EditorRequired]
+        public Connector Overview { get; set; } = default!;
+
+        private bool DataHasChanged = false;
 
         public FluentDialog RemoveItemDialog = default!;
+
+        public async Task OnUpdate()
+        {
+            Console.WriteLine();
+            ////IsLoading = true;
+
+            //await ConnectorClient.Delete(ConnectorId);
+            //NavigationManager.NavigateTo($"/connectors");
+
+
+            //IsLoading = false;
+            //HandleDialogClose();
+            base.StateHasChanged();
+        }
 
         public async Task OnRemove()
         {
             //IsLoading = true;
 
-            await ConnectorClient.Delete(ConnectorId);
+            await ConnectorClient.Delete(Overview.Id.ToString());
             NavigationManager.NavigateTo($"/connectors");
 
 

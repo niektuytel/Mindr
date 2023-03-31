@@ -21,6 +21,17 @@ namespace Mindr.Api.Services
             _context = context;
         }
 
+        public async Task<Connector?> GetOverview(Guid connectorId)
+        {
+            var item = await _context.Connectors.FirstOrDefaultAsync(x => x.Id == connectorId);
+            if(item == null)
+            {
+                throw new ApiRequestException(ApiResponse.NotFound, $"Did not find connector on {connectorId}");
+            }
+
+            return item;
+        }
+
         public async Task<IEnumerable<Connector>> GetAll(string userId, string? eventId = null, string? query = null)
         {
             var events = await _eventClient.GetAll(userId, eventId);

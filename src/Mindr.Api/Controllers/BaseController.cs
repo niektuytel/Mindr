@@ -47,7 +47,7 @@ public class BaseController : ControllerBase
     /// </summary>
     /// <param name="onFunction">The function that will been handle in the response</param>
     /// <returns></returns>
-    protected async Task<IActionResult> HandleRequest(Func<Task<object>> onFunction)
+    protected async Task<IActionResult> HandleRequest(Func<Task<object?>> onFunction)
     {
         try
         {

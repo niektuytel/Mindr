@@ -28,7 +28,7 @@
     }
     else if (string.IsNullOrEmpty(NavName) || NavName.ToLower() == "overview")
     {
-        <ConnectorOverview ConnectorId="@ConnectorId" />
+        <ConnectorOverview Overview="@ConnectorInfo" />
     }
     else if (NavName.ToLower() == "pipeline")
     {

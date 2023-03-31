@@ -28,6 +28,30 @@ public class ConnectorController : BaseController
     }
 
     /// <remarks>
+    /// Get information overview of connector
+    /// </remarks>
+    /// <credentials code="200">All related events</credentials>
+    /// <credentials code="400">Invalid credentials</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
+    /// <credentials code="404">Not Found</credentials>
+    [HttpGet("{id}")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(Connector), 200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> GetOverview(Guid id)
+    {
+        var response = await HandleRequest(
+            async () => {
+                return await _connectorClient.GetOverview(id);
+            }
+        );
+
+        return response;
+    }
+
+    /// <remarks>
     /// Get all connectors from user.
     /// </remarks>
     /// <credentials code="200">All related events</credentials>
@@ -54,18 +78,6 @@ public class ConnectorController : BaseController
         );
 
         return response;
-    }
-
-    [HttpGet("{id}")]
-    public IActionResult GetById(Guid id)
-    {
-        var connector = Items.FirstOrDefault(item => item.Id == id);
-        if(connector == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(connector);
     }
 
     /// <remarks>
