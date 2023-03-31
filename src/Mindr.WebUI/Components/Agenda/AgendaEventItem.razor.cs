@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Fast.Components.FluentUI;
 using Mindr.Core.Models;
 using Mindr.Core.Models.Connector;
-using Mindr.WebUI.Components.Connector;
 using Mindr.WebUI.Services.ApiClients;
 using Newtonsoft.Json;
 
@@ -21,7 +20,7 @@ public partial class AgendaEventItem: FluentComponentBase
     [Inject]
     public IHttpConnectorClient ConnectorClient { get; set; } = default!;
 
-    private IEnumerable<ConnectorBriefDTO>? Connectors { get; set; } = null;
+    private IEnumerable<Mindr.Core.Models.Connector.Connector>? Connectors { get; set; } = null;
 
     private bool IsLoading { get; set; } = true;
 
@@ -39,7 +38,7 @@ public partial class AgendaEventItem: FluentComponentBase
         var json = await response.Content.ReadAsStringAsync();
         if (!string.IsNullOrEmpty(json))
         {
-            Connectors = JsonConvert.DeserializeObject<IEnumerable<ConnectorBriefDTO>>(json);
+            Connectors = JsonConvert.DeserializeObject<IEnumerable<Mindr.Core.Models.Connector.Connector>>(json);
         }
 
         IsLoading = false;

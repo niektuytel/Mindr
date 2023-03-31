@@ -10,7 +10,7 @@ using Azure;
 using Mindr.Core.Enums;
 using Mindr.WebUI.Services.ApiClients;
 
-namespace Mindr.WebUI.Components.Connector;
+namespace Mindr.WebUI.Components;
 
 public partial class ConnectorEventDialog: FluentComponentBase
 {
@@ -21,7 +21,7 @@ public partial class ConnectorEventDialog: FluentComponentBase
     public ConnectorEvent? CurrentEvent { get; set; } = null;
 
     [Parameter]
-    public ConnectorBriefDTO? Data { get; set; } = null;
+    public Connector? Data { get; set; } = null;
 
     [Inject]
     public NavigationManager NavigationManager { get; set; }
@@ -36,13 +36,13 @@ public partial class ConnectorEventDialog: FluentComponentBase
 
     public string? Query { get; set; } = string.Empty;
 
-    public IEnumerable<ConnectorBriefDTO>? Results { get; set; } = null;
+    public IEnumerable<Connector>? Results { get; set; } = null;
 
     public FluentDialog Dialog = default!;
 
     public async Task HandleOnSearch(ChangeEventArgs args)
     {
-        Results = new List<ConnectorBriefDTO>();
+        Results = new List<Connector>();
 
         if (args is not null && args.Value is not null)
         {
@@ -57,7 +57,7 @@ public partial class ConnectorEventDialog: FluentComponentBase
             var json = await response.Content.ReadAsStringAsync();
             if (!string.IsNullOrEmpty(json))
             {
-                Results = JsonConvert.DeserializeObject<IEnumerable<ConnectorBriefDTO>>(json);
+                Results = JsonConvert.DeserializeObject<IEnumerable<Connector>>(json);
             }
         }
 
@@ -101,7 +101,7 @@ public partial class ConnectorEventDialog: FluentComponentBase
         base.StateHasChanged();
     }
 
-    public void HandleOnDialogOpen(AgendaEvent agendaEvent, ConnectorBriefDTO? connector = null)
+    public void HandleOnDialogOpen(AgendaEvent agendaEvent, Connector? connector = null)
     {
         Data = connector;
         var events = new List<EventParam>

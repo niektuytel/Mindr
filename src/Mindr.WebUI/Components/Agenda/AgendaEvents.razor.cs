@@ -2,7 +2,6 @@
 using Microsoft.Fast.Components.FluentUI;
 using Mindr.Core;
 using Mindr.Core.Models;
-using Mindr.WebUI.Components.Connector;
 
 namespace Mindr.WebUI.Components.Agenda;
 

@@ -16,7 +16,7 @@ namespace Mindr.Core.Models.Connector
             
         }
 
-        public ConnectorEvent(ConnectorEvent @event, ConnectorBriefDTO connector)
+        public ConnectorEvent(ConnectorEvent @event, Connector connector)
         {
             Id = @event.Id;
             UserId = @event.UserId;
@@ -40,7 +40,7 @@ namespace Mindr.Core.Models.Connector
             EventParams = eventParams;
         }
 
-        public ConnectorEvent(string eventId, IEnumerable<EventParam> eventParams, ConnectorBriefDTO connector)
+        public ConnectorEvent(string eventId, IEnumerable<EventParam> eventParams, Connector connector)
         {
             EventId = eventId;
             EventParams = eventParams;

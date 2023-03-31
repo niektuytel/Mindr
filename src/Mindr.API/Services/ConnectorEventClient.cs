@@ -133,11 +133,6 @@ public class ConnectorEventClient : IConnectorEventClient
                 .Include(x => x.Variables)
                 .Where(x => x.UserId == userId && x.EventId == eventId);
 
-            if (items?.Any() != true)
-            {
-                throw new ApiRequestException(ApiResponse.NotFound, $"Connector event on user {userId}");
-            }
-
             return items.AsEnumerable();
         }
         else
@@ -147,13 +142,11 @@ public class ConnectorEventClient : IConnectorEventClient
                 .Include(x => x.Variables)
                 .Where(x => x.UserId == userId);
 
-            if (items?.Any() != true)
-            {
-                throw new ApiRequestException(ApiResponse.NotFound, $"Connector event on user {userId}");
-            }
-
             return items.AsEnumerable();
+
         }
+        
+        //throw new ApiRequestException(ApiResponse.NotFound, $"Connector event on user {userId}");
 
     }
 

@@ -7,7 +7,6 @@ using Microsoft.Graph.TermStore;
 using Mindr.Core.Models;
 using Mindr.Core.Models.Connector;
 using Mindr.WebUI.Components;
-using Mindr.WebUI.Components.Connector;
 using Mindr.WebUI.Handlers;
 using Mindr.WebUI.Models;
 using Mindr.WebUI.Services;
