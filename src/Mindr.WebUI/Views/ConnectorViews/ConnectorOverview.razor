@@ -13,16 +13,24 @@
             Delete
         </FluentButton>
     </Stack>
-   @* <table style="width:100%">
-        @foreach (PropertyInfo prop in Overview.GetType().GetProperties().ToList())
-        {
+    @if(Overview!= null)
+    {
+        <table style="width:100%">
             <tr>
-                <td>@prop.Name</td>
-                <td>@prop.GetValue(Overview)</td>
+                <td>@Overview.Id</td>
+                <td></td>
+                <td>@Overview.CreatedBy</td>
+                <td></td>
+                <td>@Overview.Name</td>
+                <td></td>
+                <td>@Overview.Description</td>
+                <td></td>
+                <td>@Overview.</td>
+                <td></td>
             </tr>
-        }
-    </table>
-*@
+        </table>
+    }
+
     <div>
         <FluentDialog Modal="true" TrapFocus="true" @ref="RemoveItemDialog" @ondialogdismiss="HandleDialogDismiss" Style="height:fit-content">
             <div>

@@ -19,7 +19,7 @@ namespace Mindr.WebUI.Views.ConnectorViews
         public IHttpConnectorClient ConnectorClient { get; set; }
 
         [Parameter, EditorRequired]
-        public Connector Overview { get; set; } = default!;
+        public Connector Overview { get; set; } = null!;
 
         private bool DataHasChanged = false;
 
