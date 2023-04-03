@@ -31,7 +31,6 @@ public class Program
         builder.Services
             .AddDbContext<IApplicationContext, ApplicationContext>(options => {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("SqlDatabase"));
-                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
         builder.Services
             .AddHangfire(configuration => configuration

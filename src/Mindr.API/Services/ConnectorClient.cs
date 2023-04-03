@@ -39,7 +39,7 @@ namespace Mindr.Api.Services
         {
             payload.CreatedBy = userId;
             var entity = _context.Connectors
-                .Include(item => item.Variables)
+                //.Include(item => item.Variables)
                 .FirstOrDefault(item => item.CreatedBy == payload.CreatedBy && item.Id == payload.Id);
 
             // insert
@@ -48,13 +48,12 @@ namespace Mindr.Api.Services
                 throw new ApiRequestException(ApiResponse.NotFound, $"Did not find connector {payload.Id} on user:{userId}");
             }
 
+            _context.ConnectorVariables.UpdateRange(payload.Variables);
+
             entity.Name = payload.Name;
             entity.Description = payload.Description;
-
-            // Fixed by: https://stackoverflow.com/a/72841614/13361987
-            entity.Variables = payload.Variables;
-
             _context.Connectors.Update(entity);
+
             _context.SaveChanges();
         }
 

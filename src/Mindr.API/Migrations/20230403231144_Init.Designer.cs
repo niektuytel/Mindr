@@ -12,7 +12,7 @@ using Mindr.Api.Persistence;
 namespace Mindr.Api.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20230403225650_Init")]
+    [Migration("20230403231144_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -25,6 +25,7 @@ namespace Mindr.WebUI.Views.ConnectorViews
 
         public FluentDialog RemoveItemDialog = default!;
 
+        // TODO: Fix Name and description update
         public async Task OnSave()
         {
             await ConnectorClient.Update(Overview);

@@ -54,7 +54,7 @@
                                         @item.Name
                                     </td>
                                     <td><FluentCheckbox @key="item" @onchange="@DataChanged" @bind-Value="@item.InputByUser">user dependent</FluentCheckbox>:</td>
-                                    <td><FluentTextField @onchange="@DataChanged" @bind-Value="@item.Value" style="width: 100%;" /></td>
+                                    <td><FluentTextField @key="item" @onchange="@DataChanged" @bind-Value="@item.Value" style="width: 100%;" /></td>
                                 </tr>
                                 <FluentDivider Role="DividerRole.Separator"></FluentDivider>
                             }
