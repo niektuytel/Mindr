@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace Mindr.Core.Models.Connector
@@ -11,8 +13,10 @@ namespace Mindr.Core.Models.Connector
         [Key]
         public int Id { get; set; }
 
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public bool InputByUser { get; set; } = true;
 
+        public string Name { get; set; }
+
+        public string Description { get; set; }
     }
 }

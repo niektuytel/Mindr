@@ -87,11 +87,12 @@ namespace Mindr.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ConnectorVariable",
+                name: "ConnectorVariables",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    InputByUser = table.Column<bool>(type: "bit", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConnectorEventId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -101,14 +102,14 @@ namespace Mindr.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ConnectorVariable", x => x.Id);
+                    table.PrimaryKey("PK_ConnectorVariables", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ConnectorVariable_ConnectorEvents_ConnectorEventId",
+                        name: "FK_ConnectorVariables_ConnectorEvents_ConnectorEventId",
                         column: x => x.ConnectorEventId,
                         principalTable: "ConnectorEvents",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_ConnectorVariable_Connectors_ConnectorId",
+                        name: "FK_ConnectorVariables_Connectors_ConnectorId",
                         column: x => x.ConnectorId,
                         principalTable: "Connectors",
                         principalColumn: "Id");
@@ -326,13 +327,13 @@ namespace Mindr.Api.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ConnectorVariable_ConnectorEventId",
-                table: "ConnectorVariable",
+                name: "IX_ConnectorVariables_ConnectorEventId",
+                table: "ConnectorVariables",
                 column: "ConnectorEventId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ConnectorVariable_ConnectorId",
-                table: "ConnectorVariable",
+                name: "IX_ConnectorVariables_ConnectorId",
+                table: "ConnectorVariables",
                 column: "ConnectorId");
 
             migrationBuilder.CreateIndex(
@@ -419,7 +420,7 @@ namespace Mindr.Api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ConnectorVariable");
+                name: "ConnectorVariables");
 
             migrationBuilder.DropTable(
                 name: "EventParam");

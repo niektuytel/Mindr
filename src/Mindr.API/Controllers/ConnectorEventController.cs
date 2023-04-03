@@ -46,7 +46,7 @@ public class ConnectorEventController : BaseController
     }
 
     /// <remarks>
-    /// Update or Insert Connector Event.
+    /// UpdateOverview or Insert Connector Event.
     /// </remarks>
     /// <credentials code="200">Successfully requested</credentials>
     /// <credentials code="400">Invalid request</credentials>

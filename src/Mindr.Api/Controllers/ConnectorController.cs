@@ -103,10 +103,26 @@ public class ConnectorController : BaseController
         return response;
     }
 
+    /// <remarks>
+    /// UpdateOverview Connector.
+    /// </remarks>
+    /// <credentials code="200">Successfully requested</credentials>
+    /// <credentials code="400">Invalid request</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
     [HttpPut]
-    public IActionResult Update(Connector payload)
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    public async Task<IActionResult> Update([FromBody] Connector payload)
     {
-        return Ok();
+        var response = await HandleRequest(
+            async () => {
+                var userId = User.GetInfo();
+                await _connectorClient.UpdateOverview(userId, payload);
+            }
+        );
+
+        return response;
     }
 
     /// <remarks>

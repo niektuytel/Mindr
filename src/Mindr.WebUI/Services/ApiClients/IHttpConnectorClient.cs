@@ -8,5 +8,6 @@ namespace Mindr.WebUI.Services.ApiClients
         Task<HttpResponseMessage?> Create(Connector content);
         Task<HttpResponseMessage?> Delete(string connectorId);
         Task<HttpResponseMessage?> GetBriefly(string connectorId);
+        Task<HttpResponseMessage?> Update(Connector content);
     }
 }

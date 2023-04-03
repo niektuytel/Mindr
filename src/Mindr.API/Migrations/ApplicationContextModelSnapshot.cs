@@ -85,6 +85,9 @@ namespace Mindr.Api.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("InputByUser")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Key")
                         .HasColumnType("nvarchar(max)");
 
@@ -100,7 +103,7 @@ namespace Mindr.Api.Migrations
 
                     b.HasIndex("ConnectorId");
 
-                    b.ToTable("ConnectorVariable");
+                    b.ToTable("ConnectorVariables");
                 });
 
             modelBuilder.Entity("Mindr.Core.Models.Connector.EventParam", b =>

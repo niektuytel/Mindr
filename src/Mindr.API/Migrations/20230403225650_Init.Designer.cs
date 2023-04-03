@@ -12,7 +12,7 @@ using Mindr.Api.Persistence;
 namespace Mindr.Api.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20230330210446_Init")]
+    [Migration("20230403225650_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -87,6 +87,9 @@ namespace Mindr.Api.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("InputByUser")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Key")
                         .HasColumnType("nvarchar(max)");
 
@@ -102,7 +105,7 @@ namespace Mindr.Api.Migrations
 
                     b.HasIndex("ConnectorId");
 
-                    b.ToTable("ConnectorVariable");
+                    b.ToTable("ConnectorVariables");
                 });
 
             modelBuilder.Entity("Mindr.Core.Models.Connector.EventParam", b =>

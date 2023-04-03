@@ -23,13 +23,39 @@ namespace Mindr.Api.Services
 
         public async Task<Connector?> GetOverview(Guid connectorId)
         {
-            var item = await _context.Connectors.FirstOrDefaultAsync(x => x.Id == connectorId);
+            var item = await _context.Connectors
+                .Include(item => item.Variables)
+                .FirstOrDefaultAsync(x => x.Id == connectorId);
+
             if(item == null)
             {
                 throw new ApiRequestException(ApiResponse.NotFound, $"Did not find connector on {connectorId}");
             }
 
             return item;
+        }
+
+        public async Task UpdateOverview(string userId, Connector payload)
+        {
+            payload.CreatedBy = userId;
+            var entity = _context.Connectors
+                .Include(item => item.Variables)
+                .FirstOrDefault(item => item.CreatedBy == payload.CreatedBy && item.Id == payload.Id);
+
+            // insert
+            if (entity == null)
+            {
+                throw new ApiRequestException(ApiResponse.NotFound, $"Did not find connector {payload.Id} on user:{userId}");
+            }
+
+            entity.Name = payload.Name;
+            entity.Description = payload.Description;
+
+            // Fixed by: https://stackoverflow.com/a/72841614/13361987
+            entity.Variables = payload.Variables;
+
+            _context.Connectors.Update(entity);
+            _context.SaveChanges();
         }
 
         public async Task<IEnumerable<Connector>> GetAll(string userId, string? eventId = null, string? query = null)

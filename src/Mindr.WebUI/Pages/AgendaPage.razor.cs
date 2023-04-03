@@ -23,7 +23,7 @@ public partial class AgendaPage: FluentComponentBase
     private static readonly DateTime InitialDate = DateTime.Now;
 
     [Inject]
-    public IHttpAgendaHttpClient AgendaClient { get; set; } = default!;
+    public IHttpAgendaClient AgendaClient { get; set; } = default!;
 
     public IEnumerable<CalendarDay> Days { get; set; } = default!;
 

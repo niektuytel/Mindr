@@ -2,7 +2,7 @@
 
 namespace Mindr.WebUI.Services.ApiClients
 {
-    public interface IHttpAgendaHttpClient
+    public interface IHttpAgendaClient
     {
         Task<IEnumerable<AgendaEvent>?> GetEventsOnMonth(DateTime date);
         IEnumerable<CalendarDay> GetMonthCalendarDays(DateTime date);

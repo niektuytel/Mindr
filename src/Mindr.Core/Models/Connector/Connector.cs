@@ -31,7 +31,7 @@ namespace Mindr.Core.Models.Connector
         public string Description { get; set; }
 
         [JsonProperty("variables")]
-        public IEnumerable<ConnectorVariable> Variables { get; set; } = new List<ConnectorVariable>();
+        public IList<ConnectorVariable> Variables { get; set; } = new List<ConnectorVariable>();
 
         [JsonProperty("pipeline")]
         public IEnumerable<HttpItem> Pipeline { get; set; } = new List<HttpItem>();

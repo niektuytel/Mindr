@@ -11,13 +11,13 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Mindr.WebUI.Services.ApiClients;
 
-public class HttpAgendaHttpClient : IHttpAgendaHttpClient
+public class HttpAgendaClient : IHttpAgendaClient
 {
     private readonly HttpClient _httpClient;
     private readonly MicrosoftGraphOptions _options;
     private readonly IAccessTokenProvider _tokenProvider;
 
-    public HttpAgendaHttpClient(IHttpClientFactory factory, IAccessTokenProvider tokenProvider, IOptions<MicrosoftGraphOptions> options)
+    public HttpAgendaClient(IHttpClientFactory factory, IAccessTokenProvider tokenProvider, IOptions<MicrosoftGraphOptions> options)
     {
         _httpClient = factory.CreateClient(nameof(AuthorizationGraphMessageHandler));
         _tokenProvider = tokenProvider;

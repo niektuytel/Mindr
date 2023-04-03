@@ -25,36 +25,21 @@ namespace Mindr.WebUI.Views.ConnectorViews
 
         public FluentDialog RemoveItemDialog = default!;
 
-        public async Task OnUpdate()
+        public async Task OnSave()
         {
-            Console.WriteLine();
-            ////IsLoading = true;
-
-            //await ConnectorClient.Delete(ConnectorId);
-            //NavigationManager.NavigateTo($"/connectors");
-
-
-            //IsLoading = false;
-            //HandleDialogClose();
+            await ConnectorClient.Update(Overview);
             base.StateHasChanged();
         }
 
         public async Task OnRemove()
         {
-            //IsLoading = true;
-
             await ConnectorClient.Delete(Overview.Id.ToString());
             NavigationManager.NavigateTo($"/connectors");
-
-
-            //IsLoading = false;
-            //HandleDialogClose();
             base.StateHasChanged();
         }
 
         public void HandleDialogOpen()
         {
-
             RemoveItemDialog.Show();
         }
 
@@ -70,5 +55,26 @@ namespace Mindr.WebUI.Views.ConnectorViews
                 RemoveItemDialog.Hide();
             }
         }
+
+        private void DataChanged()
+        {
+            DataHasChanged = true;
+            base.StateHasChanged();
+        }
+
+        private void DataChanged(int index)
+        {
+            //Overview.Variables[index].InputByUser = value;
+            DataHasChanged = true;
+            base.StateHasChanged();
+        }
+
+        private void HandleCheckChanged(ChangeEventArgs e, ConnectorVariable variable)
+        {
+            // get the checkbox state
+            var value = e.Value;
+            //Console.WriteLine($"Checkbox changed {IsChecked}");
+        }
+
     }
 }

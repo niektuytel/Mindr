@@ -29,9 +29,10 @@ public class Program
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
         builder.Services
-            .AddDbContext<IApplicationContext, ApplicationContext>(options => options
-                .UseSqlServer(builder.Configuration.GetConnectionString("SqlDatabase"))
-            );
+            .AddDbContext<IApplicationContext, ApplicationContext>(options => {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("SqlDatabase"));
+                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            });
         builder.Services
             .AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
@@ -250,6 +251,7 @@ public class Program
                         {
                             new()
                             {
+                                InputByUser = false,
                                 Name = "Authentication Token",
                                 Description = "Token needed to login with see: https://developers.facebook.com/apps/824837035437555/whatsapp-business/wa-dev-console/?business_id=656542846083352",
                                 Key = "User-Access-Token",
@@ -257,6 +259,7 @@ public class Program
                             },
                             new()
                             {
+                                InputByUser = false,
                                 Name = "Api version",
                                 Description = "Api Version",
                                 Key = "Version",
@@ -264,6 +267,7 @@ public class Program
                             },
                             new()
                             {
+                                InputByUser = true,
                                 Name = "Sender Phone id",
                                 Description = "The phone number id of the sender",
                                 Key = "Phone-Number-ID",
@@ -271,6 +275,7 @@ public class Program
                             },
                             new()
                             {
+                                InputByUser = true,
                                 Name = "Receiver Phone number id",
                                 Description = "The phone number id of the receiver",
                                 Key = "Recipient-Phone-Number",
@@ -292,6 +297,7 @@ public class Program
                         {
                         new()
                         {
+                            InputByUser = false,
                             Name = "Authentication Token",
                             Description = "Token needed to login with see: https://developers.facebook.com/apps/824837035437555/whatsapp-business/wa-dev-console/?business_id=656542846083352",
                             Key = "User-Access-Token",
@@ -299,6 +305,7 @@ public class Program
                         },
                         new()
                         {
+                            InputByUser = false,
                             Name = "Api version",
                             Description = "Api Version",
                             Key = "Version",
@@ -306,6 +313,7 @@ public class Program
                         },
                         new()
                         {
+                            InputByUser = false,
                             Name = "Sender Phone id",
                             Description = "The phone number id of the sender",
                             Key = "Phone-Number-ID",
@@ -313,6 +321,7 @@ public class Program
                         },
                         new()
                         {
+                            InputByUser = true,
                             Name = "Receiver Phone number id",
                             Description = "The phone number id of the receiver",
                             Key = "Recipient-Phone-Number",
@@ -320,13 +329,14 @@ public class Program
                         },
                         new()
                         {
+                            InputByUser = true,
                             Name = "Sending message",
                             Description = "Message that will been sended",
                             Key = "Text-Body-String",
                             Value = "unser inputed content"
                         }
-                        },
-                        Pipeline = new List<HttpItem>() { httpItem1, httpItem2 }
+                    },
+                    Pipeline = new List<HttpItem>() { httpItem1, httpItem2 }
                 };
                 context.Connectors.Add(Connector2);
 

@@ -18,13 +18,13 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Mindr.WebUI.Services.ApiClients;
 
-public class HttpConnectorHttpClient : IHttpConnectorClient
+public class HttpConnectorClient : IHttpConnectorClient
 {
     private readonly HttpClient _httpClient;
     private readonly ApiOptions _options;
     private readonly IAccessTokenProvider _tokenProvider;
 
-    public HttpConnectorHttpClient(IHttpClientFactory factory, IAccessTokenProvider tokenProvider, IOptions<ApiOptions> options)
+    public HttpConnectorClient(IHttpClientFactory factory, IAccessTokenProvider tokenProvider, IOptions<ApiOptions> options)
     {
         _httpClient = factory.CreateClient(nameof(AuthorizationApiMessageHandler));
         _tokenProvider = tokenProvider;
@@ -80,6 +80,21 @@ public class HttpConnectorHttpClient : IHttpConnectorClient
     public async Task<HttpResponseMessage?> Create(Connector content)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, ControllerUrl);
+        var validAuth = await TrySetAuthorization(request);
+        if (!validAuth) return null;
+
+        request.Headers.Add("accept", "*/*");
+
+        var json = JsonConvert.SerializeObject(content);
+        request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        var response = await _httpClient.SendAsync(request);
+        return response;
+    }
+
+    public async Task<HttpResponseMessage?> Update(Connector content)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Put, ControllerUrl);
         var validAuth = await TrySetAuthorization(request);
         if (!validAuth) return null;
 
