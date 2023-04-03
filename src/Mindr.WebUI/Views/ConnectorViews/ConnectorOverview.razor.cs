@@ -25,7 +25,6 @@ namespace Mindr.WebUI.Views.ConnectorViews
 
         public FluentDialog RemoveItemDialog = default!;
 
-        // TODO: Fix Name and description update
         public async Task OnSave()
         {
             await ConnectorClient.Update(Overview);
@@ -57,24 +56,22 @@ namespace Mindr.WebUI.Views.ConnectorViews
             }
         }
 
+        private void OnChangeName(ChangeEventArgs e)
+        {
+            Overview.Name = e.Value!.ToString();
+            DataChanged();
+        }
+
+        private void OnChangeDescription(ChangeEventArgs e)
+        {
+            Overview.Description = e.Value!.ToString();
+            DataChanged();
+        }
+
         private void DataChanged()
         {
             DataHasChanged = true;
             base.StateHasChanged();
-        }
-
-        private void DataChanged(int index)
-        {
-            //Overview.Variables[index].InputByUser = value;
-            DataHasChanged = true;
-            base.StateHasChanged();
-        }
-
-        private void HandleCheckChanged(ChangeEventArgs e, ConnectorVariable variable)
-        {
-            // get the checkbox state
-            var value = e.Value;
-            //Console.WriteLine($"Checkbox changed {IsChecked}");
         }
 
     }

@@ -32,13 +32,13 @@
             <tr>
                 <td>name</td>
                 <td>:</td>
-                <td><FluentTextField @onchange="@DataChanged" @bind-Value="@Overview.Name" style="width: 100%;" /></td>
+                <td><FluentTextField @key="Overview" @onchange="@OnChangeName" @bind-Value="@Overview.Name" style="width: 100%;" /></td>
             </tr>
             <FluentDivider Role="DividerRole.Separator"></FluentDivider>
             <tr>
                 <td style="vertical-align: -webkit-baseline-middle;">description</td>
                 <td style="vertical-align: -webkit-baseline-middle;">:</td>
-                <td><FluentTextArea @onchange="@DataChanged" @bind-Value="@Overview.Description" style="width: 100%;" /></td>
+                <td><FluentTextArea @key="Overview" @onchange="@OnChangeDescription" @bind-Value="@Overview.Description" style="width: 100%;" /></td>
             </tr>
             <FluentDivider Role="DividerRole.Separator"></FluentDivider>
             <tr>
