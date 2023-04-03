@@ -56,19 +56,19 @@ namespace Mindr.WebUI.Views.ConnectorViews
             }
         }
 
-        private void OnChangeName(ChangeEventArgs e)
+        private void OnChangeName(string value)
         {
-            Overview.Name = e.Value!.ToString();
-            DataChanged();
+            Overview.Name = value;
+            OnDataChanged();
         }
 
-        private void OnChangeDescription(ChangeEventArgs e)
+        private void OnChangeDescription(string value)
         {
-            Overview.Description = e.Value!.ToString();
-            DataChanged();
+            Overview.Description = value;
+            OnDataChanged();
         }
 
-        private void DataChanged()
+        private void OnDataChanged()
         {
             DataHasChanged = true;
             base.StateHasChanged();
