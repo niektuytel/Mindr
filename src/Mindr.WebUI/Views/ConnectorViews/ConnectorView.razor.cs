@@ -42,7 +42,7 @@ namespace Mindr.WebUI.Views.ConnectorViews
 
             IsLoading = true;
 
-            var response = await ConnectorClient.GetBriefly(ConnectorId);
+            var response = await ConnectorClient.GetOverview(ConnectorId);
             if (response == null)
             {
                 // Failed request

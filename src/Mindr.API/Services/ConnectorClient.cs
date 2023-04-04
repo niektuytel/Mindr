@@ -7,6 +7,7 @@ using Mindr.Core.Services.Connectors;
 using Microsoft.AspNetCore.Mvc;
 using Mindr.API.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Graph;
 
 namespace Mindr.Api.Services
 {
@@ -19,6 +20,27 @@ namespace Mindr.Api.Services
         {
             _eventClient = eventClient;
             _context = context;
+        }
+
+        public async Task<Connector?> GetById(Guid id)
+        {
+            // TODO: Use No-SQL database (better for searching as this will been re-used mas well?) [MongoDB]
+            var connector = await _context.Connectors
+                .Include(item => item.Variables)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Request).ThenInclude(item => item.Variables)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Request).ThenInclude(item => item.Url)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Request).ThenInclude(item => item.Header)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Request).ThenInclude(item => item.Body).ThenInclude(item => item.Options).ThenInclude(item => item.Raw)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.Variables)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.OriginalRequest).ThenInclude(item => item.Variables)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.OriginalRequest).ThenInclude(item => item.Url).ThenInclude(item => item.Query)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.OriginalRequest).ThenInclude(item => item.Header)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.OriginalRequest).ThenInclude(item => item.Body).ThenInclude(item => item.Options).ThenInclude(item => item.Raw)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.Header)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.Cookie)
+                .FirstOrDefaultAsync(item => item.Id == id);
+
+            return connector;
         }
 
         public async Task<Connector?> GetOverview(Guid connectorId)
@@ -34,6 +56,7 @@ namespace Mindr.Api.Services
 
             return item;
         }
+
 
         public async Task UpdateOverview(string userId, Connector payload)
         {
@@ -119,8 +142,6 @@ namespace Mindr.Api.Services
             _context.Connectors.Remove(entity);
             await _context.SaveChangesAsync();
         }
-
-
 
     }
 }

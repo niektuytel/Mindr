@@ -12,14 +12,23 @@
         </FluentButton>
     </Stack>
     <Stack Orientation="Orientation.Horizontal">
-        <Dropzone Items="Pipeline">
-            <HttpPipelineItem 
-                Data="@context" 
-                IsSelected="@(SelectedItem?.Id == context.Id)"
-                OnHandleSelect="@OnItemSelect" 
-                OnHandleRemove="@OnItemRemove"
-            />
-        </Dropzone>
+        @if (IsLoading)
+        {
+            <Stack HorizontalAlignment="StackHorizontalAlignment.Center" VerticalAlignment="StackVerticalAlignment.Center">
+                <FluentProgressRing />
+            </Stack>
+        }
+        else if (HttpItems?.Any() == true)
+        {
+            <Dropzone Items="HttpItems">
+                <HttpPipelineItem 
+                    Data="@context" 
+                    IsSelected="@(SelectedItem?.Id == context.Id)"
+                    OnHandleSelect="@OnItemSelect" 
+                    OnHandleRemove="@OnItemRemove"
+                />
+            </Dropzone>
+        }
         @if(SelectedItem != null)
         {
             <Stack 
@@ -84,7 +93,8 @@
             @ref="AddItemDialog" 
             @ondialogdismiss="DismissItemDialog"
         >
-            <Collection Data="@Collection" OnAddHandle="OnHandleAdd"/>
+            HTTP Item input
+            @*<Collection Data="@Collection" OnAddHandle="OnHandleAdd"/>*@
             <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="CloseItemDialog">Close dialog</FluentButton>
         </FluentDialog>
     </div>

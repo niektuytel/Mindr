@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text;
 
 namespace Mindr.Core.Models.Connector
@@ -23,7 +24,7 @@ namespace Mindr.Core.Models.Connector
             EventId = @event.EventId;
             EventParams = @event.EventParams;
             ConnectorId = connector.Id;
-            Variables = connector.Variables;
+            Variables = connector.Variables.Where(item => item.InputByUser).ToArray();
         }
 
         public ConnectorEvent(string userId, string eventId, Connector connector)
@@ -31,7 +32,7 @@ namespace Mindr.Core.Models.Connector
             UserId = userId;
             EventId = eventId;
             ConnectorId = connector.Id;
-            Variables = connector.Variables;
+            Variables = connector.Variables.Where(item => item.InputByUser).ToArray();
         }
 
         public ConnectorEvent(string eventId, IEnumerable<EventParam> eventParams)
@@ -45,7 +46,7 @@ namespace Mindr.Core.Models.Connector
             EventId = eventId;
             EventParams = eventParams;
             ConnectorId = connector.Id;
-            Variables = connector.Variables;
+            Variables = connector.Variables.Where(item => item.InputByUser).ToArray();
         }
 
         [Key]
@@ -68,7 +69,7 @@ namespace Mindr.Core.Models.Connector
         public Guid? ConnectorId { get; set; } = null;
 
         [JsonProperty("connector_params")]
-        public IList<ConnectorVariable> Variables { get; set; }
+        public IEnumerable<ConnectorVariable> Variables { get; set; }
 
         public void Update(ConnectorEvent @event)
         {

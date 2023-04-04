@@ -17,10 +17,10 @@
                         @bind-SelectedOption="@Data"
                         @bind-Text="@Query"
                         @oninput="@(async (input) => await HandleOnSearch(input))" />
-        @if (Data != null)
+        @if (CurrentEvent != null)
         {
             <div style="margin:10px">
-                @foreach (var variable in Data.Variables)
+                @foreach (var variable in CurrentEvent.Variables)
                 {
                     <FluentTextField title="@variable.Description"
                                      Placeholder="Required"

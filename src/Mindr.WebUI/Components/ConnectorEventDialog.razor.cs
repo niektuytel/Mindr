@@ -140,7 +140,7 @@ public partial class ConnectorEventDialog: FluentComponentBase
     {
         if (Data == null) return;
 
-        NavigationManager.NavigateTo($"/connector/{Data!.Id}");
+        NavigationManager.NavigateTo($"/connectors/{Data!.Id}");
         base.StateHasChanged();
     }
 

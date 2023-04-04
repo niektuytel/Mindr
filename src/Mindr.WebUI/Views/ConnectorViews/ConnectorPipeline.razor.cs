@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
 using Mindr.Core.Extensions;
+using Mindr.Core.Models.Connector;
 using Mindr.Core.Models.Connector.Http;
 using Mindr.Core.Services.Connectors;
+using Mindr.WebUI.Services.ApiClients;
 using Newtonsoft.Json;
 
 namespace Mindr.WebUI.Views.ConnectorViews
@@ -14,11 +16,12 @@ namespace Mindr.WebUI.Views.ConnectorViews
         [Parameter, EditorRequired]
         public string ConnectorId { get; set; }
 
-        public List<HttpItem> Pipeline { get; set; } = new() { _Constants.DefaultTestSample, _Constants.DefaultTestSample2 };
-
         public HttpItem? SelectedItem { get; set; } = null;
 
-        private int SelectedIndex => SelectedItem != null ? Pipeline.IndexOf(SelectedItem) : 0;
+        private int SelectedIndex => SelectedItem != null ? HttpItems.IndexOf(SelectedItem) : 0;
+
+        [Inject]
+        public IHttpConnectorClient ConnectorClient { get; set; } = default!;
 
         [Inject]
         public IHttpCollectionClient CollectionClient { get; set; } = default!;
@@ -28,16 +31,48 @@ namespace Mindr.WebUI.Views.ConnectorViews
 
         public FluentDialog AddItemDialog = default!;
 
-        protected async Task OnInitializedAsync()
-        {
-        }
+        private bool IsLoading = false;
 
-        protected override void OnAfterRender(bool firstRender)
+        private List<HttpItem>? HttpItems { get; set; } = null;
+        //public List<HttpItem> HttpItems { get; set; } = new() { _Constants.DefaultTestSample, _Constants.DefaultTestSample2 };
+
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
             {
+                await OnPipelineLoad();
                 AddItemDialog.Hide();
             }
+
+            await base.OnAfterRenderAsync(firstRender);
+        }
+
+        private async Task OnPipelineLoad()
+        {
+            if (string.IsNullOrEmpty(ConnectorId))
+            {
+                return;
+            }
+
+            IsLoading = true;
+
+            var response = await ConnectorClient.GetById(ConnectorId);
+            if (response == null)
+            {
+                // Failed request
+                throw new NotImplementedException();
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            if (!string.IsNullOrEmpty(json))
+            {
+                var connector = JsonConvert.DeserializeObject<Connector>(json);
+                HttpItems = connector.Pipeline.ToList();
+            }
+
+            IsLoading = false;
+            base.StateHasChanged();
         }
 
         public async Task OnItemSelect(HttpItem item)
@@ -50,9 +85,9 @@ namespace Mindr.WebUI.Views.ConnectorViews
 
         public async Task OnItemRemove(HttpItem item)
         {
-            Pipeline.Remove(item);
+            HttpItems.Remove(item);
 
-            SelectedItem = Pipeline.Count() > 0 ? Pipeline.Last() : null;
+            SelectedItem = HttpItems.Count() > 0 ? HttpItems.Last() : null;
             base.StateHasChanged();
         }
 
@@ -61,15 +96,15 @@ namespace Mindr.WebUI.Views.ConnectorViews
             if (SelectedItem == null) return;
 
             SelectedItem = await CollectionClient.SendAsync(SelectedItem);
-            Pipeline[SelectedIndex] = SelectedItem;
+            HttpItems[SelectedIndex] = SelectedItem;
             base.StateHasChanged();
         }
         
         public void OnHandleAdd(HttpItem item, IEnumerable<HttpVariable> globalVariables)
         {
-            SelectedItem = item = CollectionFactory.PrepareHttpItem(item, Pipeline.AsEnumerable(), Collection);
+            SelectedItem = item = CollectionFactory.PrepareHttpItem(item, HttpItems.AsEnumerable(), Collection);
 
-            Pipeline.Add(item);
+            HttpItems.Add(item);
             CloseItemDialog();
             base.StateHasChanged();
         }
@@ -77,8 +112,8 @@ namespace Mindr.WebUI.Views.ConnectorViews
         public async Task OnHandleRun()
         {
             // reload all results
-            Pipeline.ForEach(item => item.IsLoading = true);
-            Pipeline = await CollectionClient.SendAsync(Pipeline);
+            HttpItems.ForEach(item => item.IsLoading = true);
+            HttpItems = await CollectionClient.SendAsync(HttpItems);
         }
 
         public void CloseItemDialog()
@@ -117,7 +152,7 @@ namespace Mindr.WebUI.Views.ConnectorViews
                 foreach (var variable in response.Variables)
                 {
                     // set other matching variables to this call
-                    foreach (var pipeItem in Pipeline)
+                    foreach (var pipeItem in HttpItems)
                     {
                         var res = response.Variables.FirstOrDefault(i => (i.Key == variable.Key && !string.IsNullOrEmpty(i.Value)));
                         if (res != null)

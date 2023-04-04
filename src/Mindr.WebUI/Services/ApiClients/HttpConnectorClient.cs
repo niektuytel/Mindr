@@ -47,6 +47,27 @@ public class HttpConnectorClient : IHttpConnectorClient
         return false;
     }
 
+    public async Task<HttpResponseMessage?> GetById(string connectorId)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{ControllerUrl}/{connectorId}");
+        var validAuth = await TrySetAuthorization(request);
+        if (!validAuth) return null;
+
+        var response = await _httpClient.SendAsync(request);
+        return response;
+    }
+
+    public async Task<HttpResponseMessage?> GetOverview(string connectorId)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{ControllerUrl}/{connectorId}/overview");
+        var validAuth = await TrySetAuthorization(request);
+        if (!validAuth) return null;
+
+        var response = await _httpClient.SendAsync(request);
+        return response;
+    }
+
+
     public async Task<HttpResponseMessage?> GetAll(string query = "", string eventId = "")
     {
         if (!string.IsNullOrEmpty(query))
@@ -60,16 +81,6 @@ public class HttpConnectorClient : IHttpConnectorClient
         }
 
         var request = new HttpRequestMessage(HttpMethod.Get, $"{ControllerUrl}?{query}{eventId}");
-        var validAuth = await TrySetAuthorization(request);
-        if (!validAuth) return null;
-
-        var response = await _httpClient.SendAsync(request);
-        return response;
-    }
-
-    public async Task<HttpResponseMessage?> GetBriefly(string connectorId)
-    {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{ControllerUrl}/{connectorId}");
         var validAuth = await TrySetAuthorization(request);
         if (!validAuth) return null;
 
