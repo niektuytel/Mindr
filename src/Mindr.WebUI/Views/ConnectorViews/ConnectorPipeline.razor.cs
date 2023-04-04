@@ -8,13 +8,13 @@ using Newtonsoft.Json;
 
 namespace Mindr.WebUI.Views.ConnectorViews
 {
+    // Usefull to use? https://www.postman.com/cs-demo/workspace/public-rest-apis/overview
     public partial class ConnectorPipeline: FluentComponentBase
     {
         [Parameter, EditorRequired]
         public string ConnectorId { get; set; }
 
         public List<HttpItem> Pipeline { get; set; } = new() { _Constants.DefaultTestSample, _Constants.DefaultTestSample2 };
-
 
         public HttpItem? SelectedItem { get; set; } = null;
 
