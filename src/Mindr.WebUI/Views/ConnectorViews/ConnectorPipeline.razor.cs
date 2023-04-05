@@ -1,5 +1,6 @@
 ﻿using Azure.Core.Pipeline;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Fast.Components.FluentUI;
 using Mindr.Core.Extensions;
 using Mindr.Core.Models.Connector;
@@ -33,6 +34,14 @@ namespace Mindr.WebUI.Views.ConnectorViews
 
         private bool IsLoading = false;
 
+        private HttpItem NewHttpItem { get; set; } = new HttpItem() { 
+            Request = new HttpRequest() { 
+                Url = new HttpRequestUrl(),
+                Header = new List<HttpHeader>(),
+                Body = new HttpBody()
+            } 
+        };
+
         private List<HttpItem>? HttpItems { get; set; } = null;
         //public List<HttpItem> HttpItems { get; set; } = new() { _Constants.DefaultTestSample, _Constants.DefaultTestSample2 };
 
@@ -46,6 +55,19 @@ namespace Mindr.WebUI.Views.ConnectorViews
             }
 
             await base.OnAfterRenderAsync(firstRender);
+        }
+
+
+        public string NewHeaderKey { get; set; } = "";
+
+        private async Task OnInsertHeaderLine(FocusEventArgs args)
+        {
+            var headers = NewHttpItem.Request.Header.ToList();
+            headers.Add(new HttpHeader() { Key = NewHeaderKey, Value = "" });
+            NewHttpItem.Request.Header = headers;
+
+            NewHeaderKey = "";
+            base.StateHasChanged();
         }
 
         private async Task OnPipelineLoad()

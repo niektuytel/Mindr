@@ -93,8 +93,41 @@
             @ref="AddItemDialog" 
             @ondialogdismiss="DismissItemDialog"
         >
-            HTTP Item input
-            @*<Collection Data="@Collection" OnAddHandle="OnHandleAdd"/>*@
+            @*Request*@
+            <Stack Orientation="Orientation.Horizontal">
+                <FluentTextField Placeholder="Method" @bind-Value="@NewHttpItem.Request.Method" style="width: 100%;" />
+                <FluentTextField Placeholder="Url" @bind-Value="@NewHttpItem.Request.Url.Raw" style="width: 100%;" />
+            </Stack>
+            <table style="width:100%; padding:20px">
+                @foreach (var line in NewHttpItem.Request.Header)
+                {
+                    <tr>
+                        <td><FluentTextField Placeholder="New value" @bind-Value="@line.Key" style="width: 100%;" /></td>
+                        <td>:</td>
+                        <td><FluentTextField Placeholder="New value" @bind-Value="@line.Value" style="width: 100%;" /></td>
+                    </tr>
+                }
+                <tr>
+                    <td><FluentTextField Placeholder="New value" @bind-Value="@NewHeaderKey" @onfocusout="OnInsertHeaderLine" style="width: 100%;" /></td>
+                    <td>:</td>
+                    <td><FluentTextField Disabled="true" style="width: 100%;" /></td>
+                </tr>
+            </table>
+            <FluentTextArea @bind-Value="@NewHttpItem.Request.Body.Raw" style="width: 100%;"/>
+            
+            >> Extra:
+            Variables
+
+
+
+
+            @*
+            Name
+            Description
+            Response
+            
+            
+            <Collection Data="@Collection" OnAddHandle="OnHandleAdd"/>*@
             <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="CloseItemDialog">Close dialog</FluentButton>
         </FluentDialog>
     </div>

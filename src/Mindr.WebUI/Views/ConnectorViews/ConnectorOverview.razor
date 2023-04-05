@@ -32,13 +32,13 @@
             <tr>
                 <td>name</td>
                 <td>:</td>
-                <td><FluentTextField @key="Overview" ValueChanged="@OnChangeName" Value="@Overview.Name" style="width: 100%;" /></td>
+                <td><FluentTextField ValueChanged="@OnChangeName" Value="@Overview.Name" style="width: 100%;" /></td>
             </tr>
             <FluentDivider Role="DividerRole.Separator"></FluentDivider>
             <tr>
                 <td style="vertical-align: -webkit-baseline-middle;">description</td>
                 <td style="vertical-align: -webkit-baseline-middle;">:</td>
-                <td><FluentTextArea @key="Overview" ValueChanged="@OnChangeDescription" Value="@Overview.Description" style="width: 100%;" /></td>
+                <td><FluentTextArea ValueChanged="@OnChangeDescription" Value="@Overview.Description" style="width: 100%;" /></td>
             </tr>
             <FluentDivider Role="DividerRole.Separator"></FluentDivider>
             <tr>
@@ -55,8 +55,8 @@
                                     </td>
                                     <td>:</td>
                                     <td>
-                                        <FluentTextField @key="item" @onchange="@OnDataChanged" @bind-Value="@item.Value" style="width: 100%;" />
-                                        <FluentCheckbox @key="item" @onchange="@OnDataChanged" @bind-Value="@item.InputByUser">user dependent</FluentCheckbox>
+                                        <FluentTextField @onchange="@OnDataChanged" @bind-Value="@item.Value" style="width: 100%;" />
+                                        <FluentCheckbox @onchange="@OnDataChanged" @bind-Value="@item.InputByUser">user dependent</FluentCheckbox>
                                     </td>
                                 </tr>
                                 <FluentDivider Role="DividerRole.Separator"></FluentDivider>
