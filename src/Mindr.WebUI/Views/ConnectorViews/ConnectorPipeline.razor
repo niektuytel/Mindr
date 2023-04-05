@@ -95,8 +95,14 @@
         >
             @*Request*@
             <Stack Orientation="Orientation.Horizontal">
-                <FluentTextField Placeholder="Method" @bind-Value="@NewHttpItem.Request.Method" style="width: 100%;" />
-                <FluentTextField Placeholder="Url" @bind-Value="@NewHttpItem.Request.Url.Raw" style="width: 100%;" />
+                <FluentSelect Items="@RequestMethods"
+                              OptionText="@(i => i.Text)"
+                              OptionValue="@(i => i.Value)"
+                              OptionSelected="@(i => i.Selected)"
+                              @bind-Value="@NewHttpItem.Request.Method" 
+                              Style="width:auto"/>
+                @*<FluentTextField Placeholder="Method" @bind-Value="" style="width: 100%;" />*@
+                <FluentTextField Placeholder="Url" @bind-Value="@NewHttpItem.Request.Url.Raw" Style="width:-webkit-fit-content" />
             </Stack>
             <table style="width:100%; padding:20px">
                 @foreach (var line in NewHttpItem.Request.Header)
@@ -114,10 +120,6 @@
                 </tr>
             </table>
             <FluentTextArea @bind-Value="@NewHttpItem.Request.Body.Raw" style="width: 100%;"/>
-            
-            >> Extra:
-            Variables
-
 
 
 

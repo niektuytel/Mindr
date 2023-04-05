@@ -45,6 +45,14 @@ namespace Mindr.WebUI.Views.ConnectorViews
         private List<HttpItem>? HttpItems { get; set; } = null;
         //public List<HttpItem> HttpItems { get; set; } = new() { _Constants.DefaultTestSample, _Constants.DefaultTestSample2 };
 
+        
+        static List<Option<string>> RequestMethods = new()
+        {
+            { new Option<string> { Value = "GET", Text = "GET", Selected = true } },
+            { new Option<string> { Value = "POST", Text = "POST" } },
+            { new Option<string> { Value = "PUT", Text = "PUT" } },
+            { new Option<string> { Value = "DELETE", Text = "DELETE" } }
+        };
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
