@@ -12,7 +12,7 @@ using Mindr.Api.Persistence;
 namespace Mindr.Api.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20230403231144_Init")]
+    [Migration("20230406221354_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -248,9 +248,6 @@ namespace Mindr.Api.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("HttpItemId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsLoading")
                         .HasColumnType("bit");
 
@@ -264,11 +261,9 @@ namespace Mindr.Api.Migrations
 
                     b.HasIndex("ConnectorId");
 
-                    b.HasIndex("HttpItemId");
-
                     b.HasIndex("RequestId");
 
-                    b.ToTable("HttpItem");
+                    b.ToTable("HttpItems");
                 });
 
             modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpRequest", b =>
@@ -469,10 +464,6 @@ namespace Mindr.Api.Migrations
                         .WithMany("Pipeline")
                         .HasForeignKey("ConnectorId");
 
-                    b.HasOne("Mindr.Core.Models.Connector.Http.HttpItem", null)
-                        .WithMany("Items")
-                        .HasForeignKey("HttpItemId");
-
                     b.HasOne("Mindr.Core.Models.Connector.Http.HttpRequest", "Request")
                         .WithMany()
                         .HasForeignKey("RequestId");
@@ -542,8 +533,6 @@ namespace Mindr.Api.Migrations
 
             modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpItem", b =>
                 {
-                    b.Navigation("Items");
-
                     b.Navigation("Response");
                 });
 

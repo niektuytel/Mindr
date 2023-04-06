@@ -18,7 +18,7 @@ namespace Mindr.Core.Models.Connector.Http
 
         // TODO: Use No-SQL database (better for searching as this will been re-used?) [MongoDB]
         [JsonIgnore]
-        public string Host { get; set; }
+        public string Host { get; set; } = "";
 
         [NotMapped]
         [JsonProperty("host")]
@@ -30,7 +30,7 @@ namespace Mindr.Core.Models.Connector.Http
 
         // TODO: Use No-SQL database (better for searching as this will been re-used?) [MongoDB]
         [JsonIgnore]
-        public string Path { get; set; }
+        public string Path { get; set; } = "";
 
         [NotMapped]
         [JsonProperty("path")]

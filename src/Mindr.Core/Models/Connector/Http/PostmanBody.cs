@@ -12,7 +12,7 @@ namespace Mindr.Core.Models.Connector.Http
         public string Raw { get; set; }
 
         [JsonProperty("options")]
-        public HttpBodyOption Options { get; set; }
+        public HttpBodyOption Options { get; set; } = new HttpBodyOption();
     }
 }
 

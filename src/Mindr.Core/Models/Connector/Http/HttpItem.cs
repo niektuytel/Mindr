@@ -10,6 +10,7 @@ namespace Mindr.Core.Models.Connector.Http
     public class HttpItem : PostmanItem
     {
         [Key]
+        //[ConcurrencyCheck]
         public Guid Id { get; set; } = Guid.NewGuid();
 
         public bool IsLoading { get; set; } = false;

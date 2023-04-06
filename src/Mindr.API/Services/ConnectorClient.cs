@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Mindr.API.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Graph;
+using Microsoft.Graph.ExternalConnectors;
+using Mindr.Core.Models.Connector.Http;
 
 namespace Mindr.Api.Services
 {
@@ -22,7 +24,7 @@ namespace Mindr.Api.Services
             _context = context;
         }
 
-        public async Task<Connector?> GetById(Guid id)
+        public async Task<Connector?> Get(Guid connectorId)
         {
             // TODO: Use No-SQL database (better for searching as this will been re-used mas well?) [MongoDB]
             var connector = await _context.Connectors
@@ -38,7 +40,7 @@ namespace Mindr.Api.Services
                 .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.OriginalRequest).ThenInclude(item => item.Body).ThenInclude(item => item.Options).ThenInclude(item => item.Raw)
                 .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.Header)
                 .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.Cookie)
-                .FirstOrDefaultAsync(item => item.Id == id);
+                .FirstOrDefaultAsync(item => item.Id == connectorId);
 
             return connector;
         }
@@ -56,7 +58,6 @@ namespace Mindr.Api.Services
 
             return item;
         }
-
 
         public async Task UpdateOverview(string userId, Connector payload)
         {
@@ -79,6 +80,59 @@ namespace Mindr.Api.Services
 
             _context.SaveChanges();
         }
+
+        public async Task UpdateHttpItems(string userId, Guid connectorId, IEnumerable<HttpItem> payload)
+        {
+            var items = new List<HttpItem>();
+            foreach (var item in payload)
+            {
+                var httpItem = _context.HttpItems.FirstOrDefault(x => x.Id == item.Id);
+                if(httpItem == null)
+                {
+                    _context.HttpItems.Add(item);
+                    items.Add(item);
+                }
+                else
+                {
+                    //httpItem.
+                    _context.HttpItems.Update(httpItem);
+                    items.Add(httpItem);
+                }
+            }
+
+            _context.SaveChanges();
+
+
+
+            var connector = _context.Connectors
+                .Include(item => item.Variables)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Request).ThenInclude(item => item.Variables)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Request).ThenInclude(item => item.Url)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Request).ThenInclude(item => item.Header)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Request).ThenInclude(item => item.Body).ThenInclude(item => item.Options).ThenInclude(item => item.Raw)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.Variables)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.OriginalRequest).ThenInclude(item => item.Variables)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.OriginalRequest).ThenInclude(item => item.Url).ThenInclude(item => item.Query)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.OriginalRequest).ThenInclude(item => item.Header)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.OriginalRequest).ThenInclude(item => item.Body).ThenInclude(item => item.Options).ThenInclude(item => item.Raw)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.Header)
+                .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.Cookie)
+                .FirstOrDefault(item => item.Id == connectorId);
+
+            // 404
+            if (connector == null)
+            {
+                throw new ApiRequestException(ApiResponse.NotFound, $"Missing connector: {connectorId}");
+            }
+
+            connector.Pipeline = items.ToArray();
+            _context.Connectors.Update(connector);
+            _context.SaveChanges();
+
+        }
+        
+
+
 
         public async Task<IEnumerable<Connector>> GetAll(string userId, string? eventId = null, string? query = null)
         {

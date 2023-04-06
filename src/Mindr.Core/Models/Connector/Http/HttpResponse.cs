@@ -11,7 +11,7 @@ namespace Mindr.Core.Models.Connector.Http
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public IEnumerable<HttpVariable> Variables { get; set; } = null;
+        public IEnumerable<HttpVariable> Variables { get; set; } = new List<HttpVariable>();
     }
 }
 

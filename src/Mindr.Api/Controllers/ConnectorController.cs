@@ -40,11 +40,11 @@ public class ConnectorController : BaseController
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> GetById(Guid id)
+    public async Task<IActionResult> Get(Guid id)
     {
         var response = await HandleRequest(
             async () => {
-                return await _connectorClient.GetById(id);
+                return await _connectorClient.Get(id);
             }
         );
 
@@ -74,6 +74,52 @@ public class ConnectorController : BaseController
 
         return response;
     }
+
+    /// <remarks>
+    /// Update Overview Connector.
+    /// </remarks>
+    /// <credentials code="200">Successfully requested</credentials>
+    /// <credentials code="400">Invalid request</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
+    [HttpPut("{id}/overview")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    public async Task<IActionResult> UpdateOverview(Guid id, [FromBody] Connector payload)
+    {
+        var response = await HandleRequest(
+            async () => {
+                var userId = User.GetInfo();
+                await _connectorClient.UpdateOverview(userId, payload);
+            }
+        );
+
+        return response;
+    }
+
+    /// <remarks>
+    /// Update HttpItems Connector.
+    /// </remarks>
+    /// <credentials code="200">Successfully requested</credentials>
+    /// <credentials code="400">Invalid request</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
+    [HttpPut("{id}/httpItems")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    public async Task<IActionResult> UpdateHttpItems(Guid id, [FromBody] IEnumerable<HttpItem> payload)
+    {
+        var response = await HandleRequest(
+            async () => {
+                var userId = User.GetInfo();
+                await _connectorClient.UpdateHttpItems(userId, id, payload);
+            }
+        );
+
+        return response;
+    }
+
+
 
 
     /// <remarks>
@@ -128,27 +174,6 @@ public class ConnectorController : BaseController
         return response;
     }
 
-    /// <remarks>
-    /// UpdateOverview Connector.
-    /// </remarks>
-    /// <credentials code="200">Successfully requested</credentials>
-    /// <credentials code="400">Invalid request</credentials>
-    /// <credentials code="401">Unauthorized</credentials>
-    [HttpPut]
-    [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(401)]
-    public async Task<IActionResult> Update([FromBody] Connector payload)
-    {
-        var response = await HandleRequest(
-            async () => {
-                var userId = User.GetInfo();
-                await _connectorClient.UpdateOverview(userId, payload);
-            }
-        );
-
-        return response;
-    }
 
     /// <remarks>
     /// Delete Connector.

@@ -6,7 +6,7 @@ using Mindr.WebUI.Services.ApiClients;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 
-namespace Mindr.WebUI.Views.ConnectorViews
+namespace Mindr.WebUI.Views.Connectors
 {
     public partial class ConnectorView : FluentComponentBase
     {

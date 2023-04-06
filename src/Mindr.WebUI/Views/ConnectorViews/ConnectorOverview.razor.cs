@@ -8,7 +8,7 @@ using Mindr.Core.Services.Connectors;
 using Mindr.WebUI.Services.ApiClients;
 using Newtonsoft.Json;
 
-namespace Mindr.WebUI.Views.ConnectorViews
+namespace Mindr.WebUI.Views.Connectors
 {
     public partial class ConnectorOverview: FluentComponentBase
     {
@@ -27,7 +27,7 @@ namespace Mindr.WebUI.Views.ConnectorViews
 
         public async Task OnSave()
         {
-            await ConnectorClient.Update(Overview);
+            await ConnectorClient.UpdateOverview(Overview);
             base.StateHasChanged();
         }
 

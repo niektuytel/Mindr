@@ -6,7 +6,7 @@ namespace Mindr.Core.Models.Connector.Http
     {
 
         [JsonProperty("raw")]
-        public HttpBodyOptionRaw Raw { get; set; }
+        public HttpBodyOptionRaw Raw { get; set; } = new HttpBodyOptionRaw();
     }
 }
 

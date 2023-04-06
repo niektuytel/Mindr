@@ -1,11 +1,13 @@
-﻿
-@namespace Mindr.WebUI.Components
+﻿@namespace Mindr.WebUI.Views.Connectors.Components
 @inherits FluentComponentBase
 
 <Stack Orientation="Orientation.Horizontal" HorizontalGap="0">
     <Stack Orientation="Orientation.Vertical" VerticalAlignment="StackVerticalAlignment.Bottom" VerticalGap="0">
         <FluentButton Appearance="Appearance.Stealth" onclick="@(async () => await OnHandleRemove(Data))">
             <FluentIcon Name="@FluentIcons.Delete" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+        </FluentButton>
+        <FluentButton Appearance="Appearance.Stealth" onclick="@(async () => await OnHandleEdit(Data))">
+            <FluentIcon Name="@FluentIcons.Edit" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
         </FluentButton>
     </Stack>
     <Stack Orientation="Orientation.Vertical" HorizontalAlignment="StackHorizontalAlignment.Center" VerticalGap="0">

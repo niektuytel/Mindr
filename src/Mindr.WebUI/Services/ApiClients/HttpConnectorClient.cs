@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Graph;
 using Mindr.Core.Models.Connector;
+using Mindr.Core.Models.Connector.Http;
 using Mindr.WebUI.Handlers;
 using Mindr.WebUI.Options;
 using Newtonsoft.Json;
@@ -47,7 +48,7 @@ public class HttpConnectorClient : IHttpConnectorClient
         return false;
     }
 
-    public async Task<HttpResponseMessage?> GetById(string connectorId)
+    public async Task<HttpResponseMessage?> Get(string connectorId)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"{ControllerUrl}/{connectorId}");
         var validAuth = await TrySetAuthorization(request);
@@ -62,6 +63,36 @@ public class HttpConnectorClient : IHttpConnectorClient
         var request = new HttpRequestMessage(HttpMethod.Get, $"{ControllerUrl}/{connectorId}/overview");
         var validAuth = await TrySetAuthorization(request);
         if (!validAuth) return null;
+
+        var response = await _httpClient.SendAsync(request);
+        return response;
+    }
+
+    public async Task<HttpResponseMessage?> UpdateOverview(Connector content)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Put, $"{ControllerUrl}/{content.Id}/overview");
+        var validAuth = await TrySetAuthorization(request);
+        if (!validAuth) return null;
+
+        request.Headers.Add("accept", "*/*");
+
+        var json = JsonConvert.SerializeObject(content);
+        request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        var response = await _httpClient.SendAsync(request);
+        return response;
+    }
+
+    public async Task<HttpResponseMessage?> UpdateHttpItems(string connectorId, IEnumerable<HttpItem> content)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Put, $"{ControllerUrl}/{connectorId}/httpItems");
+        var validAuth = await TrySetAuthorization(request);
+        if (!validAuth) return null;
+
+        request.Headers.Add("accept", "*/*");
+
+        var json = JsonConvert.SerializeObject(content);
+        request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
         var response = await _httpClient.SendAsync(request);
         return response;
@@ -91,21 +122,6 @@ public class HttpConnectorClient : IHttpConnectorClient
     public async Task<HttpResponseMessage?> Create(Connector content)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, ControllerUrl);
-        var validAuth = await TrySetAuthorization(request);
-        if (!validAuth) return null;
-
-        request.Headers.Add("accept", "*/*");
-
-        var json = JsonConvert.SerializeObject(content);
-        request.Content = new StringContent(json, Encoding.UTF8, "application/json");
-
-        var response = await _httpClient.SendAsync(request);
-        return response;
-    }
-
-    public async Task<HttpResponseMessage?> Update(Connector content)
-    {
-        var request = new HttpRequestMessage(HttpMethod.Put, ControllerUrl);
         var validAuth = await TrySetAuthorization(request);
         if (!validAuth) return null;
 

@@ -196,32 +196,26 @@ namespace Mindr.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "HttpItem",
+                name: "HttpItems",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsLoading = table.Column<bool>(type: "bit", nullable: false),
                     ConnectorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    HttpItemId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RequestId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HttpItem", x => x.Id);
+                    table.PrimaryKey("PK_HttpItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_HttpItem_Connectors_ConnectorId",
+                        name: "FK_HttpItems_Connectors_ConnectorId",
                         column: x => x.ConnectorId,
                         principalTable: "Connectors",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_HttpItem_HttpItem_HttpItemId",
-                        column: x => x.HttpItemId,
-                        principalTable: "HttpItem",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_HttpItem_HttpRequest_RequestId",
+                        name: "FK_HttpItems_HttpRequest_RequestId",
                         column: x => x.RequestId,
                         principalTable: "HttpRequest",
                         principalColumn: "Id");
@@ -244,9 +238,9 @@ namespace Mindr.Api.Migrations
                 {
                     table.PrimaryKey("PK_HttpResponse", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_HttpResponse_HttpItem_HttpItemId",
+                        name: "FK_HttpResponse_HttpItems_HttpItemId",
                         column: x => x.HttpItemId,
-                        principalTable: "HttpItem",
+                        principalTable: "HttpItems",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_HttpResponse_HttpRequest_OriginalRequestId",
@@ -367,18 +361,13 @@ namespace Mindr.Api.Migrations
                 column: "HttpResponseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HttpItem_ConnectorId",
-                table: "HttpItem",
+                name: "IX_HttpItems_ConnectorId",
+                table: "HttpItems",
                 column: "ConnectorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HttpItem_HttpItemId",
-                table: "HttpItem",
-                column: "HttpItemId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_HttpItem_RequestId",
-                table: "HttpItem",
+                name: "IX_HttpItems_RequestId",
+                table: "HttpItems",
                 column: "RequestId");
 
             migrationBuilder.CreateIndex(
@@ -444,7 +433,7 @@ namespace Mindr.Api.Migrations
                 name: "HttpResponse");
 
             migrationBuilder.DropTable(
-                name: "HttpItem");
+                name: "HttpItems");
 
             migrationBuilder.DropTable(
                 name: "Connectors");

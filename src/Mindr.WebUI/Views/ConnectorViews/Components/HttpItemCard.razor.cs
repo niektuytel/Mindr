@@ -2,9 +2,9 @@
 using Microsoft.Fast.Components.FluentUI;
 using Mindr.Core.Models.Connector.Http;
 
-namespace Mindr.WebUI.Components
+namespace Mindr.WebUI.Views.Connectors.Components
 {
-    public partial class HttpPipelineItem: FluentComponentBase
+    public partial class HttpItemCard: FluentComponentBase
     {
         [Parameter, EditorRequired]
         public HttpItem Data { get; set; } = default!;
@@ -14,6 +14,9 @@ namespace Mindr.WebUI.Components
 
         [Parameter, EditorRequired]
         public Func<HttpItem, Task> OnHandleRemove { get; set; } = default!;
+
+        [Parameter, EditorRequired]
+        public Func<HttpItem, Task> OnHandleEdit { get; set; } = default!;
 
         [Parameter]
         public bool IsSelected { get; set; } = false;

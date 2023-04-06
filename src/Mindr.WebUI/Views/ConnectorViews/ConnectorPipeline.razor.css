@@ -29,9 +29,9 @@
 */
 
 ::deep > fluent-dialog::part(control) {
-    --dialog-width: 300px;
-    --dialog-height: 350px;
-    padding: 2rem;
+    --dialog-width: 80vw;
+    --dialog-height: auto;
+    padding: 10px;
 }
 
 ::deep .editable-stack {

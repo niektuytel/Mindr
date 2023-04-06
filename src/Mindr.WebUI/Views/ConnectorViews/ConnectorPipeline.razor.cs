@@ -9,18 +9,11 @@ using Mindr.Core.Services.Connectors;
 using Mindr.WebUI.Services.ApiClients;
 using Newtonsoft.Json;
 
-namespace Mindr.WebUI.Views.ConnectorViews
+namespace Mindr.WebUI.Views.Connectors
 {
     // Usefull to use? https://www.postman.com/cs-demo/workspace/public-rest-apis/overview
     public partial class ConnectorPipeline: FluentComponentBase
     {
-        [Parameter, EditorRequired]
-        public string ConnectorId { get; set; }
-
-        public HttpItem? SelectedItem { get; set; } = null;
-
-        private int SelectedIndex => SelectedItem != null ? HttpItems.IndexOf(SelectedItem) : 0;
-
         [Inject]
         public IHttpConnectorClient ConnectorClient { get; set; } = default!;
 
@@ -30,29 +23,22 @@ namespace Mindr.WebUI.Views.ConnectorViews
         [Inject]
         public IHttpCollectionFactory CollectionFactory { get; set; } = default!;
 
+        [Parameter, EditorRequired]
+        public string ConnectorId { get; set; } = default!;
+
+        public List<HttpItem> HttpItems { get; set; } = new List<HttpItem>();
+
+        public int SelectedIndex => SelectedHttpItem != null ? HttpItems.IndexOf(SelectedHttpItem) : 0;
+
+        public HttpItem? SelectedHttpItem { get; set; } = null;
+        
+        private HttpItem NewHttpItem { get; set; } = new HttpItem();
+
         public FluentDialog AddItemDialog = default!;
 
-        private bool IsLoading = false;
-
-        private HttpItem NewHttpItem { get; set; } = new HttpItem() { 
-            Request = new HttpRequest() { 
-                Url = new HttpRequestUrl(),
-                Header = new List<HttpHeader>(),
-                Body = new HttpBody()
-            } 
-        };
-
-        private List<HttpItem>? HttpItems { get; set; } = null;
-        //public List<HttpItem> HttpItems { get; set; } = new() { _Constants.DefaultTestSample, _Constants.DefaultTestSample2 };
-
+        private bool HasChangedData = false;
         
-        static List<Option<string>> RequestMethods = new()
-        {
-            { new Option<string> { Value = "GET", Text = "GET", Selected = true } },
-            { new Option<string> { Value = "POST", Text = "POST" } },
-            { new Option<string> { Value = "PUT", Text = "PUT" } },
-            { new Option<string> { Value = "DELETE", Text = "DELETE" } }
-        };
+        private bool IsLoading = false;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -65,19 +51,6 @@ namespace Mindr.WebUI.Views.ConnectorViews
             await base.OnAfterRenderAsync(firstRender);
         }
 
-
-        public string NewHeaderKey { get; set; } = "";
-
-        private async Task OnInsertHeaderLine(FocusEventArgs args)
-        {
-            var headers = NewHttpItem.Request.Header.ToList();
-            headers.Add(new HttpHeader() { Key = NewHeaderKey, Value = "" });
-            NewHttpItem.Request.Header = headers;
-
-            NewHeaderKey = "";
-            base.StateHasChanged();
-        }
-
         private async Task OnPipelineLoad()
         {
             if (string.IsNullOrEmpty(ConnectorId))
@@ -87,7 +60,7 @@ namespace Mindr.WebUI.Views.ConnectorViews
 
             IsLoading = true;
 
-            var response = await ConnectorClient.GetById(ConnectorId);
+            var response = await ConnectorClient.Get(ConnectorId);
             if (response == null)
             {
                 // Failed request
@@ -105,37 +78,31 @@ namespace Mindr.WebUI.Views.ConnectorViews
             base.StateHasChanged();
         }
 
-        public async Task OnItemSelect(HttpItem item)
+        public async Task OnHandleSave()
         {
-            if (SelectedItem?.Id == item.Id) return;
+            IsLoading = true;
+            
+            var response = await ConnectorClient.UpdateHttpItems(ConnectorId, HttpItems.AsEnumerable());
+            if (response?.IsSuccessStatusCode != true)
+            {
+                // Failed request
+                throw new NotImplementedException();
+            }
 
-            SelectedItem = item;
+            IsLoading = false;
             base.StateHasChanged();
         }
 
-        public async Task OnItemRemove(HttpItem item)
+        public async Task OnHandleAdd()
         {
-            HttpItems.Remove(item);
+            IsLoading = true;
+            SelectedHttpItem = NewHttpItem = CollectionFactory.PrepareHttpItem(NewHttpItem, HttpItems.AsEnumerable(), Collection);
 
-            SelectedItem = HttpItems.Count() > 0 ? HttpItems.Last() : null;
-            base.StateHasChanged();
-        }
+            HttpItems.Add(NewHttpItem);
+            NewHttpItem = new();
 
-        public async Task OnItemRun()
-        {
-            if (SelectedItem == null) return;
-
-            SelectedItem = await CollectionClient.SendAsync(SelectedItem);
-            HttpItems[SelectedIndex] = SelectedItem;
-            base.StateHasChanged();
-        }
-        
-        public void OnHandleAdd(HttpItem item, IEnumerable<HttpVariable> globalVariables)
-        {
-            SelectedItem = item = CollectionFactory.PrepareHttpItem(item, HttpItems.AsEnumerable(), Collection);
-
-            HttpItems.Add(item);
             CloseItemDialog();
+            IsLoading = false;
             base.StateHasChanged();
         }
 
@@ -146,6 +113,57 @@ namespace Mindr.WebUI.Views.ConnectorViews
             HttpItems = await CollectionClient.SendAsync(HttpItems);
         }
 
+
+
+
+
+        public string NewHeaderKey { get; set; } = "";
+
+        private async Task OnInsertHeaderLine(FocusEventArgs args)
+        {
+            if (string.IsNullOrEmpty(NewHeaderKey)) return;
+
+            var headers = NewHttpItem.Request.Header.Where(item => !string.IsNullOrEmpty(item.Key) || !string.IsNullOrEmpty(item.Value)).ToList();
+            headers.Add(new HttpHeader() { Key = NewHeaderKey, Value = "" });
+            NewHttpItem.Request.Header = headers;
+
+            NewHeaderKey = "";
+            base.StateHasChanged();
+        }
+
+        public async Task OnItemSelect(HttpItem item)
+        {
+            if (SelectedHttpItem?.Id == item.Id) return;
+
+            SelectedHttpItem = item;
+            base.StateHasChanged();
+        }
+
+        public async Task OnItemEdit(HttpItem item)
+        {
+            throw new NotImplementedException();
+            //HttpItems.Remove(SelectedHttpItem);
+
+            //SelectedHttpItem = HttpItems.Count() > 0 ? HttpItems.Last() : null;
+            base.StateHasChanged();
+        }
+        public async Task OnItemRemove(HttpItem item)
+        {
+            HttpItems.Remove(item);
+
+            SelectedHttpItem = HttpItems.Count() > 0 ? HttpItems.Last() : null;
+            base.StateHasChanged();
+        }
+
+        public async Task OnItemRun()
+        {
+            if (SelectedHttpItem == null) return;
+
+            SelectedHttpItem = await CollectionClient.SendAsync(SelectedHttpItem);
+            HttpItems[SelectedIndex] = SelectedHttpItem;
+            base.StateHasChanged();
+        }
+        
         public void CloseItemDialog()
         {
             AddItemDialog.Hide();
@@ -161,12 +179,12 @@ namespace Mindr.WebUI.Views.ConnectorViews
 
         public IEnumerable<HttpVariable>? GetItemRequestVariables()
         {
-            return SelectedItem?.Request?.Variables;
+            return SelectedHttpItem?.Request?.Variables;
         }
 
         public IEnumerable<HttpVariable>? GetItemResponseVariables()
         {
-            var responses = SelectedItem?.Response;
+            var responses = SelectedHttpItem?.Response;
             if(responses == null) return null;
 
             // TODO: Add more options to respond on: [201, 302, 404, 500, etc.]
@@ -202,10 +220,10 @@ namespace Mindr.WebUI.Views.ConnectorViews
 
         public void OpenItemDialog()
         {
-            if (Collection == null)
-            {
-                Collection = JsonConvert.DeserializeObject<HttpCollection>(_Constants.Json);
-            }
+            //if (Collection == null)
+            //{
+            //    //Collection = JsonConvert.DeserializeObject<HttpCollection>(_Constants.Json);
+            //}
 
             AddItemDialog.Show();
         }
