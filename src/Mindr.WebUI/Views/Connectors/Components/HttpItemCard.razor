@@ -11,17 +11,8 @@
         </FluentButton>
     </Stack>
     <Stack Orientation="Orientation.Vertical" HorizontalAlignment="StackHorizontalAlignment.Center" VerticalGap="0">
-        <div 
-            title="@Data.Description" 
-            class=@(IsSelected ? "card-selected" : "card-select")
-            onclick="@(async () => await OnHandleSelect(Data))"
-        >
-            <Stack 
-                Style="padding: 5px;" 
-                HorizontalAlignment="StackHorizontalAlignment.Center"
-                Orientation="Orientation.Horizontal" 
-                HorizontalGap="0" 
-            >
+        <div title="@Data.Description" class=@(IsSelected ? "card-selected" : "card-select") onclick="@(async () => await OnHandleSelect(Data))">
+            <Stack Style="padding: 5px;" HorizontalAlignment="StackHorizontalAlignment.Center" Orientation="Orientation.Horizontal" HorizontalGap="0">
                 <div style=@(GetMethodStyle())>
                     @Data.Request.Method.ToUpper()
                 </div>
@@ -30,11 +21,7 @@
                 </div>
             </Stack>
             <FluentDivider />
-            <Stack 
-                Style="padding: 5px;" 
-                Orientation="Orientation.Horizontal" 
-                HorizontalGap="0"
-            >
+            <Stack Style="padding: 5px;" Orientation="Orientation.Horizontal" HorizontalGap="0">
                 <div class="overflow-ellipsis">
                     @Data.Name
                 </div>
@@ -56,16 +43,8 @@
     </Stack>
     @if (HasEmptyVariable())
     {
-        <Stack 
-            Orientation="Orientation.Vertical" 
-            VerticalAlignment="StackVerticalAlignment.Center" 
-            VerticalGap="0">
-            <FluentIcon 
-                    Style="--accent-fill-rest: darkorange;margin-top: 4px"
-                    Name="@FluentIcons.Warning"
-                    Size="@IconSize.Size24"
-                    Variant="@IconVariant.Regular"
-                    Color="@Color.Accent"/>
+        <Stack Orientation="Orientation.Vertical" VerticalAlignment="StackVerticalAlignment.Center" VerticalGap="0">
+            <FluentIcon Style="--accent-fill-rest: darkorange;margin-top: 4px" Name="@FluentIcons.Warning" Size="@IconSize.Size24" Variant="@IconVariant.Regular" Color="@Color.Accent"/>
         </Stack>
     }
 </Stack>

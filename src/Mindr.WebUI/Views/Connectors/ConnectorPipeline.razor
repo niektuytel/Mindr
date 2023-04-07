@@ -1,0 +1,46 @@
+﻿@namespace Mindr.WebUI.Views.Connectors
+@using Mindr.Core.Models.Connector.Http;
+@using Mindr.WebUI.Views.Connectors.Components
+
+@inherits FluentComponentBase
+
+<Stack Orientation="Orientation.Vertical" VerticalGap="0">
+    <Stack Orientation="Orientation.Horizontal" Class="editable-stack" HorizontalGap="0">
+        <FluentButton Disabled="@(!DataHasChanged)" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OnHandleSave">
+            <FluentIcon Slot="start" Name="@FluentIcons.Save" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+            Save
+        </FluentButton>
+        <FluentButton Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="HttpItemEditor.OpenAddDialog">
+            <FluentIcon Slot="start" Name="@FluentIcons.Add" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+            Add
+        </FluentButton>
+        <FluentButton Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OnHandleRun">
+            <FluentIcon Slot="start" Name="@FluentIcons.Play" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+            Run
+        </FluentButton>
+    </Stack>
+    <Stack Orientation="Orientation.Horizontal">
+        @if (IsLoading)
+        {
+            <Stack HorizontalAlignment="StackHorizontalAlignment.Center" VerticalAlignment="StackVerticalAlignment.Center">
+                <FluentProgressRing />
+            </Stack>
+        }
+        else if (HttpItems?.Any() == true)
+        {
+            <Dropzone Items="HttpItems">
+                <HttpItemCard Data="@context" 
+                    IsSelected="@(SelectedHttpItem?.Id == context.Id)"
+                    OnHandleSelect="@OnSelectedItemChange"
+                    OnHandleEdit="@OnSelectedItemEdit"
+                    OnHandleRemove="@OnSelectedItemRemove"
+                />
+            </Dropzone>
+        }
+        @if(SelectedHttpItem != null)
+        {
+            <HttpItemSettings SelectedHttpItem="@SelectedHttpItem" OnHandleEdit="@OnSelectedItemChange"/>
+        }
+    </Stack>
+    <HttpItemDialog @ref="@HttpItemEditor" Data="SelectedHttpItem ?? new HttpItem()" OnHandleAdd="OnHandleAdd" />
+</Stack>

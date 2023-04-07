@@ -60,7 +60,7 @@
 	<ItemGroup>
 	  <None Remove="Components\CalendarEventComp.razor.css" />
 	  <None Remove="Pages\ConnectorsPage.razor.css" />
-	  <None Remove="Views\ConnectorViews\Pipeline\MonacoEditor.razor.js" />
+	  <None Remove="Views\Connectors\Pipeline\MonacoEditor.razor.js" />
 	</ItemGroup>
 
 	<ItemGroup>
