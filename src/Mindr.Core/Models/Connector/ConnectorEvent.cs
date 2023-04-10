@@ -17,6 +17,12 @@ namespace Mindr.Core.Models.Connector
             
         }
 
+        public ConnectorEvent(Connector connector)
+        {
+            ConnectorId = connector.Id;
+            Variables = connector.Variables.Where(item => item.InputByUser).ToArray();
+        }
+
         public ConnectorEvent(ConnectorEvent @event, Connector connector)
         {
             Id = @event.Id;

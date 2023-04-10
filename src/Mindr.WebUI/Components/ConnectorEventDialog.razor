@@ -9,15 +9,16 @@
 
         <FluentCombobox Placeholder="Whatsapp message..."
                         Style="width: 100%;"
+                        Multiple="false"
                         Items=@Results
                         TOption="Connector"
                         OptionText="@(i => i.Name)"
                         OptionValue="@(i => i.Id.ToString())"
                         Autocomplete="ComboboxAutocomplete.Both" 
-                        @bind-SelectedOption="@Data"
+                        SelectedOptionChanged="@((input) => HandleOnSelect(input))"
                         @bind-Text="@Query"
                         @oninput="@(async (input) => await HandleOnSearch(input))" 
-                        @onselect="@HandleOnSelect"/>
+                        />
         @if (CurrentEvent != null)
         {
             <div style="margin:10px">
@@ -56,7 +57,7 @@
                                       Autofocus="true"
                                       @onclick="HandleOnUpsert"
                         >
-                            @(CurrentEvent?.ConnectorId != null ? "UpdateOverview" : "Create")
+                            @(CurrentEvent?.ConnectorId != null ? "Update" : "Create")
                         </FluentButton>
                     }
                 </Stack>

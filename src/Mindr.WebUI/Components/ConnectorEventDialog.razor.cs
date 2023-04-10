@@ -65,9 +65,16 @@ public partial class ConnectorEventDialog: FluentComponentBase
         base.StateHasChanged();
     }
 
-    public async Task HandleOnSelect(EventArgs args)
+    public async Task HandleOnSelect(Connector? connector)
     {
-        await Console.Out.WriteLineAsync(   );
+        if (connector == null || CurrentEvent == null) return;
+
+        //CurrentEvent = new ConnectorEvent(connector);
+
+        //await Console.Out.WriteLineAsync(   );
+
+        Data = connector;
+        CurrentEvent.Variables = connector.Variables;
 
 
         base.StateHasChanged();
