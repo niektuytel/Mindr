@@ -36,6 +36,8 @@ public partial class ConnectorEventDialog: FluentComponentBase
 
     public string? Query { get; set; } = string.Empty;
 
+    public bool IsCreating { get; set; } = true;
+
     public IEnumerable<Connector>? Results { get; set; } = null;
 
     public FluentDialog Dialog = default!;
@@ -65,31 +67,52 @@ public partial class ConnectorEventDialog: FluentComponentBase
         base.StateHasChanged();
     }
 
-    public async Task HandleOnSelect(Connector? connector)
+    public async Task HandleOnSelect(Connector? input)
     {
-        if (connector == null || CurrentEvent == null) return;
+        if (IsLoading || input == null || CurrentEvent == null) return;
 
-        //CurrentEvent = new ConnectorEvent(connector);
+        IsLoading = true;
+        var response = await ConnectorClient.GetOverview(input.Id.ToString());
+        if (response == null)
+        {
+            // Failed request
+            throw new NotImplementedException();
+        }
 
-        //await Console.Out.WriteLineAsync(   );
+        var json = await response.Content.ReadAsStringAsync();
+        if (!string.IsNullOrEmpty(json))
+        {
+            Data = JsonConvert.DeserializeObject<Connector>(json);
+            CurrentEvent = new ConnectorEvent(CurrentEvent, Data);
+        }
 
-        Data = connector;
-        CurrentEvent.Variables = connector.Variables;
-
-
+        IsLoading = false;
         base.StateHasChanged();
     }
 
     public async Task HandleOnUpsert()
     {
+        if (IsLoading || CurrentEvent == null) return;
+
         IsLoading = true;
 
-        var @event = new ConnectorEvent(CurrentEvent, Data);
-        var response = await EventClient.Upsert(@event);
-        if (response == null) 
+        if(IsCreating)
         {
-            // Failed request
-            throw new NotImplementedException();
+            var response = await EventClient.Create(CurrentEvent);
+            if (response == null) 
+            {
+                // Failed request
+                throw new NotImplementedException();
+            }
+        }
+        else
+        {
+            var response = await EventClient.Update(CurrentEvent.Id, CurrentEvent);
+            if (response == null)
+            {
+                // Failed request
+                throw new NotImplementedException();
+            }
         }
 
         Dialog.Hide();
@@ -118,6 +141,7 @@ public partial class ConnectorEventDialog: FluentComponentBase
 
     public void HandleOnDialogOpen(AgendaEvent agendaEvent, Connector? connector = null)
     {
+        IsCreating = connector == null;
         Data = connector;
         var events = new List<EventParam>
         {
@@ -140,6 +164,8 @@ public partial class ConnectorEventDialog: FluentComponentBase
         }
 
         Dialog.Show();
+
+
         base.StateHasChanged();
     }
     

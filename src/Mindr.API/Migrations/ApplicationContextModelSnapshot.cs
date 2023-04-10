@@ -70,11 +70,9 @@ namespace Mindr.Api.Migrations
 
             modelBuilder.Entity("Mindr.Core.Models.Connector.ConnectorVariable", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ConnectorEventId")
                         .HasColumnType("uniqueidentifier");

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Mindr.Core.Models.Connector.Http;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -15,12 +16,6 @@ namespace Mindr.Core.Models.Connector
         public ConnectorEvent()
         {
             
-        }
-
-        public ConnectorEvent(Connector connector)
-        {
-            ConnectorId = connector.Id;
-            Variables = connector.Variables.Where(item => item.InputByUser).ToArray();
         }
 
         public ConnectorEvent(ConnectorEvent @event, Connector connector)

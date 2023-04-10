@@ -11,7 +11,7 @@ namespace Mindr.Core.Models.Connector
     public class ConnectorVariable: PostmanVariable
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         public bool InputByUser { get; set; } = true;
 

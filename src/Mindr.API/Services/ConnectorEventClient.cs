@@ -7,6 +7,7 @@ using Mindr.API.Enums;
 using Mindr.API.Exceptions;
 using Mindr.Core.Enums;
 using Mindr.Core.Models.Connector;
+using Mindr.Core.Models.Connector.Http;
 using Mindr.Core.Services.Connectors;
 using System.Net.NetworkInformation;
 
@@ -113,6 +114,13 @@ public class ConnectorEventClient : IConnectorEventClient
 
         if (onInsert)
         {
+            var variables = new List<ConnectorVariable>();
+            foreach (var variable in entity.Variables)
+            {
+                variable.Id = Guid.NewGuid();
+            }
+
+            entity.Variables = variables.ToArray();
             _context.ConnectorEvents.Add(entity);
         }
         else
@@ -150,7 +158,28 @@ public class ConnectorEventClient : IConnectorEventClient
 
     }
 
-    public async Task Upsert(ConnectorEvent @event)
+    public async Task Create(ConnectorEvent @event)
+    {
+        if (@event == null)
+        {
+            throw new ArgumentNullException(nameof(@event));
+        }
+
+        var exists = await TryDefaultCall(@event);
+        if (exists)
+        {
+            return;
+        }
+
+        exists = await TryCallOnSchedule(@event, true);
+        if (exists)
+        {
+            return;
+        }
+
+    }
+
+    public async Task Update(ConnectorEvent @event)
     {
         if (@event == null)
         {
@@ -164,16 +193,8 @@ public class ConnectorEventClient : IConnectorEventClient
                 .Include(x => x.Variables)
                 .FirstOrDefault(x => x.Id == @event.Id);
 
-        var onInsert = entity == null;
-        if (onInsert)
-        {
-            entity = @event;
-        }
-        else
-        {
-            // TODO: validate: items
-            entity!.Update(@event);
-        }
+        // TODO: validate: items
+        entity!.Update(@event);
 
         var exists = await TryDefaultCall(entity);
         if (exists)
@@ -181,7 +202,7 @@ public class ConnectorEventClient : IConnectorEventClient
             return;
         }
 
-        exists = await TryCallOnSchedule(entity, onInsert);
+        exists = await TryCallOnSchedule(entity, false);
         if (exists)
         {
             return;

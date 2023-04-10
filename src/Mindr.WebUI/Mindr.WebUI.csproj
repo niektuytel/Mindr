@@ -106,4 +106,8 @@
 		<TrimmerRootAssembly Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Pages\Agenda\Components\" />
+	</ItemGroup>
+
 </Project>

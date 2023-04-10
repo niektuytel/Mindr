@@ -55,7 +55,7 @@ public class HttpConnectorEventClient : IHttpConnectorEventClient
         return response;
     }
 
-    public async Task<HttpResponseMessage?> Upsert(ConnectorEvent @event)
+    public async Task<HttpResponseMessage?> Create(ConnectorEvent @event)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, ControllerUrl);
         var validAuth = await TrySetAuthorization(request);
@@ -64,7 +64,22 @@ public class HttpConnectorEventClient : IHttpConnectorEventClient
         request.Headers.Add("accept", "*/*");
 
         var json = JsonConvert.SerializeObject(@event);
-        request.Content = new StringContent(json);
+        request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        var response = await _httpClient.SendAsync(request);
+        return response;
+    }
+
+    public async Task<HttpResponseMessage?> Update(Guid eventid, ConnectorEvent @event)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Put, $"{ControllerUrl}/{eventid}");
+        var validAuth = await TrySetAuthorization(request);
+        if (!validAuth) return null;
+
+        request.Headers.Add("accept", "*/*");
+
+        var json = JsonConvert.SerializeObject(@event);
+        request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
         var response = await _httpClient.SendAsync(request);
         return response;

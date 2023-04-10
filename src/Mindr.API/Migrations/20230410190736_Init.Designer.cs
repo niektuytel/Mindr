@@ -12,7 +12,7 @@ using Mindr.Api.Persistence;
 namespace Mindr.Api.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20230406221354_Init")]
+    [Migration("20230410190736_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -72,11 +72,9 @@ namespace Mindr.Api.Migrations
 
             modelBuilder.Entity("Mindr.Core.Models.Connector.ConnectorVariable", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ConnectorEventId")
                         .HasColumnType("uniqueidentifier");

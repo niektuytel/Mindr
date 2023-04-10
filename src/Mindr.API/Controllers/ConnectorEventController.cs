@@ -15,7 +15,7 @@ namespace Mindr.Api.Controllers;
 public class ConnectorEventController : BaseController
 {
     private readonly IConnectorEventClient _connectorEventClient;
-    
+
     public ConnectorEventController(IConnectorEventClient connectorEventClient)
     {
         _connectorEventClient = connectorEventClient;
@@ -37,7 +37,7 @@ public class ConnectorEventController : BaseController
         var response = await HandleRequest(
             async () => {
                 var userId = User.GetInfo();
-                
+
                 return await _connectorEventClient.GetAll(userId);
             }
         );
@@ -46,7 +46,7 @@ public class ConnectorEventController : BaseController
     }
 
     /// <remarks>
-    /// UpdateOverview or Insert Connector Event.
+    /// Create Connector Event.
     /// </remarks>
     /// <credentials code="200">Successfully requested</credentials>
     /// <credentials code="400">Invalid request</credentials>
@@ -55,14 +55,39 @@ public class ConnectorEventController : BaseController
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]
-    public async Task<IActionResult> Upsert([FromBody]ConnectorEvent payload)
+    public async Task<IActionResult> Create([FromBody] ConnectorEvent payload)
     {
         var response = await HandleRequest(
             async () => {
                 var userId = User.GetInfo();
                 payload.UserId = userId;
 
-                await _connectorEventClient.Upsert(payload);
+                await _connectorEventClient.Create(payload);
+            }
+        );
+
+        return response;
+    }
+
+    /// <remarks>
+    /// Update Connector Event.
+    /// </remarks>
+    /// <credentials code="200">Successfully requested</credentials>
+    /// <credentials code="400">Invalid request</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
+    [HttpPut("{id}")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    public async Task<IActionResult> Update(Guid id, [FromBody]ConnectorEvent payload)
+    {
+        var response = await HandleRequest(
+            async () => {
+                var userId = User.GetInfo();
+                payload.Id = id;
+                payload.UserId = userId;
+
+                await _connectorEventClient.Update(payload);
             }
         );
 

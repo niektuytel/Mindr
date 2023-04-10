@@ -8,6 +8,7 @@ namespace Mindr.WebUI.Services.ApiClients;
 public interface IHttpConnectorEventClient
 {
     Task<HttpResponseMessage?> GetAll();
-    Task<HttpResponseMessage?> Upsert(ConnectorEvent @event);
+    Task<HttpResponseMessage?> Create(ConnectorEvent @event);
+    Task<HttpResponseMessage?> Update(Guid eventId, ConnectorEvent @event);
     Task<HttpResponseMessage?> Delete(Guid eventId);
 }

@@ -5,6 +5,7 @@ namespace Mindr.API.Services;
 public interface IConnectorEventClient
 {
     Task<IEnumerable<ConnectorEvent>> GetAll(string userId, string? eventId = null);
-    Task Upsert(ConnectorEvent @event);
+    Task Create(ConnectorEvent @event);
+    Task Update(ConnectorEvent @event);
     Task Delete(Guid id, string userId);
 }
