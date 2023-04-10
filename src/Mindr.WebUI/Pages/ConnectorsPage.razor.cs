@@ -10,12 +10,6 @@ namespace Mindr.WebUI.Pages
 {
     public partial class ConnectorsPage : FluentComponentBase
     {
-        [Inject]
-        public NavigationManager NavigationManager { get; set; }
-
-        [Inject]
-        public IHttpConnectorClient ConnectorClient { get; set; }
-
         [Parameter]
         public string? ConnectorId { get; set; }
 

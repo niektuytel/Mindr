@@ -16,7 +16,8 @@
                         Autocomplete="ComboboxAutocomplete.Both" 
                         @bind-SelectedOption="@Data"
                         @bind-Text="@Query"
-                        @oninput="@(async (input) => await HandleOnSearch(input))" />
+                        @oninput="@(async (input) => await HandleOnSearch(input))" 
+                        @onselect="@HandleOnSelect"/>
         @if (CurrentEvent != null)
         {
             <div style="margin:10px">

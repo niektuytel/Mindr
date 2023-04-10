@@ -69,7 +69,7 @@ namespace Mindr.Core.Models.Connector
         public Guid? ConnectorId { get; set; } = null;
 
         [JsonProperty("connector_params")]
-        public IEnumerable<ConnectorVariable> Variables { get; set; }
+        public IEnumerable<ConnectorVariable> Variables { get; set; } = new List<ConnectorVariable>();
 
         public void Update(ConnectorEvent @event)
         {

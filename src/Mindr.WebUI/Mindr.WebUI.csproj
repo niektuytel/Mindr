@@ -9,12 +9,16 @@
 
 	<ItemGroup>
 	  <Compile Remove="Data\**" />
+	  <Compile Remove="Views\Connectors\Pipeline\**" />
 	  <Compile Remove="wwwroot\NewFolder\**" />
 	  <Content Remove="Data\**" />
+	  <Content Remove="Views\Connectors\Pipeline\**" />
 	  <Content Remove="wwwroot\NewFolder\**" />
 	  <EmbeddedResource Remove="Data\**" />
+	  <EmbeddedResource Remove="Views\Connectors\Pipeline\**" />
 	  <EmbeddedResource Remove="wwwroot\NewFolder\**" />
 	  <None Remove="Data\**" />
+	  <None Remove="Views\Connectors\Pipeline\**" />
 	  <None Remove="wwwroot\NewFolder\**" />
 	</ItemGroup>
 
@@ -60,7 +64,6 @@
 	<ItemGroup>
 	  <None Remove="Components\CalendarEventComp.razor.css" />
 	  <None Remove="Pages\ConnectorsPage.razor.css" />
-	  <None Remove="Views\Connectors\Pipeline\MonacoEditor.razor.js" />
 	</ItemGroup>
 
 	<ItemGroup>

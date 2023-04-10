@@ -64,7 +64,15 @@ public partial class ConnectorEventDialog: FluentComponentBase
         IsLoading = false;
         base.StateHasChanged();
     }
-    
+
+    public async Task HandleOnSelect(EventArgs args)
+    {
+        await Console.Out.WriteLineAsync(   );
+
+
+        base.StateHasChanged();
+    }
+
     public async Task HandleOnUpsert()
     {
         IsLoading = true;

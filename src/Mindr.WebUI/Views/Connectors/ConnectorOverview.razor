@@ -5,7 +5,7 @@
 
 @inherits FluentComponentBase
 
-<Stack Orientation="Orientation.Vertical" VerticalGap="0" Style="margin:10px;border-top: 1px solid #00000026;">
+<Stack Orientation="Orientation.Vertical" VerticalGap="0" Style="border-top: 1px solid #00000026;">
     <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
         <FluentButton Disabled="@(DataHasChanged == false)" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OnSave">
             <FluentIcon Slot="start" Name="@FluentIcons.Save" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
@@ -18,7 +18,7 @@
     </Stack>
     @if(Overview!= null)
     {
-        <table style="width:100%; padding:20px">
+        <table style="width:100%; margin-left:10px; margin-top:10px">
             <tr>
                 <td>id</td>
                 <td>:</td>
