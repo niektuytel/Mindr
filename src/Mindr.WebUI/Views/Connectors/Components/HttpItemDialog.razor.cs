@@ -31,6 +31,16 @@ namespace Mindr.WebUI.Views.Connectors.Components
 
         private bool IsLoading = false;
 
+        protected override Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                Dialog.Hide();
+            }
+
+            return base.OnAfterRenderAsync(firstRender);
+        }
+
         public async Task HandleOnSave()
         {
             IsLoading = true;

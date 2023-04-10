@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using System.Text;
 
-namespace Mindr.WebUI.Components;
+namespace Mindr.WebUI.Views.Connectors.Components;
 
 public partial class Dropzone<TItem>
 {

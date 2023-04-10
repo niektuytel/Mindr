@@ -1,0 +1,34 @@
+﻿@namespace Mindr.WebUI.Views.Connectors.Components
+@using Microsoft.AspNetCore.Authorization;
+@using Mindr.Core.Models.Connector;
+@using System.Collections.ObjectModel;
+@using Mindr.WebUI.Models;
+@using Mindr.WebUI.Services.ApiClients;
+@using Newtonsoft.Json;
+
+@inherits FluentComponentBase
+
+<div>
+    <FluentDialog Modal="true" TrapFocus="true" @ref="Dialog" @ondialogdismiss="HandleDialogDismiss" Style="height:fit-content">
+        @if (!IsLoadingDialog)
+        {
+            <FluentTextField @bind-Value="@Data.Name" Placeholder="Title" style="width: 100%;" />
+            <FluentTextArea @bind-Value="@Data.Description" Placeholder="Description" style="width: 100%;" />
+            <Stack Orientation="Orientation.Horizontal" HorizontalAlignment="StackHorizontalAlignment.Right" Style="padding:5px">
+                <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="HandleDialogClose">Close</FluentButton>
+                <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="OnConnectorAdd">Create New</FluentButton>
+            </Stack>
+        }
+        else
+        {
+            <Stack HorizontalAlignment="StackHorizontalAlignment.Center" VerticalAlignment="StackVerticalAlignment.Center">
+                <FluentProgressRing />
+            </Stack>
+        }
+    </FluentDialog>
+</div>
+
+
+
+
+

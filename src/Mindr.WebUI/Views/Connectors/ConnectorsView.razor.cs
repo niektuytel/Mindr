@@ -3,6 +3,7 @@ using Microsoft.Fast.Components.FluentUI;
 using Mindr.Core.Models.Connector;
 using Mindr.Core.Models.Connector.Http;
 using Mindr.WebUI.Services.ApiClients;
+using Mindr.WebUI.Views.Connectors.Components;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 
@@ -21,7 +22,7 @@ namespace Mindr.WebUI.Views.Connectors
 
         private readonly Connector AddItemData = new();
 
-        public FluentDialog AddItemDialog = default!;
+        public ConnectorDialog Dialog = default!;
 
         public int ItemsPerPage { get; set; } = 10;
 
@@ -130,19 +131,19 @@ namespace Mindr.WebUI.Views.Connectors
         public void HandleDialogOpen()
         {
 
-            AddItemDialog.Show();
+            Dialog.HandleDialogOpen();
         }
 
         public void HandleDialogClose()
         {
-            AddItemDialog.Hide();
+            Dialog.HandleDialogClose();
         }
 
         public void HandleDialogDismiss(DialogEventArgs args)
         {
             if (args is not null && args.Reason is not null && args.Reason == "dismiss")
             {
-                AddItemDialog.Hide();
+                Dialog.HandleDialogClose();
             }
         }
     }

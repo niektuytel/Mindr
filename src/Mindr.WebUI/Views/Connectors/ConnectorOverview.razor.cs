@@ -6,6 +6,7 @@ using Mindr.Core.Models.Connector;
 using Mindr.Core.Models.Connector.Http;
 using Mindr.Core.Services.Connectors;
 using Mindr.WebUI.Services.ApiClients;
+using Mindr.WebUI.Views.Connectors.Components;
 using Newtonsoft.Json;
 
 namespace Mindr.WebUI.Views.Connectors
@@ -23,7 +24,7 @@ namespace Mindr.WebUI.Views.Connectors
 
         private bool DataHasChanged = false;
 
-        public FluentDialog RemoveItemDialog = default!;
+        public ConfirmDialog RemoveItemDialog = default!;
 
         public async Task OnSave()
         {
@@ -36,24 +37,6 @@ namespace Mindr.WebUI.Views.Connectors
             await ConnectorClient.Delete(Overview.Id.ToString());
             NavigationManager.NavigateTo($"/connectors");
             base.StateHasChanged();
-        }
-
-        public void HandleDialogOpen()
-        {
-            RemoveItemDialog.Show();
-        }
-
-        public void HandleDialogClose()
-        {
-            RemoveItemDialog.Hide();
-        }
-
-        public void HandleDialogDismiss(DialogEventArgs args)
-        {
-            if (args is not null && args.Reason is not null && args.Reason == "dismiss")
-            {
-                RemoveItemDialog.Hide();
-            }
         }
 
         private void OnChangeName(string value)

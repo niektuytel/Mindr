@@ -1,17 +1,18 @@
 ﻿@namespace Mindr.WebUI.Views.Connectors
 @using System.Reflection;
 @using Mindr.Core.Models.Connector;
+@using Mindr.WebUI.Views.Connectors.Components
 
 @inherits FluentComponentBase
 
-<Stack Orientation="Orientation.Vertical" VerticalGap="0">
+<Stack Orientation="Orientation.Vertical" VerticalGap="0" Style="margin:10px">
     <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
         <FluentButton Disabled="@(DataHasChanged == false)" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OnSave">
             <FluentIcon Slot="start" Name="@FluentIcons.Save" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
             Save
         </FluentButton>
-        <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="HandleDialogOpen">
-            <FluentIcon Slot="start" Name="@FluentIcons.Add" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+        <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="RemoveItemDialog.OpenDialog">
+            <FluentIcon Slot="start" Name="@FluentIcons.Delete" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
             Delete
         </FluentButton>
     </Stack>
@@ -68,47 +69,6 @@
             </tr>
         </table>
     }
-
-    <div>
-        <FluentDialog Modal="true" TrapFocus="true" @ref="RemoveItemDialog" @ondialogdismiss="HandleDialogDismiss" Style="height:fit-content">
-            <div>
-                Are you sure to delete this connector?
-            </div>
-            <Stack Orientation="Orientation.Horizontal" HorizontalAlignment="StackHorizontalAlignment.Right" Style="padding:5px">
-                <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="HandleDialogClose">Close</FluentButton>
-                <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="OnRemove">Confirm</FluentButton>
-            </Stack>
-        </FluentDialog>
-    </div>
+    <ConfirmDialog @ref="RemoveItemDialog" Text="Are you sure to delete this connector?" OnConfirm="OnRemove" />
 </Stack>
 
-
-@code {
-    public class SampleGridData
-    {
-        public string Name { get; set; }
-        public int Age { get; set; }
-
-        public SampleGridData(string name, int age)
-        {
-            Name = name;
-            Age = age;
-        }
-    }
-
-    List<SampleGridData> RowsGrid = new()
-    {
-        new SampleGridData("Rob", 19 ),
-        new SampleGridData("Bob", 20 )
-    };
-
-    private void HandleRowFocus(FluentDataGridRow<SampleGridData> row)
-    {
-        Console.WriteLine($"Row focused: {row.RowIndex}");
-    }
-
-    private void HandleCellFocus(FluentDataGridCell<SampleGridData> cell)
-    {
-        Console.WriteLine($"Cell focused: {cell.GridColumn}");
-    }
-}

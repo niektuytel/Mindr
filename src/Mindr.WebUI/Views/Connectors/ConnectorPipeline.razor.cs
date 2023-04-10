@@ -40,12 +40,16 @@ namespace Mindr.WebUI.Views.Connectors
         
         private bool IsLoading = false;
 
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+        }
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
             {
                 await OnPipelineLoad();
-                HttpItemEditor.CloseDialog();
             }
 
             await base.OnAfterRenderAsync(firstRender);
