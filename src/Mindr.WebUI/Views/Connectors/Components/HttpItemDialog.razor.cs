@@ -15,12 +15,17 @@ namespace Mindr.WebUI.Views.Connectors.Components
     public partial class HttpItemDialog: FluentComponentBase
     {
         [Parameter, EditorRequired]
-        public Func<HttpItem, Task> OnHandleAdd { get; set; } = default!;
+        public Func<HttpItem, Task> OnCreate { get; set; } = default!;
+
+        [Parameter, EditorRequired]
+        public Func<HttpItem, Task> OnUpdate { get; set; } = default!;
 
         [Parameter, EditorRequired]
         public HttpItem? Data { get; set; } = default!;
 
         public string NewHeaderKey { get; set; } = "";
+
+        public string ButtonText { get; set; } = "";
 
         public FluentDialog Dialog = default!;
 
@@ -29,10 +34,23 @@ namespace Mindr.WebUI.Views.Connectors.Components
         public async Task HandleOnSave()
         {
             IsLoading = true;
-            
-            await OnHandleAdd.Invoke(Data);
 
-            Data = new();
+            if(ButtonText == "Create")
+            {
+                await OnCreate.Invoke(Data);
+
+            }
+            else if(ButtonText == "Update")
+            {
+                await OnUpdate.Invoke(Data);
+
+            }
+            else
+            {
+                throw new NotImplementedException($"{ButtonText} does not exist");
+            }
+            
+
             IsLoading = false;
             CloseDialog();
             base.StateHasChanged();
@@ -65,6 +83,8 @@ namespace Mindr.WebUI.Views.Connectors.Components
 
         public void OpenAddDialog()
         {
+            Data = new();
+            ButtonText = "Create";
             //if (Collection == null)
             //{// TODO: 
             //    //Collection = JsonConvert.DeserializeObject<HttpCollection>(_Constants.Json);
@@ -76,6 +96,7 @@ namespace Mindr.WebUI.Views.Connectors.Components
         public void OpenEditDialog(HttpItem item)
         {
             Data = item;
+            ButtonText = "Update";
             //if (Collection == null)
             //{// TODO: 
             //    //Collection = JsonConvert.DeserializeObject<HttpCollection>(_Constants.Json);

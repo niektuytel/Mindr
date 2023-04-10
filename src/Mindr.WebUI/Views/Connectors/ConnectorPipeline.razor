@@ -31,16 +31,22 @@
             <Dropzone Items="HttpItems">
                 <HttpItemCard Data="@context" 
                     IsSelected="@(SelectedHttpItem?.Id == context.Id)"
-                    OnHandleSelect="@OnSelectedItemChange"
-                    OnHandleEdit="@OnSelectedItemEdit"
-                    OnHandleRemove="@OnSelectedItemRemove"
+                    OnRemove="@OnHandleRemove"
+                    OnSelect="@OnHandleChange"
                 />
             </Dropzone>
         }
-        @if(SelectedHttpItem != null)
-        {
-            <HttpItemSettings SelectedHttpItem="@SelectedHttpItem" OnHandleEdit="@OnSelectedItemChange"/>
-        }
+        <HttpItemSettings 
+            Data="@SelectedHttpItem"
+            OnUpdate="@OnOpenEditor"
+            OnChange="@OnHandleChange" 
+        />
+        
     </Stack>
-    <HttpItemDialog @ref="@HttpItemEditor" Data="SelectedHttpItem ?? new HttpItem()" OnHandleAdd="OnHandleAdd" />
+    <HttpItemDialog 
+        @ref="@HttpItemEditor" 
+        Data="SelectedHttpItem ?? new HttpItem()" 
+        OnCreate="OnHandleCreate" 
+        OnUpdate="OnHandleUpdate" 
+    />
 </Stack>

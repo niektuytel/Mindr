@@ -10,13 +10,10 @@ namespace Mindr.WebUI.Views.Connectors.Components
         public HttpItem Data { get; set; } = default!;
 
         [Parameter, EditorRequired]
-        public Func<HttpItem, Task> OnHandleSelect { get; set; } = default!;
+        public Func<HttpItem, Task> OnSelect { get; set; } = default!;
 
         [Parameter, EditorRequired]
-        public Func<HttpItem, Task> OnHandleRemove { get; set; } = default!;
-
-        [Parameter, EditorRequired]
-        public Func<HttpItem, Task> OnHandleEdit { get; set; } = default!;
+        public Func<HttpItem, Task> OnRemove { get; set; } = default!;
 
         [Parameter]
         public bool IsSelected { get; set; } = false;

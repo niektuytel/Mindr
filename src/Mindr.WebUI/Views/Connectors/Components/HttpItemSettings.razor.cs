@@ -17,29 +17,39 @@ namespace Mindr.WebUI.Views.Connectors.Components
         public IHttpCollectionClient CollectionClient { get; set; } = default!;
 
         [Parameter, EditorRequired]
-        public HttpItem SelectedHttpItem { get; set; } = default!;
+        public HttpItem Data { get; set; } = default!;
 
         [Parameter, EditorRequired]
-        public Func<HttpItem, Task> OnHandleEdit { get; set; } = default!;
+        public Func<HttpItem, Task> OnChange { get; set; } = default!;
+
+        [Parameter, EditorRequired]
+        public Func<HttpItem, Task> OnUpdate { get; set; } = default!;
 
         public async Task OnHandleRun()
         {
-            if (SelectedHttpItem == null) return;
+            if (Data == null) return;
 
-            SelectedHttpItem = await CollectionClient.SendAsync(SelectedHttpItem);
+            Data = await CollectionClient.SendAsync(Data);
 
-            await OnHandleEdit.Invoke(SelectedHttpItem);
+            await OnChange.Invoke(Data);
             base.StateHasChanged();
         }
-        
+
+        public async Task OnHandleUpdate()
+        {
+            if (Data == null) return;
+            await OnUpdate.Invoke(Data);
+            base.StateHasChanged();
+        }
+
         public IEnumerable<HttpVariable>? GetItemRequestVariables()
         {
-            return SelectedHttpItem?.Request?.Variables;
+            return Data?.Request?.Variables;
         }
 
         public IEnumerable<HttpVariable>? GetItemResponseVariables()
         {
-            var responses = SelectedHttpItem?.Response;
+            var responses = Data?.Response;
             if(responses == null) return null;
 
             // TODO: Add more options to respond on: [201, 302, 404, 500, etc.]

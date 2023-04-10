@@ -3,15 +3,12 @@
 
 <Stack Orientation="Orientation.Horizontal" HorizontalGap="0">
     <Stack Orientation="Orientation.Vertical" VerticalAlignment="StackVerticalAlignment.Bottom" VerticalGap="0">
-        <FluentButton Appearance="Appearance.Stealth" onclick="@(async () => await OnHandleRemove(Data))">
+        <FluentButton Appearance="Appearance.Stealth" onclick="@(async () => await OnRemove(Data))">
             <FluentIcon Name="@FluentIcons.Delete" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
-        </FluentButton>
-        <FluentButton Appearance="Appearance.Stealth" onclick="@(async () => await OnHandleEdit(Data))">
-            <FluentIcon Name="@FluentIcons.Edit" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
         </FluentButton>
     </Stack>
     <Stack Orientation="Orientation.Vertical" HorizontalAlignment="StackHorizontalAlignment.Center" VerticalGap="0">
-        <div title="@Data.Description" class=@(IsSelected ? "card-selected" : "card-select") onclick="@(async () => await OnHandleSelect(Data))">
+        <div title="@Data.Description" class=@(IsSelected ? "card-selected" : "card-select") onclick="@(async () => await OnSelect(Data))">
             <Stack Style="padding: 5px;" HorizontalAlignment="StackHorizontalAlignment.Center" Orientation="Orientation.Horizontal" HorizontalGap="0">
                 <div style=@(GetMethodStyle())>
                     @Data.Request.Method.ToUpper()

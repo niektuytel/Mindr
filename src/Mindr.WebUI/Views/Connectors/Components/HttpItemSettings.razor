@@ -2,41 +2,49 @@
 
 @inherits FluentComponentBase
 
-<Stack Orientation="Orientation.Vertical" HorizontalAlignment="StackHorizontalAlignment.Center" VerticalGap="0">
-    <FluentCard class="overflow-ellipsis" title="Needed input">
-        <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
-            <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OnHandleRun">
-                <FluentIcon Slot="start" Name="@FluentIcons.Play" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent"/>
-                Run
-            </FluentButton>
-        </Stack>
-        @if (GetItemRequestVariables()?.Any() == true)
-        {
-            <div>
-                Input:
-                <Stack Orientation="Orientation.Vertical" Style="padding: 5px;" HorizontalGap="0">
-                @foreach (var variable in GetItemRequestVariables()!)
-                    {
-                        <FluentTextField @bind-Value="@variable.Value" title="@variable.Key" style="width: 100%;" Placeholder="@variable.Key" />
-                    }
-                </Stack>
-            </div>
-        }
-        @if (SelectedHttpItem?.Result != null)
-        {
-            <pre style="border: solid 1px lightgray;">@SelectedHttpItem?.Result!.ToString()</pre>
-        }
-        @if(GetItemResponseVariables()?.Any() == true)
-        {
-            <div>
-                Output:
-                <Stack Orientation="Orientation.Vertical" Style="padding: 5px;margin-top:40px" HorizontalGap="0">
-                    @foreach (var variable in GetItemResponseVariables()!)
-                    {
-                        <FluentTextField @bind-Value="@variable.Value" title="@variable.Key" style="width: 100%;" Placeholder="@variable.Key" />
-                    }
-                </Stack> 
-            </div>
-        }
-    </FluentCard>
-</Stack>
+
+@if (Data != null)
+{
+    <Stack Orientation="Orientation.Vertical" HorizontalAlignment="StackHorizontalAlignment.Center" VerticalGap="0">
+        <FluentCard class="overflow-ellipsis" title="Needed input">
+            <Stack Orientation="Orientation.Horizontal" Class="editable-stack" HorizontalGap="0">
+                <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OnHandleRun">
+                    <FluentIcon Slot="start" Name="@FluentIcons.Play" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent"/>
+                    Run
+                </FluentButton>
+                <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OnHandleUpdate">
+                    <FluentIcon Slot="start" Name="@FluentIcons.Edit" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+                    Edit
+                </FluentButton>
+            </Stack>
+            @if (GetItemRequestVariables()?.Any() == true)
+            {
+                <div>
+                    Input:
+                    <Stack Orientation="Orientation.Vertical" Style="padding: 5px;" HorizontalGap="0">
+                        @foreach (var variable in GetItemRequestVariables()!)
+                        {
+                            <FluentTextField @bind-Value="@variable.Value" title="@variable.Key" style="width: 100%;" Placeholder="@variable.Key" />
+                        }
+                    </Stack>
+                </div>
+            }
+            @if (Data?.Result != null)
+            {
+                <pre style="border: solid 1px lightgray;">@Data?.Result!.ToString()</pre>
+            }
+            @if (GetItemResponseVariables()?.Any() == true)
+            {
+                <div>
+                    Output:
+                    <Stack Orientation="Orientation.Vertical" Style="padding: 5px;margin-top:40px" HorizontalGap="0">
+                        @foreach (var variable in GetItemResponseVariables()!)
+                        {
+                            <FluentTextField @bind-Value="@variable.Value" title="@variable.Key" style="width: 100%;" Placeholder="@variable.Key" />
+                        }
+                    </Stack> 
+                </div>
+            }
+        </FluentCard>
+    </Stack>
+}
