@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Azure;
 using Mindr.Core.Enums;
 using Mindr.WebUI.Services.ApiClients;
+using Mindr.WebUI.Components.Agenda;
 
 namespace Mindr.WebUI.Components;
 
@@ -18,16 +19,18 @@ public partial class ConnectorEventDialog: FluentComponentBase
     public Func<Task> OnChanged { get; set; } = default!;
 
     [Parameter]
-    public ConnectorEvent? CurrentEvent { get; set; } = null;
+    public ConnectorEvent? ConnectorEvent { get; set; } = null;
 
-    [Parameter]
-    public Connector? Data { get; set; } = null;
+    public AgendaEvent? AgendaEvent { get; set; } = null;
+
+    //[Parameter]
+    //public Connector? Data { get; set; } = null;
 
     [Inject]
     public NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public IHttpConnectorEventClient EventClient { get; set; } = default!;
+    public IHttpConnectorEventClient ConnectorEventClient { get; set; } = default!;
 
     [Inject]
     public IHttpConnectorClient ConnectorClient { get; set; } = default!;
@@ -38,18 +41,18 @@ public partial class ConnectorEventDialog: FluentComponentBase
 
     public bool IsCreating { get; set; } = true;
 
-    public IEnumerable<Connector>? Results { get; set; } = null;
+    public IEnumerable<ConnectorEvent>? Results { get; set; } = null;
 
     public FluentDialog Dialog = default!;
 
     public async Task HandleOnSearch(ChangeEventArgs args)
     {
-        Results = new List<Connector>();
+        Results = new List<ConnectorEvent>();
 
         if (args is not null && args.Value is not null)
         {
             string searchTerm = args.Value.ToString()!.ToLower();
-            var response = await ConnectorClient.GetAll(query: searchTerm);
+            var response = await ConnectorEventClient.GetAll(query: searchTerm);
             if (response == null)
             {
                 // Failed request
@@ -59,7 +62,7 @@ public partial class ConnectorEventDialog: FluentComponentBase
             var json = await response.Content.ReadAsStringAsync();
             if (!string.IsNullOrEmpty(json))
             {
-                Results = JsonConvert.DeserializeObject<IEnumerable<Connector>>(json);
+                Results = JsonConvert.DeserializeObject<IEnumerable<ConnectorEvent>>(json);
             }
         }
 
@@ -67,38 +70,34 @@ public partial class ConnectorEventDialog: FluentComponentBase
         base.StateHasChanged();
     }
 
-    public async Task HandleOnSelect(Connector? input)
+    public async Task HandleOnSelect(ConnectorEvent? input)
     {
-        if (IsLoading || input == null || CurrentEvent == null) return;
+        if (input == null) return;
 
-        IsLoading = true;
-        var response = await ConnectorClient.GetOverview(input.Id.ToString());
-        if (response == null)
-        {
-            // Failed request
-            throw new NotImplementedException();
-        }
-
-        var json = await response.Content.ReadAsStringAsync();
-        if (!string.IsNullOrEmpty(json))
-        {
-            Data = JsonConvert.DeserializeObject<Connector>(json);
-            CurrentEvent = new ConnectorEvent(CurrentEvent, Data);
-        }
-
-        IsLoading = false;
+        ConnectorEvent = input;
         base.StateHasChanged();
     }
 
     public async Task HandleOnUpsert()
     {
-        if (IsLoading || CurrentEvent == null) return;
+        if (IsLoading || ConnectorEvent == null || AgendaEvent == null) return;
 
         IsLoading = true;
 
         if(IsCreating)
         {
-            var response = await EventClient.Create(CurrentEvent);
+            var events = new List<EventParam>
+            {
+                new EventParam()
+                {
+                    Type = EventType.OnDateTime,
+                    Value = AgendaEvent.StartDate.DateTime.ToLongDateString()
+                }
+            };
+            ConnectorEvent.EventId = AgendaEvent.Id;
+            ConnectorEvent.EventParams = events;
+
+            var response = await ConnectorEventClient.Create(ConnectorEvent);
             if (response == null) 
             {
                 // Failed request
@@ -107,7 +106,7 @@ public partial class ConnectorEventDialog: FluentComponentBase
         }
         else
         {
-            var response = await EventClient.Update(CurrentEvent.Id, CurrentEvent);
+            var response = await ConnectorEventClient.Update(ConnectorEvent.Id, ConnectorEvent);
             if (response == null)
             {
                 // Failed request
@@ -123,10 +122,10 @@ public partial class ConnectorEventDialog: FluentComponentBase
 
     public async Task HandleOnDelete()
     {
-        if (CurrentEvent == null) return;
+        if (ConnectorEvent == null) return;
         IsLoading = true;
 
-        var response = await EventClient.Delete(CurrentEvent.Id);
+        var response = await ConnectorEventClient.Delete(ConnectorEvent.Id);
         if (response == null)
         {
             // Failed request
@@ -139,28 +138,20 @@ public partial class ConnectorEventDialog: FluentComponentBase
         base.StateHasChanged();
     }
 
-    public void HandleOnDialogOpen(AgendaEvent agendaEvent, Connector? connector = null)
+    public void HandleOnDialogOpen(AgendaEvent agendaEvent, ConnectorEvent? connectorEvent = null)
     {
-        IsCreating = connector == null;
-        Data = connector;
-        var events = new List<EventParam>
-        {
-            new EventParam()
-            {
-                Type = EventType.OnDateTime,
-                Value = agendaEvent.StartDate.DateTime.ToLongDateString()
-            }
-        };
+        AgendaEvent = agendaEvent;
+        IsCreating = connectorEvent == null;
 
-        if (connector != null)
+        if (connectorEvent != null)
         {
-            Query = connector.Name;
+            Query = connectorEvent.ConnectorName;
+            ConnectorEvent = connectorEvent;
 
-            CurrentEvent = new ConnectorEvent(agendaEvent.Id, events, connector);
         }
         else
         {
-            CurrentEvent = new ConnectorEvent(agendaEvent.Id, events);
+            ConnectorEvent = new ConnectorEvent();
         }
 
         Dialog.Show();
@@ -179,9 +170,9 @@ public partial class ConnectorEventDialog: FluentComponentBase
 
     public void GoToConnector()
     {
-        if (Data == null) return;
+        if (ConnectorEvent == null) return;
 
-        NavigationManager.NavigateTo($"/connectors/{Data!.Id}");
+        NavigationManager.NavigateTo($"/connectors/{ConnectorEvent!.ConnectorId}");
         base.StateHasChanged();
     }
 

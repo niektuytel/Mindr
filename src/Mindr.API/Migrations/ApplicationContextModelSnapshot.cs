@@ -54,6 +54,9 @@ namespace Mindr.Api.Migrations
                     b.Property<Guid?>("ConnectorId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ConnectorName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("EventId")
                         .HasColumnType("nvarchar(max)");
 
@@ -106,11 +109,9 @@ namespace Mindr.Api.Migrations
 
             modelBuilder.Entity("Mindr.Core.Models.Connector.EventParam", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ConnectorEventId")
                         .HasColumnType("uniqueidentifier");

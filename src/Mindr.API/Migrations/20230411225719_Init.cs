@@ -17,7 +17,8 @@ namespace Mindr.Api.Migrations
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     JobId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EventId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConnectorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    ConnectorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ConnectorName = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -70,8 +71,7 @@ namespace Mindr.Api.Migrations
                 name: "EventParam",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConnectorEventId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)

@@ -69,7 +69,6 @@ public class ConnectorEventClient : IConnectorEventClient
             return false;
         }
 
-
         // TODO: Use No-SQL database (better for searching as this will been re-used mas well?) [MongoDB]
         var connector = _context.Connectors
             .Include(item => item.Variables)
@@ -114,13 +113,18 @@ public class ConnectorEventClient : IConnectorEventClient
 
         if (onInsert)
         {
+
+            // TODO: Clean this
             var variables = new List<ConnectorVariable>();
             foreach (var variable in entity.Variables)
             {
                 variable.Id = Guid.NewGuid();
+                variables.Add(variable);
             }
+            //entity.EventParams = new List<EventParam>();
+            entity.Variables = variables;
+            entity.Id = Guid.NewGuid();
 
-            entity.Variables = variables.ToArray();
             _context.ConnectorEvents.Add(entity);
         }
         else
@@ -132,7 +136,7 @@ public class ConnectorEventClient : IConnectorEventClient
         return true;
     }
 
-    public async Task<IEnumerable<ConnectorEvent>> GetAll(string userId, string? eventId = null)
+    public async Task<IEnumerable<ConnectorEvent>> GetAll(string userId, string? eventId = null, string? query = null)
     {
         if (!string.IsNullOrEmpty(eventId))
         {
@@ -140,6 +144,15 @@ public class ConnectorEventClient : IConnectorEventClient
                 .Include(x => x.EventParams)
                 .Include(x => x.Variables)
                 .Where(x => x.UserId == userId && x.EventId == eventId);
+
+            return items.AsEnumerable();
+        }    
+        else if (!string.IsNullOrEmpty(query))
+        {
+            var items = _context.ConnectorEvents
+                .Include(x => x.EventParams)
+                .Include(x => x.Variables)
+                .Where(x => x.UserId == userId && x.ConnectorName.ToLower().Contains(query));
 
             return items.AsEnumerable();
         }
@@ -185,16 +198,19 @@ public class ConnectorEventClient : IConnectorEventClient
         {
             throw new ArgumentNullException(nameof(@event));
         }
-
         // TODO: validate: @event
 
         var entity = _context.ConnectorEvents
                 .Include(x => x.EventParams)
                 .Include(x => x.Variables)
-                .FirstOrDefault(x => x.Id == @event.Id);
+                .FirstOrDefault(x => x.Id == @event.Id && x.UserId == @event.UserId);
 
-        // TODO: validate: items
-        entity!.Update(@event);
+        if (entity == null)
+        {
+            throw new ApiRequestException(ApiResponse.NotFound, $"event on id: '{@event.Id}' user:'{@event.UserId}'");
+        }
+
+        entity.Update(@event);
 
         var exists = await TryDefaultCall(entity);
         if (exists)

@@ -32,13 +32,13 @@ public class ConnectorEventController : BaseController
     [ProducesResponseType(typeof(IEnumerable<ConnectorEvent>), 200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] string? eventId = null, [FromQuery] string? query = null)
     {
         var response = await HandleRequest(
             async () => {
                 var userId = User.GetInfo();
 
-                return await _connectorEventClient.GetAll(userId);
+                return await _connectorEventClient.GetAll(userId, eventId: eventId, query: query);
             }
         );
 

@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Mindr.Core.Services.Connectors;
 using Mindr.Core.Enums;
 using Mindr.Api.Services;
+using Mindr.Core.Models;
 
 namespace Mindr.Api;
 
@@ -339,11 +340,30 @@ public class Program
                 };
                 context.Connectors.Add(Connector2);
 
+
                 // seed database
                 var event1 = new ConnectorEvent("00000000-0000-0000-aacc-c311156d0357", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", Connector1);
+                var events1 = new List<EventParam>
+                {
+                    new EventParam()
+                    {
+                        Type = EventType.OnDateTime,
+                        Value = DateTime.Parse("3/6/2023 7:00:00 AM").ToLongDateString()
+                    }
+                };
+                event1.EventParams = events1;
                 context.ConnectorEvents.Add(event1); //Test 1
 
                 var event2 = new ConnectorEvent("00000000-0000-0000-aacc-c311156d0357", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", Connector2);
+                var events2 = new List<EventParam>
+                {
+                    new EventParam()
+                    {
+                        Type = EventType.OnDateTime,
+                        Value = DateTime.Parse("3/6/2023 7:00:00 AM").ToLongDateString()
+                    }
+                };
+                event2.EventParams = events2;
                 context.ConnectorEvents.Add(event2); //Test 2
                 
                 context.SaveChanges();

@@ -20,7 +20,10 @@ public partial class AgendaEventItem: FluentComponentBase
     [Inject]
     public IHttpConnectorClient ConnectorClient { get; set; } = default!;
 
-    private IEnumerable<Mindr.Core.Models.Connector.Connector>? Connectors { get; set; } = null;
+    [Inject]
+    public IHttpConnectorEventClient ConnectorEventClient { get; set; } = default!;
+
+    private IEnumerable<ConnectorEvent>? Connectors { get; set; } = null;
 
     private bool IsLoading { get; set; } = true;
 
@@ -28,7 +31,7 @@ public partial class AgendaEventItem: FluentComponentBase
     {
         IsLoading = true;
 
-        var response = await ConnectorClient.GetAll(eventId: Data.Id);
+        var response = await ConnectorEventClient.GetAll(eventId: Data.Id);
         if (response == null)
         {
             // Failed request
@@ -38,7 +41,7 @@ public partial class AgendaEventItem: FluentComponentBase
         var json = await response.Content.ReadAsStringAsync();
         if (!string.IsNullOrEmpty(json))
         {
-            Connectors = JsonConvert.DeserializeObject<IEnumerable<Mindr.Core.Models.Connector.Connector>>(json);
+            Connectors = JsonConvert.DeserializeObject<IEnumerable<ConnectorEvent>>(json);
         }
 
         IsLoading = false;

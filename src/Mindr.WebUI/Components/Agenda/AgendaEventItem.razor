@@ -14,7 +14,7 @@
         foreach (var connector in Connectors)
         {
             <FluentButton Appearance="Appearance.Neutral" @onclick="@(() => EventDialogRef.HandleOnDialogOpen(Data, connector))">
-                @connector.Name
+                @connector.ConnectorName
             </FluentButton>
         }
     }

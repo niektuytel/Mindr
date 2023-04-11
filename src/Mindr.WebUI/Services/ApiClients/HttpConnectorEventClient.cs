@@ -45,9 +45,19 @@ public class HttpConnectorEventClient : IHttpConnectorEventClient
         return false;
     }
 
-    public async Task<HttpResponseMessage?> GetAll()
+    public async Task<HttpResponseMessage?> GetAll(string? eventId = null, string? query = null)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{ControllerUrl}");
+        var url = $"{ControllerUrl}";
+        if (!string.IsNullOrEmpty(eventId))
+        {
+            url += $"?eventId={eventId}";
+        }
+        else if (!string.IsNullOrEmpty(query))
+        {
+            url += $"?query={query}";
+        }
+
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
         var validAuth = await TrySetAuthorization(request);
         if (!validAuth) return null;
 

@@ -65,13 +65,13 @@ public partial class NavMenu : FluentComponentBase
     public bool Expanded { get; set; } = true;
 
     /// <summary>
-    /// Event callback for when the menu is collapsed status changed.
+    /// ConnectorEvent callback for when the menu is collapsed status changed.
     /// </summary>
     [Parameter]
     public EventCallback<bool> ExpandedChanged { get; set; }
 
     /// <summary>
-    /// Event callback for when group/link is expanded
+    /// ConnectorEvent callback for when group/link is expanded
     /// </summary>
     [Parameter]
     public EventCallback<bool> OnExpanded { get; set; }

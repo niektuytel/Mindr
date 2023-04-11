@@ -25,6 +25,7 @@ namespace Mindr.Core.Models.Connector
             EventId = @event.EventId;
             EventParams = @event.EventParams;
             ConnectorId = connector.Id;
+            ConnectorName = connector.Name;
             Variables = connector.Variables.Where(item => item.InputByUser).ToArray();
         }
 
@@ -33,6 +34,7 @@ namespace Mindr.Core.Models.Connector
             UserId = userId;
             EventId = eventId;
             ConnectorId = connector.Id;
+            ConnectorName = connector.Name;
             Variables = connector.Variables.Where(item => item.InputByUser).ToArray();
         }
 
@@ -47,6 +49,7 @@ namespace Mindr.Core.Models.Connector
             EventId = eventId;
             EventParams = eventParams;
             ConnectorId = connector.Id;
+            ConnectorName = connector.Name;
             Variables = connector.Variables.Where(item => item.InputByUser).ToArray();
         }
 
@@ -69,13 +72,21 @@ namespace Mindr.Core.Models.Connector
         [JsonProperty("connector_id")]
         public Guid? ConnectorId { get; set; } = null;
 
+        [JsonProperty("connector_name")]
+        public string ConnectorName { get; set; } = "";
+
         [JsonProperty("connector_params")]
         public IEnumerable<ConnectorVariable> Variables { get; set; } = new List<ConnectorVariable>();
 
         public void Update(ConnectorEvent @event)
         {
-            // TODO: Update this.*!
-            throw new NotImplementedException();
+            Id = @event.Id;
+            UserId = @event.UserId;
+            EventId = @event.EventId;
+            EventParams = @event.EventParams;
+            ConnectorId = @event.ConnectorId;
+            ConnectorName = @event.ConnectorName;
+            Variables = @event.Variables;
         }
     }
 }
