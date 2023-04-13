@@ -10,13 +10,12 @@ using Mindr.WebUI.Components;
 using Mindr.WebUI.Handlers;
 using Mindr.WebUI.Models;
 using Mindr.WebUI.Services;
-using Mindr.WebUI.Services.ApiClients;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Json;
 using System.Security.Principal;
 
-namespace Mindr.WebUI.Pages;
+namespace Mindr.WebUI.Pages.Agenda;
 
 public partial class AgendaPage: FluentComponentBase
 {

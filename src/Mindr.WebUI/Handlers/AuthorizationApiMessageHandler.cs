@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Options;
-using Mindr.WebUI.Options;
+using Mindr.WebUI.Models.Options;
 
 namespace Mindr.WebUI.Handlers
 {

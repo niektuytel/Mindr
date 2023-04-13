@@ -1,0 +1,74 @@
+﻿@namespace Mindr.WebUI.Pages.Connectors.Views
+@using Mindr.WebUI.Pages.Connectors.Components
+@using System.Reflection;
+@using Mindr.Core.Models.Connector;
+
+@inherits FluentComponentBase
+
+<Stack Orientation="Orientation.Vertical" VerticalGap="0" Style="border-top: 1px solid #00000026;">
+    <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
+        <FluentButton Disabled="@(DataHasChanged == false)" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OnSave">
+            <FluentIcon Slot="start" Name="@FluentIcons.Save" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+            Save
+        </FluentButton>
+        <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="RemoveItemDialog.OpenDialog">
+            <FluentIcon Slot="start" Name="@FluentIcons.Delete" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+            Delete
+        </FluentButton>
+    </Stack>
+    @if(Overview!= null)
+    {
+        <table style="width:100%; margin-left:10px; margin-top:10px">
+            <tr>
+                <td>id</td>
+                <td>:</td>
+                <td>@Overview.Id</td>
+            </tr>
+            <FluentDivider Role="DividerRole.Separator"></FluentDivider>
+            <tr>
+                <td>created by</td>
+                <td>:</td>
+                <td>@Overview.CreatedBy</td>
+            </tr>
+            <FluentDivider Role="DividerRole.Separator"></FluentDivider>
+            <tr>
+                <td>name</td>
+                <td>:</td>
+                <td><FluentTextField ValueChanged="@OnChangeName" Value="@Overview.Name" style="width: 100%;" /></td>
+            </tr>
+            <FluentDivider Role="DividerRole.Separator"></FluentDivider>
+            <tr>
+                <td style="vertical-align: -webkit-baseline-middle;">description</td>
+                <td style="vertical-align: -webkit-baseline-middle;">:</td>
+                <td><FluentTextArea ValueChanged="@OnChangeDescription" Value="@Overview.Description" style="width: 100%;" /></td>
+            </tr>
+            <FluentDivider Role="DividerRole.Separator"></FluentDivider>
+            <tr>
+                <td style="vertical-align: -webkit-baseline-middle;">variables</td>
+                <td style="vertical-align: -webkit-baseline-middle;">:</td>
+                <td>
+                    <FluentCard Style="margin:0px">    
+                        <table style="width:100%; margin:10px">
+                            @foreach (var item in Overview.Variables)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.Name
+                                    </td>
+                                    <td>:</td>
+                                    <td>
+                                        <FluentTextField @onchange="@OnDataChanged" @bind-Value="@item.Value" style="width: 100%;" />
+                                        <FluentCheckbox @onchange="@OnDataChanged" @bind-Value="@item.InputByUser">user dependent</FluentCheckbox>
+                                    </td>
+                                </tr>
+                                <FluentDivider Role="DividerRole.Separator"></FluentDivider>
+                            }
+                        </table>
+                    </FluentCard>
+                </td>
+            </tr>
+        </table>
+    }
+    <ConfirmDialog @ref="RemoveItemDialog" Text="Are you sure to delete this connector?" OnConfirm="OnRemove" />
+</Stack>
+

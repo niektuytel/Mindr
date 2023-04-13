@@ -1,13 +1,13 @@
-﻿@page "/agenda"
+﻿@namespace Mindr.WebUI.Pages.Agenda
+@page "/agenda"
 
 @using Microsoft.AspNetCore.Authorization;
 @using Mindr.Core.CalendarExtensions;
 @using System.Globalization;
 @using Mindr.Core.Models.Connector;
-@using Mindr.WebUI.Components.Agenda
+@using Mindr.WebUI.Pages.Agenda.Components
 @using Newtonsoft.Json;
 
-@namespace Mindr.WebUI.Pages
 
 @inherits FluentComponentBase
 @attribute [Authorize]

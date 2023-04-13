@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web.Resource;
 using Mindr.Api.Extensions;
+using Mindr.Api.Models;
 using Mindr.Api.Persistence;
 using Mindr.Api.Services;
+using Mindr.API.Enums;
 using Mindr.Core.Enums;
 using Mindr.Core.Models.Connector;
 using Mindr.Core.Models.Connector.Http;
@@ -28,6 +30,37 @@ public class ConnectorController : BaseController
     }
 
     /// <remarks>
+    /// Create Connector.
+    /// </remarks>
+    /// <credentials code="200">Successfully requested</credentials>
+    /// <credentials code="400">Invalid request</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
+    [HttpPost]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(ConnectorInsertResponse), (int)ApiResponse.Ok)]
+    [ProducesResponseType(typeof(ApiErrorMessage), (int)ApiResponse.BadRequest)]
+    public async Task<IActionResult> Insert([FromBody] ConnectorInsert payload)
+    {
+        var response = await HandleRequest(
+            async () => {
+                var userId = User.GetInfo();
+                return await _connectorClient.Create(userId, payload);
+            }
+        );
+
+        return response;
+    }
+
+
+
+
+
+
+    // TODO: need Prepare & Validation functions
+
+
+
+    /// <remarks>
     /// Get pipeline of connector
     /// </remarks>
     /// <credentials code="200">All related events</credentials>
@@ -45,6 +78,35 @@ public class ConnectorController : BaseController
         var response = await HandleRequest(
             async () => {
                 return await _connectorClient.Get(id);
+            }
+        );
+
+        return response;
+    }
+
+    /// <remarks>
+    /// Get all connectors.
+    /// </remarks>
+    /// <credentials code="200">All related connectors</credentials>
+    /// <credentials code="400">Invalid credentials</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
+    [HttpGet]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(IEnumerable<Connector>), 200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    public async Task<IActionResult> GetAll([FromQuery] string? eventId = null, [FromQuery] string? query = null)
+    {
+        var response = await HandleRequest(
+            async () => {
+                var userId = User.GetInfo();
+
+                if (string.IsNullOrEmpty(query) == false)
+                {
+                    return await _connectorClient.GetAll(userId, eventId, query, asUser: true);
+                }
+
+                return await _connectorClient.GetAllBriefly(userId);
             }
         );
 
@@ -118,62 +180,6 @@ public class ConnectorController : BaseController
 
         return response;
     }
-
-
-
-
-    /// <remarks>
-    /// Get all connectors from user.
-    /// </remarks>
-    /// <credentials code="200">All related events</credentials>
-    /// <credentials code="400">Invalid credentials</credentials>
-    /// <credentials code="401">Unauthorized</credentials>
-    [HttpGet]
-    [Produces("application/json")]
-    [ProducesResponseType(typeof(IEnumerable<Connector>), 200)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(401)]
-    public async Task<IActionResult> GetAll([FromQuery] string? eventId = null, [FromQuery] string? query = null)
-    {
-        var response = await HandleRequest(
-            async () => {
-                var userId = User.GetInfo();
-
-                if(string.IsNullOrEmpty(eventId) && string.IsNullOrEmpty(query))
-                {
-                    return await _connectorClient.GetAllBriefly(userId);
-                }
-                
-                return await _connectorClient.GetAll(userId, eventId, query);
-            }
-        );
-
-        return response;
-    }
-
-    /// <remarks>
-    /// Insert Connector.
-    /// </remarks>
-    /// <credentials code="200">Successfully requested</credentials>
-    /// <credentials code="400">Invalid request</credentials>
-    /// <credentials code="401">Unauthorized</credentials>
-    [HttpPost]
-    [Produces("application/json")]
-    [ProducesResponseType(typeof(Connector), 200)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(401)]
-    public async Task<IActionResult> Insert([FromBody]Connector payload)
-    {
-        var response = await HandleRequest(
-            async () => {
-                var userId = User.GetInfo();
-                return await _connectorClient.Insert(userId, payload);
-            }
-        );
-
-        return response;
-    }
-
 
     /// <remarks>
     /// Delete Connector.

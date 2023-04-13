@@ -10,19 +10,44 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Graph;
 using Microsoft.Graph.ExternalConnectors;
 using Mindr.Core.Models.Connector.Http;
+using Mindr.Api.Models;
 
 namespace Mindr.Api.Services
 {
     public class ConnectorClient : IConnectorClient
     {
         private readonly IConnectorEventClient _eventClient;
+        private readonly ConnectorHelper _helper;
         private readonly ApplicationContext _context;
 
         public ConnectorClient(IConnectorEventClient eventClient, ApplicationContext context)
         {
             _eventClient = eventClient;
             _context = context;
+
+            _helper = new ConnectorHelper();
         }
+
+        public async Task<ConnectorInsertResponse> Create(string userId, ConnectorInsert input)
+        {
+            // validate & prepare
+            var entity = _context.Connectors.FirstOrDefault(item => item.Name == input.Name);
+            if (string.IsNullOrEmpty(input.Name) || entity != null)
+            {
+                var id = _context.Connectors.Count();
+                input.Name = $"[Test: {id}]";
+            }
+            input.CreatedBy = userId;
+
+            entity = input.MapToConnector();
+            _context.Connectors.Add(entity);
+            _context.SaveChanges();
+
+            return new ConnectorInsertResponse(entity);
+        }
+
+
+
 
         public async Task<Connector?> Get(Guid connectorId)
         {
@@ -43,6 +68,40 @@ namespace Mindr.Api.Services
                 .FirstOrDefaultAsync(item => item.Id == connectorId);
 
             return connector;
+        }
+
+        public async Task<IEnumerable<Connector>> GetAll(string userId, string? eventId = null, string? query = null, bool asUser = true)
+        {
+            if (!string.IsNullOrEmpty(query))
+            {
+                var connectors = _context.Connectors
+                    .Include(item => item.Variables)
+                    .Where(item => item.Name.ToLower().Contains(query));
+
+                // do not show owner credentials
+                if(asUser)
+                {
+                    foreach (var connector in connectors)
+                    {
+                        connector.Variables = connector.Variables.Where(item => item.InputByUser);
+                    }
+                }
+
+                return connectors;
+            }
+
+
+            throw new NotImplementedException();
+
+            //var items2 = _context.Connectors.Where(item => 
+            //    connectorIds.Contains(item.Id)
+            //);
+            //return items2;
+        }
+
+        public async Task<IEnumerable<Connector>> GetAllBriefly(string userId)
+        {
+            return _context.Connectors.Where(x => x.CreatedBy == userId);
         }
 
         public async Task<Connector?> GetOverview(Guid connectorId)
@@ -86,6 +145,10 @@ namespace Mindr.Api.Services
             var items = new List<HttpItem>();
             foreach (var item in payload)
             {
+                var preparedItem = await _helper.PrepareHttpItem(item);
+
+
+
                 var httpItem = _context.HttpItems.FirstOrDefault(x => x.Id == item.Id);
                 if(httpItem == null)
                 {
@@ -131,55 +194,6 @@ namespace Mindr.Api.Services
 
         }
         
-
-
-
-        public async Task<IEnumerable<Connector>> GetAll(string userId, string? eventId = null, string? query = null)
-        {
-            var events = await _eventClient.GetAll(userId, eventId);
-            var connectorIds = events.Select(item => item.ConnectorId).Distinct();
-            
-            if (!string.IsNullOrEmpty(query))
-            {
-                var items = _context.Connectors.Where(item => 
-                    connectorIds.Contains(item.Id) && 
-                    item.Name.ToLower().Contains(query)
-                );
-
-                return items;
-            }
-
-            var items2 = _context.Connectors.Where(item => 
-                connectorIds.Contains(item.Id)
-            );
-            return items2;
-        }
-
-        public async Task<IEnumerable<Connector>> GetAllBriefly(string userId)
-        {
-            return _context.Connectors.Where(x => x.CreatedBy == userId);
-        }
-
-        public async Task<Connector> Insert(string userId, Connector payload)
-        {
-            payload.CreatedBy = userId;
-            var entity = _context.Connectors.FirstOrDefault(item => 
-                item.CreatedBy == payload.CreatedBy && 
-                item.Id == payload.Id
-            );
-
-            // insert
-            if (entity == null)
-            {
-                _context.Connectors.Add(payload);
-                _context.SaveChanges();
-                return payload;
-            }
-
-
-            return entity;
-        }
-
         public async Task Delete(string userId, Guid id)
         {
             var entity = _context.Connectors.FirstOrDefault(item =>

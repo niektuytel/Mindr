@@ -1,0 +1,27 @@
+﻿@using Mindr.WebUI.Pages.Agenda.Components;
+@inherits FluentComponentBase
+
+
+<div style=@("width: -webkit-fill-available;border-radius: 5px;box-shadow: 0px 0px 5px 2px #0000001f;margin: 10px;" + "border-color:" + Data.Color)>
+    <div>@Data.StartDate.DateTime.ToShortTimeString() - @Data.EndDate.DateTime.ToShortTimeString()</div>
+    @Data.Subject
+    @if (IsLoading)
+    {
+        <FluentProgressRing style="width: 24px; height: 24px;"></FluentProgressRing>
+    }
+    else if (Connectors?.Any() == true)
+    {
+        foreach (var connector in Connectors)
+        {
+            <FluentButton Appearance="Appearance.Neutral" @onclick="@(() => EventDialogRef.HandleOnDialogOpen(Data, connector))">
+                @connector.ConnectorName
+            </FluentButton>
+        }
+    }
+    <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
+        <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="@(() => EventDialogRef.HandleOnDialogOpen(Data, null))">
+            <FluentIcon Slot="start" Name="@FluentIcons.Add" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+            Add Connector
+        </FluentButton>
+    </Stack>
+</div>

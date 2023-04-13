@@ -78,6 +78,9 @@ namespace Mindr.Core.Models.Connector
         [JsonProperty("connector_params")]
         public IEnumerable<ConnectorVariable> Variables { get; set; } = new List<ConnectorVariable>();
 
+        [JsonProperty("color")]
+        public string Color { get; set; } = "#000000";
+
         public void Update(ConnectorEvent @event)
         {
             Id = @event.Id;

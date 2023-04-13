@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Mindr.Api.Models;
 using Mindr.API.Enums;
 using System.Runtime.Serialization;
 
@@ -17,5 +18,10 @@ namespace Mindr.API.Exceptions
         }
 
         public ApiResponse ResponseCode { get; set; }
+
+        public ApiErrorMessage GetErrorMessage()
+        {
+            return new ApiErrorMessage((int)ResponseCode, Message);
+        }
     }
 }

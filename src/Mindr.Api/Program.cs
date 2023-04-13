@@ -352,6 +352,7 @@ public class Program
                     }
                 };
                 event1.EventParams = events1;
+                event1.Color = Connector1.Color;
                 context.ConnectorEvents.Add(event1); //Test 1
 
                 var event2 = new ConnectorEvent("00000000-0000-0000-aacc-c311156d0357", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", Connector2);
@@ -364,6 +365,7 @@ public class Program
                     }
                 };
                 event2.EventParams = events2;
+                event2.Color = Connector2.Color;
                 context.ConnectorEvents.Add(event2); //Test 2
                 
                 context.SaveChanges();

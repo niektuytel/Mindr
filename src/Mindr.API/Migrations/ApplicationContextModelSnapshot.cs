@@ -51,6 +51,9 @@ namespace Mindr.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid?>("ConnectorId")
                         .HasColumnType("uniqueidentifier");
 

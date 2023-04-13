@@ -22,7 +22,14 @@ namespace Mindr.Core.Models.Connector
         public string CreatedBy { get; set; }
 
         [JsonProperty("color")]
-        public string Color { get; set; }
+        public string Color { get; set; } = GetRandomColorClass();
+
+        private static string GetRandomColorClass()
+        {
+            string[] colors = new[] { "magenta", "yellow", "green", "pink", "red" };
+            var random = new Random();
+            return colors[random.Next(0, colors.Length)];
+        }
 
         [JsonProperty("name")]
         public string Name { get; set; }

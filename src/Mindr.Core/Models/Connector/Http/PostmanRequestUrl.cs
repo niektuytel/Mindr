@@ -16,7 +16,6 @@ namespace Mindr.Core.Models.Connector.Http
         [JsonProperty("protocol")]
         public string Protocol { get; set; }
 
-        // TODO: Use No-SQL database (better for searching as this will been re-used?) [MongoDB]
         [JsonIgnore]
         public string Host { get; set; } = "";
 
@@ -28,7 +27,6 @@ namespace Mindr.Core.Models.Connector.Http
             set => Host = string.Join(".", value);
         }
 
-        // TODO: Use No-SQL database (better for searching as this will been re-used?) [MongoDB]
         [JsonIgnore]
         public string Path { get; set; } = "";
 

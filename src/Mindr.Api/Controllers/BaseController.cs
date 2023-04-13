@@ -59,10 +59,10 @@ public class BaseController : ControllerBase
             return ex.ResponseCode switch
             {
                 API.Enums.ApiResponse.InternalServerError => new StatusCodeResult(StatusCodes.Status500InternalServerError),
-                API.Enums.ApiResponse.BadRequest => BadRequest(ex.Message),
-                API.Enums.ApiResponse.NotFound => NotFound(ex.Message),
+                API.Enums.ApiResponse.BadRequest => BadRequest(ex.GetErrorMessage()),
+                API.Enums.ApiResponse.NotFound => NotFound(ex.GetErrorMessage()),
                 API.Enums.ApiResponse.Created => new StatusCodeResult(StatusCodes.Status201Created),
-                API.Enums.ApiResponse.Ok => Ok(ex.Message),
+                API.Enums.ApiResponse.Ok => Ok(ex.GetErrorMessage()),
                 _ => throw new NotImplementedException($"Unknown response: {ex.ResponseCode}, message:{ex.Message}"),
             };
         }
