@@ -110,7 +110,7 @@ internal static class _Constants
     //    Description = "Sample text",
     //    Request = new()
     //    {
-    //        Variables = new List<HttpVariable>()
+    //        ConnectorVariables = new List<HttpVariable>()
     //        {
     //            new()
     //            {
@@ -162,13 +162,13 @@ internal static class _Constants
     //            {
     //                Key = "Authorization",
     //                Value = "Bearer {{User-Access-Token}}",
-    //                Type = "text"
+    //                Key = "text"
     //            },
     //            new()
     //            {
-    //                Key = "Content-Type",
+    //                Key = "Content-Key",
     //                Value = "application/json",
-    //                Type = "text"
+    //                Key = "text"
     //            }
     //        },
     //        Body = new()
@@ -192,7 +192,7 @@ internal static class _Constants
     //    Description = "Sample text 2",
     //    Request = new()
     //    {
-    //        Variables = new List<HttpVariable>()
+    //        ConnectorVariables = new List<HttpVariable>()
     //        {
     //            new()
     //            {
@@ -244,13 +244,13 @@ internal static class _Constants
     //            {
     //                Key = "Authorization",
     //                Value = "Bearer {{User-Access-Token}}",
-    //                Type = "text"
+    //                Key = "text"
     //            },
     //            new()
     //            {
-    //                Key = "Content-Type",
+    //                Key = "Content-Key",
     //                Value = "application/json",
-    //                Type = "text"
+    //                Key = "text"
     //            }
     //        },
     //        Body = new()
@@ -274,7 +274,7 @@ internal static class _Constants
     //    	"info": {
     //    		"_postman_id": "33f74b91-fc9c-4840-82f2-189c53c21228",
     //    		"name": "WhatsApp Cloud API",
-    //    		"description": "Welcome to the WhatsApp Business Platform Cloud API from Meta.\n\nIndividual developers and Business Service Providers (BSPs) can now send and receive messages using a cloud-hosted version of the WhatsApp Business Platform API. Compared to the previous solutions, Cloud API is simpler to use and is a more cost-effective way for businesses to use WhatsApp.\n\nWhether you’re a business or a BSP, Cloud API provides great benefits when compared to WhatsApp On-Premises API.\n\nSo let's get started!\n\n# Installation\n\n## Quick Installation\n\nUse the `Run in Postman` button below or at the top right corner of the documentation to import this collection into your local Postman app.\n\n| | |\n|---|---|\n| [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/13382743-84d01ff8-4253-4720-b454-af661f36acc2?action=collection%2Ffork&collection-url=entityId%3D13382743-84d01ff8-4253-4720-b454-af661f36acc2%26entityType%3Dcollection%26workspaceId%3Da31742be-ce5c-4b9d-a828-e10ee7f7a5a3)| Click to fork WhatsApp Cloud API into your workspace. |\n\n# Environment\n\nThis collection includes pre-configured environments. To use the pre-configured environment for Cloud API, select **Cloud API** from the environment drop down list box at the top right corner of Postman. This automatically populates the correct environment variables listed in the table below.\n\nTo run requests in the [Get Started](#01e24b28-7896-4aee-946c-210b6945e50b) guide using a custom environment, you need to set the listed variables in the following table to values in your custom environment:\n\n| Name | Description |\n| --- | --- |\n| `Version` | Latest [Graph API version](https://developers.facebook.com/docs/graph-api/). For example: **`v15.0`** |\n| `User-Access-Token` | Your user access token after signing up at [developers.facebook.com](https://developers.facebook.com). |\n| `WABA-ID` | Your WhatsApp Business Account (WABA) ID. |\n| `Phone-Number-ID` | ID for the phone number connected to the WhatsApp Business API. You can get this with a [Get Phone Number ID request](3184f675-d289-46f1-88e5-e2b11549c418). |\n| `Business-ID` | Your Business' ID. Once you have your Phone-Number-ID, make a [Get Business Profile request](#99fd3743-46cf-46c4-95b5-431c6a4eb0b0) to get your Business' ID. |\n| `Recipient-Phone-Number` | Phone number that you want to send a WhatsApp message to. |\n| `Media-ID` | ID for the media to [send a media message](#0a632754-3788-43bf-b785-ac6a73423d5a) or [media template message](#439c926a-8a6c-4972-ab2c-d99297716da9) to your customers. |\n| `Media-URL` | URL for the media to [download media content](#cbe5ece3-246c-48f3-b338-074187dfef66). |\n| `Upload-ID` | Session ID for uploading data (images) to Meta using [Resumable Upload API](https://documenter.getpostman.com/view/13382743/UVC5FTHT?fbclid=IwAR083mCseNzJm-JgxlIQbdF30hkAbEOHkbBaw9bA7-isGKU6uwtq1RJKc0o#ec2c5110-134c-4f2d-ba13-4d33ad13d1df). |\n\n# Changelog\n\nFor information relating to what has changed in the WhatsApp Business Platform, see [WhatsApp Business Platform Changelog](https://developers.facebook.com/docs/whatsapp/business-platform/changelog#october-6--2022).\n\n# What's New for Cloud API\n\nThis section covers new features and updates for WhatsApp Business Platform Cloud API Postman collection. \n\n## December 13th 2022\n\nThe following features are now available on the Cloud API, hosted by Meta, with no upgrades necessary: \n\n**Improved Media Link Caching**\nFor Media message sends using links, the Cloud API now supports HTTP Caching Protocol. This allows businesses to set their preferred caching options and communicate them with the Cloud API by setting relevant HTTP Headers. To learn more about media link caching, see [Media HTTP Caching](https://developers.facebook.com/docs/whatsapp/cloud-api/guides/send-messages#media-http-caching).  \n\n**Reduction for Webhook Retry Policy** \nCloud API calls the businesses Webhook to notify the business of message deliveries, reads, and replies. If the Webhook is down for any reason Cloud API previously retried notifying the Webhook for up to 30 days. Going forward we have reduced this number to 7 days. For more information, see our [developer documentation](https://developers.facebook.com/docs/whatsapp/cloud-api/guides/set-up-webhooks#webhook-delivery-failure). \n\n**New media endpoint that checks ownership permissions**\nIntroducing a new optional media endpoint parameter for verifying media ownership on a phone number level, which allows for differentiation for types of media owned by a specific phone number. For more information, see **API Reference**>>**Media**:\n\n* **Retrieve Media URL**\n* **Delete Media**\n\n## November 3rd 2022\n\n**Messages Per Second**\n\nCloud API now supports up to 500 (up from 350) messages per second (MPS) of combined text and media messages, by request. For more information, see [Throughput](https://developers.facebook.com/docs/whatsapp/cloud-api/overview#throughput) for details.\n\nIf you already have 350 MPS it will be increased to 500 MPS automatically. If you already requested 350 MPS but the process has not been completed, you will receive 500 MPS upon completion.\n\n**Document Captions**\n\nCloud API now supports captions on documents sent to and received from customers. For more information, see [Media Object](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/messages#media-object).\n\n**Error Codes**\nWe have updated our error codes documentation to be more actionable. There have been some changes to existing error codes in Graph API **`v15.0`** and above. Some error titles also have been updated. For more information, see [Error Codes](https://developers.facebook.com/docs/whatsapp/cloud-api/support/error-codes).\n\n## October 6th 2022\n\n**Graph API v15 update**\n\nWhatsApp Cloud API has been updated for Graph API version 15.0. The `Version` environment variable for environment **Cloud API [Cloud API]** has been automatically updated to **`v15.0`**.\n\n**Embedded Signup**\n\nEmbedded Signup now supports mobile web browsers. The user interface will automatically optimize for a mobile experience when it detects that the viewer is using a mobile web browser.\n\n**Callback Override**\n\nYou can now use different callback URLs for each of your WhatsApp Business Accounts without having to create a unique app for each WhatsApp Business Account. See [Overriding the Callback URL](https://developers.facebook.com/docs/whatsapp/embedded-signup/webhooks#overriding-the-callback-url) for details.\n\n**Message Templates**\n\nText parameters (**`messages.parameters.text`**) for message templates that only use a body component (**`messages.type:body`**) can now total up to 32,768 characters. For more information, see [Parameters object](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/messages#parameter-object).\n\n**Messages Per Second**\n\nCloud API now supports up to 350 (up from 250) messages per second (MPS) of combined text and media messages, by request. For more information, see [Throughput](https://developers.facebook.com/docs/whatsapp/cloud-api/overview#throughput) for details.\n\nIf you already have 250 MPS it will be increased to 350 MPS automatically. If you already requested 250 MPS but the process has not been completed, you will receive 350 MPS upon completion.\n\n## September 22nd 2022 - Reaction Messages and Business Profile\n\nThe September 22nd 2022 release contains the following features:\n\n**Reactions**\n\nYou can now send and receive reactions on messages. Additionally, we have also added Webhook support for reaction messages.\n\nThe new API request has been added to **API Reference**>>**Messages**>>**Send Reply with Reaction Message**.\n\n**Business Profile**\n\nThe **`about`** field on business profiles is now supported. For more information, see [Business Profiles](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/business-profiles).\n\n## August 25th 2022 - Products and Services and Animated Sticker support\n\nThe August 25th 2022 release contains the following features:\n\n**Products and Services**\n\nTwo new Product and Services API requests have been added to **API Reference**>>**Messages**:\n\n* **Send Single Product Message**\n* **Send Multi-Product Message**\n\nAdditionally, there are two new Product related Webhooks:\n\n* **Received Product Enquiry Message**\n* **Received Order Messages**\n\nFor overview information, see [Sell Product and Services](https://developers.facebook.com/docs/whatsapp/cloud-api/guides/sell-products-and-services).\n\n**Animated Stickers**\n\nYou can now include animated stickers in outbound, business-initiated messages and receive Webhooks describing those messages the same way you would if you were sending a non-animated sticker. Refer to the **API Reference**>>**Messages**>>**Message Object** sticker property and for sticker asset requirements.\n\n#### August 17th 2022 - Resumable Upload API requests for updating your business profile picture\n\nWhatsApp Cloud API now has three new requests in **API Reference**>>**Business Profiles**:\n\n* **Resumable Upload - Create an Upload Session**\n* **Resumable Upload - Upload File Data**\n* **Resumable Upload - Query File Upload Status**\n\nThese requests simplify uploading profile pictures to Meta. You can now get a **`profile_picture_handle`** that you can use to update pictures.\n\n## August 2nd 2022 - Graph API v14 update\nWhatsApp Cloud API has been updated for Graph API version 14.0. The `Version` environment variable for environment **Cloud API [Cloud API]** has been automatically updated to **`v14.0`**.\n\n\n## July 21st 2022\nThe July 2022 release contains the following features:\n\n* Businesses can now reply to any message in a conversation thread. Replies will include a contextual bubble referencing the replied-to message. Refer to the [Send Messages](https://developers.facebook.com/docs/whatsapp/cloud-api/guides/send-messages#replies) guide to learn how to reply to a message. \nFor more information on the new Postman Reply-To Requests, see [API **Reference**>>**Messages**](https://documenter.getpostman.com/view/13382743/UVC5FTHT#1f4f7644-cc97-40b5-b8e4-c19da268fff1). For our WhatsApp Cloud API developer docs, see [**Reference**>>**Messages**](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/messages).\n\n* WhatsApp Cloud API now supports up to 250 messages per second (MPS) of combined sending and receiving (inclusive of text and media messages). If you are an enterprise partner you can open a Direct Support ticket to request 250 MPS throughput by selecting Question Topic: \"**Cloud API Issues**\", Request Type: \"**Request to migrate to 250 MPS throughput**\" and fill out the required information.\n\n## May 2022\nExisting direct partners and Business Service Providers (BSPs) can now send and receive messages using a cloud-hosted version of the WhatsApp Business API. Compared to On-Premises API, the Cloud-based API is simpler to use and is a more cost-effective way for businesses to use WhatsApp.",
+    //    		"description": "Welcome to the WhatsApp Business Platform Cloud API from Meta.\n\nIndividual developers and Business Service Providers (BSPs) can now send and receive messages using a cloud-hosted version of the WhatsApp Business Platform API. Compared to the previous solutions, Cloud API is simpler to use and is a more cost-effective way for businesses to use WhatsApp.\n\nWhether you’re a business or a BSP, Cloud API provides great benefits when compared to WhatsApp On-Premises API.\n\nSo let's get started!\n\n# Installation\n\n## Quick Installation\n\nUse the `Run in Postman` button below or at the top right corner of the documentation to import this collection into your local Postman app.\n\n| | |\n|---|---|\n| [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/13382743-84d01ff8-4253-4720-b454-af661f36acc2?action=collection%2Ffork&collection-url=entityId%3D13382743-84d01ff8-4253-4720-b454-af661f36acc2%26entityType%3Dcollection%26workspaceId%3Da31742be-ce5c-4b9d-a828-e10ee7f7a5a3)| Click to fork WhatsApp Cloud API into your workspace. |\n\n# Environment\n\nThis collection includes pre-configured environments. To use the pre-configured environment for Cloud API, select **Cloud API** from the environment drop down list box at the top right corner of Postman. This automatically populates the correct environment variables listed in the table below.\n\nTo run requests in the [Get Started](#01e24b28-7896-4aee-946c-210b6945e50b) guide using a custom environment, you need to set the listed variables in the following table to values in your custom environment:\n\n| Name | Description |\n| --- | --- |\n| `Version` | Latest [Graph API version](https://developers.facebook.com/docs/graph-api/). For example: **`v15.0`** |\n| `User-Access-Token` | Your user access token after signing up at [developers.facebook.com](https://developers.facebook.com). |\n| `WABA-ID` | Your WhatsApp Business Account (WABA) ID. |\n| `Phone-Number-ID` | ID for the phone number connected to the WhatsApp Business API. You can get this with a [Get Phone Number ID request](3184f675-d289-46f1-88e5-e2b11549c418). |\n| `Business-ID` | Your Business' ID. Once you have your Phone-Number-ID, make a [Get Business Profile request](#99fd3743-46cf-46c4-95b5-431c6a4eb0b0) to get your Business' ID. |\n| `Recipient-Phone-Number` | Phone number that you want to send a WhatsApp message to. |\n| `Media-ID` | ID for the media to [send a media message](#0a632754-3788-43bf-b785-ac6a73423d5a) or [media template message](#439c926a-8a6c-4972-ab2c-d99297716da9) to your customers. |\n| `Media-URL` | URL for the media to [download media content](#cbe5ece3-246c-48f3-b338-074187dfef66). |\n| `Upload-ID` | Session ID for uploading data (images) to Meta using [Resumable Upload API](https://documenter.getpostman.com/view/13382743/UVC5FTHT?fbclid=IwAR083mCseNzJm-JgxlIQbdF30hkAbEOHkbBaw9bA7-isGKU6uwtq1RJKc0o#ec2c5110-134c-4f2d-ba13-4d33ad13d1df). |\n\n# Changelog\n\nFor information relating to what has changed in the WhatsApp Business Platform, see [WhatsApp Business Platform Changelog](https://developers.facebook.com/docs/whatsapp/business-platform/changelog#october-6--2022).\n\n# What's New for Cloud API\n\nThis section covers new features and updates for WhatsApp Business Platform Cloud API Postman collection. \n\n## December 13th 2022\n\nThe following features are now available on the Cloud API, hosted by Meta, with no upgrades necessary: \n\n**Improved Media Link Caching**\nFor Media message sends using links, the Cloud API now supports HTTP Caching Protocol. This allows businesses to set their preferred caching options and communicate them with the Cloud API by setting relevant HTTP Headers. To learn more about media link caching, see [Media HTTP Caching](https://developers.facebook.com/docs/whatsapp/cloud-api/guides/send-messages#media-http-caching).  \n\n**Reduction for Webhook Retry Policy** \nCloud API calls the businesses Webhook to notify the business of message deliveries, reads, and replies. If the Webhook is down for any reason Cloud API previously retried notifying the Webhook for up to 30 days. Going forward we have reduced this number to 7 days. For more information, see our [developer documentation](https://developers.facebook.com/docs/whatsapp/cloud-api/guides/set-up-webhooks#webhook-delivery-failure). \n\n**New media endpoint that checks ownership permissions**\nIntroducing a new optional media endpoint parameter for verifying media ownership on a phone number level, which allows for differentiation for types of media owned by a specific phone number. For more information, see **API Reference**>>**Media**:\n\n* **Retrieve Media URL**\n* **Delete Media**\n\n## November 3rd 2022\n\n**Messages Per Second**\n\nCloud API now supports up to 500 (up from 350) messages per second (MPS) of combined text and media messages, by request. For more information, see [Throughput](https://developers.facebook.com/docs/whatsapp/cloud-api/overview#throughput) for details.\n\nIf you already have 350 MPS it will be increased to 500 MPS automatically. If you already requested 350 MPS but the process has not been completed, you will receive 500 MPS upon completion.\n\n**Document Captions**\n\nCloud API now supports captions on documents sent to and received from customers. For more information, see [Media Object](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/messages#media-object).\n\n**Error Codes**\nWe have updated our error codes documentation to be more actionable. There have been some changes to existing error codes in Graph API **`v15.0`** and above. Some error titles also have been updated. For more information, see [Error Codes](https://developers.facebook.com/docs/whatsapp/cloud-api/support/error-codes).\n\n## October 6th 2022\n\n**Graph API v15 update**\n\nWhatsApp Cloud API has been updated for Graph API version 15.0. The `Version` environment variable for environment **Cloud API [Cloud API]** has been automatically updated to **`v15.0`**.\n\n**Embedded Signup**\n\nEmbedded Signup now supports mobile web browsers. The user interface will automatically optimize for a mobile experience when it detects that the viewer is using a mobile web browser.\n\n**Callback Override**\n\nYou can now use different callback URLs for each of your WhatsApp Business Accounts without having to create a unique app for each WhatsApp Business Account. See [Overriding the Callback URL](https://developers.facebook.com/docs/whatsapp/embedded-signup/webhooks#overriding-the-callback-url) for details.\n\n**Message Templates**\n\nText parameters (**`messages.parameters.text`**) for message templates that only use a body component (**`messages.type:body`**) can now total up to 32,768 characters. For more information, see [Parameters object](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/messages#parameter-object).\n\n**Messages Per Second**\n\nCloud API now supports up to 350 (up from 250) messages per second (MPS) of combined text and media messages, by request. For more information, see [Throughput](https://developers.facebook.com/docs/whatsapp/cloud-api/overview#throughput) for details.\n\nIf you already have 250 MPS it will be increased to 350 MPS automatically. If you already requested 250 MPS but the process has not been completed, you will receive 350 MPS upon completion.\n\n## September 22nd 2022 - Reaction Messages and Business Profile\n\nThe September 22nd 2022 release contains the following features:\n\n**Reactions**\n\nYou can now send and receive reactions on messages. Additionally, we have also added Webhook support for reaction messages.\n\nThe new API request has been added to **API Reference**>>**Messages**>>**Send Reply with Reaction Message**.\n\n**Business Profile**\n\nThe **`about`** field on business profiles is now supported. For more information, see [Business Profiles](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/business-profiles).\n\n## August 25th 2022 - Products and Services and Animated Sticker support\n\nThe August 25th 2022 release contains the following features:\n\n**Products and Services**\n\nTwo new Product and Services API requests have been added to **API Reference**>>**Messages**:\n\n* **Send Single Product Message**\n* **Send Multi-Product Message**\n\nAdditionally, there are two new Product related Webhooks:\n\n* **Received Product Enquiry Message**\n* **Received Order Messages**\n\nFor overview information, see [Sell Product and Services](https://developers.facebook.com/docs/whatsapp/cloud-api/guides/sell-products-and-services).\n\n**Animated Stickers**\n\nYou can now include animated stickers in outbound, business-initiated messages and receive Webhooks describing those messages the same way you would if you were sending a non-animated sticker. Refer to the **API Reference**>>**Messages**>>**Message Object** sticker property and for sticker asset requirements.\n\n#### August 17th 2022 - Resumable Upload API requests for updating your business profile picture\n\nWhatsApp Cloud API now has three new requests in **API Reference**>>**Business Profiles**:\n\n* **Resumable Upload - Create an Upload Session**\n* **Resumable Upload - Upload File Data**\n* **Resumable Upload - Query File Upload Status**\n\nThese requests simplify uploading profile pictures to Meta. You can now get a **`profile_picture_handle`** that you can use to update pictures.\n\n## August 2nd 2022 - Graph API v14 update\nWhatsApp Cloud API has been updated for Graph API version 14.0. The `Version` environment variable for environment **Cloud API [Cloud API]** has been automatically updated to **`v14.0`**.\n\n\n## July 21st 2022\nThe July 2022 release contains the following features:\n\n* Businesses can now reply to any message in a conversation thread. Replies will include a contextual bubble referencing the replied-to message. Refer to the [Send Messages](https://developers.facebook.com/docs/whatsapp/cloud-api/guides/send-messages#replies) guide to learn how to reply to a message. \nFor more information on the new Postman Reply-To Requests, see [API **Reference**>>**Messages**](https://documenter.getpostman.com/view/13382743/UVC5FTHT#1f4f7644-cc97-40b5-b8e4-c19da268fff1). For our WhatsApp Cloud API developer docs, see [**Reference**>>**Messages**](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/messages).\n\n* WhatsApp Cloud API now supports up to 250 messages per second (MPS) of combined sending and receiving (inclusive of text and media messages). If you are an enterprise partner you can open a Direct Support ticket to request 250 MPS throughput by selecting Question Topic: \"**Cloud API Issues**\", Request Key: \"**Request to migrate to 250 MPS throughput**\" and fill out the required information.\n\n## May 2022\nExisting direct partners and Business Service Providers (BSPs) can now send and receive messages using a cloud-hosted version of the WhatsApp Business API. Compared to On-Premises API, the Cloud-based API is simpler to use and is a more cost-effective way for businesses to use WhatsApp.",
     //    		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     //    		"_exporter_id": "17570659"
     //    	},
@@ -432,7 +432,7 @@ internal static class _Constants
     //    										"type": "text"
     //    									},
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -468,7 +468,7 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -512,7 +512,7 @@ internal static class _Constants
     //    							]
     //    						}
     //    					],
-    //    					"description": "In the Getting Started tab:\n\n1.  Select your test phone number in the From field. (Unless you have registered other phone numbers, this will be the only phone number in From.)\n2.  Enter the phone number you would like to message in the To field. Ensure the number is correct, and that you want to add it to your list of 5 possible message recipients —as you add phone numbers, follow the prompts on the screen to verify you have access to them. Once this number has been added, it cannot be removed from your list. Note: This limitation is only for WhatsApp-provided test phone numbers. Real phone numbers that you register do not have a limit on the number of recipients.\n3.  Once you enter a recipient phone number, the code sample on the page will be updated to demonstrate an API call that sends a test message to that number. The code sample will look like this:\n    \n\n```\ncurl -i -X POST \\\nhttps://graph.facebook.com/{{Version}}/FROM_PHONE_NUMBER_ID/messages \\\n-H 'Authorization: Bearer ACCESS_TOKEN' \\\n-H 'Content-Type: application/json' \\\n-d '{ \"messaging_product\": \"whatsapp\", \"to\": \"TO_PHONE_NUMBER\", \"type\": \"template\", \"template\": { \"name\": \"hello_world\", \"language\": { \"code\": \"en_US\" } } }'Copy Code\n\n```\n\n4\\. Click **Send message** to send the first message. As an alternative, you can copy the code sample provided and execute it in your Terminal or in Postman. You have just sent a test message!\n\nThe code sample on the page is formatted for use in Unix-style terminal shells, and is expected to work on MacOS and distributions of Gnu/Linux. If you use Windows, we suggest you perform your first API call using Postman, to avoid platform-related cURL formatting concerns. If you are a Windows 10 user, cURL is available, but requires a different syntax than the one shown in the Getting Started tab to execute in PowerShell or cmd.exe. For more information, see [cURL Comes to Windows](https://devblogs.microsoft.com/commandline/tar-and-curl-come-to-windows/) or [cURL for Windows](https://curl.se/windows/). If you have access to the [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/about), you can also consider launching a Linux distribution and using its terminal."
+    //    					"description": "In the Getting Started tab:\n\n1.  Select your test phone number in the From field. (Unless you have registered other phone numbers, this will be the only phone number in From.)\n2.  Enter the phone number you would like to message in the To field. Ensure the number is correct, and that you want to add it to your list of 5 possible message recipients —as you add phone numbers, follow the prompts on the screen to verify you have access to them. Once this number has been added, it cannot be removed from your list. Note: This limitation is only for WhatsApp-provided test phone numbers. Real phone numbers that you register do not have a limit on the number of recipients.\n3.  Once you enter a recipient phone number, the code sample on the page will be updated to demonstrate an API call that sends a test message to that number. The code sample will look like this:\n    \n\n```\ncurl -i -X POST \\\nhttps://graph.facebook.com/{{Version}}/FROM_PHONE_NUMBER_ID/messages \\\n-H 'Authorization: Bearer ACCESS_TOKEN' \\\n-H 'Content-Key: application/json' \\\n-d '{ \"messaging_product\": \"whatsapp\", \"to\": \"TO_PHONE_NUMBER\", \"type\": \"template\", \"template\": { \"name\": \"hello_world\", \"language\": { \"code\": \"en_US\" } } }'Copy Code\n\n```\n\n4\\. Click **Send message** to send the first message. As an alternative, you can copy the code sample provided and execute it in your Terminal or in Postman. You have just sent a test message!\n\nThe code sample on the page is formatted for use in Unix-style terminal shells, and is expected to work on MacOS and distributions of Gnu/Linux. If you use Windows, we suggest you perform your first API call using Postman, to avoid platform-related cURL formatting concerns. If you are a Windows 10 user, cURL is available, but requires a different syntax than the one shown in the Getting Started tab to execute in PowerShell or cmd.exe. For more information, see [cURL Comes to Windows](https://devblogs.microsoft.com/commandline/tar-and-curl-come-to-windows/) or [cURL for Windows](https://curl.se/windows/). If you have access to the [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/about), you can also consider launching a Linux distribution and using its terminal."
     //    				},
     //    				{
     //    					"name": "Step 3: Configure a Webhook",
@@ -553,12 +553,12 @@ internal static class _Constants
     //    				{
     //    					"name": "Build Integration",
     //    					"item": [],
-    //    					"description": "### Step 1: Get System User Access Token\n\nGraph API calls use access tokens for authentication. For more information, see [Access Tokens](https://developers.facebook.com/docs/facebook-login/access-tokens/). We recommend using your system user to generate your token.\n\nTo generate a system user access token:\n\n1.  Go to [Business Manager](https://business.facebook.com/) > Business Settings > Users > System Users to view the system user you created.\n2.  Click on that user and select Add Assets. This action launches a new window.\n3.  Under Select Asset Type on the left side pane, select Apps. Under Select Assets, choose the Meta app you want to use (your app must have the correct permissions). Enable Develop App for that app.\n4.  Select Save Changes to save your settings and return to the system user main screen.\n5.  Now you are ready to generate your token. In the system user main screen, click Generate Token and select your Meta app. After selecting the app, you see a list of available permissions. Select `whatsapp_business_management`, `whatsapp_business_messaging`, and `business_management`. Click Generate Token.\n6.  A new window opens with your system user, assigned app and access token. Save your token.\n7.  Optionally, you can click on your token and see the Token Debugger. In your debugger, you should see the two permissions you have selected. You can also directly paste your token into the [Access Token Debugger](https://developers.facebook.com/tools/debug/accesstoken).\n    \n\n### Step 2: Set up Webhooks\n\nWith Webhooks set up, you can receive real-time HTTP notifications from the WhatsApp Business Platform. This means you get notified when, for example, you get a message from a customer or there are changes to your WhatsApp Business Account (WABA).\n\nTo set up your Webhook, you need to create an internet-facing web server with a URL that meets Meta’s and WhatsApp’s requirements. See [Creating an Endpoint](https://developers.facebook.com/docs/graph-api/webhooks/getting-started/#create-endpoint) for instructions on how to do that. If you need an endpoint for testing purposes, [you can generate a test Webhooks endpoint](https://developers.facebook.com/docs/whatsapp/api/webhooks/generate-endpoint).\n\n#### App Setup\n\nOnce the endpoint is ready, configure it to be used by your Meta app:\n\nIn your App Dashboard, find the WhatsApp product and click **Configuration**. Then, find the webhooks section and click **Configure a webhook**. After the click, a dialog appears on your screen and asks you for two items:\n\n*   Callback URL: This is the URL Meta will be sending the events to. See the [Webhooks, Getting Started](https://developers.facebook.com/docs/graph-api/webhooks/getting-started) guide for information on creating the URL.\n*   Verify Token: This string is set up by you, when you create your webhook endpoint.\n    \n\nAfter adding the information, click **Verify and Save**.\n\nBack in the App Dashboard, click **WhatsApp** > **Configuration** in the left-side panel. Under Webhooks, click **Manage**. A dialog box will open with all the objects you can get notified about. To receive messages from your users, click **Subscribe** for **messages**.\n\nYou only need to set up Webhooks once for every application you have. You can use the same Webhook to receive multiple event types from multiple WhatsApp Business Accounts. For more information, see our Webhooks section.\n\nAt any time, each Meta App can have only one endpoint configured. If you need to send your webhook updates to multiple endpoints, you need multiple Meta Apps.\n\n### Step 3: Subscribe to your WABA\n\nTo make sure you get notifications for the correct account, subscribe your app:\n\n```\ncurl -X POST \\\n  'https://graph.facebook.com/{{Version}}/WHATSAPP_BUSINESS_ACCOUNT_ID/subscribed_apps' \\\n  -H 'Authorization: Bearer ACCESS_TOKEN'\n\n```\n\n[Copy Code](https://developers.facebook.com/docs/whatsapp/cloud-api/get-started#)\n\nIf you get the response below, all Webhook events for the phone numbers under this account will be sent to your configured Webhooks endpoint.\n\n```\n{\n  \"success\": \"true\"\n}\n\n```\n\n### Step 4: Get Phone Number ID\n\nTo send messages, you need to register the phone number you want to use —this is the business phone number we mentioned in [Before You Start](https://developers.facebook.com/docs/whatsapp/cloud-api/get-started#before-you-start).\n\nBefore you can proceed to registration, you need to find that phone number’s ID. To get your phone number’s ID, make the following API call:\n\n```\ncurl -X GET \\\n 'https://graph.facebook.com/{{Version}}/WHATSAPP_BUSINESS_ACCOUNT_ID/phone_numbers' \\\n -H 'Authorization: Bearer ACCESS_TOKEN'\n\n```\n\n[Copy Code](https://developers.facebook.com/docs/whatsapp/cloud-api/get-started#)\n\nIf the request is successful, the response includes all phone numbers connected to your WABA:\n\n```\n{\n  \"data\": [\n    {\n      \"verified_name\": \"Jasper's Market\",\n      \"display_phone_number\": \"+1 631-555-5555\",\n      \"id\": \"1906385232743451\",\n      \"quality_rating\": \"GREEN\"\n    },\n    {\n      \"verified_name\": \"Jasper's Ice Cream\",\n      \"display_phone_number\": \"+1 631-555-5556\",\n      \"id\": \"1913623884432103\",\n      \"quality_rating\": \"NA\"\n    }\n  ]\n}\n\n```\n\nSave the ID for the phone number you want to register. See [Read Phone Numbers](https://developers.facebook.com/docs/whatsapp/business-management-api/phone-numbers) for more information about this endpoint.\n\n#### Migration Exception\n\nIf you are migrating a phone number from the On-Premises API to the Cloud API, there are extra steps you need to perform before registering a phone number with the Cloud API. See [Migrate Between On-Premises and Cloud API](https://developers.facebook.com/docs/whatsapp/cloud-api/guides/migrate-between-on-premises-and-cloud-api) for the full process.\n\n### Step 5: Register Phone Number\n\nWith the phone number’s ID in hand, you can register it. In the registration API call, you perform two actions at the same time:\n\n1.  Register the phone.\n2.  [Enable two-step verification](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/two-step-verification) by setting a 6-digit registration code —you must set this code on your end. Save and memorize this code as it can be requested later. **Setting up two-factor authentication is a requirement to use the Cloud API.**\n    \n\nSample request:\n\n```\ncurl -X POST \\\n  'https://graph.facebook.com/{{Version}}/FROM_PHONE_NUMBER_ID/register' \\\n  -H 'Authorization: Bearer ACCESS_TOKEN' \\\n  -d '{\n    \"messaging_product\": \"whatsapp\",\n    \"pin\": \"6_DIGIT_PIN\"\n  }'\n\n```\n\n[Copy Code](https://developers.facebook.com/docs/whatsapp/cloud-api/get-started#)\n\nSample response:\n\n```\n{\n  \"success\": \"true\"\n}\n\n```\n\n#### Embedded Signup Users\n\nA phone number **must** be registered up to 14 days after going through the Embedded Signup flow. If a number is not registered during that window, the phone must go through to the Embedded Signup flow again prior to registration.\n\n### Step 6: Receive a Message From Consumer App\n\nOnce participating customers send a message to your business, you get **24 hours of free messages with them** —that window of time is called the customer service window. For testing purposes, we want to enable this window, so you can send as many messages as you would like.\n\nFrom a personal WhatsApp iOS/Android app, send a message to the phone number you just registered. Once the message is sent, you should receive an incoming message to your Webhook with a notification in the following format.\n\n```\n{\n  \"object\": \"whatsapp_business_account\",\n  \"entry\": [\n    {\n      \"id\": \"WHATSAPP_BUSINESS_ACCOUNT_ID\",\n      \"changes\": [\n        {\n          \"value\": {\n            \"messaging_product\": \"whatsapp\",\n            \"metadata\": {\n              \"display_phone_number\": \"16315551234\",\n              \"phone_number_id\": \"PHONE_NUMBER_ID\"\n            },\n            \"contacts\": [\n              {\n                \"profile\": {\n                  \"name\": \"Kerry Fisher\"\n                },\n                \"wa_id\": \"16315555555\"\n              }\n            ],\n            \"messages\": [\n              {\n                \"from\": \"16315555555\",\n                \"id\": \"wamid.ABGGFlA5FpafAgo6tHcNmNjXmuSf\",\n                \"timestamp\": \"1602139392\",\n                \"text\": {\n                  \"body\": \"Hello!\"\n                },\n                \"type\": \"text\"\n                }\n            ]\n          },\n        \"field\": \"messages\"\n        }\n      ]\n    }\n  ]\n}\n\n```\n\n### Step 7: Send a Test Message\n\nOnce you have enabled the customer service window, you can send a test message to the consumer number you used in the previous step. To do that, make the following API call:\n\n```\ncurl -X  POST \\\n  'https://graph.facebook.com/{{Version}}/FROM_PHONE_NUMBER_ID/messages' \\\n  -H 'Authorization: Bearer ACCESS_TOKEN' \\\n  -d '{\n      \"messaging_product\": \"whatsapp\", \n      \"to\": \"16315555555\",\n      \"text\": {\"body\" : \"hello world!\"}\n  }'\n\n```\n\n[Copy Code](https://developers.facebook.com/docs/whatsapp/cloud-api/get-started#)\n\nIf your call is successful, your response will include a message ID. Use that ID to track the progress of your messages via Webhooks.\n\nSample response:\n\n```\n{\n    \"id\":\"wamid.gBGGFlaCGg0xcvAdgmZ9plHrf2Mh-o\"\n}\n\n```\n\nWith the Cloud API, there is no longer a way to explicitly check if a phone number has a WhatsApp ID. To send someone a message using the Cloud API, just send it directly to the customer's phone number —after they have [opted-in](https://developers.facebook.com/docs/whatsapp/overview/getting-opt-in). See [Reference, Messages](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/messages#examples) for examples."
+    //    					"description": "### Step 1: Get System User Access Token\n\nGraph API calls use access tokens for authentication. For more information, see [Access Tokens](https://developers.facebook.com/docs/facebook-login/access-tokens/). We recommend using your system user to generate your token.\n\nTo generate a system user access token:\n\n1.  Go to [Business Manager](https://business.facebook.com/) > Business Settings > Users > System Users to view the system user you created.\n2.  Click on that user and select Add Assets. This action launches a new window.\n3.  Under Select Asset Key on the left side pane, select Apps. Under Select Assets, choose the Meta app you want to use (your app must have the correct permissions). Enable Develop App for that app.\n4.  Select Save Changes to save your settings and return to the system user main screen.\n5.  Now you are ready to generate your token. In the system user main screen, click Generate Token and select your Meta app. After selecting the app, you see a list of available permissions. Select `whatsapp_business_management`, `whatsapp_business_messaging`, and `business_management`. Click Generate Token.\n6.  A new window opens with your system user, assigned app and access token. Save your token.\n7.  Optionally, you can click on your token and see the Token Debugger. In your debugger, you should see the two permissions you have selected. You can also directly paste your token into the [Access Token Debugger](https://developers.facebook.com/tools/debug/accesstoken).\n    \n\n### Step 2: Set up Webhooks\n\nWith Webhooks set up, you can receive real-time HTTP notifications from the WhatsApp Business Platform. This means you get notified when, for example, you get a message from a customer or there are changes to your WhatsApp Business Account (WABA).\n\nTo set up your Webhook, you need to create an internet-facing web server with a URL that meets Meta’s and WhatsApp’s requirements. See [Creating an Endpoint](https://developers.facebook.com/docs/graph-api/webhooks/getting-started/#create-endpoint) for instructions on how to do that. If you need an endpoint for testing purposes, [you can generate a test Webhooks endpoint](https://developers.facebook.com/docs/whatsapp/api/webhooks/generate-endpoint).\n\n#### App Setup\n\nOnce the endpoint is ready, configure it to be used by your Meta app:\n\nIn your App Dashboard, find the WhatsApp product and click **Configuration**. Then, find the webhooks section and click **Configure a webhook**. After the click, a dialog appears on your screen and asks you for two items:\n\n*   Callback URL: This is the URL Meta will be sending the events to. See the [Webhooks, Getting Started](https://developers.facebook.com/docs/graph-api/webhooks/getting-started) guide for information on creating the URL.\n*   Verify Token: This string is set up by you, when you create your webhook endpoint.\n    \n\nAfter adding the information, click **Verify and Save**.\n\nBack in the App Dashboard, click **WhatsApp** > **Configuration** in the left-side panel. Under Webhooks, click **Manage**. A dialog box will open with all the objects you can get notified about. To receive messages from your users, click **Subscribe** for **messages**.\n\nYou only need to set up Webhooks once for every application you have. You can use the same Webhook to receive multiple event types from multiple WhatsApp Business Accounts. For more information, see our Webhooks section.\n\nAt any time, each Meta App can have only one endpoint configured. If you need to send your webhook updates to multiple endpoints, you need multiple Meta Apps.\n\n### Step 3: Subscribe to your WABA\n\nTo make sure you get notifications for the correct account, subscribe your app:\n\n```\ncurl -X POST \\\n  'https://graph.facebook.com/{{Version}}/WHATSAPP_BUSINESS_ACCOUNT_ID/subscribed_apps' \\\n  -H 'Authorization: Bearer ACCESS_TOKEN'\n\n```\n\n[Copy Code](https://developers.facebook.com/docs/whatsapp/cloud-api/get-started#)\n\nIf you get the response below, all Webhook events for the phone numbers under this account will be sent to your configured Webhooks endpoint.\n\n```\n{\n  \"success\": \"true\"\n}\n\n```\n\n### Step 4: Get Phone Number ID\n\nTo send messages, you need to register the phone number you want to use —this is the business phone number we mentioned in [Before You Start](https://developers.facebook.com/docs/whatsapp/cloud-api/get-started#before-you-start).\n\nBefore you can proceed to registration, you need to find that phone number’s ID. To get your phone number’s ID, make the following API call:\n\n```\ncurl -X GET \\\n 'https://graph.facebook.com/{{Version}}/WHATSAPP_BUSINESS_ACCOUNT_ID/phone_numbers' \\\n -H 'Authorization: Bearer ACCESS_TOKEN'\n\n```\n\n[Copy Code](https://developers.facebook.com/docs/whatsapp/cloud-api/get-started#)\n\nIf the request is successful, the response includes all phone numbers connected to your WABA:\n\n```\n{\n  \"data\": [\n    {\n      \"verified_name\": \"Jasper's Market\",\n      \"display_phone_number\": \"+1 631-555-5555\",\n      \"id\": \"1906385232743451\",\n      \"quality_rating\": \"GREEN\"\n    },\n    {\n      \"verified_name\": \"Jasper's Ice Cream\",\n      \"display_phone_number\": \"+1 631-555-5556\",\n      \"id\": \"1913623884432103\",\n      \"quality_rating\": \"NA\"\n    }\n  ]\n}\n\n```\n\nSave the ID for the phone number you want to register. See [Read Phone Numbers](https://developers.facebook.com/docs/whatsapp/business-management-api/phone-numbers) for more information about this endpoint.\n\n#### Migration Exception\n\nIf you are migrating a phone number from the On-Premises API to the Cloud API, there are extra steps you need to perform before registering a phone number with the Cloud API. See [Migrate Between On-Premises and Cloud API](https://developers.facebook.com/docs/whatsapp/cloud-api/guides/migrate-between-on-premises-and-cloud-api) for the full process.\n\n### Step 5: Register Phone Number\n\nWith the phone number’s ID in hand, you can register it. In the registration API call, you perform two actions at the same time:\n\n1.  Register the phone.\n2.  [Enable two-step verification](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/two-step-verification) by setting a 6-digit registration code —you must set this code on your end. Save and memorize this code as it can be requested later. **Setting up two-factor authentication is a requirement to use the Cloud API.**\n    \n\nSample request:\n\n```\ncurl -X POST \\\n  'https://graph.facebook.com/{{Version}}/FROM_PHONE_NUMBER_ID/register' \\\n  -H 'Authorization: Bearer ACCESS_TOKEN' \\\n  -d '{\n    \"messaging_product\": \"whatsapp\",\n    \"pin\": \"6_DIGIT_PIN\"\n  }'\n\n```\n\n[Copy Code](https://developers.facebook.com/docs/whatsapp/cloud-api/get-started#)\n\nSample response:\n\n```\n{\n  \"success\": \"true\"\n}\n\n```\n\n#### Embedded Signup Users\n\nA phone number **must** be registered up to 14 days after going through the Embedded Signup flow. If a number is not registered during that window, the phone must go through to the Embedded Signup flow again prior to registration.\n\n### Step 6: Receive a Message From Consumer App\n\nOnce participating customers send a message to your business, you get **24 hours of free messages with them** —that window of time is called the customer service window. For testing purposes, we want to enable this window, so you can send as many messages as you would like.\n\nFrom a personal WhatsApp iOS/Android app, send a message to the phone number you just registered. Once the message is sent, you should receive an incoming message to your Webhook with a notification in the following format.\n\n```\n{\n  \"object\": \"whatsapp_business_account\",\n  \"entry\": [\n    {\n      \"id\": \"WHATSAPP_BUSINESS_ACCOUNT_ID\",\n      \"changes\": [\n        {\n          \"value\": {\n            \"messaging_product\": \"whatsapp\",\n            \"metadata\": {\n              \"display_phone_number\": \"16315551234\",\n              \"phone_number_id\": \"PHONE_NUMBER_ID\"\n            },\n            \"contacts\": [\n              {\n                \"profile\": {\n                  \"name\": \"Kerry Fisher\"\n                },\n                \"wa_id\": \"16315555555\"\n              }\n            ],\n            \"messages\": [\n              {\n                \"from\": \"16315555555\",\n                \"id\": \"wamid.ABGGFlA5FpafAgo6tHcNmNjXmuSf\",\n                \"timestamp\": \"1602139392\",\n                \"text\": {\n                  \"body\": \"Hello!\"\n                },\n                \"type\": \"text\"\n                }\n            ]\n          },\n        \"field\": \"messages\"\n        }\n      ]\n    }\n  ]\n}\n\n```\n\n### Step 7: Send a Test Message\n\nOnce you have enabled the customer service window, you can send a test message to the consumer number you used in the previous step. To do that, make the following API call:\n\n```\ncurl -X  POST \\\n  'https://graph.facebook.com/{{Version}}/FROM_PHONE_NUMBER_ID/messages' \\\n  -H 'Authorization: Bearer ACCESS_TOKEN' \\\n  -d '{\n      \"messaging_product\": \"whatsapp\", \n      \"to\": \"16315555555\",\n      \"text\": {\"body\" : \"hello world!\"}\n  }'\n\n```\n\n[Copy Code](https://developers.facebook.com/docs/whatsapp/cloud-api/get-started#)\n\nIf your call is successful, your response will include a message ID. Use that ID to track the progress of your messages via Webhooks.\n\nSample response:\n\n```\n{\n    \"id\":\"wamid.gBGGFlaCGg0xcvAdgmZ9plHrf2Mh-o\"\n}\n\n```\n\nWith the Cloud API, there is no longer a way to explicitly check if a phone number has a WhatsApp ID. To send someone a message using the Cloud API, just send it directly to the customer's phone number —after they have [opted-in](https://developers.facebook.com/docs/whatsapp/overview/getting-opt-in). See [Reference, Messages](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/messages#examples) for examples."
     //    				},
     //    				{
     //    					"name": "Step 1: Get System User Access Token",
     //    					"item": [],
-    //    					"description": "Graph API calls use access tokens for authentication. For more information, see [Access Tokens](https://developers.facebook.com/docs/facebook-login/access-tokens/). We recommend using your system user to generate your token.\n\nTo generate a system user access token:\n\n1.  Go to [Business Manager](https://business.facebook.com/) > Business Settings > Users > System Users to view the system user you created.\n2.  Click on that user and select Add Assets. This action launches a new window.\n3.  Under Select Asset Type on the left side pane, select Apps. Under Select Assets, choose the Meta app you want to use (your app must have the correct permissions). Enable Develop App for that app.\n4.  Select Save Changes to save your settings and return to the system user main screen.\n5.  Now you are ready to generate your token. In the system user main screen, click Generate Token and select your Meta app. After selecting the app, you see a list of available permissions. Select `whatsapp_business_management`, `whatsapp_business_messaging`, and `business_management`. Click Generate Token.\n6.  A new window opens with your system user, assigned app and access token. Save your token.\n7.  Optionally, you can click on your token and see the Token Debugger. In your debugger, you should see the two permissions you have selected. You can also directly paste your token into the [Access Token Debugger](https://developers.facebook.com/tools/debug/accesstoken)."
+    //    					"description": "Graph API calls use access tokens for authentication. For more information, see [Access Tokens](https://developers.facebook.com/docs/facebook-login/access-tokens/). We recommend using your system user to generate your token.\n\nTo generate a system user access token:\n\n1.  Go to [Business Manager](https://business.facebook.com/) > Business Settings > Users > System Users to view the system user you created.\n2.  Click on that user and select Add Assets. This action launches a new window.\n3.  Under Select Asset Key on the left side pane, select Apps. Under Select Assets, choose the Meta app you want to use (your app must have the correct permissions). Enable Develop App for that app.\n4.  Select Save Changes to save your settings and return to the system user main screen.\n5.  Now you are ready to generate your token. In the system user main screen, click Generate Token and select your Meta app. After selecting the app, you see a list of available permissions. Select `whatsapp_business_management`, `whatsapp_business_messaging`, and `business_management`. Click Generate Token.\n6.  A new window opens with your system user, assigned app and access token. Save your token.\n7.  Optionally, you can click on your token and see the Token Debugger. In your debugger, you should see the two permissions you have selected. You can also directly paste your token into the [Access Token Debugger](https://developers.facebook.com/tools/debug/accesstoken)."
     //    				},
     //    				{
     //    					"name": "Step 2: Set up Webhooks",
@@ -618,7 +618,7 @@ internal static class _Constants
     //    							"_postman_previewlanguage": "json",
     //    							"header": [
     //    								{
-    //    									"key": "Content-Type",
+    //    									"key": "Content-Key",
     //    									"value": "application/json",
     //    									"description": "",
     //    									"type": "text"
@@ -682,7 +682,7 @@ internal static class _Constants
     //    							"_postman_previewlanguage": "json",
     //    							"header": [
     //    								{
-    //    									"key": "Content-Type",
+    //    									"key": "Content-Key",
     //    									"value": "application/json",
     //    									"description": "",
     //    									"type": "text"
@@ -699,7 +699,7 @@ internal static class _Constants
     //    						"method": "POST",
     //    						"header": [
     //    							{
-    //    								"key": "Content-Type",
+    //    								"key": "Content-Key",
     //    								"value": "application/json",
     //    								"type": "text"
     //    							}
@@ -741,7 +741,7 @@ internal static class _Constants
     //    										"type": "text"
     //    									},
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -775,7 +775,7 @@ internal static class _Constants
     //    							"_postman_previewlanguage": "json",
     //    							"header": [
     //    								{
-    //    									"key": "Content-Type",
+    //    									"key": "Content-Key",
     //    									"value": "application/json",
     //    									"description": "",
     //    									"type": "text"
@@ -846,7 +846,7 @@ internal static class _Constants
     //    										"type": "text"
     //    									},
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -880,7 +880,7 @@ internal static class _Constants
     //    							"_postman_previewlanguage": "json",
     //    							"header": [
     //    								{
-    //    									"key": "Content-Type",
+    //    									"key": "Content-Key",
     //    									"value": "application/json",
     //    									"description": "",
     //    									"type": "text"
@@ -941,7 +941,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -983,8 +983,8 @@ internal static class _Constants
     //    												"type": "text"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
-    //    												"name": "Content-Type",
+    //    												"key": "Content-Key",
+    //    												"name": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -1018,7 +1018,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -1035,7 +1035,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -1067,7 +1067,7 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -1095,7 +1095,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -1122,7 +1122,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -1164,8 +1164,8 @@ internal static class _Constants
     //    												"type": "text"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
-    //    												"name": "Content-Type",
+    //    												"key": "Content-Key",
+    //    												"name": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -1199,7 +1199,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -1313,7 +1313,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -1330,7 +1330,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "image/jpeg",
     //    										"type": "text"
     //    									},
@@ -1375,7 +1375,7 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "image/jpeg",
     //    												"type": "text"
     //    											},
@@ -1553,7 +1553,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -1570,7 +1570,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -1612,8 +1612,8 @@ internal static class _Constants
     //    												"type": "text"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
-    //    												"name": "Content-Type",
+    //    												"key": "Content-Key",
+    //    												"name": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -1647,7 +1647,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -1752,8 +1752,8 @@ internal static class _Constants
     //    												"type": "text"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
-    //    												"name": "Content-Type",
+    //    												"key": "Content-Key",
+    //    												"name": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -1787,7 +1787,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -1883,8 +1883,8 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
-    //    												"name": "Content-Type",
+    //    												"key": "Content-Key",
+    //    												"name": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -1923,7 +1923,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -1997,7 +1997,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": ""
     //    										}
@@ -2079,7 +2079,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": ""
     //    										}
@@ -2140,7 +2140,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "image/jpeg",
     //    											"description": "",
     //    											"type": "text"
@@ -2158,7 +2158,7 @@ internal static class _Constants
     //    							]
     //    						}
     //    					],
-    //    					"description": "You can use the following endpoints to upload, retrieve, or delete media:\n\n| Endpoint       | Uses |\n| ----------- | ---------- |\n| [POST /{phone-number-ID}/media]() | Upload media. |\n| [GET /{media-ID}]() | Retrieve the URL for a specific media item. |\n| [DELETE /{media-ID}]() | Delete a specific media item. |\n| [GET /{media-URL}]() | Download media from a media URL. |\n\n#### Reminders\n\n* To use these endpoints, you need to authenticate yourself with a system user access token with the **`whatsapp_business_messaging`** permission.\n* If you need to find your phone number ID, see [Get Phone Number ID](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/phone-numbers).\n* If you need to find your media URL, see [Retrieve Media URL](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/media#download-media).\n\n#### Support Media Types\n| Media       | Supported File Type(s) | Size Limit |\n| ----------- | ----------------------- | ---------- |\n| `audio`       | <ul><li>`audio/aac`</li><li>`audio/mp4`</li><li>`audio/mpeg`</li><li>`audio/amr`</li><li>`audio/ogg`</li></ul><br> **Note**: only opus codecs, base audio/ogg is not supported | 16MB |\n| `document`    | <ul><li>`text/plain`</li><li>`application/pdf`</li><li>`application/vnd.ms-powerpoint`</li><li>`application/msword`</li><li>`application/vnd.ms-excel`</li><li>`application/vnd.openxmlformats-officedocument.wordprocessingml.document`</li><li>`application/vnd.openxmlformats-officedocument.presentationml.presentation`</li><li>`application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`</li></ul> | 100MB |\n| `image` | <ul><li>`image/jpeg`</li><li>`image/png`</li></ul> | 5MB |\n| `sticker` | <ul><li>`image/webp`</li></ul> | 100KB |\n| `video` | <ul><li>`video/mp4`</li><li>`video/3sp`</li></ul><br/>**Notes**:<ul><li>Only H.264 video codec and AAC audio codec is supported.</li><li>We support videos with a single audio stream or no audio stream.</li><ul> | 16MB |\n\n\n#### Get Media ID\nTo complete some of the following API calls, you need to have a media ID. There are two ways to get this ID:\n\n* **From the API call**: Once you have successfully uploaded media files to the API, the media ID is included in the response to your call.\n* **From Webhooks**: When a business account receives a media message, it downloads the media and uploads it to the Cloud API automatically. That event triggers the Webhooks and sends you a notification that includes the media ID."
+    //    					"description": "You can use the following endpoints to upload, retrieve, or delete media:\n\n| Endpoint       | Uses |\n| ----------- | ---------- |\n| [POST /{phone-number-ID}/media]() | Upload media. |\n| [GET /{media-ID}]() | Retrieve the URL for a specific media item. |\n| [DELETE /{media-ID}]() | Delete a specific media item. |\n| [GET /{media-URL}]() | Download media from a media URL. |\n\n#### Reminders\n\n* To use these endpoints, you need to authenticate yourself with a system user access token with the **`whatsapp_business_messaging`** permission.\n* If you need to find your phone number ID, see [Get Phone Number ID](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/phone-numbers).\n* If you need to find your media URL, see [Retrieve Media URL](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/media#download-media).\n\n#### Support Media Types\n| Media       | Supported File Key(s) | Size Limit |\n| ----------- | ----------------------- | ---------- |\n| `audio`       | <ul><li>`audio/aac`</li><li>`audio/mp4`</li><li>`audio/mpeg`</li><li>`audio/amr`</li><li>`audio/ogg`</li></ul><br> **Note**: only opus codecs, base audio/ogg is not supported | 16MB |\n| `document`    | <ul><li>`text/plain`</li><li>`application/pdf`</li><li>`application/vnd.ms-powerpoint`</li><li>`application/msword`</li><li>`application/vnd.ms-excel`</li><li>`application/vnd.openxmlformats-officedocument.wordprocessingml.document`</li><li>`application/vnd.openxmlformats-officedocument.presentationml.presentation`</li><li>`application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`</li></ul> | 100MB |\n| `image` | <ul><li>`image/jpeg`</li><li>`image/png`</li></ul> | 5MB |\n| `sticker` | <ul><li>`image/webp`</li></ul> | 100KB |\n| `video` | <ul><li>`video/mp4`</li><li>`video/3sp`</li></ul><br/>**Notes**:<ul><li>Only H.264 video codec and AAC audio codec is supported.</li><li>We support videos with a single audio stream or no audio stream.</li><ul> | 16MB |\n\n\n#### Get Media ID\nTo complete some of the following API calls, you need to have a media ID. There are two ways to get this ID:\n\n* **From the API call**: Once you have successfully uploaded media files to the API, the media ID is included in the response to your call.\n* **From Webhooks**: When a business account receives a media message, it downloads the media and uploads it to the Cloud API automatically. That event triggers the Webhooks and sends you a notification that includes the media ID."
     //    				},
     //    				{
     //    					"name": "Messages",
@@ -2325,7 +2325,7 @@ internal static class _Constants
     //    										"type": "text"
     //    									},
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -2367,7 +2367,7 @@ internal static class _Constants
     //    												"type": "text"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -2401,7 +2401,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -2418,7 +2418,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -2460,7 +2460,7 @@ internal static class _Constants
     //    												"type": "text"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -2494,7 +2494,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -2511,7 +2511,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -2542,8 +2542,8 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
-    //    												"name": "Content-Type",
+    //    												"key": "Content-Key",
+    //    												"name": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -2580,7 +2580,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -2601,7 +2601,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -2633,8 +2633,8 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
-    //    												"name": "Content-Type",
+    //    												"key": "Content-Key",
+    //    												"name": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -2673,7 +2673,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -2690,7 +2690,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -2732,7 +2732,7 @@ internal static class _Constants
     //    												"type": "text"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -2766,7 +2766,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -2783,7 +2783,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -2820,8 +2820,8 @@ internal static class _Constants
     //    										"method": "GET",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
-    //    												"name": "Content-Type",
+    //    												"key": "Content-Key",
+    //    												"name": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -2846,7 +2846,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json"
     //    										}
     //    									],
@@ -2901,7 +2901,7 @@ internal static class _Constants
     //    												"type": "text"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -2935,7 +2935,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -2983,7 +2983,7 @@ internal static class _Constants
     //    										"method": "GET",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json"
     //    											},
     //    											{
@@ -3020,7 +3020,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json"
     //    										}
     //    									],
@@ -3039,7 +3039,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -3081,7 +3081,7 @@ internal static class _Constants
     //    												"type": "text"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -3115,7 +3115,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -3132,7 +3132,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -3169,7 +3169,7 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -3203,7 +3203,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -3224,7 +3224,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -3266,7 +3266,7 @@ internal static class _Constants
     //    												"type": "text"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -3300,7 +3300,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -3317,7 +3317,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -3354,7 +3354,7 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -3393,7 +3393,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -3414,7 +3414,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -3456,7 +3456,7 @@ internal static class _Constants
     //    												"type": "text"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -3490,7 +3490,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -3507,7 +3507,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -3544,7 +3544,7 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -3583,7 +3583,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -3604,7 +3604,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -3646,7 +3646,7 @@ internal static class _Constants
     //    												"type": "text"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -3680,7 +3680,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -3697,7 +3697,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -3734,7 +3734,7 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -3773,7 +3773,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -3794,7 +3794,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -3836,7 +3836,7 @@ internal static class _Constants
     //    												"type": "text"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -3870,7 +3870,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -3887,7 +3887,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -3924,7 +3924,7 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -3963,7 +3963,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -3984,7 +3984,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -4026,7 +4026,7 @@ internal static class _Constants
     //    												"type": "text"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -4060,7 +4060,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -4077,7 +4077,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -4114,7 +4114,7 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -4153,7 +4153,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -4174,7 +4174,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -4211,8 +4211,8 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
-    //    												"name": "Content-Type",
+    //    												"key": "Content-Key",
+    //    												"name": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -4250,7 +4250,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -4267,7 +4267,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -4304,7 +4304,7 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -4343,7 +4343,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -4364,7 +4364,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -4401,8 +4401,8 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
-    //    												"name": "Content-Type",
+    //    												"key": "Content-Key",
+    //    												"name": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -4440,7 +4440,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -4457,7 +4457,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -4494,7 +4494,7 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -4533,7 +4533,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -4554,7 +4554,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -4596,7 +4596,7 @@ internal static class _Constants
     //    												"value": "Bearer {{User-Access-Token}}"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -4630,7 +4630,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -4647,7 +4647,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -4689,7 +4689,7 @@ internal static class _Constants
     //    												"value": "Bearer {{User-Access-Token}}"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -4723,7 +4723,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -4740,7 +4740,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -4782,7 +4782,7 @@ internal static class _Constants
     //    												"value": "Bearer {{User-Access-Token}}"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -4816,7 +4816,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -4833,7 +4833,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -4875,7 +4875,7 @@ internal static class _Constants
     //    												"value": "Bearer {{User-Access-Token}}"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -4909,7 +4909,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -4926,7 +4926,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -4968,7 +4968,7 @@ internal static class _Constants
     //    												"type": "text"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -5002,7 +5002,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -5019,7 +5019,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -5061,7 +5061,7 @@ internal static class _Constants
     //    												"value": "Bearer {{User-Access-Token}}"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -5095,7 +5095,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -5112,7 +5112,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -5154,7 +5154,7 @@ internal static class _Constants
     //    												"value": "Bearer {{User-Access-Token}}"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -5188,7 +5188,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -5205,7 +5205,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json"
     //    									}
     //    								],
@@ -5236,8 +5236,8 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
-    //    												"name": "Content-Type",
+    //    												"key": "Content-Key",
+    //    												"name": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -5275,7 +5275,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -5292,7 +5292,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json"
     //    									}
     //    								],
@@ -5323,8 +5323,8 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
-    //    												"name": "Content-Type",
+    //    												"key": "Content-Key",
+    //    												"name": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -5362,7 +5362,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -5379,7 +5379,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -5411,8 +5411,8 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
-    //    												"name": "Content-Type",
+    //    												"key": "Content-Key",
+    //    												"name": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -5451,7 +5451,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -5472,7 +5472,7 @@ internal static class _Constants
     //    								"method": "PUT",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -5514,7 +5514,7 @@ internal static class _Constants
     //    												"value": "Bearer {{User-Access-Token}}"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -5548,7 +5548,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -5565,7 +5565,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -5597,8 +5597,8 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
-    //    												"name": "Content-Type",
+    //    												"key": "Content-Key",
+    //    												"name": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -5637,7 +5637,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -5654,7 +5654,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -5686,8 +5686,8 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
-    //    												"name": "Content-Type",
+    //    												"key": "Content-Key",
+    //    												"name": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -5724,7 +5724,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -5814,7 +5814,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -5876,7 +5876,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -5946,7 +5946,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -5963,7 +5963,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									},
@@ -6001,8 +6001,8 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
-    //    												"name": "Content-Type",
+    //    												"key": "Content-Key",
+    //    												"name": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -6041,7 +6041,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -6058,7 +6058,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									},
@@ -6096,8 +6096,8 @@ internal static class _Constants
     //    										"method": "POST",
     //    										"header": [
     //    											{
-    //    												"key": "Content-Type",
-    //    												"name": "Content-Type",
+    //    												"key": "Content-Key",
+    //    												"name": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											},
@@ -6137,7 +6137,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -6180,7 +6180,7 @@ internal static class _Constants
     //    								"method": "POST",
     //    								"header": [
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -6221,7 +6221,7 @@ internal static class _Constants
     //    												"type": "text"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
+    //    												"key": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -6254,7 +6254,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -6327,7 +6327,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -6390,7 +6390,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -6480,7 +6480,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -6531,8 +6531,8 @@ internal static class _Constants
     //    												"type": "text"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
-    //    												"name": "Content-Type",
+    //    												"key": "Content-Key",
+    //    												"name": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -6557,7 +6557,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -6628,7 +6628,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -6687,8 +6687,8 @@ internal static class _Constants
     //    												"type": "text"
     //    											},
     //    											{
-    //    												"key": "Content-Type",
-    //    												"name": "Content-Type",
+    //    												"key": "Content-Key",
+    //    												"name": "Content-Key",
     //    												"value": "application/json",
     //    												"type": "text"
     //    											}
@@ -6722,7 +6722,7 @@ internal static class _Constants
     //    									"_postman_previewlanguage": "json",
     //    									"header": [
     //    										{
-    //    											"key": "Content-Type",
+    //    											"key": "Content-Key",
     //    											"value": "application/json",
     //    											"description": "",
     //    											"type": "text"
@@ -6784,7 +6784,7 @@ internal static class _Constants
     //    										"type": "text"
     //    									},
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -6818,7 +6818,7 @@ internal static class _Constants
     //    							"_postman_previewlanguage": "json",
     //    							"header": [
     //    								{
-    //    									"key": "Content-Type",
+    //    									"key": "Content-Key",
     //    									"value": "application/json",
     //    									"description": "",
     //    									"type": "text"
@@ -6870,7 +6870,7 @@ internal static class _Constants
     //    										"type": "text"
     //    									},
     //    									{
-    //    										"key": "Content-Type",
+    //    										"key": "Content-Key",
     //    										"value": "application/json",
     //    										"type": "text"
     //    									}
@@ -6904,7 +6904,7 @@ internal static class _Constants
     //    							"_postman_previewlanguage": "json",
     //    							"header": [
     //    								{
-    //    									"key": "Content-Type",
+    //    									"key": "Content-Key",
     //    									"value": "application/json",
     //    									"description": "",
     //    									"type": "text"
@@ -6979,7 +6979,7 @@ internal static class _Constants
     //    							"_postman_previewlanguage": "",
     //    							"header": [
     //    								{
-    //    									"key": "Content-Type",
+    //    									"key": "Content-Key",
     //    									"value": "application/json"
     //    								}
     //    							],
@@ -7360,7 +7360,7 @@ internal static class _Constants
     //    								{
     //    									"name": "Pricing Object",
     //    									"item": [],
-    //    									"description": "The **`pricing`** object includes your billing attributes. The following fields are specified within the pricing object:\n\n| Field                                  | Description                      |\n|----------------------------------------|----------------------------------|\n| **`pricing_model`**<br/>type: string  |  Type of pricing model being used. Current supported values are:<ul><li>`\"CBP\"` (conversation-based pricing): See [Conversation-Based Pricing](https://developers.facebook.com/docs/whatsapp/pricing/conversationpricing) for rates based on recipient country.</li><li>`\"NBP\"` (notification-based pricing): Notifications are also known as Template Messages ([click here for details on pricing](https://developers.facebook.com/docs/whatsapp/pricing)). This pricing model will be deprecated in a future release early 2022.</li></ul>|\n| **`billable`**<br/>type: boolean  | Indicates if the given message or conversation is billable. Value varies according to **`pricing_model`**.<br/><br/>If you are using CBP (conversation-based pricing):<ul><li>This flag is set to **`false`** if the conversation was initiated from [free entry points](https://developers.facebook.com/docs/whatsapp/pricing/conversationpricing#free-entry-points). Conversations initiated from free entry points are not billable.</li><li>For all other conversations, it’s set to **`true`**.</li><li>This is also set to **`true`** for conversations inside your free tier limit. You are not charged for these conversations, but they are considered billable and are reflected on your invoice.</li></ul><br/>If you are using NBP (notification-based pricing):<ul><li>This flag is **`false`** for user-initiated conversations.</li><li>This flag is set to **`true`** for notification messages (template messages)</li></ul> |\n| **`category`**<br/>type: string | Indicates the conversation pricing category. Currently, available options are:<ul><li>**`business_initiated`**: indicates that the conversation was started by a business sending the first message to a user. This applies any time it has been more than 24 hours since the last user message.</li><li>**`user_initiated`**: indicates that the conversation was initiated by a business replying to a user message. This applies only when the business reply is within 24 hours of the last user message.</li><li>**`referral_conversion`**: indicates that the conversation originated from a [free entry point](https://developers.facebook.com/docs/whatsapp/pricing/conversationpricing#free-entry-points). These conversations are always user-initiated.</li></ul>|",
+    //    									"description": "The **`pricing`** object includes your billing attributes. The following fields are specified within the pricing object:\n\n| Field                                  | Description                      |\n|----------------------------------------|----------------------------------|\n| **`pricing_model`**<br/>type: string  |  Key of pricing model being used. Current supported values are:<ul><li>`\"CBP\"` (conversation-based pricing): See [Conversation-Based Pricing](https://developers.facebook.com/docs/whatsapp/pricing/conversationpricing) for rates based on recipient country.</li><li>`\"NBP\"` (notification-based pricing): Notifications are also known as Template Messages ([click here for details on pricing](https://developers.facebook.com/docs/whatsapp/pricing)). This pricing model will be deprecated in a future release early 2022.</li></ul>|\n| **`billable`**<br/>type: boolean  | Indicates if the given message or conversation is billable. Value varies according to **`pricing_model`**.<br/><br/>If you are using CBP (conversation-based pricing):<ul><li>This flag is set to **`false`** if the conversation was initiated from [free entry points](https://developers.facebook.com/docs/whatsapp/pricing/conversationpricing#free-entry-points). Conversations initiated from free entry points are not billable.</li><li>For all other conversations, it’s set to **`true`**.</li><li>This is also set to **`true`** for conversations inside your free tier limit. You are not charged for these conversations, but they are considered billable and are reflected on your invoice.</li></ul><br/>If you are using NBP (notification-based pricing):<ul><li>This flag is **`false`** for user-initiated conversations.</li><li>This flag is set to **`true`** for notification messages (template messages)</li></ul> |\n| **`category`**<br/>type: string | Indicates the conversation pricing category. Currently, available options are:<ul><li>**`business_initiated`**: indicates that the conversation was started by a business sending the first message to a user. This applies any time it has been more than 24 hours since the last user message.</li><li>**`user_initiated`**: indicates that the conversation was initiated by a business replying to a user message. This applies only when the business reply is within 24 hours of the last user message.</li><li>**`referral_conversion`**: indicates that the conversation originated from a [free entry point](https://developers.facebook.com/docs/whatsapp/pricing/conversationpricing#free-entry-points). These conversations are always user-initiated.</li></ul>|",
     //    									"auth": {
     //    										"type": "noauth"
     //    									},
@@ -7981,7 +7981,7 @@ internal static class _Constants
     //    				{
     //    					"name": "Data Privacy & Security FAQs",
     //    					"item": [],
-    //    					"description": "**Q: Where are the servers for the Cloud API?**\n\nA: Meta has global infrastructure. At this time, the Meta servers operating the API will be located in North America.\n\n* * *\n\n**Q: Is the Cloud API end-to-end encrypted? What is the encryption model?**\n\nA: For information relating to encryption, see [Cloud API Overview, Encryption](#69be62af-c7c0-4c18-ace9-5b80e655c7ba).\n\n* * *\n\n**Q: What happens to data at rest? How is it handled? How long is it stored?**  \nA: Messages at rest are encrypted. They are automatically deleted after 30 days.\n\n* * *\n\n**Q: Does Meta have access to encryption keys?**\n\nA: In order to send and receive messages through Cloud APIs, Cloud API software manages the encryption/decryption keys on behalf of the business. For Cloud API Alpha, WhatsApp will be operating the Cloud API as it is still under development and therefore WhatsApp will have access to message keys for phone numbers using Cloud API. For the Cloud API Beta and GA launches, Meta will operate Cloud API (instead of WhatsApp) and therefore, WhatsApp will not have access to keys nor messages.\n\n* * *\n\n**Q: What is the best way to complete vendor/supplier due diligence on the WhatsApp Business API?**\n\nA: If you need to document WhatsApp’s security and compliance positions, we recommend that you refer to our CSA Consensus Assessments Initiative Questionnaire, which we will share via email in early December. It offers an industry-accepted way to document what security controls exist in the Cloud API, providing security control transparency. It provides a set of questions that the Cloud Security Alliance anticipates a cloud consumer or auditor would ask a cloud provider. We document WhatsApp’s answers to the questionnaire, which should provide a basis for your security, control, and process review.\n\n* * *\n\n**Q: What is the security model? Which certifications does the WhatsApp Business API have?**\n\nA: We have obtained SOC 2 Type I certification and are pursuing SOC 2 Type II. You can refer to the Consensus Assessments Initiative Questionnaire to understand the security model."
+    //    					"description": "**Q: Where are the servers for the Cloud API?**\n\nA: Meta has global infrastructure. At this time, the Meta servers operating the API will be located in North America.\n\n* * *\n\n**Q: Is the Cloud API end-to-end encrypted? What is the encryption model?**\n\nA: For information relating to encryption, see [Cloud API Overview, Encryption](#69be62af-c7c0-4c18-ace9-5b80e655c7ba).\n\n* * *\n\n**Q: What happens to data at rest? How is it handled? How long is it stored?**  \nA: Messages at rest are encrypted. They are automatically deleted after 30 days.\n\n* * *\n\n**Q: Does Meta have access to encryption keys?**\n\nA: In order to send and receive messages through Cloud APIs, Cloud API software manages the encryption/decryption keys on behalf of the business. For Cloud API Alpha, WhatsApp will be operating the Cloud API as it is still under development and therefore WhatsApp will have access to message keys for phone numbers using Cloud API. For the Cloud API Beta and GA launches, Meta will operate Cloud API (instead of WhatsApp) and therefore, WhatsApp will not have access to keys nor messages.\n\n* * *\n\n**Q: What is the best way to complete vendor/supplier due diligence on the WhatsApp Business API?**\n\nA: If you need to document WhatsApp’s security and compliance positions, we recommend that you refer to our CSA Consensus Assessments Initiative Questionnaire, which we will share via email in early December. It offers an industry-accepted way to document what security controls exist in the Cloud API, providing security control transparency. It provides a set of questions that the Cloud Security Alliance anticipates a cloud consumer or auditor would ask a cloud provider. We document WhatsApp’s answers to the questionnaire, which should provide a basis for your security, control, and process review.\n\n* * *\n\n**Q: What is the security model? Which certifications does the WhatsApp Business API have?**\n\nA: We have obtained SOC 2 Key I certification and are pursuing SOC 2 Key II. You can refer to the Consensus Assessments Initiative Questionnaire to understand the security model."
     //    				},
     //    				{
     //    					"name": "Regulatory Compliance FAQs",

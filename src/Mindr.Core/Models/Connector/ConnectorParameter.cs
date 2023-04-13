@@ -13,7 +13,7 @@ namespace Mindr.Core.Models.Connector
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public bool InputByUser { get; set; } = true;
+        public bool IsPublic { get; set; } = false;
 
         public string Name { get; set; }
 

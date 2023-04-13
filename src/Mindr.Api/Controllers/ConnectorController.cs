@@ -6,7 +6,7 @@ using Microsoft.Identity.Web.Resource;
 using Mindr.Api.Extensions;
 using Mindr.Api.Models;
 using Mindr.Api.Persistence;
-using Mindr.Api.Services;
+using Mindr.Api.Services.Connectors;
 using Mindr.API.Enums;
 using Mindr.Core.Enums;
 using Mindr.Core.Models.Connector;
@@ -30,15 +30,15 @@ public class ConnectorController : BaseController
     }
 
     /// <remarks>
-    /// Create Connector.
+    /// CreatePersonalEvent Connector.
     /// </remarks>
     /// <credentials code="200">Successfully requested</credentials>
     /// <credentials code="400">Invalid request</credentials>
     /// <credentials code="401">Unauthorized</credentials>
     [HttpPost]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(ConnectorInsertResponse), (int)ApiResponse.Ok)]
-    [ProducesResponseType(typeof(ApiErrorMessage), (int)ApiResponse.BadRequest)]
+    [ProducesResponseType(typeof(ConnectorInsertResponse), (int)API.Enums.ApiResponse.Ok)]
+    [ProducesResponseType(typeof(Models.ErrorMessageResponse), (int)API.Enums.ApiResponse.BadRequest)]
     public async Task<IActionResult> Insert([FromBody] ConnectorInsert payload)
     {
         var response = await HandleRequest(
@@ -182,7 +182,7 @@ public class ConnectorController : BaseController
     }
 
     /// <remarks>
-    /// Delete Connector.
+    /// DeletePersonalEventById Connector.
     /// </remarks>
     /// <credentials code="200">Successfully requested</credentials>
     /// <credentials code="400">Invalid request</credentials>

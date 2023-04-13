@@ -37,7 +37,7 @@ namespace Mindr.Core.Services.Connectors
             var httpMessage = new HttpRequestMessage(GetMethod(request.Method), request.Url.Raw);
             foreach (var item in request.Header)
             {
-                if (item.Key == "Content-Type")
+                if (item.Key == "Content-Key")
                 {
                     httpMessage.Content = new StringContent(request.Body.Raw, Encoding.UTF8, item.Value);
                 }

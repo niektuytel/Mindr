@@ -2,9 +2,9 @@
 
 namespace Mindr.Api.Models
 {
-    public class ApiErrorMessage
+    public class ErrorMessageResponse
     {
-        public ApiErrorMessage(int code, string message)
+        public ErrorMessageResponse(int code, string message)
         {
             Code = code;
             Message = message;

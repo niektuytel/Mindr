@@ -1,5 +1,4 @@
-﻿using Mindr.Core.Models.Connector.Http;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,25 +7,13 @@ using System.Text;
 
 namespace Mindr.Core.Models.Connector
 {
-    /// <summary>
-    /// Used by hangfire to call connectors on time schedule 
-    /// </summary>
     public class ConnectorEvent
     {
+        private Connector connector;
+
         public ConnectorEvent()
         {
             
-        }
-
-        public ConnectorEvent(ConnectorEvent @event, Connector connector)
-        {
-            Id = @event.Id;
-            UserId = @event.UserId;
-            EventId = @event.EventId;
-            EventParams = @event.EventParams;
-            ConnectorId = connector.Id;
-            ConnectorName = connector.Name;
-            Variables = connector.Variables.Where(item => item.InputByUser).ToArray();
         }
 
         public ConnectorEvent(string userId, string eventId, Connector connector)
@@ -35,29 +22,14 @@ namespace Mindr.Core.Models.Connector
             EventId = eventId;
             ConnectorId = connector.Id;
             ConnectorName = connector.Name;
-            Variables = connector.Variables.Where(item => item.InputByUser).ToArray();
-        }
-
-        public ConnectorEvent(string eventId, IEnumerable<EventParam> eventParams)
-        {
-            EventId = eventId;
-            EventParams = eventParams;
-        }
-
-        public ConnectorEvent(string eventId, IEnumerable<EventParam> eventParams, Connector connector)
-        {
-            EventId = eventId;
-            EventParams = eventParams;
-            ConnectorId = connector.Id;
-            ConnectorName = connector.Name;
-            Variables = connector.Variables.Where(item => item.InputByUser).ToArray();
+            ConnectorVariables = connector.Variables.Where(item => item.IsPublic).ToArray();
         }
 
         [Key]
         [JsonProperty("id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [JsonProperty("userid")]
+        [JsonProperty("user_id")]
         public string? UserId { get; set; } = "";
 
         [JsonProperty("job_id")]
@@ -66,8 +38,8 @@ namespace Mindr.Core.Models.Connector
         [JsonProperty("event_id")]
         public string EventId { get; set; }
 
-        [JsonProperty("event_params")]
-        public IEnumerable<EventParam> EventParams { get; set; }
+        [JsonProperty("event_parameters")]
+        public IEnumerable<EventParameter> EventParameters { get; set; }
 
         [JsonProperty("connector_id")]
         public Guid? ConnectorId { get; set; } = null;
@@ -75,21 +47,11 @@ namespace Mindr.Core.Models.Connector
         [JsonProperty("connector_name")]
         public string ConnectorName { get; set; } = "";
 
-        [JsonProperty("connector_params")]
-        public IEnumerable<ConnectorVariable> Variables { get; set; } = new List<ConnectorVariable>();
+        [JsonProperty("connector_variables")]
+        public IEnumerable<ConnectorVariable> ConnectorVariables { get; set; } = new List<ConnectorVariable>();
 
-        [JsonProperty("color")]
-        public string Color { get; set; } = "#000000";
+        [JsonProperty("connector_color")]
+        public string ConnectorColor { get; set; } = "#000000";
 
-        public void Update(ConnectorEvent @event)
-        {
-            Id = @event.Id;
-            UserId = @event.UserId;
-            EventId = @event.EventId;
-            EventParams = @event.EventParams;
-            ConnectorId = @event.ConnectorId;
-            ConnectorName = @event.ConnectorName;
-            Variables = @event.Variables;
-        }
     }
 }

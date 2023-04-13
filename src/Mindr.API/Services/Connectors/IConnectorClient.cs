@@ -2,7 +2,7 @@
 using Mindr.Core.Models.Connector;
 using Mindr.Core.Models.Connector.Http;
 
-namespace Mindr.Api.Services
+namespace Mindr.Api.Services.Connectors
 {
     public interface IConnectorClient
     {

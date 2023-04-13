@@ -9,7 +9,7 @@ namespace Mindr.Api.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Color",
+                name: "ConnectorColor",
                 table: "ConnectorEvents",
                 type: "nvarchar(max)",
                 nullable: true);
@@ -18,7 +18,7 @@ namespace Mindr.Api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Color",
+                name: "ConnectorColor",
                 table: "ConnectorEvents");
         }
     }

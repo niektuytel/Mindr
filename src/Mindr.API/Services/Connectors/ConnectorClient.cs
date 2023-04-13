@@ -5,27 +5,27 @@ using Mindr.Api.Persistence;
 using Mindr.Core.Models.Connector;
 using Mindr.Core.Services.Connectors;
 using Microsoft.AspNetCore.Mvc;
-using Mindr.API.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Graph;
 using Microsoft.Graph.ExternalConnectors;
 using Mindr.Core.Models.Connector.Http;
 using Mindr.Api.Models;
+using Mindr.Api.Services.ConnectorEvents;
 
-namespace Mindr.Api.Services
+namespace Mindr.Api.Services.Connectors
 {
     public class ConnectorClient : IConnectorClient
     {
-        private readonly IConnectorEventClient _eventClient;
-        private readonly ConnectorHelper _helper;
+        private readonly IConnectorEventManager _eventClient;
+        //private readonly ConnectorPipelineDriver _helper;
         private readonly ApplicationContext _context;
 
-        public ConnectorClient(IConnectorEventClient eventClient, ApplicationContext context)
+        public ConnectorClient(IConnectorEventManager eventClient, ApplicationContext context)
         {
             _eventClient = eventClient;
             _context = context;
 
-            _helper = new ConnectorHelper();
+            //_helper = new ConnectorPipelineDriver();
         }
 
         public async Task<ConnectorInsertResponse> Create(string userId, ConnectorInsert input)
@@ -79,11 +79,11 @@ namespace Mindr.Api.Services
                     .Where(item => item.Name.ToLower().Contains(query));
 
                 // do not show owner credentials
-                if(asUser)
+                if (asUser)
                 {
                     foreach (var connector in connectors)
                     {
-                        connector.Variables = connector.Variables.Where(item => item.InputByUser);
+                        connector.Variables = connector.Variables.Where(item => item.IsPublic);
                     }
                 }
 
@@ -110,7 +110,7 @@ namespace Mindr.Api.Services
                 .Include(item => item.Variables)
                 .FirstOrDefaultAsync(x => x.Id == connectorId);
 
-            if(item == null)
+            if (item == null)
             {
                 throw new ApiRequestException(ApiResponse.NotFound, $"Did not find connector on {connectorId}");
             }
@@ -122,7 +122,7 @@ namespace Mindr.Api.Services
         {
             payload.CreatedBy = userId;
             var entity = _context.Connectors
-                //.Include(item => item.Variables)
+                //.Include(item => item.ConnectorVariables)
                 .FirstOrDefault(item => item.CreatedBy == payload.CreatedBy && item.Id == payload.Id);
 
             // insert
@@ -145,12 +145,12 @@ namespace Mindr.Api.Services
             var items = new List<HttpItem>();
             foreach (var item in payload)
             {
-                var preparedItem = await _helper.PrepareHttpItem(item);
+                //var preparedItem = await _helper.PrepareHttpItem(item);
 
 
 
                 var httpItem = _context.HttpItems.FirstOrDefault(x => x.Id == item.Id);
-                if(httpItem == null)
+                if (httpItem == null)
                 {
                     _context.HttpItems.Add(item);
                     items.Add(item);
@@ -193,7 +193,7 @@ namespace Mindr.Api.Services
             _context.SaveChanges();
 
         }
-        
+
         public async Task Delete(string userId, Guid id)
         {
             var entity = _context.Connectors.FirstOrDefault(item =>

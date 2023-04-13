@@ -23,7 +23,7 @@
         @if (ConnectorEvent != null)
         {
             <div style="margin:10px">
-                @foreach (var variable in ConnectorEvent.Variables)
+                @foreach (var variable in ConnectorEvent.ConnectorVariables)
                 {
                     <FluentTextField title="@variable.Description"
                                      Placeholder="Required"

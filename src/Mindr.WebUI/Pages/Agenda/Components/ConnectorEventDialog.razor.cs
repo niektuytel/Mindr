@@ -77,8 +77,8 @@ public partial class ConnectorEventDialog: FluentComponentBase
         {
             ConnectorId = input.Id,
             ConnectorName = input.Name,
-            Variables = input.Variables.Where(item => item.InputByUser),
-            Color = input.Color,
+            ConnectorVariables = input.Variables.Where(item => item.IsPublic),
+            ConnectorColor = input.Color,
         };
 
         base.StateHasChanged();
@@ -92,16 +92,16 @@ public partial class ConnectorEventDialog: FluentComponentBase
 
         if(IsCreating)
         {
-            var events = new List<EventParam>
+            var events = new List<EventParameter>
             {
-                new EventParam()
+                new EventParameter()
                 {
-                    Type = EventType.OnDateTime,
+                    Key = EventType.OnDateTime,
                     Value = AgendaEvent.StartDate.DateTime.ToLongDateString()
                 }
             };
             ConnectorEvent.EventId = AgendaEvent.Id;
-            ConnectorEvent.EventParams = events;
+            ConnectorEvent.EventParameters = events;
 
             var response = await ConnectorEventClient.Create(ConnectorEvent);
             if (response == null) 

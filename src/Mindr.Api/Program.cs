@@ -10,12 +10,12 @@ using Mindr.Core.Models.Connector.Http;
 using Hangfire;
 using Hangfire.SqlServer;
 using Microsoft.Graph.ExternalConnectors;
-using Mindr.API.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Mindr.Core.Services.Connectors;
 using Mindr.Core.Enums;
-using Mindr.Api.Services;
 using Mindr.Core.Models;
+using Mindr.Api.Services.ConnectorEvents;
+using Mindr.Api.Services.Connectors;
 
 namespace Mindr.Api;
 
@@ -61,7 +61,11 @@ public class Program
         // Custom Services
         builder.Services.AddScoped<IHttpCollectionFactory, HttpCollectionFactory>();
         builder.Services.AddScoped<IHttpCollectionClient, HttpCollectionClient>();
-        builder.Services.AddScoped<IConnectorEventClient, ConnectorEventClient>();
+
+        builder.Services.AddScoped<IConnectorEventManager, ConnectorEventManager>();
+        builder.Services.AddScoped<IConnectorEventValidator, ConnectorEventValidator>();
+        builder.Services.AddScoped<IConnectorEventDriver, ConnectorEventDriver>();
+
         builder.Services.AddScoped<IConnectorClient, ConnectorClient>();
 
 
@@ -79,7 +83,7 @@ public class Program
             {
                 var httpItem1 = new HttpItem()
                 {
-                    Name = "Send Sample Text Message",
+                    Name = "ProcessConnectorEventAsync Sample Text Message",
                     Description = "Sample text",
                     Request = new()
                     {
@@ -139,7 +143,7 @@ public class Program
                             },
                             new()
                             {
-                                Key = "Content-Type",
+                                Key = "Content-Key",
                                 Value = "application/json",
                                 Type = "text"
                             }
@@ -160,7 +164,7 @@ public class Program
                 };
                 var httpItem2 = new HttpItem()
                 {
-                    Name = "Send Sample Text Message",
+                    Name = "ProcessConnectorEventAsync Sample Text Message",
                     Description = "Sample text 2",
                     Request = new()
                     {
@@ -220,7 +224,7 @@ public class Program
                             },
                             new()
                             {
-                                Key = "Content-Type",
+                                Key = "Content-Key",
                                 Value = "application/json",
                                 Type = "text"
                             }
@@ -245,13 +249,14 @@ public class Program
                     Id = Guid.Parse("c98d9b51-cf20-4938-b7cb-76e8743f673c"),
                     CreatedBy = "00000000-0000-0000-aacc-c311156d0357",
                     Color = "orange",
-                    Name = "Send Whatsapp Text Message",
+                    IsPublic = true,
+                    Name = "ProcessConnectorEventAsync Whatsapp Text Message",
                     Description = "Some description explain the product",
                     Variables = new ConnectorVariable[]
                         {
                             new()
                             {
-                                InputByUser = false,
+                                IsPublic = false,
                                 Name = "Authentication Token",
                                 Description = "Token needed to login with see: https://developers.facebook.com/apps/824837035437555/whatsapp-business/wa-dev-console/?business_id=656542846083352",
                                 Key = "User-Access-Token",
@@ -259,7 +264,7 @@ public class Program
                             },
                             new()
                             {
-                                InputByUser = false,
+                                IsPublic = false,
                                 Name = "Api version",
                                 Description = "Api Version",
                                 Key = "Version",
@@ -267,7 +272,7 @@ public class Program
                             },
                             new()
                             {
-                                InputByUser = true,
+                                IsPublic = true,
                                 Name = "Sender Phone id",
                                 Description = "The phone number id of the sender",
                                 Key = "Phone-Number-ID",
@@ -275,7 +280,7 @@ public class Program
                             },
                             new()
                             {
-                                InputByUser = true,
+                                IsPublic = true,
                                 Name = "Receiver Phone number id",
                                 Description = "The phone number id of the receiver",
                                 Key = "Recipient-Phone-Number",
@@ -291,13 +296,14 @@ public class Program
                     Id = Guid.Parse("60994748-0cf3-452b-bbbc-44930e8fb052"),
                     CreatedBy = "00000000-0000-0000-aacc-c311156d0357",
                     Color = "blue",
-                    Name = "Send WhatsApp Sample Text Message",
+                    IsPublic = true,
+                    Name = "ProcessConnectorEventAsync WhatsApp Sample Text Message",
                     Description = "Some description explain the product",
                     Variables = new ConnectorVariable[]
                         {
                         new()
                         {
-                            InputByUser = false,
+                            IsPublic = false,
                             Name = "Authentication Token",
                             Description = "Token needed to login with see: https://developers.facebook.com/apps/824837035437555/whatsapp-business/wa-dev-console/?business_id=656542846083352",
                             Key = "User-Access-Token",
@@ -305,7 +311,7 @@ public class Program
                         },
                         new()
                         {
-                            InputByUser = false,
+                            IsPublic = false,
                             Name = "Api version",
                             Description = "Api Version",
                             Key = "Version",
@@ -313,7 +319,7 @@ public class Program
                         },
                         new()
                         {
-                            InputByUser = false,
+                            IsPublic = false,
                             Name = "Sender Phone id",
                             Description = "The phone number id of the sender",
                             Key = "Phone-Number-ID",
@@ -321,7 +327,7 @@ public class Program
                         },
                         new()
                         {
-                            InputByUser = true,
+                            IsPublic = true,
                             Name = "Receiver Phone number id",
                             Description = "The phone number id of the receiver",
                             Key = "Recipient-Phone-Number",
@@ -329,7 +335,7 @@ public class Program
                         },
                         new()
                         {
-                            InputByUser = true,
+                            IsPublic = true,
                             Name = "Sending message",
                             Description = "Message that will been sended",
                             Key = "Text-Body-String",
@@ -343,29 +349,29 @@ public class Program
 
                 // seed database
                 var event1 = new ConnectorEvent("00000000-0000-0000-aacc-c311156d0357", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", Connector1);
-                var events1 = new List<EventParam>
+                var events1 = new List<EventParameter>
                 {
-                    new EventParam()
+                    new EventParameter()
                     {
-                        Type = EventType.OnDateTime,
-                        Value = DateTime.Parse("3/6/2023 7:00:00 AM").ToLongDateString()
+                        Key = EventType.OnDateTime,
+                        Value = DateTime.Parse("6/8/2023 7:00:00 AM").ToLongDateString()
                     }
                 };
-                event1.EventParams = events1;
-                event1.Color = Connector1.Color;
+                event1.EventParameters = events1;
+                event1.ConnectorColor = Connector1.Color;
                 context.ConnectorEvents.Add(event1); //Test 1
 
                 var event2 = new ConnectorEvent("00000000-0000-0000-aacc-c311156d0357", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", Connector2);
-                var events2 = new List<EventParam>
+                var events2 = new List<EventParameter>
                 {
-                    new EventParam()
+                    new EventParameter()
                     {
-                        Type = EventType.OnDateTime,
-                        Value = DateTime.Parse("3/6/2023 7:00:00 AM").ToLongDateString()
+                        Key = EventType.OnDateTime,
+                        Value = DateTime.Parse("8/6/2023 7:00:00 AM").ToLongDateString()
                     }
                 };
-                event2.EventParams = events2;
-                event2.Color = Connector2.Color;
+                event2.EventParameters = events2;
+                event2.ConnectorColor = Connector2.Color;
                 context.ConnectorEvents.Add(event2); //Test 2
                 
                 context.SaveChanges();

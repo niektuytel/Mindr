@@ -8,13 +8,13 @@ using System.Text;
 
 namespace Mindr.Core.Models.Connector
 {
-    public class EventParam
+    public class EventParameter
     {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [JsonProperty("type")]
-        public EventType Type { get; set; }
+        public EventType Key { get; set; } = EventType.OnDateTime;
 
         [JsonProperty("value")]
         public string Value { get; set; }

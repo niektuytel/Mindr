@@ -12,16 +12,16 @@ namespace Mindr.API.Exceptions
         {
         }
 
-        public ApiRequestException(ApiResponse code, string? message) : base(message)
+        public ApiRequestException(Enums.ApiResponse code, string? message) : base(message)
         {
             ResponseCode = code;
         }
 
-        public ApiResponse ResponseCode { get; set; }
+        public Enums.ApiResponse ResponseCode { get; set; }
 
-        public ApiErrorMessage GetErrorMessage()
+        public Api.Models.ErrorMessageResponse GetErrorMessage()
         {
-            return new ApiErrorMessage((int)ResponseCode, Message);
+            return new Api.Models.ErrorMessageResponse((int)ResponseCode, base.Message);
         }
     }
 }

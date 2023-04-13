@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 using Mindr.Api.Persistence;
@@ -30,15 +31,7 @@ public class BaseController : ControllerBase
         }
         catch (ApiRequestException ex)
         {
-            return ex.ResponseCode switch
-            {
-                API.Enums.ApiResponse.InternalServerError => new StatusCodeResult(StatusCodes.Status500InternalServerError),
-                API.Enums.ApiResponse.BadRequest => BadRequest(ex.Message),
-                API.Enums.ApiResponse.NotFound => NotFound(ex.Message),
-                API.Enums.ApiResponse.Created => new StatusCodeResult(StatusCodes.Status201Created),
-                API.Enums.ApiResponse.Ok => Ok(ex.Message),
-                _ => throw new NotImplementedException($"Unknown response: {ex.ResponseCode}, message:{ex.Message}"),
-            };
+            return StatusCode((int)ex.ResponseCode, ex.GetErrorMessage());
         }
     }
 
@@ -56,22 +49,14 @@ public class BaseController : ControllerBase
         }
         catch (ApiRequestException ex)
         {
-            return ex.ResponseCode switch
-            {
-                API.Enums.ApiResponse.InternalServerError => new StatusCodeResult(StatusCodes.Status500InternalServerError),
-                API.Enums.ApiResponse.BadRequest => BadRequest(ex.GetErrorMessage()),
-                API.Enums.ApiResponse.NotFound => NotFound(ex.GetErrorMessage()),
-                API.Enums.ApiResponse.Created => new StatusCodeResult(StatusCodes.Status201Created),
-                API.Enums.ApiResponse.Ok => Ok(ex.GetErrorMessage()),
-                _ => throw new NotImplementedException($"Unknown response: {ex.ResponseCode}, message:{ex.Message}"),
-            };
+            return StatusCode((int)ex.ResponseCode, ex.GetErrorMessage());
         }
     }
 
 
     protected static HttpItem HttpItem1 = new()
     {
-        Name = "Send Sample Text Message",
+        Name = "ProcessConnectorEventAsync Sample Text Message",
         Description = "Sample text",
         Request = new()
         {
@@ -131,7 +116,7 @@ public class BaseController : ControllerBase
                 },
                 new()
                 {
-                    Key = "Content-Type",
+                    Key = "Content-Key",
                     Value = "application/json",
                     Type = "text"
                 }
@@ -152,7 +137,7 @@ public class BaseController : ControllerBase
     };
     protected static HttpItem HttpItem2 = new()
     {
-        Name = "Send Sample Text Message",
+        Name = "ProcessConnectorEventAsync Sample Text Message",
         Description = "Sample text 2",
         Request = new()
         {
@@ -212,7 +197,7 @@ public class BaseController : ControllerBase
                 },
                 new()
                 {
-                    Key = "Content-Type",
+                    Key = "Content-Key",
                     Value = "application/json",
                     Type = "text"
                 }
@@ -235,7 +220,7 @@ public class BaseController : ControllerBase
     {
         Id = Guid.Parse("c98d9b51-cf20-4938-b7cb-76e8743f673c"),
         Color = "orange",
-        Name = "Send Whatsapp Text Message",
+        Name = "ProcessConnectorEventAsync Whatsapp Text Message",
         Description = "Some description explain the product",
         Variables = new ConnectorVariable[]
             {
@@ -274,7 +259,7 @@ public class BaseController : ControllerBase
     {
         Id = Guid.Parse("60994748-0cf3-452b-bbbc-44930e8fb052"),
         Color = "blue",
-        Name = "Send WhatsApp Sample Text Message",
+        Name = "ProcessConnectorEventAsync WhatsApp Sample Text Message",
         Description = "Some description explain the product",
         Variables = new ConnectorVariable[]
             {
