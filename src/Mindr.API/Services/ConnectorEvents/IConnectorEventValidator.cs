@@ -6,6 +6,7 @@ namespace Mindr.Api.Services.ConnectorEvents
     public interface IConnectorEventValidator
     {
         void ThrowOnInvalidConnectorVariables(IEnumerable<ConnectorVariable> connectorVariables);
+        void ThrowOnNotUniqueConnectorVariables(IEnumerable<ConnectorVariable> connectorVariables);
         void ThrowOnInvalidEventId(string eventId);
         void ThrowOnInvalidEventParameters(IEnumerable<EventParameter> eventParameters);
         void ThrowOnInvalidQuery(string query);

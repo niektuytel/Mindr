@@ -20,7 +20,7 @@ namespace Mindr.Api.Models
         [JsonProperty("connector_variables")]
         public IEnumerable<ConnectorVariable> ConnectorVariables { get; set; } = new List<ConnectorVariable>();
 
-        public ConnectorEvent NewConnectorEvent(string userId, Connector connector)
+        public ConnectorEvent ToConnectorEvent(string userId, Connector connector)
         {
             var item = new ConnectorEvent()
             {

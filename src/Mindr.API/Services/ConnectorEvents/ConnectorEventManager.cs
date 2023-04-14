@@ -90,6 +90,7 @@ public class ConnectorEventManager : IConnectorEventManager
     public async Task<ConnectorEvent> UpdateById(string userId, Guid id, ConnectorEventOnUpdate input)
     {
         _connectorEventValidator.ThrowOnInvalidConnectorVariables(input.ConnectorVariables);
+
         var entity = await _context.ConnectorEvents
                 .Include(x => x.EventParameters)
                 .Include(x => x.ConnectorVariables)
@@ -97,10 +98,14 @@ public class ConnectorEventManager : IConnectorEventManager
 
         _connectorEventValidator.ThrowOnNullEvent(userId, id, entity);
 
-        // process
-        entity!.ConnectorVariables = input.ConnectorVariables;
-        var jobId = await _connectorEventDriver.ProcessConnectorEventAsync(entity);
+        // remove variables
+        _context.ConnectorVariables.RemoveRange(entity!.ConnectorVariables);
+        await _context.SaveChangesAsync();
 
+        // create variables
+        entity!.ConnectorVariables = input.ConnectorVariables;
+
+        var jobId = await _connectorEventDriver.ProcessConnectorEventAsync(entity);
         if (!string.IsNullOrEmpty(jobId))
         {
             entity.JobId = jobId;
@@ -117,12 +122,13 @@ public class ConnectorEventManager : IConnectorEventManager
         _connectorEventValidator.ThrowOnInvalidEventId(input.EventId);
         _connectorEventValidator.ThrowOnInvalidEventParameters(input.EventParameters);
         _connectorEventValidator.ThrowOnInvalidConnectorVariables(input.ConnectorVariables);
+        _connectorEventValidator.ThrowOnNotUniqueConnectorVariables(input.ConnectorVariables);
 
         var connector = await _context.Connectors.FirstOrDefaultAsync(item => item.IsPublic && item.Id == input.ConnectorId);
         _connectorEventValidator.ThrowOnNullConnector(input.ConnectorId, connector);
 
         // process
-        var entity = input.NewConnectorEvent(userId, connector!);
+        var entity = input.ToConnectorEvent(userId, connector!);
         var jobId = await _connectorEventDriver.ProcessConnectorEventAsync(entity);
 
         if (!string.IsNullOrEmpty(jobId))

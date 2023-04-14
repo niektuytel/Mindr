@@ -62,8 +62,7 @@ namespace Mindr.Api.Services.ConnectorEvents
             {
                 return null;
             }
-
-            if (datetime < DateTime.Now)
+            else if (datetime < DateTime.Now)
             {
                 throw new ApiRequestException(ApiResponse.BadRequest, "Scheduled datetime must be in the future.");
             }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Graph;
 using Mindr.Api.Migrations;
 using Mindr.Api.Models;
+using Mindr.Api.Persistence;
 using Mindr.API.Enums;
 using Mindr.API.Exceptions;
 using Mindr.Core.Models.Connector;
@@ -10,6 +11,13 @@ namespace Mindr.Api.Services.ConnectorEvents
 {
     public class ConnectorEventValidator : IConnectorEventValidator
     {
+        private readonly IApplicationContext _context;
+
+        public ConnectorEventValidator(IApplicationContext context)
+        {
+            _context = context;
+        }
+
         public void ThrowOnInvalidConnectorVariables(IEnumerable<ConnectorVariable> connectorVariables)
         {
             foreach (var variable in connectorVariables)
@@ -21,6 +29,18 @@ namespace Mindr.Api.Services.ConnectorEvents
                 else if (string.IsNullOrEmpty(variable.Value))
                 {
                     throw new ApiRequestException(ApiResponse.BadRequest, $"Variable value of {{'{variable.Key}': '{variable.Value}'}} is invalid");
+                }
+            }
+        }
+
+        public void ThrowOnNotUniqueConnectorVariables(IEnumerable<ConnectorVariable> connectorVariables)
+        {
+            foreach (var variable in connectorVariables)
+            {
+                var entity = _context.ConnectorVariables.FirstOrDefault(item => item.Id == variable.Id);
+                if(entity != null)
+                {
+                    throw new ApiRequestException(ApiResponse.BadRequest, $"Connector variable of {{'id': '{variable.Id}'}} already exists");
                 }
             }
         }
@@ -65,7 +85,6 @@ namespace Mindr.Api.Services.ConnectorEvents
                 throw new ApiRequestException(ApiResponse.BadRequest, $"Unknown {nameof(userId)}:'{userId}'");
             }
         }
-
         public void ThrowOnNullConnector(Guid? id, Connector? connector)
         {
             if (id == null)
