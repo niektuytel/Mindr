@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.Fast.Components.FluentUI.Utilities;
 using Microsoft.Fast.Components.FluentUI;
-using System.Security.Claims;
+using Microsoft.Fast.Components.FluentUI.Utilities;
 
 namespace Mindr.WebUI.Components;
 

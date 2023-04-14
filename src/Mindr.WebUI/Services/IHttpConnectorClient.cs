@@ -1,5 +1,6 @@
-﻿using Mindr.Core.Models.Connector;
-using Mindr.Core.Models.Connector.Http;
+﻿
+using Mindr.Core.Models.Connectors;
+using Mindr.HttpRunner.Models;
 
 namespace Mindr.WebUI.Services
 {

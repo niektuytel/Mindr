@@ -1,27 +1,24 @@
-﻿using Azure.Core.Pipeline;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
-using Mindr.Core.Extensions;
-using Mindr.Core.Models.Connector;
-using Mindr.Core.Models.Connector.Http;
-using Mindr.Core.Services.Connectors;
+using Mindr.Core.Models.Connectors;
+using Mindr.HttpRunner.Models;
+using Mindr.HttpRunner.Services;
 using Mindr.WebUI.Pages.Connectors.Components;
 using Mindr.WebUI.Services;
 using Newtonsoft.Json;
 
 namespace Mindr.WebUI.Pages.Connectors.Views
 {
-    public partial class ConnectorPipeline: FluentComponentBase
+    public partial class ConnectorPipeline : FluentComponentBase
     {
         [Inject]
         public IHttpConnectorClient ConnectorClient { get; set; } = default!;
 
         [Inject]
-        public IHttpCollectionClient CollectionClient { get; set; } = default!;
+        public IHttpRunnerClient CollectionClient { get; set; } = default!;
 
         [Inject]
-        public IHttpCollectionFactory CollectionFactory { get; set; } = default!;
+        public IHttpRunnerFactory CollectionFactory { get; set; } = default!;
 
         [Parameter, EditorRequired]
         public string ConnectorId { get; set; } = default!;
@@ -33,11 +30,11 @@ namespace Mindr.WebUI.Pages.Connectors.Views
         public int SelectedIndex => SelectedHttpItem != null ? HttpItems.IndexOf(SelectedHttpItem) : 0;
 
         private HttpCollection Collection { get; set; } = new HttpCollection();
-        
+
         public HttpItemDialog HttpItemEditor = default!;
 
         private bool DataHasChanged = false;
-        
+
         private bool IsLoading = false;
 
         protected override void OnInitialized()
@@ -85,7 +82,7 @@ namespace Mindr.WebUI.Pages.Connectors.Views
         public async Task OnHandleSave()
         {
             IsLoading = true;
-            
+
             var response = await ConnectorClient.UpdateHttpItems(ConnectorId, HttpItems.AsEnumerable());
             if (response?.IsSuccessStatusCode != true)
             {

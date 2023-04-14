@@ -1,4 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
 using Mindr.WebUI.Extensions;
 using Mindr.WebUI.Interfaces;
 using Mindr.WebUI.Services;

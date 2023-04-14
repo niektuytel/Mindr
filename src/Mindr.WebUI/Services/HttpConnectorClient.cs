@@ -1,21 +1,11 @@
-﻿using DutchGrit.Afas;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Options;
-using Microsoft.Graph;
-using Mindr.Core.Models.Connector;
-using Mindr.Core.Models.Connector.Http;
+using Mindr.Core.Models.Connectors;
+using Mindr.HttpRunner.Models;
 using Mindr.WebUI.Handlers;
 using Mindr.WebUI.Models.Options;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Mindr.WebUI.Services;
 
@@ -50,7 +40,7 @@ public class HttpConnectorClient : IHttpConnectorClient
 
     public async Task<HttpResponseMessage?> Get(string connectorId)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{ControllerUrl}/{connectorId}");
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{ControllerUrl}/personal/{connectorId}");
         var validAuth = await TrySetAuthorization(request);
         if (!validAuth) return null;
 
@@ -60,7 +50,7 @@ public class HttpConnectorClient : IHttpConnectorClient
 
     public async Task<HttpResponseMessage?> GetOverview(string connectorId)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{ControllerUrl}/{connectorId}/overview");
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{ControllerUrl}/personal/{connectorId}/overview");
         var validAuth = await TrySetAuthorization(request);
         if (!validAuth) return null;
 
@@ -70,7 +60,7 @@ public class HttpConnectorClient : IHttpConnectorClient
 
     public async Task<HttpResponseMessage?> UpdateOverview(Connector content)
     {
-        var request = new HttpRequestMessage(HttpMethod.Put, $"{ControllerUrl}/{content.Id}/overview");
+        var request = new HttpRequestMessage(HttpMethod.Put, $"{ControllerUrl}/personal/{content.Id}/overview");
         var validAuth = await TrySetAuthorization(request);
         if (!validAuth) return null;
 
@@ -85,7 +75,7 @@ public class HttpConnectorClient : IHttpConnectorClient
 
     public async Task<HttpResponseMessage?> UpdateHttpItems(string connectorId, IEnumerable<HttpItem> content)
     {
-        var request = new HttpRequestMessage(HttpMethod.Put, $"{ControllerUrl}/{connectorId}/httpItems");
+        var request = new HttpRequestMessage(HttpMethod.Put, $"{ControllerUrl}/personal/{connectorId}/httpItems");
         var validAuth = await TrySetAuthorization(request);
         if (!validAuth) return null;
 
@@ -121,7 +111,7 @@ public class HttpConnectorClient : IHttpConnectorClient
 
     public async Task<HttpResponseMessage?> Create(Connector content)
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, ControllerUrl);
+        var request = new HttpRequestMessage(HttpMethod.Post, $"{ControllerUrl}/personal");
         var validAuth = await TrySetAuthorization(request);
         if (!validAuth) return null;
 
@@ -136,7 +126,7 @@ public class HttpConnectorClient : IHttpConnectorClient
 
     public async Task<HttpResponseMessage?> Delete(string connectorId)
     {
-        var request = new HttpRequestMessage(HttpMethod.Delete, $"{ControllerUrl}/{connectorId}");
+        var request = new HttpRequestMessage(HttpMethod.Delete, $"{ControllerUrl}/personal/{connectorId}");
         var validAuth = await TrySetAuthorization(request);
         if (!validAuth) return null;
 

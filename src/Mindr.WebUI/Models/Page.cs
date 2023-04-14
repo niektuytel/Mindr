@@ -1,6 +1,4 @@
-﻿using Microsoft.Fast.Components.FluentUI;
-
-namespace Mindr.WebUI.Models;
+﻿namespace Mindr.WebUI.Models;
 
 public class Page
 {

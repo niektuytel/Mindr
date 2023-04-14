@@ -1,18 +1,10 @@
-﻿using Azure.Core;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Options;
-using Mindr.Core.Models.Connector;
+using Mindr.Core.Models.ConnectorEvents;
 using Mindr.WebUI.Handlers;
 using Mindr.WebUI.Models.Options;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Mindr.WebUI.Services;
 
@@ -29,7 +21,7 @@ public class HttpConnectorEventClient : IHttpConnectorEventClient
         _options = options.Value!;
     }
 
-    private string ControllerUrl => $"{_options.BaseUrl}/connectorevent";
+    private string ControllerUrl => $"{_options.BaseUrl}/connectorevent/personal";
 
     private async Task<bool> TrySetAuthorization(HttpRequestMessage request)
     {

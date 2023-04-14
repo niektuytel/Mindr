@@ -28,7 +28,7 @@ namespace Mindr.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ConnectorColor")
+                    b.Property<string>("Color")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
@@ -36,6 +36,9 @@ namespace Mindr.Api.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -110,7 +113,7 @@ namespace Mindr.Api.Migrations
                     b.ToTable("ConnectorVariables");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.EventParam", b =>
+            modelBuilder.Entity("Mindr.Core.Models.Connector.EventParameter", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -129,7 +132,7 @@ namespace Mindr.Api.Migrations
 
                     b.HasIndex("ConnectorEventId");
 
-                    b.ToTable("EventParam");
+                    b.ToTable("EventParameter");
                 });
 
             modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpBody", b =>
@@ -221,7 +224,7 @@ namespace Mindr.Api.Migrations
                     b.Property<string>("Key")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Key")
+                    b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Value")
@@ -411,11 +414,11 @@ namespace Mindr.Api.Migrations
                         .HasForeignKey("ConnectorEventId");
 
                     b.HasOne("Mindr.Core.Models.Connector.Connector", null)
-                        .WithMany("ConnectorVariables")
+                        .WithMany("Variables")
                         .HasForeignKey("ConnectorId");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.EventParam", b =>
+            modelBuilder.Entity("Mindr.Core.Models.Connector.EventParameter", b =>
                 {
                     b.HasOne("Mindr.Core.Models.Connector.ConnectorEvent", null)
                         .WithMany("EventParameters")
@@ -461,7 +464,7 @@ namespace Mindr.Api.Migrations
             modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpItem", b =>
                 {
                     b.HasOne("Mindr.Core.Models.Connector.Connector", null)
-                        .WithMany("Pipeline")
+                        .WithMany("HttpItems")
                         .HasForeignKey("ConnectorId");
 
                     b.HasOne("Mindr.Core.Models.Connector.Http.HttpRequest", "Request")
@@ -509,26 +512,26 @@ namespace Mindr.Api.Migrations
             modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpVariable", b =>
                 {
                     b.HasOne("Mindr.Core.Models.Connector.Http.HttpRequest", null)
-                        .WithMany("ConnectorVariables")
+                        .WithMany("Variables")
                         .HasForeignKey("HttpRequestId");
 
                     b.HasOne("Mindr.Core.Models.Connector.Http.HttpResponse", null)
-                        .WithMany("ConnectorVariables")
+                        .WithMany("Variables")
                         .HasForeignKey("HttpResponseId");
                 });
 
             modelBuilder.Entity("Mindr.Core.Models.Connector.Connector", b =>
                 {
-                    b.Navigation("Pipeline");
+                    b.Navigation("HttpItems");
 
-                    b.Navigation("ConnectorVariables");
+                    b.Navigation("Variables");
                 });
 
             modelBuilder.Entity("Mindr.Core.Models.Connector.ConnectorEvent", b =>
                 {
-                    b.Navigation("EventParameters");
-
                     b.Navigation("ConnectorVariables");
+
+                    b.Navigation("EventParameters");
                 });
 
             modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpItem", b =>
@@ -540,7 +543,7 @@ namespace Mindr.Api.Migrations
                 {
                     b.Navigation("Header");
 
-                    b.Navigation("ConnectorVariables");
+                    b.Navigation("Variables");
                 });
 
             modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpRequestUrl", b =>
@@ -554,7 +557,7 @@ namespace Mindr.Api.Migrations
 
                     b.Navigation("Header");
 
-                    b.Navigation("ConnectorVariables");
+                    b.Navigation("Variables");
                 });
 #pragma warning restore 612, 618
         }

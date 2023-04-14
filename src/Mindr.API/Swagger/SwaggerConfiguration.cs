@@ -61,8 +61,6 @@ internal static class SwaggerConfiguration
 
     internal static void UseSwaggerTools(this WebApplication? app, IConfiguration configuration)
     {
-        // TODO: WARN: Configure the HTTP request pipeline. >> if (app.Environment.IsDevelopment())
-
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {

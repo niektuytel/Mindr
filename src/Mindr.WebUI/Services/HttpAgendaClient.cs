@@ -1,13 +1,9 @@
-﻿using DutchGrit.Afas.Refinery;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Options;
-using Microsoft.Graph;
 using Mindr.Core.Models;
 using Mindr.WebUI.Handlers;
 using Mindr.WebUI.Models.Options;
 using System.Net.Http.Json;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Mindr.WebUI.Services;
 

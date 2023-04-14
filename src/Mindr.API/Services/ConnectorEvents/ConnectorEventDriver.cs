@@ -1,24 +1,23 @@
 ﻿using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Mindr.Api.Persistence;
-using Mindr.API.Exceptions;
-using Mindr.Core.Models.Connector;
-using Mindr.Core.Models.Connector.Http;
-using Mindr.Core.Services.Connectors;
+using Mindr.Api.Services.Connectors;
+using Mindr.Core.Models.ConnectorEvents;
+using Mindr.Core.Models.Connectors;
+using Mindr.HttpRunner.Services;
 using System.Net;
-using HttpRequest = Mindr.Core.Models.Connector.Http.HttpRequest;
 
 namespace Mindr.Api.Services.ConnectorEvents
 {
     public class ConnectorEventDriver : IConnectorEventDriver
     {
-        private readonly IHttpCollectionClient _connectorClient;
+        private readonly IConnectorDriver _connectorDriver;
         private readonly IBackgroundJobClient _backgroundJobs;
         private readonly ApplicationContext _context;
 
-        public ConnectorEventDriver(IHttpCollectionClient collectionClient, IBackgroundJobClient backgroundJobs, ApplicationContext context)
+        public ConnectorEventDriver(IConnectorDriver connectorDriver, IBackgroundJobClient backgroundJobs, ApplicationContext context)
         {
-            _connectorClient = collectionClient;
+            _connectorDriver = connectorDriver;
             _backgroundJobs = backgroundJobs;
             _context = context;
         }
@@ -50,7 +49,7 @@ namespace Mindr.Api.Services.ConnectorEvents
             var connector = await GetConnectorAsync(entity.ConnectorId);
             connector.Variables = entity.ConnectorVariables;
 
-            var jobId = _backgroundJobs.Enqueue(() => _connectorClient.SendAsync(connector));
+            var jobId = _backgroundJobs.Enqueue(() => _connectorDriver.ProcessHttpRunnerAsync(connector));
 
             return jobId;
         }
@@ -64,7 +63,7 @@ namespace Mindr.Api.Services.ConnectorEvents
             }
             else if (datetime < DateTime.Now)
             {
-                throw new ApiRequestException(HttpStatusCode.BadRequest, "Scheduled datetime must be in the future.");
+                throw new API.Exceptions.HttpException(HttpStatusCode.BadRequest, "Scheduled datetime must be in the future.");
             }
 
             var connector = await GetConnectorAsync(entity.ConnectorId);
@@ -75,7 +74,7 @@ namespace Mindr.Api.Services.ConnectorEvents
                 _backgroundJobs.Delete(entity.JobId);
             }
 
-            var jobid = _backgroundJobs.Schedule(() => _connectorClient.SendAsync(connector), datetime);
+            var jobid = _backgroundJobs.Schedule(() => _connectorDriver.ProcessHttpRunnerAsync(connector), datetime);
 
             return jobid;
         }
@@ -99,7 +98,7 @@ namespace Mindr.Api.Services.ConnectorEvents
 
             if (connector == null)
             {
-                throw new ApiRequestException(HttpStatusCode.BadRequest, $"connector on id: '{connectorId}' is unknown");
+                throw new API.Exceptions.HttpException(HttpStatusCode.BadRequest, $"connector on id: '{connectorId}' is unknown");
             }
 
             return connector;

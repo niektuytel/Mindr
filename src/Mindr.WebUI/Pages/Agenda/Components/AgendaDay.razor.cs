@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Fast.Components.FluentUI;
 using Mindr.Core.Models;
-using Mindr.Core.Models.Connector;
-using Newtonsoft.Json;
 
 namespace Mindr.WebUI.Pages.Agenda.Components
 {

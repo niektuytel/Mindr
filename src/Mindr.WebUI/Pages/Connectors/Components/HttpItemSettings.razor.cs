@@ -1,19 +1,15 @@
-﻿using Azure.Core.Pipeline;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
-using Mindr.Core.Extensions;
-using Mindr.Core.Models.Connector;
-using Mindr.Core.Models.Connector.Http;
-using Mindr.Core.Services.Connectors;
-using Newtonsoft.Json;
+using Mindr.HttpRunner.Models;
+using Mindr.HttpRunner.Services;
+using Mindr.HttpRunner.Extensions;
 
 namespace Mindr.WebUI.Pages.Connectors.Components
 {
-    public partial class HttpItemSettings: FluentComponentBase
+    public partial class HttpItemSettings : FluentComponentBase
     {
         [Inject]
-        public IHttpCollectionClient CollectionClient { get; set; } = default!;
+        public IHttpRunnerClient CollectionClient { get; set; } = default!;
 
         [Parameter, EditorRequired]
         public HttpItem Data { get; set; } = default!;
@@ -49,7 +45,7 @@ namespace Mindr.WebUI.Pages.Connectors.Components
         public IEnumerable<HttpVariable>? GetItemResponseVariables()
         {
             var responses = Data?.Response;
-            if(responses == null) return null;
+            if (responses == null) return null;
 
             // TODO: Add more options to respond on: [201, 302, 404, 500, etc.]
             var response = responses.FirstOrDefault(item => item.Code == 200);

@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web.Resource;
-using Microsoft.OpenApi.Expressions;
 using Mindr.Api.Extensions;
 using Mindr.Api.Models;
-using Mindr.Api.Persistence;
+using Mindr.Api.Models.ConnectorEvents;
 using Mindr.Api.Services.ConnectorEvents;
-using Mindr.API.Exceptions;
-using Mindr.Core.Models.Connector;
+using Mindr.Core.Models.ConnectorEvents;
 using System.Net;
 
 namespace Mindr.Api.Controllers;
@@ -24,41 +21,19 @@ public class ConnectorEventController : BaseController
     }
 
     /// <remarks>
-    /// Creates a new connector event for the authenticated user.
-    /// </remarks>
-    /// <credentials code="200">Success</credentials>
-    /// <credentials code="400">Invalid credentials</credentials>
-    /// <credentials code="401">Unauthorized</credentials>
-    /// <credentials code="404">Not found</credentials>
-    [HttpPost("personal")]
-    [ProducesResponseType(typeof(ConnectorEvent), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> Create([FromBody] ConnectorEventOnCreate input)
-    {
-        var response = await HandleRequest(async () => {
-            var userId = User.GetInfo();
-            return await _connectorEventManager.Create(userId, input);
-        });
-
-        return response;
-    }
-
-    /// <remarks>
     /// Retrieves all connector events for the authenticated user, optionally filtered by event ID or query string.
     /// </remarks>
     /// <credentials code="200">Success</credentials>
     /// <credentials code="400">Invalid credentials</credentials>
     /// <credentials code="401">Unauthorized</credentials>
     [HttpGet("personal")]
-    [Produces("application/json")]
     [ProducesResponseType(typeof(IEnumerable<ConnectorEvent>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> GetAll([FromQuery] string? eventId = null, [FromQuery] string? query = null)
     {
         var response = await HandleRequest(
             async () => {
-                var userId = User.GetInfo();
+                var userId = User.GetUserId();
 
                 if (!string.IsNullOrEmpty(eventId))
                 {
@@ -84,15 +59,35 @@ public class ConnectorEventController : BaseController
     /// <credentials code="401">Unauthorized</credentials>
     /// <credentials code="404">Not found</credentials>
     [HttpGet("personal/{id}")]
-    [Produces("application/json")]
     [ProducesResponseType(typeof(IEnumerable<ConnectorEvent>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> GetById([FromRoute]Guid id)
     {
         var response = await HandleRequest(async () => {
-            var userId = User.GetInfo();
+            var userId = User.GetUserId();
             return await _connectorEventManager.GetById(userId, id);
+        });
+
+        return response;
+    }
+
+    /// <remarks>
+    /// Creates a new connector event for the authenticated user.
+    /// </remarks>
+    /// <credentials code="200">Success</credentials>
+    /// <credentials code="400">Invalid credentials</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
+    /// <credentials code="404">Not found</credentials>
+    [HttpPost("personal")]
+    [ProducesResponseType(typeof(ConnectorEvent), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> Create([FromBody] ConnectorEventOnCreate input)
+    {
+        var response = await HandleRequest(async () => {
+            var userId = User.GetUserId();
+            return await _connectorEventManager.Create(userId, input);
         });
 
         return response;
@@ -107,10 +102,11 @@ public class ConnectorEventController : BaseController
     [HttpPut("personal/{id}")]
     [ProducesResponseType(typeof(ConnectorEvent), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> UpdateById([FromRoute]Guid id, [FromBody]ConnectorEventOnUpdate input)
     {
         var response = await HandleRequest(async () => {
-            var userId = User.GetInfo();
+            var userId = User.GetUserId();
             return await _connectorEventManager.UpdateById(userId, id, input);
         });
 
@@ -131,7 +127,7 @@ public class ConnectorEventController : BaseController
     public async Task<IActionResult> DeleteById([FromRoute]Guid id)
     {
         var response = await HandleRequest(async () => {
-            var userId = User.GetInfo();
+            var userId = User.GetUserId();
             return await _connectorEventManager.DeleteById(userId, id);
         });
 

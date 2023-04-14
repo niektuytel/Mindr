@@ -1,17 +1,12 @@
-﻿using Azure.Core.Pipeline;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Fast.Components.FluentUI;
-using Mindr.Core.Extensions;
-using Mindr.Core.Models.Connector;
-using Mindr.Core.Models.Connector.Http;
-using Mindr.Core.Services.Connectors;
-using Newtonsoft.Json;
+using Mindr.HttpRunner.Models;
 
 namespace Mindr.WebUI.Pages.Connectors.Components
 {
     // Usefull to use? https://www.postman.com/cs-demo/workspace/public-rest-apis/overview
-    public partial class HttpItemDialog: FluentComponentBase
+    public partial class HttpItemDialog : FluentComponentBase
     {
         [Parameter, EditorRequired]
         public Func<HttpItem, Task> OnCreate { get; set; } = default!;
@@ -44,12 +39,12 @@ namespace Mindr.WebUI.Pages.Connectors.Components
         {
             IsLoading = true;
 
-            if(ButtonText == "Create")
+            if (ButtonText == "Create")
             {
                 await OnCreate.Invoke(Data);
 
             }
-            else if(ButtonText == "Update")
+            else if (ButtonText == "Update")
             {
                 await OnUpdate.Invoke(Data);
 
@@ -58,7 +53,7 @@ namespace Mindr.WebUI.Pages.Connectors.Components
             {
                 throw new NotImplementedException($"{ButtonText} does not exist");
             }
-            
+
 
             IsLoading = false;
             CloseDialog();

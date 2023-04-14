@@ -1,14 +1,12 @@
-using Mindr.WebUI;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Fast.Components.FluentUI;
-using Mindr.WebUI.Services;
-using Mindr.Core.Services.Connectors;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication.Internal;
-using Mindr.WebUI.Handlers;
+using Mindr.HttpRunner.Services;
+using Mindr.WebUI;
 using Mindr.WebUI.Extensions;
+using Mindr.WebUI.Handlers;
 using Mindr.WebUI.Models.Options;
+using Mindr.WebUI.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -31,8 +29,8 @@ builder.Services.AddHttpClient(nameof(AuthorizationApiMessageHandler), client =>
 builder.Services.AddTransient<IHttpAgendaClient, HttpAgendaClient>();
 builder.Services.AddTransient<IHttpConnectorClient, HttpConnectorClient>();
 builder.Services.AddTransient<IHttpConnectorEventClient, HttpConnectorEventClient>();
-builder.Services.AddTransient<IHttpCollectionFactory, HttpCollectionFactory>();
-builder.Services.AddTransient<IHttpCollectionClient, HttpCollectionClient>();
+builder.Services.AddTransient<IHttpRunnerFactory, HttpRunnerFactory>();
+builder.Services.AddTransient<IHttpRunnerClient, HttpRunnerClient>();
 
 // Authentication
 builder.Services.AddMsalAuthentication(options =>

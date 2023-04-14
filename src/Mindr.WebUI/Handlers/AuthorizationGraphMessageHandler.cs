@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Options;
 using Mindr.WebUI.Models.Options;
 

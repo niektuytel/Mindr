@@ -1,23 +1,11 @@
-﻿using DutchGrit.Afas.Refinery;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
-using Microsoft.Graph;
-using Microsoft.Graph.TermStore;
 using Mindr.Core.Models;
-using Mindr.Core.Models.Connector;
-using Mindr.WebUI.Components;
-using Mindr.WebUI.Handlers;
-using Mindr.WebUI.Models;
 using Mindr.WebUI.Services;
-using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
-using System.Net.Http.Json;
-using System.Security.Principal;
 
 namespace Mindr.WebUI.Pages.Agenda;
 
-public partial class AgendaPage: FluentComponentBase
+public partial class AgendaPage : FluentComponentBase
 {
     private static readonly DateTime InitialDate = DateTime.Now;
 

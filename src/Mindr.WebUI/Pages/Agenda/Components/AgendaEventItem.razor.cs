@@ -1,10 +1,7 @@
-﻿using DutchGrit.Afas;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
 using Mindr.Core.Models;
-using Mindr.Core.Models.Connector;
-using Mindr.WebUI.Components;
+using Mindr.Core.Models.ConnectorEvents;
 using Mindr.WebUI.Services;
 using Newtonsoft.Json;
 

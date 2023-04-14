@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
-using Mindr.Core;
 using Mindr.Core.Models;
-using Mindr.WebUI.Components;
 
 namespace Mindr.WebUI.Pages.Agenda.Components;
 

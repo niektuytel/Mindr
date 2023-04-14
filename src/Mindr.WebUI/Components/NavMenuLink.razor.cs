@@ -18,7 +18,7 @@ public partial class NavMenuLink : FluentComponentBase
     /// </summary>
     [Parameter]
     public string? Href { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// Gets or sets the name of the icon to display with the link
     /// </summary>
@@ -63,7 +63,7 @@ public partial class NavMenuLink : FluentComponentBase
     /// </summary>
     [Parameter]
     public string? Target { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// Gets or sets the text of the link.
     /// </summary>
@@ -87,19 +87,19 @@ public partial class NavMenuLink : FluentComponentBase
         .Build();
 
     private bool HasIcon => !string.IsNullOrWhiteSpace(Icon);
-    
+
     [CascadingParameter(Name = "NavMenuExpanded")]
     private bool NavMenuExpanded { get; set; }
 
-    
+
     [Inject]
     private NavigationManager NavigationManager { get; set; } = default!;
-    
+
     internal void SetSelected(bool value)
     {
         Selected = value;
     }
-    
+
     protected async Task OnClickHandlerAsync(MouseEventArgs e)
     {
         if (Disabled)
@@ -111,7 +111,7 @@ public partial class NavMenuLink : FluentComponentBase
         if (!string.IsNullOrEmpty(Href))
             NavigationManager.NavigateTo(Href);
     }
-    
+
     protected override void OnInitialized()
     {
         NavMenu.AddNavLink(this);

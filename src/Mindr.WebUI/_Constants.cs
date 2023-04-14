@@ -1,7 +1,5 @@
-﻿using Mindr.WebUI.Models;
-using Microsoft.Fast.Components.FluentUI;
-using Mindr.Core.Enums;
-using Mindr.Core.Models.Connector.Http;
+﻿using Microsoft.Fast.Components.FluentUI;
+using Mindr.WebUI.Models;
 
 namespace Mindr.WebUI;
 

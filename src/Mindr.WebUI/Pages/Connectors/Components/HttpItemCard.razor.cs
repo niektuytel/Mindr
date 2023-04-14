@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
-using Mindr.Core.Models.Connector.Http;
+using Mindr.HttpRunner.Models;
 
 namespace Mindr.WebUI.Pages.Connectors.Components
 {
-    public partial class HttpItemCard: FluentComponentBase
+    public partial class HttpItemCard : FluentComponentBase
     {
         [Parameter, EditorRequired]
         public HttpItem Data { get; set; } = default!;
@@ -47,13 +47,13 @@ namespace Mindr.WebUI.Pages.Connectors.Components
 
             return style;
         }
-        
+
         private string GetStatusCodeStyle()
         {
             if (Data.Result == null) return "";
 
             return Data.Result.IsSuccessStatusCode ? "highlight" : "lowlight";
         }
-    
-     }
+
+    }
 }

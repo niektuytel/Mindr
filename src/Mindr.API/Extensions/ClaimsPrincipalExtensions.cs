@@ -1,40 +1,37 @@
 ﻿using Microsoft.Graph;
 using Microsoft.Identity.Web;
 using Mindr.API.Exceptions;
+using System;
 using System.Net;
 using System.Security.Claims;
 
 namespace Mindr.Api.Extensions;
 
+/// <summary>
+/// Provides extension methods for ClaimsPrincipal.
+/// </summary>
 public static class ClaimsPrincipalExtensions
 {
-    public static string GetInfo(this ClaimsPrincipal claims)
+    /// <summary>
+    /// Gets the user ID from the claims principal.
+    /// </summary>
+    /// <param name="claims">The claims principal.</param>
+    /// <returns>The user ID.</returns>
+    /// <exception cref="HttpException">Thrown when no user identity is found on the given bearer token or when the user ID is missing from the bearer token.</exception>
+    public static string GetUserId(this ClaimsPrincipal claims)
     {
-        // Validate Input
         var identity = claims.Identities.FirstOrDefault();
         if (identity == null)
         {
-            throw new ApiRequestException(HttpStatusCode.BadRequest, "No User Identity found on given Bearer token");
+            throw new HttpException(HttpStatusCode.BadRequest, "No user identity found on given bearer token");
         }
 
-        //var tenantId = claims.GetTenantId();
-        //if (string.IsNullOrEmpty(tenantId))
-        //{
-        //    throw new ApiRequestException(HttpStatusCode.BadRequest, "Missing tenant id on Bearer token");
-        //}
-
-        var objectId = claims.GetObjectId();
-        if (string.IsNullOrEmpty(objectId))
+        var userId = claims.GetObjectId();
+        if (string.IsNullOrEmpty(userId))
         {
-            throw new ApiRequestException(HttpStatusCode.BadRequest, "Missing user id on Bearer token");
+            throw new HttpException(HttpStatusCode.BadRequest, "Missing user ID on bearer token");
         }
 
-        //var emailClaim = claims.FindFirst(ClaimTypes.Email);
-        //if (emailClaim == null || string.IsNullOrEmpty(emailClaim.Value))
-        //{
-        //    throw new ApiRequestException(HttpStatusCode.BadRequest, "Missing email on Bearer token");
-        //}
-
-        return objectId;
+        return userId;
     }
 }

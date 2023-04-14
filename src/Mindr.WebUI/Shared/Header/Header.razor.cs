@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components;
-using Microsoft.Fast.Components.FluentUI.DesignTokens;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
+using Microsoft.Fast.Components.FluentUI.DesignTokens;
 
 namespace Mindr.WebUI.Shared;
 

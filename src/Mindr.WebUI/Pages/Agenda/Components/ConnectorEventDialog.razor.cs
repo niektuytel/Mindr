@@ -1,18 +1,16 @@
 ﻿
 using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
-using Mindr.Core.Models.Connector;
-using Mindr.Core.Models;
-using Newtonsoft.Json;
-using Mindr.Core.Services;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using Azure;
 using Mindr.Core.Enums;
+using Mindr.Core.Models;
+using Mindr.Core.Models.ConnectorEvents;
+using Mindr.Core.Models.Connectors;
 using Mindr.WebUI.Services;
+using Newtonsoft.Json;
 
 namespace Mindr.WebUI.Pages.Agenda.Components;
 
-public partial class ConnectorEventDialog: FluentComponentBase
+public partial class ConnectorEventDialog : FluentComponentBase
 {
     [Parameter, EditorRequired]
     public Func<Task> OnChanged { get; set; } = default!;
@@ -90,11 +88,11 @@ public partial class ConnectorEventDialog: FluentComponentBase
 
         IsLoading = true;
 
-        if(IsCreating)
+        if (IsCreating)
         {
-            var events = new List<EventParameter>
+            var events = new List<ConnectorEventParameter>
             {
-                new EventParameter()
+                new ConnectorEventParameter()
                 {
                     Key = EventType.OnDateTime,
                     Value = AgendaEvent.StartDate.DateTime.ToLongDateString()
@@ -104,7 +102,7 @@ public partial class ConnectorEventDialog: FluentComponentBase
             ConnectorEvent.EventParameters = events;
 
             var response = await ConnectorEventClient.Create(ConnectorEvent);
-            if (response == null) 
+            if (response == null)
             {
                 // Failed request
                 throw new NotImplementedException();
@@ -165,7 +163,7 @@ public partial class ConnectorEventDialog: FluentComponentBase
 
         base.StateHasChanged();
     }
-    
+
     public void HandleOnDialogDismiss(DialogEventArgs args)
     {
         if (args is not null && args.Reason is not null && args.Reason == "dismiss")

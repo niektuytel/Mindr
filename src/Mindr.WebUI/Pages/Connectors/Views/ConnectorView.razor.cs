@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
-using Mindr.Core.Models.Connector;
-using Mindr.Core.Models.Connector.Http;
+using Mindr.Core.Models.Connectors;
 using Mindr.WebUI.Services;
 using Newtonsoft.Json;
-using System.Collections.ObjectModel;
 
 namespace Mindr.WebUI.Pages.Connectors.Views
 {
@@ -20,9 +18,9 @@ namespace Mindr.WebUI.Pages.Connectors.Views
         public string? NavName { get; set; }
 
         private bool IsLoading = false;
-        
+
         private Connector? ConnectorInfo { get; set; } = null;
-        
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)

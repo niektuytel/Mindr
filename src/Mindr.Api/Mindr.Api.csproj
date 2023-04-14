@@ -9,8 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Enums\**" />
+    <Content Remove="Enums\**" />
+    <EmbeddedResource Remove="Enums\**" />
+    <None Remove="Enums\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Controllers\WeatherForecastController.cs" />
-    <Compile Remove="Enums\ApiResponse.cs" />
     <Compile Remove="WeatherForecast.cs" />
   </ItemGroup>
 
@@ -50,10 +56,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Mindr.Core\Mindr.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Enums\" />
+    <ProjectReference Include="..\Mindr.HttpRunner\Mindr.HttpRunner.csproj" />
   </ItemGroup>
 
 </Project>

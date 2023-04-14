@@ -1,13 +1,10 @@
-﻿using Mindr.WebUI.Components;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Fast.Components.FluentUI.DesignTokens;
-using Microsoft.Fast.Components.FluentUI.Utilities;
 using Microsoft.Fast.Components.FluentUI;
+using Microsoft.Fast.Components.FluentUI.DesignTokens;
 using Microsoft.JSInterop;
+using Mindr.WebUI.Components;
 
 namespace Mindr.WebUI.Shared;
 
@@ -18,12 +15,12 @@ public partial class ProfileButton : FluentComponentBase, IAsyncDisposable
 
     [Inject]
     public SignOutSessionStateManager SignOutManager { get; set; } = default!;
-    
+
     [Inject]
     public AccentBaseColor AccentBaseColor { get; set; } = default!;
-    
+
     [Inject]
-    public IJSRuntime JSRuntime {get; set;} = default!;
+    public IJSRuntime JSRuntime { get; set; } = default!;
 
     private Stack? stack;
     private IJSObjectReference? jsModule;

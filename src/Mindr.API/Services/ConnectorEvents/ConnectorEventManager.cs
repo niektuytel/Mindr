@@ -1,20 +1,9 @@
-﻿using AutoMapper;
-using Hangfire;
+﻿using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.Graph;
-using Microsoft.Graph.ExternalConnectors;
-using Mindr.Api.Migrations;
-using Mindr.Api.Models;
+using Mindr.Api.Models.ConnectorEvents;
 using Mindr.Api.Persistence;
-using Mindr.API.Exceptions;
-using Mindr.Core.Enums;
-using Mindr.Core.Models.Connector;
-using Mindr.Core.Models.Connector.Http;
-using Mindr.Core.Services.Connectors;
-using System;
-using System.Net.NetworkInformation;
-using System.Reflection.Metadata;
+using Mindr.Core.Models.ConnectorEvents;
 
 namespace Mindr.Api.Services.ConnectorEvents;
 
@@ -25,8 +14,12 @@ public class ConnectorEventManager : IConnectorEventManager
     private readonly IBackgroundJobClient _backgroundJobs;
     private readonly ApplicationContext _context;
 
-    public ConnectorEventManager(IConnectorEventValidator eventValidator, IConnectorEventDriver eventDriver, IHttpCollectionClient collectionClient, IBackgroundJobClient backgroundJobs, ApplicationContext context)
-    {
+    public ConnectorEventManager(
+        IConnectorEventValidator eventValidator, 
+        IConnectorEventDriver eventDriver, 
+        IBackgroundJobClient backgroundJobs, 
+        ApplicationContext context
+    ) {
         _connectorEventValidator = eventValidator;
         _connectorEventDriver = eventDriver; 
         _backgroundJobs = backgroundJobs;
@@ -67,6 +60,20 @@ public class ConnectorEventManager : IConnectorEventManager
             .Include(x => x.EventParameters)
             .Include(x => x.ConnectorVariables)
             .Where(x => x.UserId == userId && x.EventId == eventId)
+            .ToListAsync();
+
+        return items;
+    }
+
+    public async Task<IEnumerable<ConnectorEvent>> GetAllByConnectorId(string? userId, Guid? connectorId)
+    {
+        _connectorEventValidator.ThrowOnInvalidUserId(userId);
+        _connectorEventValidator.ThrowOnInvalidConnectorId(connectorId);
+
+        var items = await _context.ConnectorEvents
+            .Include(x => x.EventParameters)
+            .Include(x => x.ConnectorVariables)
+            .Where(x => x.UserId == userId && x.ConnectorId == connectorId)
             .ToListAsync();
 
         return items;
@@ -159,4 +166,5 @@ public class ConnectorEventManager : IConnectorEventManager
         await _context.SaveChangesAsync();
         return entity;
     }
+
 }

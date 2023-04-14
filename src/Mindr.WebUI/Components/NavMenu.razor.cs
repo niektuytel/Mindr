@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Fast.Components.FluentUI;
 using Microsoft.Fast.Components.FluentUI.Utilities;
-using Microsoft.JSInterop;
 
 namespace Mindr.WebUI.Components;
 
@@ -95,7 +94,7 @@ public partial class NavMenu : FluentComponentBase
             if (OnExpanded.HasDelegate)
             {
                 await OnExpanded.InvokeAsync(Expanded);
-            }           
+            }
         }
     }
 

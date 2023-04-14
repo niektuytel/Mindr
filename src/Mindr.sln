@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.Core", "Mindr.Core\Mi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.Api", "Mindr.Api\Mindr.Api.csproj", "{F853F23D-FCA7-48F1-B180-E289A4C558F2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mindr.HttpRunner", "Mindr.HttpRunner\Mindr.HttpRunner.csproj", "{4D30BA20-E352-43BF-A61C-FC652AD930EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{F853F23D-FCA7-48F1-B180-E289A4C558F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F853F23D-FCA7-48F1-B180-E289A4C558F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F853F23D-FCA7-48F1-B180-E289A4C558F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D30BA20-E352-43BF-A61C-FC652AD930EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D30BA20-E352-43BF-A61C-FC652AD930EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D30BA20-E352-43BF-A61C-FC652AD930EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D30BA20-E352-43BF-A61C-FC652AD930EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,16 +1,14 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Web.Resource;
 using Mindr.Api.Extensions;
 using Mindr.Api.Models;
+using Mindr.Api.Models.Connectors;
 using Mindr.Api.Persistence;
 using Mindr.Api.Services.Connectors;
 
 using Mindr.Core.Enums;
-using Mindr.Core.Models.Connector;
-using Mindr.Core.Models.Connector.Http;
+using Mindr.Core.Models.Connectors;
+using Mindr.HttpRunner.Models;
 using System.Net;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -19,121 +17,95 @@ namespace Mindr.Api.Controllers;
 [Authorize]
 public class ConnectorController : BaseController
 {
-    private readonly IConnectorClient _connectorClient;
-    private readonly IMapper _mapper;
-    private readonly ApplicationContext _context;
+    private readonly IConnectorManager _connectorManager;
 
-    public ConnectorController(IConnectorClient connectorClient, IMapper mapper, ApplicationContext context)
+    public ConnectorController(IConnectorManager connectorManager)
     {
-        _connectorClient = connectorClient;
-        _mapper = mapper;
-        _context = context;
+        _connectorManager = connectorManager;
     }
 
     /// <remarks>
-    /// CreatePersonalEvent Connector.
+    /// Retrieves all connectors, optionally filtered by event ID (on the authenticated user) or query string.
     /// </remarks>
-    /// <credentials code="200">Successfully requested</credentials>
-    /// <credentials code="400">Invalid request</credentials>
-    /// <credentials code="401">Unauthorized</credentials>
-    [HttpPost]
-    [Produces("application/json")]
-    [ProducesResponseType(typeof(ConnectorInsertResponse), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(Models.ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
-    public async Task<IActionResult> Insert([FromBody] ConnectorInsert payload)
-    {
-        var response = await HandleRequest(
-            async () => {
-                var userId = User.GetInfo();
-                return await _connectorClient.Create(userId, payload);
-            }
-        );
-
-        return response;
-    }
-
-
-
-
-
-
-    // TODO: need Prepare & Validation functions
-
-
-
-    /// <remarks>
-    /// Get pipeline of connector
-    /// </remarks>
-    /// <credentials code="200">All related events</credentials>
-    /// <credentials code="400">Invalid credentials</credentials>
-    /// <credentials code="401">Unauthorized</credentials>
-    /// <credentials code="404">Not Found</credentials>
-    [HttpGet("{id}")]
-    [Produces("application/json")]
-    [ProducesResponseType(typeof(IEnumerable<HttpItem>), 200)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(404)]
-    public async Task<IActionResult> Get(Guid id)
-    {
-        var response = await HandleRequest(
-            async () => {
-                return await _connectorClient.Get(id);
-            }
-        );
-
-        return response;
-    }
-
-    /// <remarks>
-    /// Get all connectors.
-    /// </remarks>
-    /// <credentials code="200">All related connectors</credentials>
+    /// <credentials code="200">Success</credentials>
     /// <credentials code="400">Invalid credentials</credentials>
     /// <credentials code="401">Unauthorized</credentials>
     [HttpGet]
-    [Produces("application/json")]
-    [ProducesResponseType(typeof(IEnumerable<Connector>), 200)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(401)]
+    [ProducesResponseType(typeof(IEnumerable<ConnectorBriefDTO>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> GetAll([FromQuery] string? eventId = null, [FromQuery] string? query = null)
     {
-        var response = await HandleRequest(
-            async () => {
-                var userId = User.GetInfo();
-
-                if (string.IsNullOrEmpty(query) == false)
-                {
-                    return await _connectorClient.GetAll(userId, eventId, query, asUser: true);
-                }
-
-                return await _connectorClient.GetAllBriefly(userId);
+        var response = await HandleRequest(async () => {
+            if (!string.IsNullOrEmpty(eventId))
+            {
+                var userId = User.GetUserId();
+                return await _connectorManager.GetAllByEventId(userId, eventId);
             }
-        );
+
+            return await _connectorManager.GetAllByQuery(query);
+        });
 
         return response;
     }
 
     /// <remarks>
-    /// Get overview of connector
+    /// Creates a new connector.
     /// </remarks>
-    /// <credentials code="200">All related events</credentials>
+    /// <credentials code="200">Success</credentials>
     /// <credentials code="400">Invalid credentials</credentials>
     /// <credentials code="401">Unauthorized</credentials>
     /// <credentials code="404">Not Found</credentials>
-    [HttpGet("{id}/overview")]
-    [Produces("application/json")]
-    [ProducesResponseType(typeof(Connector), 200)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(404)]
+    [HttpPost("personal")]
+    [ProducesResponseType(typeof(Connector), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    public async Task<IActionResult> Create([FromBody] ConnectorOnCreate input)
+    {
+        var response = await HandleRequest(async () => {
+            var userId = User.GetUserId();
+            return await _connectorManager.Create(userId, input);
+        });
+
+        return response;
+    }
+
+    /// <remarks>
+    /// Retrieves a specific connector by ID for the authenticated user.
+    /// </remarks>
+    /// <credentials code="200">Success</credentials>
+    /// <credentials code="400">Invalid credentials</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
+    /// <credentials code="404">Not Found</credentials>
+    [HttpGet("personal/{id}")]
+    [ProducesResponseType(typeof(Connector), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> GetById([FromRoute]Guid id)
+    {
+        var response = await HandleRequest(async () => {
+            var userId = User.GetUserId();
+            return await _connectorManager.GetById(userId, id);
+        });
+
+        return response;
+    }
+
+    /// <remarks>
+    /// Update connector overview of a specific connector by ID of the authenticated user.
+    /// </remarks>
+    /// <credentials code="200">Success</credentials>
+    /// <credentials code="400">Invalid credentials</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
+    /// <credentials code="404">Not Found</credentials>
+    [HttpGet("personal/{id}/overview")]
+    [ProducesResponseType(typeof(ConnectorOverviewDTO), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> GetOverview(Guid id)
     {
-        var response = await HandleRequest(
-            async () => {
-                return await _connectorClient.GetOverview(id);
-            }
-        );
+        var response = await HandleRequest(async () => {
+            var userId = User.GetUserId();
+            return await _connectorManager.GetOverview(userId, id);
+        });
 
         return response;
     }
@@ -141,21 +113,20 @@ public class ConnectorController : BaseController
     /// <remarks>
     /// Update Overview Connector.
     /// </remarks>
-    /// <credentials code="200">Successfully requested</credentials>
-    /// <credentials code="400">Invalid request</credentials>
+    /// <credentials code="200">Success</credentials>
+    /// <credentials code="400">Invalid credentials</credentials>
     /// <credentials code="401">Unauthorized</credentials>
-    [HttpPut("{id}/overview")]
-    [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(401)]
-    public async Task<IActionResult> UpdateOverview(Guid id, [FromBody] Connector payload)
+    /// <credentials code="404">Not Found</credentials>
+    [HttpPut("personal/{id}/overview")]
+    [ProducesResponseType(typeof(ConnectorOverviewDTO), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> UpdateOverview(Guid id, [FromBody] ConnectorOverviewDTO input)
     {
-        var response = await HandleRequest(
-            async () => {
-                var userId = User.GetInfo();
-                await _connectorClient.UpdateOverview(userId, payload);
-            }
-        );
+        var response = await HandleRequest(async () => {
+            var userId = User.GetUserId();
+            await _connectorManager.UpdateOverview(userId, id, input);
+        });
 
         return response;
     }
@@ -163,43 +134,41 @@ public class ConnectorController : BaseController
     /// <remarks>
     /// Update HttpItems Connector.
     /// </remarks>
-    /// <credentials code="200">Successfully requested</credentials>
-    /// <credentials code="400">Invalid request</credentials>
+    /// <credentials code="200">Success</credentials>
+    /// <credentials code="400">Invalid credentials</credentials>
     /// <credentials code="401">Unauthorized</credentials>
-    [HttpPut("{id}/httpItems")]
-    [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(401)]
-    public async Task<IActionResult> UpdateHttpItems(Guid id, [FromBody] IEnumerable<HttpItem> payload)
+    /// <credentials code="404">Not Found</credentials>
+    [HttpPut("personal/{id}/pipeline")]
+    [ProducesResponseType(typeof(IEnumerable<HttpItem>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> UpdateHttpItems(Guid id, [FromBody] IEnumerable<HttpItem> input)
     {
-        var response = await HandleRequest(
-            async () => {
-                var userId = User.GetInfo();
-                await _connectorClient.UpdateHttpItems(userId, id, payload);
-            }
-        );
+        var response = await HandleRequest(async () => {
+            var userId = User.GetUserId();
+            await _connectorManager.UpdateHttpItems(userId, id, input);
+        });
 
         return response;
     }
 
     /// <remarks>
-    /// DeletePersonalEventById Connector.
+    /// Delete Connector by id.
     /// </remarks>
-    /// <credentials code="200">Successfully requested</credentials>
-    /// <credentials code="400">Invalid request</credentials>
+    /// <credentials code="200">Success</credentials>
+    /// <credentials code="400">Invalid credentials</credentials>
     /// <credentials code="401">Unauthorized</credentials>
-    [HttpDelete("{id}")]
-    [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(401)]
+    /// <credentials code="404">Not Found</credentials>
+    [HttpDelete("personal/{id}")]
+    [ProducesResponseType(typeof(Connector), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var response = await HandleRequest(
-            async () => {
-                var userId = User.GetInfo();
-                await _connectorClient.Delete(userId, id);
-            }
-        );
+        var response = await HandleRequest(async () => {
+            var userId = User.GetUserId();
+            await _connectorManager.Delete(userId, id);
+        });
 
         return response;
     }

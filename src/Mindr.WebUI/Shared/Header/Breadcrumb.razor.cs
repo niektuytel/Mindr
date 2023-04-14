@@ -6,7 +6,7 @@ using Mindr.WebUI.Models;
 
 namespace Mindr.WebUI.Shared;
 
-public partial class Breadcrumb: FluentComponentBase
+public partial class Breadcrumb : FluentComponentBase
 {
 
     [Inject]

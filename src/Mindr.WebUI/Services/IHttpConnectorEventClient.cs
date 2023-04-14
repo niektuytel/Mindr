@@ -1,7 +1,4 @@
-﻿using Mindr.Core.Models.Connector;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using Mindr.Core.Models.ConnectorEvents;
 
 namespace Mindr.WebUI.Services;
 

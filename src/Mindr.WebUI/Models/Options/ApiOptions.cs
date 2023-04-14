@@ -2,7 +2,7 @@
 
 namespace Mindr.WebUI.Models.Options
 {
-    public class ApiOptions: IHasPosition
+    public class ApiOptions : IHasPosition
     {
         public string Position => "Api";
 

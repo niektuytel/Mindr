@@ -103,6 +103,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Mindr.Core\Mindr.Core.csproj" />
+	  <ProjectReference Include="..\Mindr.HttpRunner\Mindr.HttpRunner.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
