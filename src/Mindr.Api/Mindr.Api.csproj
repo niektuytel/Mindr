@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\WeatherForecastController.cs" />
+    <Compile Remove="Enums\ApiResponse.cs" />
     <Compile Remove="WeatherForecast.cs" />
   </ItemGroup>
 
@@ -49,6 +50,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Mindr.Core\Mindr.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Enums\" />
   </ItemGroup>
 
 </Project>

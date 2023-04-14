@@ -1,6 +1,4 @@
-﻿using Mindr.API.Enums;
-
-namespace Mindr.Api.Models
+﻿namespace Mindr.Api.Models
 {
     public class ErrorMessageResponse
     {

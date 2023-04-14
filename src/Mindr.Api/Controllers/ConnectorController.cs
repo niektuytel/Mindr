@@ -7,10 +7,11 @@ using Mindr.Api.Extensions;
 using Mindr.Api.Models;
 using Mindr.Api.Persistence;
 using Mindr.Api.Services.Connectors;
-using Mindr.API.Enums;
+
 using Mindr.Core.Enums;
 using Mindr.Core.Models.Connector;
 using Mindr.Core.Models.Connector.Http;
+using System.Net;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Mindr.Api.Controllers;
@@ -37,8 +38,8 @@ public class ConnectorController : BaseController
     /// <credentials code="401">Unauthorized</credentials>
     [HttpPost]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(ConnectorInsertResponse), (int)API.Enums.ApiResponse.Ok)]
-    [ProducesResponseType(typeof(Models.ErrorMessageResponse), (int)API.Enums.ApiResponse.BadRequest)]
+    [ProducesResponseType(typeof(ConnectorInsertResponse), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(Models.ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> Insert([FromBody] ConnectorInsert payload)
     {
         var response = await HandleRequest(

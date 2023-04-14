@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Mindr.Api.Models;
-using Mindr.API.Enums;
+using System.Net;
 using System.Runtime.Serialization;
 
 namespace Mindr.API.Exceptions
@@ -12,12 +12,12 @@ namespace Mindr.API.Exceptions
         {
         }
 
-        public ApiRequestException(Enums.ApiResponse code, string? message) : base(message)
+        public ApiRequestException(HttpStatusCode code, string? message) : base(message)
         {
             ResponseCode = code;
         }
 
-        public Enums.ApiResponse ResponseCode { get; set; }
+        public HttpStatusCode ResponseCode { get; set; }
 
         public Api.Models.ErrorMessageResponse GetErrorMessage()
         {

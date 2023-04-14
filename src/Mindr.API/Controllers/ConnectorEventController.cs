@@ -7,9 +7,9 @@ using Mindr.Api.Extensions;
 using Mindr.Api.Models;
 using Mindr.Api.Persistence;
 using Mindr.Api.Services.ConnectorEvents;
-using Mindr.API.Enums;
 using Mindr.API.Exceptions;
 using Mindr.Core.Models.Connector;
+using System.Net;
 
 namespace Mindr.Api.Controllers;
 
@@ -31,9 +31,9 @@ public class ConnectorEventController : BaseController
     /// <credentials code="401">Unauthorized</credentials>
     /// <credentials code="404">Not found</credentials>
     [HttpPost("personal")]
-    [ProducesResponseType(typeof(ConnectorEvent), (int)ApiResponse.Ok)]
-    [ProducesResponseType(typeof(ErrorMessageResponse), (int)ApiResponse.BadRequest)]
-    [ProducesResponseType(typeof(ErrorMessageResponse), (int)ApiResponse.NotFound)]
+    [ProducesResponseType(typeof(ConnectorEvent), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> Create([FromBody] ConnectorEventOnCreate input)
     {
         var response = await HandleRequest(async () => {
@@ -52,8 +52,8 @@ public class ConnectorEventController : BaseController
     /// <credentials code="401">Unauthorized</credentials>
     [HttpGet("personal")]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(IEnumerable<ConnectorEvent>), (int)ApiResponse.Ok)]
-    [ProducesResponseType(typeof(ErrorMessageResponse), (int)ApiResponse.BadRequest)]
+    [ProducesResponseType(typeof(IEnumerable<ConnectorEvent>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> GetAll([FromQuery] string? eventId = null, [FromQuery] string? query = null)
     {
         var response = await HandleRequest(
@@ -85,9 +85,9 @@ public class ConnectorEventController : BaseController
     /// <credentials code="404">Not found</credentials>
     [HttpGet("personal/{id}")]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(IEnumerable<ConnectorEvent>), (int)ApiResponse.Ok)]
-    [ProducesResponseType(typeof(ErrorMessageResponse), (int)ApiResponse.BadRequest)]
-    [ProducesResponseType(typeof(ErrorMessageResponse), (int)ApiResponse.NotFound)]
+    [ProducesResponseType(typeof(IEnumerable<ConnectorEvent>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> GetById([FromRoute]Guid id)
     {
         var response = await HandleRequest(async () => {
@@ -105,8 +105,8 @@ public class ConnectorEventController : BaseController
     /// <credentials code="400">Invalid request</credentials>
     /// <credentials code="401">Unauthorized</credentials>
     [HttpPut("personal/{id}")]
-    [ProducesResponseType(typeof(ConnectorEvent), (int)ApiResponse.Ok)]
-    [ProducesResponseType(typeof(ErrorMessageResponse), (int)ApiResponse.BadRequest)]
+    [ProducesResponseType(typeof(ConnectorEvent), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> UpdateById([FromRoute]Guid id, [FromBody]ConnectorEventOnUpdate input)
     {
         var response = await HandleRequest(async () => {
@@ -125,9 +125,9 @@ public class ConnectorEventController : BaseController
     /// <credentials code="401">Unauthorized</credentials>
     /// <credentials code="404">Not Found</credentials>
     [HttpDelete("personal/{id}")]
-    [ProducesResponseType(typeof(ConnectorEvent), (int)ApiResponse.Ok)]
-    [ProducesResponseType(typeof(ErrorMessageResponse), (int)ApiResponse.BadRequest)]
-    [ProducesResponseType(typeof(ErrorMessageResponse), (int)ApiResponse.NotFound)]
+    [ProducesResponseType(typeof(ConnectorEvent), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> DeleteById([FromRoute]Guid id)
     {
         var response = await HandleRequest(async () => {

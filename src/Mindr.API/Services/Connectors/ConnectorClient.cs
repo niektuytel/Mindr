@@ -1,5 +1,4 @@
 ﻿using Hangfire;
-using Mindr.API.Enums;
 using Mindr.API.Exceptions;
 using Mindr.Api.Persistence;
 using Mindr.Core.Models.Connector;
@@ -11,6 +10,7 @@ using Microsoft.Graph.ExternalConnectors;
 using Mindr.Core.Models.Connector.Http;
 using Mindr.Api.Models;
 using Mindr.Api.Services.ConnectorEvents;
+using System.Net;
 
 namespace Mindr.Api.Services.Connectors
 {
@@ -112,7 +112,7 @@ namespace Mindr.Api.Services.Connectors
 
             if (item == null)
             {
-                throw new ApiRequestException(ApiResponse.NotFound, $"Did not find connector on {connectorId}");
+                throw new ApiRequestException(HttpStatusCode.NotFound, $"Did not find connector on {connectorId}");
             }
 
             return item;
@@ -128,7 +128,7 @@ namespace Mindr.Api.Services.Connectors
             // insert
             if (entity == null)
             {
-                throw new ApiRequestException(ApiResponse.NotFound, $"Did not find connector {payload.Id} on user:{userId}");
+                throw new ApiRequestException(HttpStatusCode.NotFound, $"Did not find connector {payload.Id} on user:{userId}");
             }
 
             _context.ConnectorVariables.UpdateRange(payload.Variables);
@@ -185,7 +185,7 @@ namespace Mindr.Api.Services.Connectors
             // 404
             if (connector == null)
             {
-                throw new ApiRequestException(ApiResponse.NotFound, $"Missing connector: {connectorId}");
+                throw new ApiRequestException(HttpStatusCode.NotFound, $"Missing connector: {connectorId}");
             }
 
             connector.Pipeline = items.ToArray();
@@ -204,7 +204,7 @@ namespace Mindr.Api.Services.Connectors
             // insert
             if (entity == null)
             {
-                throw new ApiRequestException(ApiResponse.NotFound, $"Missing connector: {id} on user: {userId}");
+                throw new ApiRequestException(HttpStatusCode.NotFound, $"Missing connector: {id} on user: {userId}");
             }
 
             _context.Connectors.Remove(entity);

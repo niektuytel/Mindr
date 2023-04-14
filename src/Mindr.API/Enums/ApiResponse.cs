@@ -1,6 +1,6 @@
 ﻿namespace Mindr.API.Enums;
 
-public enum ApiResponse
+public enum HttpStatusCode
 {
     Ok = 200,
     Created = 201,

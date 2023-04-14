@@ -1,11 +1,11 @@
 ﻿using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Mindr.Api.Persistence;
-using Mindr.API.Enums;
 using Mindr.API.Exceptions;
 using Mindr.Core.Models.Connector;
 using Mindr.Core.Models.Connector.Http;
 using Mindr.Core.Services.Connectors;
+using System.Net;
 using HttpRequest = Mindr.Core.Models.Connector.Http.HttpRequest;
 
 namespace Mindr.Api.Services.ConnectorEvents
@@ -64,7 +64,7 @@ namespace Mindr.Api.Services.ConnectorEvents
             }
             else if (datetime < DateTime.Now)
             {
-                throw new ApiRequestException(ApiResponse.BadRequest, "Scheduled datetime must be in the future.");
+                throw new ApiRequestException(HttpStatusCode.BadRequest, "Scheduled datetime must be in the future.");
             }
 
             var connector = await GetConnectorAsync(entity.ConnectorId);
@@ -99,7 +99,7 @@ namespace Mindr.Api.Services.ConnectorEvents
 
             if (connector == null)
             {
-                throw new ApiRequestException(ApiResponse.BadRequest, $"connector on id: '{connectorId}' is unknown");
+                throw new ApiRequestException(HttpStatusCode.BadRequest, $"connector on id: '{connectorId}' is unknown");
             }
 
             return connector;

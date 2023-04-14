@@ -7,7 +7,6 @@ using Microsoft.Graph.ExternalConnectors;
 using Mindr.Api.Migrations;
 using Mindr.Api.Models;
 using Mindr.Api.Persistence;
-using Mindr.API.Enums;
 using Mindr.API.Exceptions;
 using Mindr.Core.Enums;
 using Mindr.Core.Models.Connector;
