@@ -16,6 +16,8 @@ namespace Mindr.WebUI.Pages.Connectors.Views
         [Inject]
         public IHttpConnectorClient ConnectorClient { get; set; }
 
+        private string ErrorMessage { get; set; }
+
         private bool IsLoadingData = false;
         private bool IsLoadingDialog = false;
 
@@ -29,9 +31,9 @@ namespace Mindr.WebUI.Pages.Connectors.Views
 
         private GridItemsProviderRequest<Connector> DataProviderRequest { get; set; } = default!;
 
-        private GridItemsProvider<Connector> DataProvider { get; set; } = default!;
+        private GridItemsProvider<ConnectorBriefDTO> DataProvider { get; set; } = default!;
 
-        private ICollection<Connector>? DataCollection { get; set; } = new Collection<Connector>();
+        private ICollection<ConnectorBriefDTO>? DataCollection { get; set; } = new Collection<ConnectorBriefDTO>();
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -53,16 +55,24 @@ namespace Mindr.WebUI.Pages.Connectors.Views
                 var response = await ConnectorClient.GetAll();
                 if (response == null)
                 {
-                    // Failed request
-                    throw new NotImplementedException();
-                }
+                    ErrorMessage = $"Login session expired, Please login again";
+                    base.StateHasChanged();
 
-                var json = await response.Content.ReadAsStringAsync();
-                if (!string.IsNullOrEmpty(json))
+                    // TODO: should be fixed with refresh token
+                }
+                else
                 {
-                    DataCollection = JsonConvert.DeserializeObject<ICollection<Connector>>(json);
+                    var content = await response.Content.ReadAsStringAsync();
+                    if(response.IsSuccessStatusCode)
+                    {
+                        DataCollection = JsonConvert.DeserializeObject<ICollection<ConnectorBriefDTO>>(content);
+                    }
+                    else
+                    {
+                        ErrorMessage = content;
+                        base.StateHasChanged();
+                    }
                 }
-
 
                 // +1 to add space to to 1 filled space,
                 // The provide now knows that he need to add a next page
@@ -102,7 +112,7 @@ namespace Mindr.WebUI.Pages.Connectors.Views
             base.StateHasChanged();
         }
 
-        private void HandleRowClick(Connector? item)
+        private void HandleRowClick(ConnectorBriefDTO? item)
         {
             if (item == null) return;
 
@@ -111,7 +121,7 @@ namespace Mindr.WebUI.Pages.Connectors.Views
             base.StateHasChanged();
         }
 
-        private async Task HandleCellFocus(FluentDataGridCell<Connector> cell)
+        private async Task HandleCellFocus(FluentDataGridCell<ConnectorBriefDTO> cell)
         {
             if (cell.CellType == DataGridCellType.Default)
             {

@@ -22,33 +22,7 @@ namespace Mindr.Api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Connector", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Color")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsPublic")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Connectors");
-                });
-
-            modelBuilder.Entity("Mindr.Core.Models.Connector.ConnectorEvent", b =>
+            modelBuilder.Entity("Mindr.Core.Models.ConnectorEvents.ConnectorEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -77,7 +51,55 @@ namespace Mindr.Api.Migrations
                     b.ToTable("ConnectorEvents");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.ConnectorVariable", b =>
+            modelBuilder.Entity("Mindr.Core.Models.ConnectorEvents.ConnectorEventParameter", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ConnectorEventId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Key")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConnectorEventId");
+
+                    b.ToTable("ConnectorEventParameter");
+                });
+
+            modelBuilder.Entity("Mindr.Core.Models.Connectors.Connector", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Connectors");
+                });
+
+            modelBuilder.Entity("Mindr.Core.Models.Connectors.ConnectorVariable", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -113,29 +135,7 @@ namespace Mindr.Api.Migrations
                     b.ToTable("ConnectorVariables");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.EventParameter", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("ConnectorEventId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Key")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ConnectorEventId");
-
-                    b.ToTable("EventParameter");
-                });
-
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpBody", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpBody", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -157,7 +157,7 @@ namespace Mindr.Api.Migrations
                     b.ToTable("HttpBody");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpBodyOption", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpBodyOption", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -173,7 +173,7 @@ namespace Mindr.Api.Migrations
                     b.ToTable("HttpBodyOption");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpBodyOptionRaw", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpBodyOptionRaw", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -187,7 +187,7 @@ namespace Mindr.Api.Migrations
                     b.ToTable("HttpBodyOptionRaw");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpCookie", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpCookie", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -206,7 +206,7 @@ namespace Mindr.Api.Migrations
                     b.ToTable("HttpCookie");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpHeader", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpHeader", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -239,7 +239,7 @@ namespace Mindr.Api.Migrations
                     b.ToTable("HttpHeader");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpItem", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -269,7 +269,7 @@ namespace Mindr.Api.Migrations
                     b.ToTable("HttpItems");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpRequest", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpRequest", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -293,7 +293,7 @@ namespace Mindr.Api.Migrations
                     b.ToTable("HttpRequest");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpRequestUrl", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpRequestUrl", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -316,7 +316,7 @@ namespace Mindr.Api.Migrations
                     b.ToTable("HttpRequestUrl");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpRequestUrlQuery", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpRequestUrlQuery", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -341,7 +341,7 @@ namespace Mindr.Api.Migrations
                     b.ToTable("HttpRequestUrlQuery");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpResponse", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpResponse", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -377,7 +377,7 @@ namespace Mindr.Api.Migrations
                     b.ToTable("HttpResponse");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpVariable", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpVariable", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -407,80 +407,80 @@ namespace Mindr.Api.Migrations
                     b.ToTable("HttpVariable");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.ConnectorVariable", b =>
+            modelBuilder.Entity("Mindr.Core.Models.ConnectorEvents.ConnectorEventParameter", b =>
                 {
-                    b.HasOne("Mindr.Core.Models.Connector.ConnectorEvent", null)
-                        .WithMany("ConnectorVariables")
-                        .HasForeignKey("ConnectorEventId");
-
-                    b.HasOne("Mindr.Core.Models.Connector.Connector", null)
-                        .WithMany("Variables")
-                        .HasForeignKey("ConnectorId");
-                });
-
-            modelBuilder.Entity("Mindr.Core.Models.Connector.EventParameter", b =>
-                {
-                    b.HasOne("Mindr.Core.Models.Connector.ConnectorEvent", null)
+                    b.HasOne("Mindr.Core.Models.ConnectorEvents.ConnectorEvent", null)
                         .WithMany("EventParameters")
                         .HasForeignKey("ConnectorEventId");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpBody", b =>
+            modelBuilder.Entity("Mindr.Core.Models.Connectors.ConnectorVariable", b =>
                 {
-                    b.HasOne("Mindr.Core.Models.Connector.Http.HttpBodyOption", "Options")
+                    b.HasOne("Mindr.Core.Models.ConnectorEvents.ConnectorEvent", null)
+                        .WithMany("ConnectorVariables")
+                        .HasForeignKey("ConnectorEventId");
+
+                    b.HasOne("Mindr.Core.Models.Connectors.Connector", null)
+                        .WithMany("Variables")
+                        .HasForeignKey("ConnectorId");
+                });
+
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpBody", b =>
+                {
+                    b.HasOne("Mindr.HttpRunner.Models.HttpBodyOption", "Options")
                         .WithMany()
                         .HasForeignKey("OptionsId");
 
                     b.Navigation("Options");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpBodyOption", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpBodyOption", b =>
                 {
-                    b.HasOne("Mindr.Core.Models.Connector.Http.HttpBodyOptionRaw", "Raw")
+                    b.HasOne("Mindr.HttpRunner.Models.HttpBodyOptionRaw", "Raw")
                         .WithMany()
                         .HasForeignKey("RawId");
 
                     b.Navigation("Raw");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpCookie", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpCookie", b =>
                 {
-                    b.HasOne("Mindr.Core.Models.Connector.Http.HttpResponse", null)
+                    b.HasOne("Mindr.HttpRunner.Models.HttpResponse", null)
                         .WithMany("Cookie")
                         .HasForeignKey("HttpResponseId");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpHeader", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpHeader", b =>
                 {
-                    b.HasOne("Mindr.Core.Models.Connector.Http.HttpRequest", null)
+                    b.HasOne("Mindr.HttpRunner.Models.HttpRequest", null)
                         .WithMany("Header")
                         .HasForeignKey("HttpRequestId");
 
-                    b.HasOne("Mindr.Core.Models.Connector.Http.HttpResponse", null)
+                    b.HasOne("Mindr.HttpRunner.Models.HttpResponse", null)
                         .WithMany("Header")
                         .HasForeignKey("HttpResponseId");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpItem", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpItem", b =>
                 {
-                    b.HasOne("Mindr.Core.Models.Connector.Connector", null)
-                        .WithMany("HttpItems")
+                    b.HasOne("Mindr.Core.Models.Connectors.Connector", null)
+                        .WithMany("Pipeline")
                         .HasForeignKey("ConnectorId");
 
-                    b.HasOne("Mindr.Core.Models.Connector.Http.HttpRequest", "Request")
+                    b.HasOne("Mindr.HttpRunner.Models.HttpRequest", "Request")
                         .WithMany()
                         .HasForeignKey("RequestId");
 
                     b.Navigation("Request");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpRequest", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpRequest", b =>
                 {
-                    b.HasOne("Mindr.Core.Models.Connector.Http.HttpBody", "Body")
+                    b.HasOne("Mindr.HttpRunner.Models.HttpBody", "Body")
                         .WithMany()
                         .HasForeignKey("BodyId");
 
-                    b.HasOne("Mindr.Core.Models.Connector.Http.HttpRequestUrl", "Url")
+                    b.HasOne("Mindr.HttpRunner.Models.HttpRequestUrl", "Url")
                         .WithMany()
                         .HasForeignKey("UrlId");
 
@@ -489,69 +489,69 @@ namespace Mindr.Api.Migrations
                     b.Navigation("Url");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpRequestUrlQuery", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpRequestUrlQuery", b =>
                 {
-                    b.HasOne("Mindr.Core.Models.Connector.Http.HttpRequestUrl", null)
+                    b.HasOne("Mindr.HttpRunner.Models.HttpRequestUrl", null)
                         .WithMany("Query")
                         .HasForeignKey("HttpRequestUrlId");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpResponse", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpResponse", b =>
                 {
-                    b.HasOne("Mindr.Core.Models.Connector.Http.HttpItem", null)
+                    b.HasOne("Mindr.HttpRunner.Models.HttpItem", null)
                         .WithMany("Response")
                         .HasForeignKey("HttpItemId");
 
-                    b.HasOne("Mindr.Core.Models.Connector.Http.HttpRequest", "OriginalRequest")
+                    b.HasOne("Mindr.HttpRunner.Models.HttpRequest", "OriginalRequest")
                         .WithMany()
                         .HasForeignKey("OriginalRequestId");
 
                     b.Navigation("OriginalRequest");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpVariable", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpVariable", b =>
                 {
-                    b.HasOne("Mindr.Core.Models.Connector.Http.HttpRequest", null)
+                    b.HasOne("Mindr.HttpRunner.Models.HttpRequest", null)
                         .WithMany("Variables")
                         .HasForeignKey("HttpRequestId");
 
-                    b.HasOne("Mindr.Core.Models.Connector.Http.HttpResponse", null)
+                    b.HasOne("Mindr.HttpRunner.Models.HttpResponse", null)
                         .WithMany("Variables")
                         .HasForeignKey("HttpResponseId");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Connector", b =>
-                {
-                    b.Navigation("HttpItems");
-
-                    b.Navigation("Variables");
-                });
-
-            modelBuilder.Entity("Mindr.Core.Models.Connector.ConnectorEvent", b =>
+            modelBuilder.Entity("Mindr.Core.Models.ConnectorEvents.ConnectorEvent", b =>
                 {
                     b.Navigation("ConnectorVariables");
 
                     b.Navigation("EventParameters");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpItem", b =>
+            modelBuilder.Entity("Mindr.Core.Models.Connectors.Connector", b =>
+                {
+                    b.Navigation("Pipeline");
+
+                    b.Navigation("Variables");
+                });
+
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpItem", b =>
                 {
                     b.Navigation("Response");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpRequest", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpRequest", b =>
                 {
                     b.Navigation("Header");
 
                     b.Navigation("Variables");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpRequestUrl", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpRequestUrl", b =>
                 {
                     b.Navigation("Query");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connector.Http.HttpResponse", b =>
+            modelBuilder.Entity("Mindr.HttpRunner.Models.HttpResponse", b =>
                 {
                     b.Navigation("Cookie");
 

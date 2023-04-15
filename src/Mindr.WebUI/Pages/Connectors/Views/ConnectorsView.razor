@@ -9,7 +9,6 @@
 @inherits FluentComponentBase
 @attribute [Authorize]
 
-
 <Breadcrumb />
 <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
     <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="HandleDialogOpen">
@@ -18,9 +17,15 @@
     </FluentButton>
 </Stack>
 <Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="height:100%">
-    @if (!IsLoadingData)
+    @if (!string.IsNullOrEmpty(ErrorMessage))
     {
-        <FluentDataGrid TGridItem="Connector"
+        <Stack Style="min-height:50px;border: 1px solid #D8000C;background-color: #FFBABA;padding: 3px;">
+            @ErrorMessage
+        </Stack>
+    }
+    else if (!IsLoadingData)
+    {
+        <FluentDataGrid TGridItem="ConnectorBriefDTO"
                     RowsDataProvider="@DataProvider"
                     OnCellFocus="HandleCellFocus">
             <PropertyColumn Property="@(p => p.Name)" />

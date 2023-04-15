@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Mindr.Api.Migrations;
 using Mindr.Api.Persistence;
 using Mindr.API.Exceptions;
 using Mindr.Core.Models.Connectors;

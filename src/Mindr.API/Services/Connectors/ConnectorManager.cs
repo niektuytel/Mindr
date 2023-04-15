@@ -62,6 +62,19 @@ namespace Mindr.Api.Services.Connectors
             return entity!;
         }
 
+        public async Task<IEnumerable<ConnectorBriefDTO>> GetAll(string userId)
+        {
+            _connectorValidator.ThrowOnInvalidUserId(userId);
+
+            var entities = await _context.Connectors
+                .Include(item => item.Variables)
+                .Where(item => item.CreatedBy == userId)
+                .ToListAsync();
+
+            var items = _mapper.Map<IEnumerable<Connector>, IEnumerable<ConnectorBriefDTO>>(entities);
+            return items;
+        }
+
         public async Task<IEnumerable<ConnectorBriefDTO>> GetAllByQuery(string? query)
         {
             _connectorValidator.ThrowOnInvalidQuery(query);
@@ -70,6 +83,8 @@ namespace Mindr.Api.Services.Connectors
                 .Include(item => item.Variables)
                 .Where(item => item.Name.ToLower().Contains(query!))
                 .ToListAsync();
+
+            // TODO: remove values from variable, as this is an global search not on personal user
 
             var items = _mapper.Map<IEnumerable<Connector>, IEnumerable<ConnectorBriefDTO>>(entities);
             return items;

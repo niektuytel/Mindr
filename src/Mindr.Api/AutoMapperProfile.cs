@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Mindr.Api.Models.Connectors;
 using Mindr.Core.Models.Connectors;
 using Newtonsoft.Json.Linq;
 

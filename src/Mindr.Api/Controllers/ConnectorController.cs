@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Mindr.Api.Extensions;
 using Mindr.Api.Models;
 using Mindr.Api.Models.Connectors;
-using Mindr.Api.Persistence;
 using Mindr.Api.Services.Connectors;
 
 using Mindr.Core.Enums;
@@ -25,7 +24,8 @@ public class ConnectorController : BaseController
     }
 
     /// <remarks>
-    /// Retrieves all connectors, optionally filtered by event ID (on the authenticated user) or query string.
+    /// Retrieves all connectors for the authenticated user, optionally filtered by event ID or query string.
+    /// Retreive on query is not dependend on user id. It is a search over all available conenctors.
     /// </remarks>
     /// <credentials code="200">Success</credentials>
     /// <credentials code="400">Invalid credentials</credentials>
@@ -36,13 +36,17 @@ public class ConnectorController : BaseController
     public async Task<IActionResult> GetAll([FromQuery] string? eventId = null, [FromQuery] string? query = null)
     {
         var response = await HandleRequest(async () => {
+            var userId = User.GetUserId();
             if (!string.IsNullOrEmpty(eventId))
             {
-                var userId = User.GetUserId();
                 return await _connectorManager.GetAllByEventId(userId, eventId);
             }
+            else if (!string.IsNullOrEmpty(query))
+            {
+                return await _connectorManager.GetAllByQuery(query);
+            }
 
-            return await _connectorManager.GetAllByQuery(query);
+            return await _connectorManager.GetAll(userId);
         });
 
         return response;

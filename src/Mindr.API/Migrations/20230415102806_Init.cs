@@ -70,7 +70,7 @@ namespace Mindr.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EventParameter",
+                name: "ConnectorEventParameter",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -80,9 +80,9 @@ namespace Mindr.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EventParameter", x => x.Id);
+                    table.PrimaryKey("PK_ConnectorEventParameter", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_EventParameter_ConnectorEvents_ConnectorEventId",
+                        name: "FK_ConnectorEventParameter_ConnectorEvents_ConnectorEventId",
                         column: x => x.ConnectorEventId,
                         principalTable: "ConnectorEvents",
                         principalColumn: "Id");
@@ -322,6 +322,11 @@ namespace Mindr.Api.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_ConnectorEventParameter_ConnectorEventId",
+                table: "ConnectorEventParameter",
+                column: "ConnectorEventId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ConnectorVariables_ConnectorEventId",
                 table: "ConnectorVariables",
                 column: "ConnectorEventId");
@@ -330,11 +335,6 @@ namespace Mindr.Api.Migrations
                 name: "IX_ConnectorVariables_ConnectorId",
                 table: "ConnectorVariables",
                 column: "ConnectorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EventParameter_ConnectorEventId",
-                table: "EventParameter",
-                column: "ConnectorEventId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_HttpBody_OptionsId",
@@ -410,10 +410,10 @@ namespace Mindr.Api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ConnectorVariables");
+                name: "ConnectorEventParameter");
 
             migrationBuilder.DropTable(
-                name: "EventParameter");
+                name: "ConnectorVariables");
 
             migrationBuilder.DropTable(
                 name: "HttpCookie");

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
+using Microsoft.Graph.TermStore;
 using Mindr.Core.Models.Connectors;
 using Mindr.WebUI.Services;
 using Newtonsoft.Json;
@@ -14,10 +15,11 @@ namespace Mindr.WebUI.Pages.Connectors.Components
         [Inject]
         public IHttpConnectorClient ConnectorClient { get; set; }
 
-        public FluentDialog Dialog = default!;
+        private string ErrorMessage { get; set; } = "Test error message exzplain what is going wrong from api";
 
         public Connector Data { get; set; } = new();
 
+        public FluentDialog Dialog = default!;
         private bool IsLoadingData = false;
         private bool IsLoadingDialog = false;
 
