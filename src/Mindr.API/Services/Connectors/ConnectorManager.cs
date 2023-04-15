@@ -84,7 +84,14 @@ namespace Mindr.Api.Services.Connectors
                 .Where(item => item.Name.ToLower().Contains(query!))
                 .ToListAsync();
 
-            // TODO: remove values from variable, as this is an global search not on personal user
+            // As this is an global search not on personal user we remove the credentials
+            foreach (var entity in entities)
+            {
+                foreach (var variable in entity.Variables)
+                {
+                    variable.Value = "";
+                }
+            }
 
             var items = _mapper.Map<IEnumerable<Connector>, IEnumerable<ConnectorBriefDTO>>(entities);
             return items;
