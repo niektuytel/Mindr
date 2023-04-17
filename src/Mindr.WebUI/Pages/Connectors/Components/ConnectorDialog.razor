@@ -9,7 +9,12 @@
 
 <div>
     <FluentDialog Modal="true" TrapFocus="true" @ref="Dialog" @ondialogdismiss="HandleDialogDismiss" Style="height:fit-content">
-        
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <Stack Style="min-height:50px;border: 1px solid #D8000C;background-color: #FFBABA;padding: 3px;">
+                @ErrorMessage
+            </Stack>
+        }
         @if (!IsLoadingDialog)
         {
             <FluentTextField @bind-Value="@Data.Name" Placeholder="Title" style="width: 100%;" />

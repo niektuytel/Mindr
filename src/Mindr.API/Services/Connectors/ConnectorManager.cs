@@ -55,7 +55,8 @@ namespace Mindr.Api.Services.Connectors
                 .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.OriginalRequest).ThenInclude(item => item.Body).ThenInclude(item => item.Options).ThenInclude(item => item.Raw)
                 .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.Header)
                 .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.Cookie)
-                .FirstOrDefaultAsync(item => item.CreatedBy == userId && item.Id == id);
+                .Where(item => (item.IsPublic || item.CreatedBy == userId))
+                .FirstOrDefaultAsync(item => item.Id == id);
 
             _connectorValidator.ThrowOnNullConnector(id, entity);
 
@@ -68,19 +69,20 @@ namespace Mindr.Api.Services.Connectors
 
             var entities = await _context.Connectors
                 .Include(item => item.Variables)
-                .Where(item => item.CreatedBy == userId)
+                .Where(item => (item.IsPublic || item.CreatedBy == userId))
                 .ToListAsync();
 
             var items = _mapper.Map<IEnumerable<Connector>, IEnumerable<ConnectorBriefDTO>>(entities);
             return items;
         }
 
-        public async Task<IEnumerable<ConnectorBriefDTO>> GetAllByQuery(string? query)
+        public async Task<IEnumerable<ConnectorBriefDTO>> GetAllByQuery(string userId, string? query)
         {
             _connectorValidator.ThrowOnInvalidQuery(query);
 
             var entities = await _context.Connectors
                 .Include(item => item.Variables)
+                .Where(item => (item.IsPublic || item.CreatedBy == userId))
                 .Where(item => item.Name.ToLower().Contains(query!))
                 .ToListAsync();
 
@@ -104,6 +106,7 @@ namespace Mindr.Api.Services.Connectors
 
             var entities = await _context.Connectors
                 .Include(item => item.Variables)
+                .Where(item => (item.IsPublic || item.CreatedBy == userId))
                 .Where(item => connectorIds.Contains(item.Id))
                 .ToListAsync();
 
@@ -132,7 +135,8 @@ namespace Mindr.Api.Services.Connectors
         {
             var entity = await _context.Connectors
                 .Include(item => item.Variables)
-                .FirstOrDefaultAsync(x => x.CreatedBy == userId && x.Id == id);
+                .Where(item => (item.IsPublic || item.CreatedBy == userId))
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             _connectorValidator.ThrowOnNullConnector(id, entity);
 
@@ -144,7 +148,8 @@ namespace Mindr.Api.Services.Connectors
         {
             var entity = await _context.Connectors
                 .Include(item => item.Variables)
-                .FirstOrDefaultAsync(x => x.CreatedBy == userId && x.Id == id);
+                .Where(item => (item.IsPublic || item.CreatedBy == userId))
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             _connectorValidator.ThrowOnNullConnector(id, entity);
 

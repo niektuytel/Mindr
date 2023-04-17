@@ -20,7 +20,7 @@ namespace Mindr.Api
                     CreatedBy = "00000000-0000-0000-aacc-c311156d0357",
                     Color = "orange",
                     IsPublic = true,
-                    Name = "ProcessConnectorEventAsync Whatsapp Text Message",
+                    Name = "Send Whatsapp Text Message",
                     Description = "Some description explain the product",
                     Variables = new ConnectorVariable[]
                         {
@@ -68,7 +68,7 @@ namespace Mindr.Api
                 CreatedBy = "00000000-0000-0000-aacc-c311156d0357",
                 Color = "blue",
                 IsPublic = true,
-                Name = "ProcessConnectorEventAsync WhatsApp Sample Text Message",
+                Name = "Send WhatsApp Sample Text Message",
                 Description = "Some description explain the product",
                 Variables = new ConnectorVariable[]
                         {

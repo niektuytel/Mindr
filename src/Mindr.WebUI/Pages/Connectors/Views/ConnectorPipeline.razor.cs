@@ -23,6 +23,7 @@ namespace Mindr.WebUI.Pages.Connectors.Views
         [Parameter, EditorRequired]
         public string ConnectorId { get; set; } = default!;
 
+        private string? ErrorMessage { get; set; }
         public List<HttpItem> HttpItems { get; set; } = new List<HttpItem>();
 
         public HttpItem? SelectedHttpItem { get; set; } = null;
@@ -64,15 +65,24 @@ namespace Mindr.WebUI.Pages.Connectors.Views
             var response = await ConnectorClient.Get(ConnectorId);
             if (response == null)
             {
-                // Failed request
-                throw new NotImplementedException();
-            }
+                // TODO: should be fixed with refresh token
 
-            var json = await response.Content.ReadAsStringAsync();
-            if (!string.IsNullOrEmpty(json))
+                ErrorMessage = $"Login session expired, Please login again";
+                base.StateHasChanged();
+            }
+            else
             {
-                var connector = JsonConvert.DeserializeObject<Connector>(json);
-                HttpItems = connector.Pipeline.ToList();
+                var content = await response.Content.ReadAsStringAsync();
+                if (response.IsSuccessStatusCode)
+                {
+                    var connector = JsonConvert.DeserializeObject<Connector>(content);
+                    HttpItems = connector!.Pipeline.ToList();
+                }
+                else
+                {
+                    ErrorMessage = content;
+                    base.StateHasChanged();
+                }
             }
 
             IsLoading = false;
@@ -84,10 +94,21 @@ namespace Mindr.WebUI.Pages.Connectors.Views
             IsLoading = true;
 
             var response = await ConnectorClient.UpdateHttpItems(ConnectorId, HttpItems.AsEnumerable());
-            if (response?.IsSuccessStatusCode != true)
+            if (response == null)
             {
-                // Failed request
-                throw new NotImplementedException();
+                // TODO: should be fixed with refresh token
+
+                ErrorMessage = $"Login session expired, Please login again";
+                base.StateHasChanged();
+            }
+            else
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                {
+                    ErrorMessage = content;
+                    base.StateHasChanged();
+                }
             }
 
             IsLoading = false;

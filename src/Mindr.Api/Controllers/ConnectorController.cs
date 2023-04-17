@@ -43,7 +43,7 @@ public class ConnectorController : BaseController
             }
             else if (!string.IsNullOrEmpty(query))
             {
-                return await _connectorManager.GetAllByQuery(query);
+                return await _connectorManager.GetAllByQuery(userId, query);
             }
 
             return await _connectorManager.GetAll(userId);

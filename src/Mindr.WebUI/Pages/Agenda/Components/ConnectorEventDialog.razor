@@ -18,8 +18,14 @@
                         Autocomplete="ComboboxAutocomplete.Both" 
                         SelectedOptionChanged="@((input) => HandleOnSelect(input))"
                         @bind-Text="@Query"
-                        @oninput="@(async (input) => await HandleOnSearch(input))" 
-                        />
+                        @oninput="@(async (input) => await HandleOnSearch(input))" />
+
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <Stack Style="min-height:50px;border: 1px solid #D8000C;background-color: #FFBABA;padding: 3px;">
+                @ErrorMessage
+            </Stack>
+        }
         @if (ConnectorEvent != null)
         {
             <div style="margin:10px">

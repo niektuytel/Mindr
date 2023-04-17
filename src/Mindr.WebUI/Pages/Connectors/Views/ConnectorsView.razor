@@ -23,7 +23,7 @@
             @ErrorMessage
         </Stack>
     }
-    else if (!IsLoadingData)
+    @if (!IsLoadingData)
     {
         <FluentDataGrid TGridItem="ConnectorBriefDTO"
                     RowsDataProvider="@DataProvider"

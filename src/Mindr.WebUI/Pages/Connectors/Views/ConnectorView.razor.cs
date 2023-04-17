@@ -16,6 +16,7 @@ namespace Mindr.WebUI.Pages.Connectors.Views
 
         [Parameter, EditorRequired]
         public string? NavName { get; set; }
+        private string? ErrorMessage { get; set; }
 
         private bool IsLoading = false;
 
@@ -43,14 +44,23 @@ namespace Mindr.WebUI.Pages.Connectors.Views
             var response = await ConnectorClient.GetOverview(ConnectorId);
             if (response == null)
             {
-                // Failed request
-                throw new NotImplementedException();
-            }
+                // TODO: should be fixed with refresh token
 
-            var json = await response.Content.ReadAsStringAsync();
-            if (!string.IsNullOrEmpty(json))
+                ErrorMessage = $"Login session expired, Please login again";
+                base.StateHasChanged();
+            }
+            else
             {
-                ConnectorInfo = JsonConvert.DeserializeObject<Connector>(json);
+                var content = await response.Content.ReadAsStringAsync();
+                if (response.IsSuccessStatusCode)
+                {
+                    ConnectorInfo = JsonConvert.DeserializeObject<Connector>(content);
+                }
+                else
+                {
+                    ErrorMessage = content;
+                    base.StateHasChanged();
+                }
             }
 
             IsLoading = false;

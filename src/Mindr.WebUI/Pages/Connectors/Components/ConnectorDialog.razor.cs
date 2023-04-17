@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
 using Microsoft.Graph.TermStore;
+using Mindr.Core.Models.ConnectorEvents;
 using Mindr.Core.Models.Connectors;
 using Mindr.WebUI.Services;
 using Newtonsoft.Json;
@@ -15,9 +16,9 @@ namespace Mindr.WebUI.Pages.Connectors.Components
         [Inject]
         public IHttpConnectorClient ConnectorClient { get; set; }
 
-        private string ErrorMessage { get; set; } = "Test error message exzplain what is going wrong from api";
-
         public Connector Data { get; set; } = new();
+
+        private string? ErrorMessage { get; set; }
 
         public FluentDialog Dialog = default!;
         private bool IsLoadingData = false;
@@ -37,26 +38,32 @@ namespace Mindr.WebUI.Pages.Connectors.Components
         public async Task OnConnectorAdd()
         {
             IsLoadingData = true;
-
             var response = await ConnectorClient.Create(Data);
+            IsLoadingData = false;
+
             if (response == null)
             {
-                // Failed request
-                throw new NotImplementedException();
-            }
+                // TODO: should be fixed with refresh token
 
-            var json = await response.Content.ReadAsStringAsync();
-            if (!string.IsNullOrEmpty(json))
-            {
-                var data = JsonConvert.DeserializeObject<Connector>(json);
-                NavigationManager.NavigateTo($"/connectors/{data!.Id}/pipeline");
+                ErrorMessage = $"Login session expired, Please login again";
+                base.StateHasChanged();
             }
             else
             {
-                // TODO: create error message
+                var content = await response.Content.ReadAsStringAsync();
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = JsonConvert.DeserializeObject<Connector>(content);
+                    NavigationManager.NavigateTo($"/connectors/{data!.Id}/pipeline");
+                    HandleDialogClose();
+                }
+                else
+                {
+                    ErrorMessage = content;
+                    base.StateHasChanged();
+                }
             }
 
-            //IsLoading = false;
             //HandleDialogClose();
             base.StateHasChanged();
         }

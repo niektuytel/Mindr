@@ -16,6 +16,12 @@
             Delete
         </FluentButton>
     </Stack>
+    @if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <Stack Style="min-height:50px;border: 1px solid #D8000C;background-color: #FFBABA;padding: 3px;">
+            @ErrorMessage
+        </Stack>
+    } 
     @if(Overview!= null)
     {
         <table style="width:100%; margin-left:10px; margin-top:10px">
@@ -41,6 +47,14 @@
                 <td style="vertical-align: -webkit-baseline-middle;">description</td>
                 <td style="vertical-align: -webkit-baseline-middle;">:</td>
                 <td><FluentTextArea ValueChanged="@OnChangeDescription" Value="@Overview.Description" style="width: 100%;" /></td>
+            </tr>
+            <FluentDivider Role="DividerRole.Separator"></FluentDivider>
+            <tr>
+                <td style="vertical-align: -webkit-baseline-middle;">is public</td>
+                <td style="vertical-align: -webkit-baseline-middle;">:</td>
+                <td>
+                    <FluentCheckbox @onchange="@OnDataChanged" @bind-Value="@Overview.IsPublic"/>
+                </td>
             </tr>
             <FluentDivider Role="DividerRole.Separator"></FluentDivider>
             <tr>

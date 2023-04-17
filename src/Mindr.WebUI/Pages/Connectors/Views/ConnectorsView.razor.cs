@@ -16,7 +16,7 @@ namespace Mindr.WebUI.Pages.Connectors.Views
         [Inject]
         public IHttpConnectorClient ConnectorClient { get; set; }
 
-        private string ErrorMessage { get; set; }
+        private string? ErrorMessage { get; set; }
 
         private bool IsLoadingData = false;
         private bool IsLoadingDialog = false;

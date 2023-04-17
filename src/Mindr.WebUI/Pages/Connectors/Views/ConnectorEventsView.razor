@@ -18,9 +18,15 @@
     </FluentButton>
 </Stack>
 <Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="height:100%">
+    @if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <Stack Style="min-height:50px;border: 1px solid #D8000C;background-color: #FFBABA;padding: 3px;">
+            @ErrorMessage
+        </Stack>
+    }
     @if (!IsLoadingData)
     {
-        <FluentDataGrid TGridItem="Connector"
+        <FluentDataGrid TGridItem="ConnectorOverviewDTO"
                     RowsDataProvider="@DataProvider"
                     OnCellFocus="HandleCellFocus">
             <PropertyColumn Property="@(p => p.Name)" />

@@ -32,6 +32,8 @@ public partial class ConnectorEventDialog : FluentComponentBase
     [Inject]
     public IHttpConnectorClient ConnectorClient { get; set; } = default!;
 
+    private string? ErrorMessage { get; set; }
+
     public bool IsLoading { get; set; } = false;
 
     public string? Query { get; set; } = string.Empty;
@@ -71,11 +73,21 @@ public partial class ConnectorEventDialog : FluentComponentBase
     {
         if (input == null) return;
 
+        var variables = input.Variables
+            .Where(item => item.IsPublic)
+            .Select(item => 
+                new ConnectorVariable() { 
+                    Name = item.Name, 
+                    Value = item.Value 
+                }
+            );
+
         ConnectorEvent = new ConnectorEvent()
         {
+            Id = Guid.NewGuid(),
             ConnectorId = input.Id,
             ConnectorName = input.Name,
-            ConnectorVariables = input.Variables.Where(item => item.IsPublic),
+            ConnectorVariables = variables,
             ConnectorColor = input.Color,
         };
 
@@ -104,8 +116,23 @@ public partial class ConnectorEventDialog : FluentComponentBase
             var response = await ConnectorEventClient.Create(ConnectorEvent);
             if (response == null)
             {
-                // Failed request
-                throw new NotImplementedException();
+                // TODO: should be fixed with refresh token
+
+                ErrorMessage = $"Login session expired, Please login again";
+                base.StateHasChanged();
+            }
+            else
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                {
+                    ErrorMessage = content;
+                    base.StateHasChanged();
+                }
+                else
+                {
+                    Dialog.Hide();
+                }
             }
         }
         else
@@ -113,12 +140,26 @@ public partial class ConnectorEventDialog : FluentComponentBase
             var response = await ConnectorEventClient.Update(ConnectorEvent.Id, ConnectorEvent);
             if (response == null)
             {
-                // Failed request
-                throw new NotImplementedException();
+                // TODO: should be fixed with refresh token
+
+                ErrorMessage = $"Login session expired, Please login again";
+                base.StateHasChanged();
+            }
+            else
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                {
+                    ErrorMessage = content;
+                    base.StateHasChanged();
+                }
+                else
+                {
+                    Dialog.Hide();
+                }
             }
         }
 
-        Dialog.Hide();
         IsLoading = false;
         await OnChanged();
         base.StateHasChanged();

@@ -22,7 +22,7 @@ namespace Mindr.Core.Models.Connectors
         public string Description { get; set; }
 
         [JsonProperty("is_public")]
-        public bool IsPublic { get; set; }
+        public bool IsPublic { get; set; } = false;
 
         [JsonProperty("variables")]
         public IEnumerable<ConnectorVariable> Variables { get; set; }

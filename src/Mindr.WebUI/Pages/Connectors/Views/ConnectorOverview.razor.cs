@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Azure;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
 using Mindr.Core.Models.Connectors;
 using Mindr.WebUI.Pages.Connectors.Components;
@@ -17,19 +18,54 @@ namespace Mindr.WebUI.Pages.Connectors.Views
         [Parameter, EditorRequired]
         public Connector Overview { get; set; } = null!;
 
+        private string? ErrorMessage { get; set; }
         private bool DataHasChanged = false;
 
         public ConfirmDialog RemoveItemDialog = default!;
 
         public async Task OnSave()
         {
-            await ConnectorClient.UpdateOverview(Overview);
+            var response = await ConnectorClient.UpdateOverview(Overview);
+            if (response == null)
+            {
+                // TODO: should be fixed with refresh token
+
+                ErrorMessage = $"Login session expired, Please login again";
+                base.StateHasChanged();
+            }
+            else
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                {
+                    ErrorMessage = content;
+                    base.StateHasChanged();
+                }
+            }
+
             base.StateHasChanged();
         }
 
         public async Task OnRemove()
         {
-            await ConnectorClient.Delete(Overview.Id.ToString());
+            var response = await ConnectorClient.Delete(Overview.Id.ToString());
+            if (response == null)
+            {
+                // TODO: should be fixed with refresh token
+
+                ErrorMessage = $"Login session expired, Please login again";
+                base.StateHasChanged();
+            }
+            else
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                {
+                    ErrorMessage = content;
+                    base.StateHasChanged();
+                }
+            }
+
             NavigationManager.NavigateTo($"/connectors");
             base.StateHasChanged();
         }

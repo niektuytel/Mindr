@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
+using Mindr.Core.Models.ConnectorEvents;
 using Mindr.Core.Models.Connectors;
+using Mindr.HttpRunner.Models;
 using Mindr.WebUI.Pages.Connectors.Components;
 using Mindr.WebUI.Services;
 using Newtonsoft.Json;
@@ -18,6 +20,7 @@ namespace Mindr.WebUI.Pages.Connectors.Views
 
         private bool IsLoadingData = false;
         private bool IsLoadingDialog = false;
+        private string? ErrorMessage { get; set; }
 
         private readonly Connector AddItemData = new();
 
@@ -27,11 +30,11 @@ namespace Mindr.WebUI.Pages.Connectors.Views
 
         public PaginationState Pagination { get; set; } = new() { ItemsPerPage = 10 };
 
-        private GridItemsProviderRequest<Connector> DataProviderRequest { get; set; } = default!;
+        private GridItemsProviderRequest<ConnectorOverviewDTO> DataProviderRequest { get; set; } = default!;
 
-        private GridItemsProvider<Connector> DataProvider { get; set; } = default!;
+        private GridItemsProvider<ConnectorOverviewDTO> DataProvider { get; set; } = default!;
 
-        private ICollection<Connector>? DataCollection { get; set; } = new Collection<Connector>();
+        private ICollection<ConnectorOverviewDTO>? DataCollection { get; set; } = new Collection<ConnectorOverviewDTO>();
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -53,16 +56,24 @@ namespace Mindr.WebUI.Pages.Connectors.Views
                 var response = await ConnectorClient.GetAll();
                 if (response == null)
                 {
-                    // Failed request
-                    throw new NotImplementedException();
-                }
+                    // TODO: should be fixed with refresh token
 
-                var json = await response.Content.ReadAsStringAsync();
-                if (!string.IsNullOrEmpty(json))
+                    ErrorMessage = $"Login session expired, Please login again";
+                    base.StateHasChanged();
+                }
+                else
                 {
-                    DataCollection = JsonConvert.DeserializeObject<ICollection<Connector>>(json);
+                    var content = await response.Content.ReadAsStringAsync();
+                    if (response.IsSuccessStatusCode)
+                    {
+                        DataCollection = JsonConvert.DeserializeObject<ICollection<ConnectorOverviewDTO>>(content);
+                    }
+                    else
+                    {
+                        ErrorMessage = content;
+                        base.StateHasChanged();
+                    }
                 }
-
 
                 // +1 to add space to to 1 filled space,
                 // The provide now knows that he need to add a next page
@@ -78,31 +89,36 @@ namespace Mindr.WebUI.Pages.Connectors.Views
         public async Task OnConnectorAdd()
         {
             IsLoadingData = true;
-
             var response = await ConnectorClient.Create(AddItemData);
+            IsLoadingData = false;
+
             if (response == null)
             {
-                // Failed request
-                throw new NotImplementedException();
-            }
+                // TODO: should be fixed with refresh token
 
-            var json = await response.Content.ReadAsStringAsync();
-            if (!string.IsNullOrEmpty(json))
-            {
-                var data = JsonConvert.DeserializeObject<Connector>(json);
-                NavigationManager.NavigateTo($"/connectors/{data!.Id}/pipeline");
+                ErrorMessage = $"Login session expired, Please login again";
+                base.StateHasChanged();
             }
             else
             {
-                // TODO: create error message
+                var content = await response.Content.ReadAsStringAsync();
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = JsonConvert.DeserializeObject<ConnectorEvent>(content);
+                    NavigationManager.NavigateTo($"/connectors/{data!.Id}/pipeline");
+                }
+                else
+                {
+                    ErrorMessage = content;
+                    base.StateHasChanged();
+                }
             }
 
-            //IsLoading = false;
             //HandleDialogClose();
             base.StateHasChanged();
         }
 
-        private void HandleRowClick(Connector? item)
+        private void HandleRowClick(ConnectorOverviewDTO? item)
         {
             if (item == null) return;
 
@@ -111,7 +127,7 @@ namespace Mindr.WebUI.Pages.Connectors.Views
             base.StateHasChanged();
         }
 
-        private async Task HandleCellFocus(FluentDataGridCell<Connector> cell)
+        private async Task HandleCellFocus(FluentDataGridCell<ConnectorOverviewDTO> cell)
         {
             if (cell.CellType == DataGridCellType.Default)
             {

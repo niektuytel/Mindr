@@ -20,6 +20,12 @@
         </FluentButton>
     </Stack>
     <Stack Orientation="Orientation.Horizontal">
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <Stack Style="min-height:50px;border: 1px solid #D8000C;background-color: #FFBABA;padding: 3px;">
+                @ErrorMessage
+            </Stack>
+        }
         @if (IsLoading)
         {
             <Stack HorizontalAlignment="StackHorizontalAlignment.Center" VerticalAlignment="StackVerticalAlignment.Center">

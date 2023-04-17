@@ -4,6 +4,7 @@
 
 <div>
     <FluentDialog Modal="true" TrapFocus="true" @ref="Dialog" @ondialogdismiss="DismissDialog">
+       
         @if (IsLoading)
         {
             <Stack HorizontalAlignment="StackHorizontalAlignment.Center" VerticalAlignment="StackVerticalAlignment.Center">
