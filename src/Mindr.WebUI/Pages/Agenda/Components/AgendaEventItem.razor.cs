@@ -12,9 +12,6 @@ public partial class AgendaEventItem : FluentComponentBase
     [Parameter, EditorRequired]
     public AgendaEvent Data { get; set; } = default!;
 
-    [Parameter, EditorRequired]
-    public ConnectorEventDialog EventDialogRef { get; set; } = default!;
-
     [Inject]
     public IHttpConnectorClient ConnectorClient { get; set; } = default!;
 
@@ -22,6 +19,9 @@ public partial class AgendaEventItem : FluentComponentBase
     public IHttpConnectorEventClient ConnectorEventClient { get; set; } = default!;
 
     private IEnumerable<ConnectorEvent>? Connectors { get; set; } = null;
+
+
+    private ConnectorEventDialog _connectorEventDialog = default!;
 
     private bool IsLoading { get; set; } = true;
 
@@ -45,5 +45,37 @@ public partial class AgendaEventItem : FluentComponentBase
         IsLoading = false;
     }
 
+
+    public async Task OnUpdate(ConnectorEvent connectorEvent)
+    {
+        if (Connectors == null) return;
+
+        // update
+        Connectors = Connectors.Select(x => x.Id == connectorEvent.Id ? connectorEvent : x);
+
+        StateHasChanged();
+    }
+
+    public async Task OnCreate(ConnectorEvent connectorEvent)
+    {
+        if (Connectors == null) return;
+
+        // insert
+        var connectors = Connectors.ToList();
+        connectors.Add(connectorEvent);
+        Connectors = connectors.ToArray();
+
+        StateHasChanged();
+    }
+
+    public async Task OnDelete(ConnectorEvent connectorEvent)
+    {
+        if (Connectors == null) return;
+
+        // delete
+        Connectors = Connectors.Where(x => x.Id != connectorEvent.Id);
+
+        StateHasChanged();
+    }
 
 }

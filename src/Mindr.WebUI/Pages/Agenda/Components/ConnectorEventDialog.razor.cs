@@ -13,7 +13,13 @@ namespace Mindr.WebUI.Pages.Agenda.Components;
 public partial class ConnectorEventDialog : FluentComponentBase
 {
     [Parameter, EditorRequired]
-    public Func<Task> OnChanged { get; set; } = default!;
+    public Func<ConnectorEvent, Task> OnUpdate { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public Func<ConnectorEvent, Task> OnCreate { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public Func<ConnectorEvent, Task> OnDelete { get; set; } = default!;
 
     [Parameter]
     public ConnectorEvent? ConnectorEvent { get; set; } = null;
@@ -43,6 +49,16 @@ public partial class ConnectorEventDialog : FluentComponentBase
     public IEnumerable<Connector>? Results { get; set; } = null;
 
     public FluentDialog Dialog = default!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Dialog.Hide();
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
 
     public async Task HandleOnSearch(ChangeEventArgs args)
     {
@@ -76,9 +92,13 @@ public partial class ConnectorEventDialog : FluentComponentBase
         var variables = input.Variables
             .Where(item => item.IsPublic)
             .Select(item => 
-                new ConnectorVariable() { 
-                    Name = item.Name, 
-                    Value = item.Value 
+                new ConnectorVariable()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = item.Name,
+                    Description = item.Description, 
+                    Key = item.Key,
+                    Value = item.Value
                 }
             );
 
@@ -124,14 +144,16 @@ public partial class ConnectorEventDialog : FluentComponentBase
             else
             {
                 var content = await response.Content.ReadAsStringAsync();
-                if (!response.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode)
                 {
-                    ErrorMessage = content;
-                    base.StateHasChanged();
+                    ConnectorEvent = JsonConvert.DeserializeObject<ConnectorEvent>(content);
+                    await OnCreate(ConnectorEvent!);
+                    Dialog.Hide();
                 }
                 else
                 {
-                    Dialog.Hide();
+                    ErrorMessage = content;
+                    base.StateHasChanged();
                 }
             }
         }
@@ -148,20 +170,21 @@ public partial class ConnectorEventDialog : FluentComponentBase
             else
             {
                 var content = await response.Content.ReadAsStringAsync();
-                if (!response.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode)
                 {
-                    ErrorMessage = content;
-                    base.StateHasChanged();
+                    ConnectorEvent = JsonConvert.DeserializeObject<ConnectorEvent>(content);
+                    await OnUpdate(ConnectorEvent!);
+                    Dialog.Hide();
                 }
                 else
                 {
-                    Dialog.Hide();
+                    ErrorMessage = content;
+                    base.StateHasChanged();
                 }
             }
         }
 
         IsLoading = false;
-        await OnChanged();
         base.StateHasChanged();
     }
 
@@ -173,13 +196,28 @@ public partial class ConnectorEventDialog : FluentComponentBase
         var response = await ConnectorEventClient.Delete(ConnectorEvent.Id);
         if (response == null)
         {
-            // Failed request
-            throw new NotImplementedException();
+            // TODO: should be fixed with refresh token
+
+            ErrorMessage = $"Login session expired, Please login again";
+            base.StateHasChanged();
+        }
+        else
+        {
+            var content = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                ConnectorEvent = JsonConvert.DeserializeObject<ConnectorEvent>(content);
+                await OnDelete(ConnectorEvent!);
+                Dialog.Hide();
+            }
+            else
+            {
+                ErrorMessage = content;
+                base.StateHasChanged();
+            }
         }
 
-        Dialog.Hide();
         IsLoading = false;
-        await OnChanged();
         base.StateHasChanged();
     }
 

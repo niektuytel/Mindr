@@ -155,6 +155,7 @@ namespace Mindr.Api.Services.Connectors
 
             entity!.Name = input.Name;
             entity.Description = input.Description;
+            entity.IsPublic = input.IsPublic;
 
             _context.ConnectorVariables.UpdateRange(input.Variables);
             _context.Connectors.Update(entity);

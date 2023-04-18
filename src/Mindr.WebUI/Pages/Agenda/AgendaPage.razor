@@ -71,6 +71,15 @@
             </FluentButton>
         </Stack>
     </div>
-    <AgendaEvents Data="@CurrentEvents" Date="@SelectedDate" />
+    <div style="width: -webkit-fill-available;">
+        @SelectedDate.ToShortDateString() Events
+        @if (CurrentEvents?.Any() == true)
+        {
+            foreach (var item in CurrentEvents)
+            {
+                <AgendaEventItem Data="@item" />
+            }
+        }
+    </div>
 </Stack>
 

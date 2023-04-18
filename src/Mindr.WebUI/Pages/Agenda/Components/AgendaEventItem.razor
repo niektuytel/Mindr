@@ -13,15 +13,17 @@
     {
         foreach (var connector in Connectors)
         {
-            <FluentButton Appearance="Appearance.Neutral" @onclick="@(() => EventDialogRef.HandleOnDialogOpen(Data, connector))">
+            <FluentButton Appearance="Appearance.Neutral" @onclick="@(() => _connectorEventDialog.HandleOnDialogOpen(Data, connector))">
                 @connector.ConnectorName
             </FluentButton>
         }
     }
     <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
-        <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="@(() => EventDialogRef.HandleOnDialogOpen(Data, null))">
+        <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="@(() => _connectorEventDialog.HandleOnDialogOpen(Data, null))">
             <FluentIcon Slot="start" Name="@FluentIcons.Add" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
             Add Connector
         </FluentButton>
     </Stack>
 </div>
+<ConnectorEventDialog @ref="@_connectorEventDialog" OnUpdate="OnUpdate" OnCreate="OnCreate" OnDelete="OnDelete" />
+
