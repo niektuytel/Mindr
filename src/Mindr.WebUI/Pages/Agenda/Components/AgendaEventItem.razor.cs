@@ -18,8 +18,9 @@ public partial class AgendaEventItem : FluentComponentBase
     [Inject]
     public IHttpConnectorEventClient ConnectorEventClient { get; set; } = default!;
 
-    private IEnumerable<ConnectorEvent>? Connectors { get; set; } = null;
+    private IEnumerable<ConnectorEvent>? ConnectorEvents { get; set; } = null;
 
+    private string? ErrorMessage { get; set; }
 
     private ConnectorEventDialog _connectorEventDialog = default!;
 
@@ -39,7 +40,7 @@ public partial class AgendaEventItem : FluentComponentBase
         var json = await response.Content.ReadAsStringAsync();
         if (!string.IsNullOrEmpty(json))
         {
-            Connectors = JsonConvert.DeserializeObject<IEnumerable<ConnectorEvent>>(json);
+            ConnectorEvents = JsonConvert.DeserializeObject<IEnumerable<ConnectorEvent>>(json);
         }
 
         IsLoading = false;
@@ -48,34 +49,57 @@ public partial class AgendaEventItem : FluentComponentBase
 
     public async Task OnUpdate(ConnectorEvent connectorEvent)
     {
-        if (Connectors == null) return;
+        if (ConnectorEvents == null) return;
 
         // update
-        Connectors = Connectors.Select(x => x.Id == connectorEvent.Id ? connectorEvent : x);
+        ConnectorEvents = ConnectorEvents.Select(x => x.Id == connectorEvent.Id ? connectorEvent : x);
 
         StateHasChanged();
     }
 
     public async Task OnCreate(ConnectorEvent connectorEvent)
     {
-        if (Connectors == null) return;
+        if (ConnectorEvents == null) return;
 
         // insert
-        var connectors = Connectors.ToList();
+        var connectors = ConnectorEvents.ToList();
         connectors.Add(connectorEvent);
-        Connectors = connectors.ToArray();
+        ConnectorEvents = connectors.ToArray();
 
         StateHasChanged();
     }
 
     public async Task OnDelete(ConnectorEvent connectorEvent)
     {
-        if (Connectors == null) return;
+        if (connectorEvent == null || ConnectorEvents == null) return;
+        IsLoading = true;
 
-        // delete
-        Connectors = Connectors.Where(x => x.Id != connectorEvent.Id);
+        var response = await ConnectorEventClient.Delete(connectorEvent.Id);
+        if (response == null)
+        {
+            // TODO: should be fixed with refresh token
 
-        StateHasChanged();
+            ErrorMessage = $"Login session expired, Please login again";
+            base.StateHasChanged();
+        }
+        else
+        {
+            var content = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                // delete
+                ConnectorEvents = ConnectorEvents.Where(x => x.Id != connectorEvent.Id);
+            }
+            else
+            {
+                ErrorMessage = content;
+                base.StateHasChanged();
+            }
+        }
+
+        IsLoading = false;
+        base.StateHasChanged();
     }
+
 
 }
