@@ -104,7 +104,7 @@ public partial class ConnectorEventDialog : FluentComponentBase
 
         ConnectorEvent = new ConnectorEvent()
         {
-            Id = Guid.NewGuid(),
+            Id = ConnectorEvent?.Id ?? Guid.NewGuid(),
             ConnectorId = input.Id,
             ConnectorName = input.Name,
             ConnectorVariables = variables,
@@ -130,6 +130,8 @@ public partial class ConnectorEventDialog : FluentComponentBase
                     Value = AgendaEvent.StartDate.DateTime.ToLongDateString()
                 }
             };
+
+            ConnectorEvent.Id = Guid.NewGuid();
             ConnectorEvent.EventId = AgendaEvent.Id;
             ConnectorEvent.EventParameters = events;
 

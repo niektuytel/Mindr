@@ -96,11 +96,15 @@ public class ConnectorEventManager : IConnectorEventManager
     public async Task<ConnectorEvent> UpdateById(string userId, Guid id, ConnectorEventOnUpdate input)
     {
         _connectorEventValidator.ThrowOnInvalidConnectorVariables(input.ConnectorVariables);
+        _connectorEventValidator.ThrowOnInvalidConnectorId(input.ConnectorId);
+        var connector = await _context.Connectors.FirstOrDefaultAsync(item => item.Id == input.ConnectorId);
 
         var entity = await _context.ConnectorEvents
                 .Include(x => x.EventParameters)
                 .Include(x => x.ConnectorVariables)
                 .FirstOrDefaultAsync(x => x.UserId == userId && x.Id == id);
+
+        // TODO: Does the connector variable, match the connector event variables?
 
         _connectorEventValidator.ThrowOnNullEvent(userId, id, entity);
 
@@ -108,8 +112,12 @@ public class ConnectorEventManager : IConnectorEventManager
         _context.ConnectorVariables.RemoveRange(entity!.ConnectorVariables);
         await _context.SaveChangesAsync();
 
-        // create variables
-        entity!.ConnectorVariables = input.ConnectorVariables;
+        // update
+        entity.UserId = userId;
+        entity.ConnectorId = connector!.Id;
+        entity.ConnectorName = connector.Name;
+        entity.ConnectorColor = connector.Color;
+        entity.ConnectorVariables = input.ConnectorVariables;
 
         var jobId = await _connectorEventDriver.ProcessConnectorEventAsync(entity);
         if (!string.IsNullOrEmpty(jobId))
