@@ -47,12 +47,12 @@
                                     IsSelectedMonth="@(day.Date.Month == SelectedDate.Month)" 
                                     IsSelectedDay="@(day.Date == SelectedDate)"
                                     Date="@day.Date" 
-                                    Data="Events?.Where(item => 
+                                    Events="Events?.Where(item => 
                                         item != null && 
                                         day.Date.Date >= item.StartDate.DateTime.Date && 
                                         day.Date.Date <= item.EndDate.DateTime.Date
                                     )"
-                                   HandleClick="HandleOnSelect" />
+                                    HandleClick="HandleOnSelect" />
                             </td>
                         }
                     </tr>
@@ -60,6 +60,9 @@
             </tbody>
         </table>
         <Stack Orientation="Orientation.Horizontal" HorizontalAlignment="StackHorizontalAlignment.Right" VerticalGap="0">
+
+
+
             <FluentButton onclick="@(async () => await OnSelectMonth(SelectedDate.AddMonths(-1)))">
                 <FluentIcon Name="@FluentIcons.ChevronCircleLeft" Size="@IconSize.Size24" Variant="@IconVariant.Regular" Color="@Color.Accent" />
             </FluentButton>

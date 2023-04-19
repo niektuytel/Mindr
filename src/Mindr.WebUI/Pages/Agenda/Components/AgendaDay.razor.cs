@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
 using Mindr.Core.Models;
+using Mindr.Core.Models.ConnectorEvents;
 
 namespace Mindr.WebUI.Pages.Agenda.Components
 {
@@ -16,14 +17,14 @@ namespace Mindr.WebUI.Pages.Agenda.Components
         public DateTime Date { get; set; } = default!;
 
         [Parameter, EditorRequired]
-        public IEnumerable<AgendaEvent>? Data { get; set; } = default!;
+        public IEnumerable<AgendaEvent>? Events { get; set; } = default!;
 
         [Parameter, EditorRequired]
         public Func<DateTime, Task<IEnumerable<AgendaEvent>?>> HandleClick { get; set; } = default!;
 
         public async Task HandleOnSelect()
         {
-            Data = await HandleClick(Date);
+            Events = await HandleClick(Date);
             StateHasChanged();
         }
 

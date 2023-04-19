@@ -14,8 +14,6 @@ public partial class AgendaPage : FluentComponentBase
 
     public IEnumerable<CalendarDay> Days { get; set; } = default!;
 
-    // TODO: Agenda remove underflow and overflow of other months.
-
     public IEnumerable<AgendaEvent>? Events { get; set; } = default!;
 
     public IEnumerable<AgendaEvent>? CurrentEvents { get; set; } = default!;
