@@ -16,8 +16,8 @@
         }
     </div>
 }
-else
-{
+@*else*@
+@*{
     <div style="border-radius:10px;box-shadow: 0px 0px 5px 2px #0000001f;width: 40px;height: 40px;cursor: pointer;margin:5px;background-color: #80808014;" onclick="@(async () => await HandleOnSelect())">
         <b style="margin:2px">@Date.Day</b>
         @if (Data?.Any() == true)
@@ -28,4 +28,4 @@ else
             }
         }
     </div>
-}
+}*@
