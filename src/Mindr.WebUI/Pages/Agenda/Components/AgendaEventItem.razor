@@ -9,31 +9,21 @@
     {
         <FluentProgressRing style="width: 24px; height: 24px;"></FluentProgressRing>
     }
-    else if (ConnectorEvents?.Any() == true)
+    else if (Connectors?.Any() == true)
     {
-        if (!string.IsNullOrEmpty(ErrorMessage))
+        foreach (var connector in Connectors)
         {
-            <Stack Style="min-height:50px;border: 1px solid #D8000C;background-color: #FFBABA;padding: 3px;">
-                @ErrorMessage
-            </Stack>
-        }
-
-        foreach (var connectorEvent in ConnectorEvents)
-        {
-            <Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="@($"cursor:pointer;border-radius:5px;border: solid 1px {connectorEvent.ConnectorColor};margin: 2px;padding:2px;width: fit-content;")">
-                <div @onclick="@(() => _connectorEventDialog.HandleOnDialogOpen(Data, connectorEvent))">
-                    @connectorEvent.ConnectorName
-                </div>
-                <div style="padding-left: 5px;padding-right: 5px;" @onclick="@(async () => await OnDelete(connectorEvent))">
-                    <b>x</b>
-                </div>
-            </Stack>
+            <FluentButton Appearance="Appearance.Neutral" @onclick="@(() => _connectorEventDialog.HandleOnDialogOpen(Data, connector))">
+                @connector.ConnectorName
+            </FluentButton>
         }
     }
-    <Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="@($"cursor:pointer;border-radius:5px;border: solid 1px black;margin: 2px;padding:2px;width: fit-content;")" @onclick="@(() => _connectorEventDialog.HandleOnDialogOpen(Data, null))">
-        Add connector
-        <FluentIcon Slot="start" Name="@FluentIcons.Add" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" Style="align-self: center;" />
+    <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
+        <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="@(() => _connectorEventDialog.HandleOnDialogOpen(Data, null))">
+            <FluentIcon Slot="start" Name="@FluentIcons.Add" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+            Add Connector
+        </FluentButton>
     </Stack>
 </div>
-<ConnectorEventDialog @ref="@_connectorEventDialog" OnUpdate="OnUpdate" OnCreate="OnCreate"/>
+<ConnectorEventDialog @ref="@_connectorEventDialog" OnUpdate="OnUpdate" OnCreate="OnCreate" OnDelete="OnDelete" />
 

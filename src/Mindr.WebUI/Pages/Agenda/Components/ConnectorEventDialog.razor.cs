@@ -18,6 +18,9 @@ public partial class ConnectorEventDialog : FluentComponentBase
     [Parameter, EditorRequired]
     public Func<ConnectorEvent, Task> OnCreate { get; set; } = default!;
 
+    [Parameter, EditorRequired]
+    public Func<ConnectorEvent, Task> OnDelete { get; set; } = default!;
+
     [Parameter]
     public ConnectorEvent? ConnectorEvent { get; set; } = null;
 
@@ -180,6 +183,39 @@ public partial class ConnectorEventDialog : FluentComponentBase
                     ErrorMessage = content;
                     base.StateHasChanged();
                 }
+            }
+        }
+
+        IsLoading = false;
+        base.StateHasChanged();
+    }
+
+    public async Task HandleOnDelete()
+    {
+        if (ConnectorEvent == null) return;
+        IsLoading = true;
+
+        var response = await ConnectorEventClient.Delete(ConnectorEvent.Id);
+        if (response == null)
+        {
+            // TODO: should be fixed with refresh token
+
+            ErrorMessage = $"Login session expired, Please login again";
+            base.StateHasChanged();
+        }
+        else
+        {
+            var content = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                ConnectorEvent = JsonConvert.DeserializeObject<ConnectorEvent>(content);
+                await OnDelete(ConnectorEvent!);
+                Dialog.Hide();
+            }
+            else
+            {
+                ErrorMessage = content;
+                base.StateHasChanged();
             }
         }
 

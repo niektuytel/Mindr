@@ -52,6 +52,14 @@
                                         Color="@Color.Accent" 
                             />
                         </FluentButton>
+                        if (IsCreating == false)
+                        {
+                            <FluentButton Appearance="Appearance.Accent"
+                                  Autofocus="true"
+                                  @onclick="HandleOnDelete">
+                                Delete
+                            </FluentButton>
+                        }
                         <FluentButton Appearance="Appearance.Accent"
                                       Autofocus="true"
                                       @onclick="HandleOnUpsert"
