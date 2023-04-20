@@ -17,8 +17,9 @@
                         OptionValue="@(i => i.Id.ToString())"
                         Autocomplete="ComboboxAutocomplete.Both" 
                         SelectedOptionChanged="@((input) => HandleOnSelect(input))"
-                        @bind-Text="@Query"
-                        @oninput="@(async (input) => await HandleOnSearch(input))" />
+                        Value="@Query"
+                        @oninput="@(async (input) => await HandleOnSearch(input))"
+                        />
 
         @if (!string.IsNullOrEmpty(ErrorMessage))
         {

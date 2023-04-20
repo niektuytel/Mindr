@@ -67,21 +67,32 @@ public partial class ConnectorEventDialog : FluentComponentBase
         if (args is not null && args.Value is not null)
         {
             string searchTerm = args.Value.ToString()!.ToLower();
+
             var response = await ConnectorClient.GetAll(query: searchTerm);
             if (response == null)
             {
-                // Failed request
-                throw new NotImplementedException();
-            }
+                // TODO: should be fixed with refresh token
 
-            var json = await response.Content.ReadAsStringAsync();
-            if (!string.IsNullOrEmpty(json))
+                ErrorMessage = $"Login session expired, Please login again";
+                base.StateHasChanged();
+            }
+            else
             {
-                Results = JsonConvert.DeserializeObject<IEnumerable<Connector>>(json);
+                var content = await response.Content.ReadAsStringAsync();
+                if (response.IsSuccessStatusCode)
+                {
+                    Results = JsonConvert.DeserializeObject<IEnumerable<Connector>>(content);
+                }
+                else
+                {
+                    ErrorMessage = content;
+                    base.StateHasChanged();
+                }
             }
         }
 
         IsLoading = false;
+        Query = args?.Value?.ToString() ?? "";
         base.StateHasChanged();
     }
 
@@ -111,6 +122,8 @@ public partial class ConnectorEventDialog : FluentComponentBase
             ConnectorColor = input.Color,
         };
 
+
+        Query = ConnectorEvent.ConnectorName;
         base.StateHasChanged();
     }
 
@@ -187,6 +200,7 @@ public partial class ConnectorEventDialog : FluentComponentBase
         }
 
         IsLoading = false;
+        Query = ConnectorEvent!.ConnectorName;
         base.StateHasChanged();
     }
 
@@ -220,6 +234,7 @@ public partial class ConnectorEventDialog : FluentComponentBase
         }
 
         IsLoading = false;
+        Query = "";
         base.StateHasChanged();
     }
 
@@ -229,8 +244,8 @@ public partial class ConnectorEventDialog : FluentComponentBase
         IsCreating = false;
 
         ConnectorEvent = connectorEvent;
-        Query = ConnectorEvent.ConnectorName;
         
+        Query = ConnectorEvent.ConnectorName;
         Dialog.Show();
         base.StateHasChanged();
     }
@@ -243,6 +258,7 @@ public partial class ConnectorEventDialog : FluentComponentBase
         ConnectorEvent = new ConnectorEvent();
 
         Dialog.Show();
+        Query = ConnectorEvent.ConnectorName;
         base.StateHasChanged();
     }
 

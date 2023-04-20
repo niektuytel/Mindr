@@ -22,9 +22,14 @@
             }
         }
         <Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="@($"display: -webkit-inline-box;cursor:pointer;border-radius:5px;border: solid 1px black;margin: 2px;padding:2px;width: fit-content;")" @onclick="@(() => _connectorEventDialog.HandleOnCreate(Data))">
-            Add connector
-            <FluentIcon Slot="start" Name="@FluentIcons.Add" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" Style="align-self: center;" />
+            @*<b>+</b>*@
+            <div style="color:black">
+                <FluentIcon Slot="start" Name="@FluentIcons.Add" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent"/>
+            </div>
         </Stack>
+        @*<Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="@($"cursor:pointer;border-radius:5px;border: solid 1px black;margin: 2px;padding:2px;width: fit-content;")">
+            <FluentIcon Slot="start" Name="@FluentIcons.Add" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" Style="margin: 5px;color: black" />
+        </Stack>*@
     </div>
 </div>
 <ConnectorEventDialog @ref="@_connectorEventDialog" OnUpdate="OnUpdate" OnCreate="OnCreate" OnDelete="OnDelete" />
