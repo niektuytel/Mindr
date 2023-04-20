@@ -223,25 +223,26 @@ public partial class ConnectorEventDialog : FluentComponentBase
         base.StateHasChanged();
     }
 
-    public void HandleOnDialogOpen(AgendaEvent agendaEvent, ConnectorEvent? connectorEvent = null)
+    public void HandleOnEdit(AgendaEvent agendaEvent, ConnectorEvent connectorEvent)
     {
         AgendaEvent = agendaEvent;
-        IsCreating = connectorEvent == null;
+        IsCreating = false;
 
-        if (connectorEvent != null)
-        {
-            Query = connectorEvent.ConnectorName;
-            ConnectorEvent = connectorEvent;
+        ConnectorEvent = connectorEvent;
+        Query = ConnectorEvent.ConnectorName;
+        
+        Dialog.Show();
+        base.StateHasChanged();
+    }
 
-        }
-        else
-        {
-            ConnectorEvent = new ConnectorEvent();
-        }
+    public void HandleOnCreate(AgendaEvent agendaEvent)
+    {
+        AgendaEvent = agendaEvent;
+        IsCreating = true;
+
+        ConnectorEvent = new ConnectorEvent();
 
         Dialog.Show();
-
-
         base.StateHasChanged();
     }
 
