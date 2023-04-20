@@ -13,9 +13,11 @@
     {
         foreach (var connector in Connectors)
         {
-            <FluentButton Appearance="Appearance.Neutral" @onclick="@(() => _connectorEventDialog.HandleOnDialogOpen(Data, connector))">
-                @connector.ConnectorName
-            </FluentButton>
+            <Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="@($"cursor:pointer;border-radius:5px;border: solid 1px {connector.ConnectorColor};margin: 2px;padding:2px;width: fit-content;")">
+                <div @onclick="@(() => _connectorEventDialog.HandleOnDialogOpen(Data, connector))">
+                    @connector.ConnectorName
+                </div>
+            </Stack>
         }
     }
     <Stack Orientation="Orientation.Horizontal" Class="editable-stack">
