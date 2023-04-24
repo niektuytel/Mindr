@@ -10,11 +10,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.13" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Mindr.Api\Mindr.Api.csproj" />
-    <ProjectReference Include="..\Mindr.Shared\Mindr.Shared.csproj" />
-  </ItemGroup>
 	
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.13" />
@@ -23,6 +18,10 @@
     <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="6.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.13" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <ProjectReference Include="..\Mindr.Client\Mindr.Client.csproj" />
   </ItemGroup>
 
 

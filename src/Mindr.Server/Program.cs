@@ -56,8 +56,8 @@ namespace Mindr
             app.UseEndpoints(endpoints => {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
-                endpoints.MapFallbackToFile("index.html");
             });
+            app.MapFallbackToFile("index.html");
             app.Run();
         }
     }

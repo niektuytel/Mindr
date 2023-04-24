@@ -16,35 +16,71 @@ public static class SwaggerConfiguration
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         services.AddSwaggerGen(options =>
         {
-            var baseUrl = configuration["AzureAd:Instance"];
-            var tenantId = configuration["AzureAd:TenantId"];
-            var authUrl = $"{baseUrl}/{tenantId}/oauth2/v2.0/authorize";
-            var tokenUrl = $"{baseUrl}/{tenantId}/oauth2/v2.0/token";
 
-            var openApiScheme = new OpenApiSecurityScheme
+            // Configure Swagger to use the OpenAPI 2.0 security scheme
+            options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
             {
-                Name = "oauth",
-                Description = "Azure login, OAuth2.0 auth code with PKCE",
-                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" },
-
                 Type = SecuritySchemeType.OAuth2,
                 Flows = new OpenApiOAuthFlows
                 {
-                    Implicit = new OpenApiOAuthFlow
+                    AuthorizationCode = new OpenApiOAuthFlow
                     {
-                        AuthorizationUrl = new Uri(authUrl),
-                        TokenUrl = new Uri(tokenUrl)
+                        AuthorizationUrl = new Uri("https://localhost:7163/connect/authorize"),
+                        TokenUrl = new Uri("https://localhost:7163/connect/token"),
+                        Scopes = new Dictionary<string, string>
+                    {
+                        { "Mindr.ServerAPI", "Mindr.ServerAPI" },
+                        { "openid", "OpenID Connect" },
+                        { "profile", "User profile" }
+                    }
                     }
                 }
-            };
-            var openApiRequirements = new OpenApiSecurityRequirement
+            });
+
+            // Require authentication for all API methods
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
-                { openApiScheme, new List<string>{ }}
-            };
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "oauth2"
+                        }
+                    },
+                    new[] { "Mindr.ServerAPI" }
+                }
+            });
+            //var baseUrl = configuration["AzureAd:Instance"];
+            //var tenantId = configuration["AzureAd:TenantId"];
+            //var authUrl = $"{baseUrl}/{tenantId}/oauth2/v2.0/authorize";
+            //var tokenUrl = $"{baseUrl}/{tenantId}/oauth2/v2.0/token";
+
+            //var openApiScheme = new OpenApiSecurityScheme
+            //{
+            //    Name = "oauth",
+            //    Description = "Azure login, OAuth2.0 auth code with PKCE",
+            //    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" },
+
+            //    Type = SecuritySchemeType.OAuth2,
+            //    Flows = new OpenApiOAuthFlows
+            //    {
+            //        Implicit = new OpenApiOAuthFlow
+            //        {
+            //            AuthorizationUrl = new Uri(authUrl),
+            //            TokenUrl = new Uri(tokenUrl)
+            //        }
+            //    }
+            //};
+            //var openApiRequirements = new OpenApiSecurityRequirement
+            //{
+            //    { openApiScheme, new List<string>{ }}
+            //};
 
             options.DocumentFilter<LowercaseDocumentFilter>();
-            options.AddSecurityDefinition("oauth2", openApiScheme);
-            options.AddSecurityRequirement(openApiRequirements);
+            //options.AddSecurityDefinition("oauth2", openApiScheme);
+            //options.AddSecurityRequirement(openApiRequirements);
             options.SwaggerDoc("v1", new OpenApiInfo
             {
                 Version = "v1",
@@ -64,12 +100,15 @@ public static class SwaggerConfiguration
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
-            var clientId = configuration["AzureAd:ClientId"];
-            var scope = $"api://{clientId}/access_as_user";
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
 
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "ATM Api(v1)");
-            c.OAuthClientId(clientId);
-            c.OAuthScopes(scope);
+            c.OAuthClientId("Mindr.Client");
+            c.OAuthClientSecret(null);
+            c.OAuthUsePkce();
+
+            c.OAuthScopeSeparator("Mindr.ServerAPI openid profile");
+            c.OAuth2RedirectUrl("https://localhost:7163/authentication/login-callback");
+            //c.OAuth2LogoutUrl("https://localhost:7163/authentication/logout-callback");
         });
     }
 }

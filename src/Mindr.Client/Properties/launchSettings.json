@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "Mindr": {
+    "Mindr.Client": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
