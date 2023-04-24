@@ -11,11 +11,8 @@ using Mindr.Core.Enums;
 using Mindr.Api.Services.ConnectorEvents;
 using Mindr.Api.Services.Connectors;
 using Mindr.HttpRunner.Models;
-using Microsoft.AspNetCore.ResponseCompression;
 
 using Mindr.HttpRunner;
-using Mindr.Api.Models;
-using AutoMapper;
 
 namespace Mindr.Api;
 
@@ -24,23 +21,6 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
-
-        // Add services to the container.
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(connectionString));
-        builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-        builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-            .AddEntityFrameworkStores<ApplicationDbContext>();
-
-        builder.Services.AddIdentityServer()
-            .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
-
-        builder.Services.AddAuthentication()
-            .AddIdentityServerJwt();
-
 
         // External Services
         builder.Services
@@ -90,7 +70,6 @@ public class Program
         var app = builder.Build();
         if (app.Environment.IsDevelopment())
         {
-            app.UseMigrationsEndPoint();
             app.UseDeveloperExceptionPage();
 
             #region Set Test Data
@@ -115,7 +94,6 @@ public class Program
 
         app.UseHttpsRedirection();
         app.UseRouting();
-        app.UseIdentityServer();
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseCors(cors => cors
@@ -126,9 +104,9 @@ public class Program
         );
         app.UseEndpoints(endpoints =>
         {
+            endpoints.MapControllers();
             endpoints.MapSwagger();
             endpoints.MapHangfireDashboard();
-            endpoints.MapControllers();
         });
         app.UseHealthChecks("/healthy");
         app.Run();

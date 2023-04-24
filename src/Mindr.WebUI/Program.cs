@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Fast.Components.FluentUI;
 using Mindr.HttpRunner.Services;
@@ -34,21 +33,14 @@ builder.Services.AddTransient<IHttpRunnerFactory, HttpRunnerFactory>();
 builder.Services.AddTransient<IHttpRunnerClient, HttpRunnerClient>();
 
 // Authentication
-builder.Services.AddHttpClient("Mindr.WebUI", client => client.BaseAddress = new Uri("https://localhost:7155/"))
-    .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
+builder.Services.AddMsalAuthentication(options =>
+{
+    builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication);
 
-// Supply HttpClient instances that include access tokens when making requests to the server project
-builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("Mindr.WebUI"));
-builder.Services.AddApiAuthorization();
-
-//builder.Services.AddMsalAuthentication(options =>
-//{
-//    builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication);
-
-//    // https://github.com/dotnet/aspnetcore/issues/39104#issuecomment-1288271430
-//    options.ProviderOptions.LoginMode = "redirect";
-//    options.ProviderOptions.Cache.CacheLocation = "localStorage";
-//});
+    // https://github.com/dotnet/aspnetcore/issues/39104#issuecomment-1288271430
+    options.ProviderOptions.LoginMode = "redirect";
+    options.ProviderOptions.Cache.CacheLocation = "localStorage";
+});
 
 // Design
 builder.Services.AddFluentUIComponents();
