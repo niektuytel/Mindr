@@ -7,7 +7,7 @@ using Mindr.Api.Persistence;
 using Mindr.Api.Swagger;
 using Hangfire;
 using Hangfire.SqlServer;
-using Mindr.Core.Enums;
+using Mindr.Shared.Enums;
 using Mindr.Api.Services.ConnectorEvents;
 using Mindr.Api.Services.Connectors;
 using Mindr.HttpRunner.Models;
@@ -23,9 +23,6 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // External Services
-        builder.Services
-            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
         builder.Services
             .AddDbContext<IApplicationContext, ApplicationContext>(options => {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("SqlDatabase"));

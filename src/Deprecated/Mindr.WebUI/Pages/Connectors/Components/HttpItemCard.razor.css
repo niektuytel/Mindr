@@ -1,0 +1,37 @@
+﻿.card-select {
+    width: 300px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px 2px #0000001f;
+}
+
+.card-selected {
+    width: 300px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 0px 0px 3px 1px #1c7dce;
+}
+
+.overflow-ellipsis {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.seperator {
+    height: 20px;
+    width: 1px;
+    background: gray;
+}
+
+::deep > fluent-badge {
+    --badge-fill-highlight: #009105;
+    --badge-fill-lowlight: #df0000;
+    --badge-color-highlight: #000;
+    --badge-color-lowlight: #fff;
+    font-weight: bold;
+    color: white;
+    margin: 3px;
+}

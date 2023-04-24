@@ -1,6 +1,6 @@
-﻿using Mindr.Core.Enums;
-using Mindr.Core.Models.ConnectorEvents;
-using Mindr.Core.Models.Connectors;
+﻿using Mindr.Shared.Enums;
+using Mindr.Shared.Models.ConnectorEvents;
+using Mindr.Shared.Models.Connectors;
 using Mindr.HttpRunner.Enums;
 using Mindr.HttpRunner.Models;
 using System;
@@ -10,9 +10,9 @@ using System.Text;
 
 namespace Mindr.Api
 {
-    internal static class MockedData
+    public static class MockedData
     {
-        internal static Connector GetConnector1()
+        public static Connector GetConnector1()
         {
             return new Connector()
             {
@@ -60,7 +60,7 @@ namespace Mindr.Api
                     Pipeline = Mindr.HttpRunner.MockedData.GetPipeline()
                 };
         }
-        internal static Connector GetConnector2()
+        public static Connector GetConnector2()
         {
             return new Connector()
             {
@@ -117,7 +117,7 @@ namespace Mindr.Api
             };
         }
 
-        internal static ConnectorEvent GetConnectorEvent1()
+        public static ConnectorEvent GetConnectorEvent1()
         {
             var connector1 = GetConnector1();
             var event1 = new ConnectorEvent("00000000-0000-0000-aacc-c311156d0357", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", connector1);
@@ -135,7 +135,7 @@ namespace Mindr.Api
             return event1;
         }
 
-        internal static ConnectorEvent GetConnectorEvent2()
+        public static ConnectorEvent GetConnectorEvent2()
         {
             var connector2 = GetConnector2();
             var event2 = new ConnectorEvent("00000000-0000-0000-aacc-c311156d0357", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", connector2);

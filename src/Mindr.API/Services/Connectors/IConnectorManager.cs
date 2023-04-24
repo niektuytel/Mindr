@@ -1,5 +1,5 @@
 ﻿using Mindr.Api.Models.Connectors;
-using Mindr.Core.Models.Connectors;
+using Mindr.Shared.Models.Connectors;
 using Mindr.HttpRunner.Models;
 
 namespace Mindr.Api.Services.Connectors

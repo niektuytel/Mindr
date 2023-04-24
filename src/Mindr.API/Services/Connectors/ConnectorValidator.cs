@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Mindr.Api.Persistence;
 using Mindr.API.Exceptions;
-using Mindr.Core.Models.Connectors;
+using Mindr.Shared.Models.Connectors;
 using System.Net;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 

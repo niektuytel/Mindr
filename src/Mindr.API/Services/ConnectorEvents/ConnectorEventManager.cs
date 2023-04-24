@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Mindr.Api.Models.ConnectorEvents;
 using Mindr.Api.Persistence;
-using Mindr.Core.Models.ConnectorEvents;
+using Mindr.Shared.Models.ConnectorEvents;
 
 namespace Mindr.Api.Services.ConnectorEvents;
 

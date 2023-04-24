@@ -9,19 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Enums\**" />
-    <Content Remove="Enums\**" />
-    <EmbeddedResource Remove="Enums\**" />
-    <None Remove="Enums\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Controllers\WeatherForecastController.cs" />
-    <Compile Remove="WeatherForecast.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-	  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+	  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
 	  <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.4.0" />
 	  <PackageReference Include="DutchGrit.AfasClient" Version="2.1.0.103-beta" />
 	  <PackageReference Include="Hangfire.SqlServer" Version="1.7.33" />
@@ -55,8 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Mindr.Core\Mindr.Core.csproj" />
-    <ProjectReference Include="..\Mindr.HttpRunner\Mindr.HttpRunner.csproj" />
+    <ProjectReference Include="..\Mindr.Shared\Mindr.Shared.csproj" />
   </ItemGroup>
 
 </Project>

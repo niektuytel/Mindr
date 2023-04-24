@@ -1,0 +1,25 @@
+﻿@using Mindr.Client.Models;
+@using Mindr.HttpRunner.Models;
+@namespace Mindr.Client.Components
+
+<FluentTreeView>
+    @if(Data != null)
+    {
+        <FluentTreeItem Expanded="false">
+            <FluentIcon Name="@FluentIcons.Collections" Slot="start" Size="@IconSize.Size20" Color=Color.Neutral />
+            @Data.Info.Name
+            @foreach(var folder in Data.Items)
+            {
+                <CollectionItem Data="@folder" OnAddHandle="@((item) => OnAddHandle(item, Data.Variable))" />
+            }
+        </FluentTreeItem>
+    }
+</FluentTreeView>
+
+@code {
+    [Parameter, EditorRequired]
+    public HttpCollection? Data { get; set; } = null;
+
+    [Parameter, EditorRequired]
+    public Action<HttpItem, IEnumerable<HttpVariable>> OnAddHandle { get; set; } = default!;
+}

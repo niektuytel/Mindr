@@ -5,9 +5,9 @@ using System.Reflection;
 
 namespace Mindr.Api.Swagger;
 
-internal static class SwaggerConfiguration
+public static class SwaggerConfiguration
 {
-    internal static void AddSwaggerTools(this IServiceCollection services, IConfiguration configuration)
+    public static void AddSwaggerTools(this IServiceCollection services, IConfiguration configuration)
     {
 
         services.AddEndpointsApiExplorer();
@@ -59,7 +59,7 @@ internal static class SwaggerConfiguration
         });
     }
 
-    internal static void UseSwaggerTools(this WebApplication? app, IConfiguration configuration)
+    public static void UseSwaggerTools(this WebApplication? app, IConfiguration configuration)
     {
         app.UseSwagger();
         app.UseSwaggerUI(c =>

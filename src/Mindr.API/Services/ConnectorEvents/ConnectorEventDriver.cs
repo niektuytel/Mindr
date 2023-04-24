@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Mindr.Api.Persistence;
 using Mindr.Api.Services.Connectors;
-using Mindr.Core.Models.ConnectorEvents;
-using Mindr.Core.Models.Connectors;
+using Mindr.Shared.Models.ConnectorEvents;
+using Mindr.Shared.Models.Connectors;
 using Mindr.HttpRunner.Services;
 using System.Net;
 
@@ -56,7 +56,7 @@ namespace Mindr.Api.Services.ConnectorEvents
 
         private async Task<string?> ScheduleConnectorEventAsync(ConnectorEvent entity)
         {
-            var schedule = entity.EventParameters.FirstOrDefault(item => item.Key == Core.Enums.EventType.OnDateTime)?.Value;
+            var schedule = entity.EventParameters.FirstOrDefault(item => item.Key == Shared.Enums.EventType.OnDateTime)?.Value;
             if (string.IsNullOrEmpty(schedule) || !DateTime.TryParse(schedule, out var datetime))
             {
                 return null;

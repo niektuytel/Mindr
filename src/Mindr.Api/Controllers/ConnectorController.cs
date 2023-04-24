@@ -5,8 +5,8 @@ using Mindr.Api.Models;
 using Mindr.Api.Models.Connectors;
 using Mindr.Api.Services.Connectors;
 
-using Mindr.Core.Enums;
-using Mindr.Core.Models.Connectors;
+using Mindr.Shared.Enums;
+using Mindr.Shared.Models.Connectors;
 using Mindr.HttpRunner.Models;
 using System.Net;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;

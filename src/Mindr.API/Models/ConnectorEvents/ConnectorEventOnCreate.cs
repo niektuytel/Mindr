@@ -1,6 +1,6 @@
 ﻿using Microsoft.Graph;
-using Mindr.Core.Models.ConnectorEvents;
-using Mindr.Core.Models.Connectors;
+using Mindr.Shared.Models.ConnectorEvents;
+using Mindr.Shared.Models.Connectors;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

@@ -8,6 +8,7 @@ namespace Mindr.HttpRunner
     {
         public static IServiceCollection AddHttpRunner(this IServiceCollection services)
         {
+            services.AddHttpClient();
             services.AddScoped<IHttpRunnerFactory, HttpRunnerFactory>();
             services.AddScoped<IHttpRunnerClient, HttpRunnerClient>();
             return services;

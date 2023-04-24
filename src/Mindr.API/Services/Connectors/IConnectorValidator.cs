@@ -1,4 +1,4 @@
-﻿using Mindr.Core.Models.Connectors;
+﻿using Mindr.Shared.Models.Connectors;
 
 namespace Mindr.Api.Services.Connectors
 {

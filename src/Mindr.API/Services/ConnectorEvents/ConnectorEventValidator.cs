@@ -1,6 +1,6 @@
 ﻿using Mindr.Api.Persistence;
-using Mindr.Core.Models.ConnectorEvents;
-using Mindr.Core.Models.Connectors;
+using Mindr.Shared.Models.ConnectorEvents;
+using Mindr.Shared.Models.Connectors;
 using System.Net;
 
 namespace Mindr.Api.Services.ConnectorEvents
@@ -68,7 +68,7 @@ namespace Mindr.Api.Services.ConnectorEvents
                 }
 
                 // datetime validation
-                if (parameter.Key == Core.Enums.EventType.OnDateTime && !DateTime.TryParse(parameter.Value, out var _))
+                if (parameter.Key == Shared.Enums.EventType.OnDateTime && !DateTime.TryParse(parameter.Value, out var _))
                 {
                     throw new API.Exceptions.HttpException(HttpStatusCode.BadRequest, $"EventParameter value of {{'{parameter.Key}': '{parameter.Value}'}} is invalid on given key");
                 }

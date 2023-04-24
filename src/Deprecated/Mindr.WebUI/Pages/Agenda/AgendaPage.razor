@@ -1,0 +1,88 @@
+﻿@namespace Mindr.Client.Pages.Agenda
+@page "/agenda"
+
+@using Microsoft.AspNetCore.Authorization;
+@using Mindr.Core.CalendarExtensions;
+@using System.Globalization;
+@using Mindr.Core.Models.Connectors;
+@using Mindr.Client.Pages.Agenda.Components
+@using Newtonsoft.Json;
+
+
+@inherits FluentComponentBase
+@attribute [Authorize]
+
+<Breadcrumb />
+<Stack Orientation="Orientation.Horizontal">
+    <div>
+        <style>
+            .dot {
+                height: 5px;
+                width: 5px;
+                margin: 1px;
+                border-radius: 50%;
+                display: inline-block;
+            }
+        </style>
+        <table>
+            <thead>
+                <tr>
+                    <td style="text-align-last: center;">Sun</td>
+                    <td style="text-align-last: center;">Mon</td>
+                    <td style="text-align-last: center;">Tue</td>
+                    <td style="text-align-last: center;">Wed</td>
+                    <td style="text-align-last: center;">Thu</td>
+                    <td style="text-align-last: center;">Fri</td>
+                    <td style="text-align-last: center;">Sat</td>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < _Constants.COUNT_DAYS_IN_CALENDAR; i++)
+                {
+                    <tr>
+                        @foreach (var day in Days.Skip(i * 7).Take<CalendarDay>(7))
+                        {
+                            <td>
+                                <AgendaDay 
+                                    IsSelectedMonth="@(day.Date.Month == SelectedDate.Month)" 
+                                    IsSelectedDay="@(day.Date == SelectedDate)"
+                                    Date="@day.Date" 
+                                    Events="Events?.Where(item => 
+                                        item != null && 
+                                        day.Date.Date >= item.StartDate.DateTime.Date && 
+                                        day.Date.Date <= item.EndDate.DateTime.Date
+                                    )"
+                                    HandleClick="HandleOnSelect" />
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <Stack Orientation="Orientation.Horizontal" HorizontalAlignment="StackHorizontalAlignment.Right" VerticalGap="0">
+
+
+
+            <FluentButton onclick="@(async () => await OnSelectMonth(SelectedDate.AddMonths(-1)))">
+                <FluentIcon Name="@FluentIcons.ChevronCircleLeft" Size="@IconSize.Size24" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+            </FluentButton>
+            <div style="align-self: center;">
+                @DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(SelectedDate.Month)
+            </div>
+            <FluentButton onclick="@(async () => await OnSelectMonth(SelectedDate.AddMonths(1)))">
+                <FluentIcon Name="@FluentIcons.ChevronCircleRight" Size="@IconSize.Size24" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+            </FluentButton>
+        </Stack>
+    </div>
+    <div style="width: -webkit-fill-available;">
+        @SelectedDate.ToShortDateString() Events
+        @if (CurrentEvents?.Any() == true)
+        {
+            foreach (var item in CurrentEvents)
+            {
+                <AgendaEventItem Data="@item" />
+            }
+        }
+    </div>
+</Stack>
+

@@ -1,0 +1,33 @@
+﻿@using Mindr.Client.Components
+@using Mindr.Client.Models;
+
+@namespace Mindr.Client.Shared
+@inherits LayoutComponentBase
+
+<PageTitle>Mindr.WebUI</PageTitle>
+
+<div id="page-container" @ref="Container">
+    <Header Container="Container" />
+    <main id="content-wrap">
+        <NavMenu Class="nav-menu" Expanded="true">
+            @foreach (Page _page in @_Constants.Pages)
+            {
+                <NavMenuLink Icon="@_page.Icon" Text="@_page.Name" Href="@_page.Href" Disabled="@_page.Disabled" />
+            }
+        </NavMenu>
+        <Stack class="child-stack" Orientation="Orientation.Vertical" VerticalGap="0">
+            <ErrorBoundary @ref="ErrorBoundary">
+                <ChildContent>
+                    @Body
+                </ChildContent>
+                <ErrorContent Context="ex">
+                    <Breadcrumb />
+                    <div class="blazor-error-boundary">
+                        @ex.Message
+                    </div>
+                </ErrorContent>
+            </ErrorBoundary>
+        </Stack>
+    </main>
+    <Footer />
+</div>

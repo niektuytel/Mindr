@@ -24,7 +24,7 @@ namespace Mindr.Api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Mindr.Core.Models.ConnectorEvents.ConnectorEvent", b =>
+            modelBuilder.Entity("Mindr.Shared.Models.ConnectorEvents.ConnectorEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -53,7 +53,7 @@ namespace Mindr.Api.Migrations
                     b.ToTable("ConnectorEvents");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.ConnectorEvents.ConnectorEventParameter", b =>
+            modelBuilder.Entity("Mindr.Shared.Models.ConnectorEvents.ConnectorEventParameter", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -75,7 +75,7 @@ namespace Mindr.Api.Migrations
                     b.ToTable("ConnectorEventParameter");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connectors.Connector", b =>
+            modelBuilder.Entity("Mindr.Shared.Models.Connectors.Connector", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -101,7 +101,7 @@ namespace Mindr.Api.Migrations
                     b.ToTable("Connectors");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connectors.ConnectorVariable", b =>
+            modelBuilder.Entity("Mindr.Shared.Models.Connectors.ConnectorVariable", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -409,20 +409,20 @@ namespace Mindr.Api.Migrations
                     b.ToTable("HttpVariable");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.ConnectorEvents.ConnectorEventParameter", b =>
+            modelBuilder.Entity("Mindr.Shared.Models.ConnectorEvents.ConnectorEventParameter", b =>
                 {
-                    b.HasOne("Mindr.Core.Models.ConnectorEvents.ConnectorEvent", null)
+                    b.HasOne("Mindr.Shared.Models.ConnectorEvents.ConnectorEvent", null)
                         .WithMany("EventParameters")
                         .HasForeignKey("ConnectorEventId");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connectors.ConnectorVariable", b =>
+            modelBuilder.Entity("Mindr.Shared.Models.Connectors.ConnectorVariable", b =>
                 {
-                    b.HasOne("Mindr.Core.Models.ConnectorEvents.ConnectorEvent", null)
+                    b.HasOne("Mindr.Shared.Models.ConnectorEvents.ConnectorEvent", null)
                         .WithMany("ConnectorVariables")
                         .HasForeignKey("ConnectorEventId");
 
-                    b.HasOne("Mindr.Core.Models.Connectors.Connector", null)
+                    b.HasOne("Mindr.Shared.Models.Connectors.Connector", null)
                         .WithMany("Variables")
                         .HasForeignKey("ConnectorId");
                 });
@@ -465,7 +465,7 @@ namespace Mindr.Api.Migrations
 
             modelBuilder.Entity("Mindr.HttpRunner.Models.HttpItem", b =>
                 {
-                    b.HasOne("Mindr.Core.Models.Connectors.Connector", null)
+                    b.HasOne("Mindr.Shared.Models.Connectors.Connector", null)
                         .WithMany("Pipeline")
                         .HasForeignKey("ConnectorId");
 
@@ -522,14 +522,14 @@ namespace Mindr.Api.Migrations
                         .HasForeignKey("HttpResponseId");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.ConnectorEvents.ConnectorEvent", b =>
+            modelBuilder.Entity("Mindr.Shared.Models.ConnectorEvents.ConnectorEvent", b =>
                 {
                     b.Navigation("ConnectorVariables");
 
                     b.Navigation("EventParameters");
                 });
 
-            modelBuilder.Entity("Mindr.Core.Models.Connectors.Connector", b =>
+            modelBuilder.Entity("Mindr.Shared.Models.Connectors.Connector", b =>
                 {
                     b.Navigation("Pipeline");
 

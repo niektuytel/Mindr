@@ -1,6 +1,6 @@
 ﻿using Mindr.Api.Models;
-using Mindr.Core.Models.ConnectorEvents;
-using Mindr.Core.Models.Connectors;
+using Mindr.Shared.Models.ConnectorEvents;
+using Mindr.Shared.Models.Connectors;
 
 namespace Mindr.Api.Services.ConnectorEvents
 {

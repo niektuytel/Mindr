@@ -1,0 +1,47 @@
+﻿@namespace Mindr.Client.Pages.Connectors.Views
+@using Microsoft.AspNetCore.Authorization;
+@using System.Collections.ObjectModel;
+@using Mindr.Client.Models;
+@using Newtonsoft.Json;
+
+@inherits FluentComponentBase
+@attribute [Authorize]
+
+
+@if (ConnectorInfo != null)
+{
+    <Breadcrumb DisplayValue="@ConnectorInfo.Name"/>
+}
+<Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="height:100%">
+    <NavMenu Class="nav-menu" Expanded="false" Collapsible="false" Style="height: 100%;">
+        @foreach (Page _page in @_Constants.ConnectorPage)
+        {
+            <NavMenuLink Icon="@_page.Icon" Text="@_page.Name" Href=@($"/connectors/{ConnectorId}/{_page.Name.ToLower()}") Disabled="@_page.Disabled" />
+        }
+    </NavMenu>
+    @if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <Stack Style="min-height:50px;border: 1px solid #D8000C;background-color: #FFBABA;padding: 3px;">
+            @ErrorMessage
+        </Stack>
+    }
+    @if(IsLoading)
+    {
+        <Stack HorizontalAlignment="StackHorizontalAlignment.Center" VerticalAlignment="StackVerticalAlignment.Center">
+            <FluentProgressRing />
+        </Stack>
+    }
+    else if (string.IsNullOrEmpty(NavName) || NavName.ToLower() == "overview")
+    {
+        <ConnectorOverview Overview="@ConnectorInfo" />
+    }
+    else if (NavName.ToLower() == "pipeline")
+    {
+        <ConnectorPipeline ConnectorId="@ConnectorId" />
+    }
+</Stack>
+
+
+
+
+

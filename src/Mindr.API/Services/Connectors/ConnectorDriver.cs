@@ -1,5 +1,5 @@
 ﻿using Mindr.Api.Persistence;
-using Mindr.Core.Models.Connectors;
+using Mindr.Shared.Models.Connectors;
 using Mindr.HttpRunner.Models;
 using Mindr.HttpRunner.Services;
 

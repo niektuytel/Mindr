@@ -1,0 +1,21 @@
+﻿@namespace Mindr.Client.Components
+@inherits FluentComponentBase
+
+<CascadingValue Value="this" IsFixed=true Name="NavMenu">
+    <CascadingValue Value="@Expanded" Name="NavMenuExpanded">
+        <FluentTreeView @ref=@treeView
+                        Class="@ClassValue"
+                        Style="@StyleValue"
+                        @bind-CurrentSelected=currentSelected
+                        id="@Id">
+            @if (Collapsible)
+            {
+                <FluentTreeItem Selected="false" @onclick="CollapsibleClickAsync">
+                    <FluentIcon Name="@(FluentIcons.Navigation)" Size="@IconSize.Size20" Slot="start"/>
+                </FluentTreeItem>
+            }
+            @ChildContent
+        </FluentTreeView>
+
+    </CascadingValue>
+</CascadingValue>

@@ -11,7 +11,7 @@ using AutoMapper;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Mindr.HttpRunner.Models;
 using Mindr.Api.Models.Connectors;
-using Mindr.Core.Models.Connectors;
+using Mindr.Shared.Models.Connectors;
 
 namespace Mindr.Api.Services.Connectors
 {
