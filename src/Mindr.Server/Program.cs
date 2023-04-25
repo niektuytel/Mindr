@@ -11,7 +11,7 @@ namespace Mindr
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            //Authentication
             var defaultConnection = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<IdentityContext>(options => options.UseSqlServer(defaultConnection));
 
@@ -26,8 +26,22 @@ namespace Mindr
             builder.Services.AddAuthentication()
                 .AddIdentityServerJwt();
 
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigins",
+                  builder =>
+                  {
+                      builder.WithOrigins("https://localhost:7163", "https://localhost:7155")
+                 .AllowAnyHeader()
+                 .AllowAnyMethod()
+                 .AllowCredentials();
+                  });
+            });
             builder.Services.AddRazorPages();
             builder.Services.AddControllersWithViews();
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -53,6 +67,7 @@ namespace Mindr
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseCors("AllowSpecificOrigins");
             app.UseEndpoints(endpoints => {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();

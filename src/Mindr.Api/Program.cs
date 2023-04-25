@@ -13,6 +13,7 @@ using Mindr.Api.Services.Connectors;
 using Mindr.HttpRunner.Models;
 
 using Mindr.HttpRunner;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Mindr.Api;
 
@@ -63,6 +64,20 @@ public class Program
         builder.Services.AddScoped<IConnectorManager, ConnectorManager>();
         builder.Services.AddScoped<IConnectorDriver, ConnectorDriver>();
 
+        // Authentication
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+          .AddJwtBearer(options =>
+          {
+              options.Authority = "https://localhost:7163";
+              options.Audience = "api1";
+              options.TokenValidationParameters = new TokenValidationParameters
+              {
+                  ValidateIssuer = true,
+                  ValidateAudience = true,
+                  ValidateLifetime = true,
+                  ValidateIssuerSigningKey = true,
+              };
+          });
 
         var app = builder.Build();
         if (app.Environment.IsDevelopment())
