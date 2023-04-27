@@ -32,10 +32,11 @@ namespace Mindr
                 options.AddPolicy("AllowSpecificOrigins",
                   builder =>
                   {
-                      builder.WithOrigins("https://localhost:7163", "https://localhost:7155")
-                 .AllowAnyHeader()
-                 .AllowAnyMethod()
-                 .AllowCredentials();
+                        builder.WithOrigins("https://localhost:7163", "https://localhost:7155")
+                            .SetIsOriginAllowedToAllowWildcardSubdomains()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
                   });
             });
             builder.Services.AddRazorPages();

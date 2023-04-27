@@ -28,11 +28,9 @@ public static class SwaggerConfiguration
                         AuthorizationUrl = new Uri("https://localhost:7163/connect/authorize"),
                         TokenUrl = new Uri("https://localhost:7163/connect/token"),
                         Scopes = new Dictionary<string, string>
-                    {
-                        { "Mindr.ServerAPI", "Mindr.ServerAPI" },
-                        { "openid", "OpenID Connect" },
-                        { "profile", "User profile" }
-                    }
+                        {
+                            { "Mindr.ServerAPI", "Mindr.ServerAPI" }
+                        }
                     }
                 }
             });
@@ -102,13 +100,10 @@ public static class SwaggerConfiguration
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
 
-            c.OAuthClientId("Mindr.Client");
-            c.OAuthClientSecret(null);
+            // Enable OAuth2.0 authentication in Swagger UI
+            c.OAuthClientId("Mindr.Api");
+            c.OAuthAppName("Mindr Identity Server");
             c.OAuthUsePkce();
-
-            c.OAuthScopeSeparator("Mindr.ServerAPI openid profile");
-            c.OAuth2RedirectUrl("https://localhost:7163/authentication/login-callback");
-            //c.OAuth2LogoutUrl("https://localhost:7163/authentication/logout-callback");
         });
     }
 }

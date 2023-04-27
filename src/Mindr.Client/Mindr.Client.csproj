@@ -26,10 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\AgendaPlanner\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="wwwroot\js\profile\button.js" />
   </ItemGroup>
 

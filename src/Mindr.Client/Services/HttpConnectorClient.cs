@@ -90,7 +90,6 @@ public class HttpConnectorClient : IHttpConnectorClient
         return response;
     }
 
-
     public async Task<HttpResponseMessage?> GetAll(string query = "", string eventId = "")
     {
         if (!string.IsNullOrEmpty(query))

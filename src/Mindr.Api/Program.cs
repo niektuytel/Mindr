@@ -69,7 +69,7 @@ public class Program
           .AddJwtBearer(options =>
           {
               options.Authority = "https://localhost:7163";
-              options.Audience = "api1";
+              options.Audience = "Mindr.ServerAPI";
               options.TokenValidationParameters = new TokenValidationParameters
               {
                   ValidateIssuer = true,
@@ -78,6 +78,17 @@ public class Program
                   ValidateIssuerSigningKey = true,
               };
           });
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder =>
+            {
+                builder.WithOrigins("https://localhost:7163")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
+        });
+
 
         var app = builder.Build();
         if (app.Environment.IsDevelopment())

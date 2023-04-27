@@ -1,5 +1,6 @@
 ﻿using Microsoft.Graph;
 using Microsoft.Identity.Web;
+using Microsoft.IdentityModel.Tokens;
 using Mindr.API.Exceptions;
 using System;
 using System.Net;
@@ -26,12 +27,21 @@ public static class ClaimsPrincipalExtensions
             throw new HttpException(HttpStatusCode.BadRequest, "No user identity found on given bearer token");
         }
 
-        var userId = claims.GetObjectId();
-        if (string.IsNullOrEmpty(userId))
+        // Get the "sub" claim value from the current user
+        // https://learn.microsoft.com/en-us/aspnet/core/security/authentication/claims?view=aspnetcore-5.0
+        var sub = claims.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+        if (!string.IsNullOrEmpty(sub))
         {
-            throw new HttpException(HttpStatusCode.BadRequest, "Missing user ID on bearer token");
+            return sub;
         }
 
-        return userId;
+        var userId = claims.GetObjectId();
+        if (!string.IsNullOrEmpty(userId))
+        {
+            return userId;
+        }
+
+        throw new HttpException(HttpStatusCode.BadRequest, "Missing user unique identifier on bearer token");
+
     }
 }

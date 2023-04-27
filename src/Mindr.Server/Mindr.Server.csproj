@@ -23,6 +23,11 @@
   <ItemGroup>
     <ProjectReference Include="..\Mindr.Client\Mindr.Client.csproj" />
   </ItemGroup>
+	
+  <ItemGroup>
+    <Folder Include="NewFolder\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
 
 
 </Project>

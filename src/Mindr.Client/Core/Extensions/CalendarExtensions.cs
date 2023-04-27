@@ -1,7 +1,7 @@
 ﻿using Mindr.Shared.Models;
 using System;
 
-namespace Mindr.Shared.CalendarExtensions
+namespace Mindr.Client.Core.Extensions
 {
     public static class CalendarDayExtension
     {
@@ -21,9 +21,9 @@ namespace Mindr.Shared.CalendarExtensions
     }
 
     public static class CalendarEventExtension
-    { 
+    {
         public static string GetTruncatedSubject(this AgendaEvent calEvent, int maxChars)
-        { 
+        {
             return calEvent.Subject.Length <= maxChars ? calEvent.Subject : calEvent.Subject.Substring(0, maxChars) + "...";
         }
     }
