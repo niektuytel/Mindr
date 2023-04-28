@@ -1,7 +1,12 @@
+using Duende.IdentityServer.Test;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations.Internal;
+using Mindr.Server;
 using Mindr.Server.Data;
 using Mindr.Server.Models;
+using System.Reflection;
 
 namespace Mindr
 {
@@ -24,6 +29,12 @@ namespace Mindr
                 .AddApiAuthorization<ApplicationUser, IdentityContext>();
 
             builder.Services.AddAuthentication()
+                .AddGoogle("Google", options =>
+            {
+                options.SignInScheme = IdentityConstants.ExternalScheme;
+                options.ClientId = "889842565350-hmf83o017dfqpg6akp35c941ocj5arha.apps.googleusercontent.com";
+                options.ClientSecret = "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";
+            })
                 .AddIdentityServerJwt();
 
 
