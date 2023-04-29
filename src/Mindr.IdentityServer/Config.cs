@@ -15,30 +15,29 @@ namespace Mindr.IdentityServer
         public static IEnumerable<ApiScope> ApiScopes =>
             new[]
             {
-                new ApiScope("api1", "Full access to API #1") // "full access" scope
+                new ApiScope("mindr_api", "Access to Mindr API")
             };
 
         public static IEnumerable<ApiResource> ApiResources =>
             new[]
             {
-                new ApiResource("api1", "API #1") {Scopes = {"api1"}}
+                new ApiResource("mindr_api", "Mindr Api") {Scopes = {"mindr_api"}}
             };
 
         public static IEnumerable<Client> Clients =>
             new[]
             {
-                // Swashbuckle & NSwag
                 new Client
                 {
-                    ClientId = "demo_api_swagger",
-                    ClientName = "Swagger UI for demo_api",
-                    ClientSecrets = {new Secret("secret".Sha256())}, // change me!
+                    ClientId = "Mindr.Api",
+                    ClientName = "Swagger UI for Mindr api",
+                    ClientSecrets = {new Secret("mindr_api".Sha256())}, // change me!
                     AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
                     RequireClientSecret = false,
-                    RedirectUris = {"https://localhost:51508/swagger/oauth2-redirect.html"},
-                    AllowedCorsOrigins = {"https://localhost:51508"},
-                    AllowedScopes = {"api1"}
+                    RedirectUris = {"https://localhost:7155/swagger/oauth2-redirect.html"},
+                    AllowedCorsOrigins = {"https://localhost:7155"},
+                    AllowedScopes = { "mindr_api" }
                 }
             };
     }
