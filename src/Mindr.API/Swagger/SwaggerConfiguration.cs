@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -9,15 +10,18 @@ public static class SwaggerConfiguration
 {
     public static void AddSwaggerTools(this IServiceCollection services, IConfiguration configuration)
     {
-
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGenNewtonsoftSupport();
 
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         services.AddSwaggerGen(options =>
         {
+            options.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Version = "v1",
+                Title = "Mindr API",
+                Description = "Api to manage mindr functionality"
+            });
 
-            // Configure Swagger to use the OpenAPI 2.0 security scheme
             options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
             {
                 Type = SecuritySchemeType.OAuth2,
@@ -25,17 +29,17 @@ public static class SwaggerConfiguration
                 {
                     AuthorizationCode = new OpenApiOAuthFlow
                     {
-                        AuthorizationUrl = new Uri("https://localhost:7163/connect/authorize"),
-                        TokenUrl = new Uri("https://localhost:7163/connect/token"),
+                        AuthorizationUrl = new Uri($"{configuration["IdentityServer:Authority"]}/connect/authorize"),
+                        TokenUrl = new Uri($"{configuration["IdentityServer:Authority"]}/connect/token"),
                         Scopes = new Dictionary<string, string>
                         {
-                            { "Mindr.ServerAPI", "Mindr.ServerAPI" }
+                            {configuration["IdentityServer:Audience"], "Mindr API - access"}
                         }
                     }
                 }
+
             });
 
-            // Require authentication for all API methods
             options.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
@@ -47,49 +51,25 @@ public static class SwaggerConfiguration
                             Id = "oauth2"
                         }
                     },
-                    new[] { "Mindr.ServerAPI" }
+                    new[] { configuration["IdentityServer:Audience"] }
                 }
-            });
-            //var baseUrl = configuration["AzureAd:Instance"];
-            //var tenantId = configuration["AzureAd:TenantId"];
-            //var authUrl = $"{baseUrl}/{tenantId}/oauth2/v2.0/authorize";
-            //var tokenUrl = $"{baseUrl}/{tenantId}/oauth2/v2.0/token";
-
-            //var openApiScheme = new OpenApiSecurityScheme
-            //{
-            //    Name = "oauth",
-            //    Description = "Azure login, OAuth2.0 auth code with PKCE",
-            //    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" },
-
-            //    Type = SecuritySchemeType.OAuth2,
-            //    Flows = new OpenApiOAuthFlows
-            //    {
-            //        Implicit = new OpenApiOAuthFlow
-            //        {
-            //            AuthorizationUrl = new Uri(authUrl),
-            //            TokenUrl = new Uri(tokenUrl)
-            //        }
-            //    }
-            //};
-            //var openApiRequirements = new OpenApiSecurityRequirement
-            //{
-            //    { openApiScheme, new List<string>{ }}
-            //};
-
-            options.DocumentFilter<LowercaseDocumentFilter>();
-            //options.AddSecurityDefinition("oauth2", openApiScheme);
-            //options.AddSecurityRequirement(openApiRequirements);
-            options.SwaggerDoc("v1", new OpenApiInfo
-            {
-                Version = "v1",
-                Title = "Mindr API",
-                Description = "Api to manage mindr functionality"
             });
 
             // Set the comments path for the Swagger JSON and UI.
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-            options.IncludeXmlComments(xmlPath);
+            var xmlFullFile = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            if (!Directory.Exists(AppContext.BaseDirectory))
+            {
+                Directory.CreateDirectory(xmlFullFile);
+            }
+            else if(!File.Exists(xmlFullFile))
+            {
+                File.Create(xmlFullFile);
+            }
+
+            options.DocumentFilter<LowercaseDocumentFilter>();
+            options.OperationFilter<AuthorizeCheckOperationFilter>();
+            options.IncludeXmlComments(xmlFullFile);
         });
     }
 
@@ -101,8 +81,9 @@ public static class SwaggerConfiguration
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
 
             // Enable OAuth2.0 authentication in Swagger UI
-            c.OAuthClientId("Mindr.Api");
-            c.OAuthAppName("Mindr Identity Server");
+            c.OAuthClientId(configuration["IdentityServer:ClientId"]);
+            c.OAuthAppName("Mindr API - Swagger");
+            c.OAuthScopes(configuration["IdentityServer:Audience"]);
             c.OAuthUsePkce();
         });
     }

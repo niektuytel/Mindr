@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 
-namespace Mindr.Api
+namespace Mindr.Api.Persistence
 {
     public static class MockedData
     {
@@ -17,12 +17,12 @@ namespace Mindr.Api
             return new Connector()
             {
                 Id = Guid.Parse("c98d9b51-cf20-4938-b7cb-76e8743f673c"),
-                    CreatedBy = "8c1bb04b-3842-4e05-903d-06b9d40198ab",
-                    Color = "orange",
-                    IsPublic = true,
-                    Name = "Send Whatsapp Text Message",
-                    Description = "Some description explain the product",
-                    Variables = new ConnectorVariable[]
+                CreatedBy = "8c1bb04b-3842-4e05-903d-06b9d40198ab",
+                Color = "orange",
+                IsPublic = true,
+                Name = "Send Whatsapp Text Message",
+                Description = "Some description explain the product",
+                Variables = new ConnectorVariable[]
                         {
                             new()
                             {
@@ -57,8 +57,8 @@ namespace Mindr.Api
                                 Value = "31618395668"
                             }
                         },
-                    Pipeline = Mindr.HttpRunner.MockedData.GetPipeline()
-                };
+                Pipeline = HttpRunner.MockedData.GetPipeline()
+            };
         }
         public static Connector GetConnector2()
         {
@@ -113,7 +113,7 @@ namespace Mindr.Api
                             Value = "unser inputed content"
                         }
                     },
-                Pipeline = Mindr.HttpRunner.MockedData.GetPipeline()
+                Pipeline = HttpRunner.MockedData.GetPipeline()
             };
         }
 

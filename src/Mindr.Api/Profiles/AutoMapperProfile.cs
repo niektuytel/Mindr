@@ -2,7 +2,7 @@
 using Mindr.Shared.Models.Connectors;
 using Newtonsoft.Json.Linq;
 
-namespace Mindr.Api;
+namespace Mindr.Api.Profiles;
 
 public class AutoMapperProfile : Profile
 {

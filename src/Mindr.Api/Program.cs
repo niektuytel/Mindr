@@ -14,6 +14,7 @@ using Mindr.HttpRunner.Models;
 
 using Mindr.HttpRunner;
 using Microsoft.IdentityModel.Tokens;
+using MockedData = Mindr.Api.Persistence.MockedData;
 
 namespace Mindr.Api;
 
@@ -68,15 +69,8 @@ public class Program
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
           .AddJwtBearer(options =>
           {
-              options.Authority = "https://localhost:7163";
-              options.Audience = "Mindr.ServerAPI";
-              options.TokenValidationParameters = new TokenValidationParameters
-              {
-                  ValidateIssuer = true,
-                  ValidateAudience = true,
-                  ValidateLifetime = true,
-                  ValidateIssuerSigningKey = true,
-              };
+              options.Authority = builder.Configuration["IdentityServer:Authority"];
+              options.Audience = builder.Configuration["IdentityServer:Audience"];
           });
 
         builder.Services.AddCors(options =>
