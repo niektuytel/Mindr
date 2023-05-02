@@ -35,7 +35,7 @@ namespace Mindr.IdentityServer
                     AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
                     RequireClientSecret = false,
-                    RedirectUris = {"https://localhost:7155/swagger/oauth2-redirect.html"},
+                    RedirectUris = {""},
                     AllowedCorsOrigins = {"https://localhost:7155"},
                     AllowedScopes = { "mindr_api" }
                 }

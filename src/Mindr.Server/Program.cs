@@ -1,8 +1,10 @@
 using Duende.IdentityServer.Test;
+using IdentityServerHost.Quickstart.UI;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations.Internal;
+using Mindr.IdentityServer;
 using Mindr.Server;
 using Mindr.Server.Data;
 using Mindr.Server.Models;
@@ -26,7 +28,13 @@ namespace Mindr
                 .AddEntityFrameworkStores<IdentityContext>();
 
             builder.Services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, IdentityContext>();
+                .AddApiAuthorization<ApplicationUser, IdentityContext>()
+                .AddTestUsers(TestUsers.Users)
+                .AddInMemoryIdentityResources(Config.IdentityResources)
+                .AddInMemoryApiScopes(Config.ApiScopes)
+                .AddInMemoryApiResources(Config.ApiResources)
+                .AddInMemoryClients(Config.Clients)
+                .AddDeveloperSigningCredential();
 
             builder.Services.AddAuthentication()
                 .AddGoogle("Google", options =>
@@ -50,7 +58,7 @@ namespace Mindr
                             .AllowCredentials();
                   });
             });
-            builder.Services.AddRazorPages();
+            //builder.Services.AddRazorPages();
             builder.Services.AddControllersWithViews();
 
 
@@ -60,7 +68,7 @@ namespace Mindr
             if (app.Environment.IsDevelopment())
             {
                 app.UseMigrationsEndPoint();
-                app.UseWebAssemblyDebugging();
+                //app.UseWebAssemblyDebugging();
             }
             else
             {
@@ -70,7 +78,7 @@ namespace Mindr
             }
 
             app.UseHttpsRedirection();
-            app.UseBlazorFrameworkFiles();
+            //app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -81,10 +89,11 @@ namespace Mindr
 
             app.UseCors("AllowSpecificOrigins");
             app.UseEndpoints(endpoints => {
-                endpoints.MapRazorPages();
-                endpoints.MapControllers();
+                //endpoints.MapRazorPages();
+                //endpoints.MapControllers();
+                app.UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());
             });
-            app.MapFallbackToFile("index.html");
+            //app.MapFallbackToFile("index.html");
             app.Run();
         }
     }

@@ -22,14 +22,6 @@
   </ItemGroup>
 	
   <ItemGroup>
-    <ProjectReference Include="..\Mindr.Client\Mindr.Client.csproj" />
-  </ItemGroup>
-	
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-	
-  <ItemGroup>
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
