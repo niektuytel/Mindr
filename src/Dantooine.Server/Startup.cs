@@ -9,8 +9,6 @@ using Microsoft.Extensions.Hosting;
 using Quartz;
 using Dantooine.Server.Data;
 using static OpenIddict.Abstractions.OpenIddictConstants;
-using OpenIddict.Client;
-using System;
 
 namespace Dantooine.Server;
 
@@ -24,6 +22,7 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddControllersWithViews();
+        services.AddRazorPages();
         services.AddCors(options =>
         {
             options.AddPolicy("AllowAll", builder =>
@@ -34,8 +33,6 @@ public class Startup
                     .AllowCredentials();
             });
         });
-
-        //services.AddRazorPages();
 
         services.AddDbContext<ApplicationDbContext>(options =>
         {
@@ -123,7 +120,6 @@ public class Startup
                 options.UseAspNetCore();
             });
 
-
         // Register the worker responsible for seeding the database.
         // Note: in a real world application, this step should be part of a setup script.
         services.AddHostedService<Worker>();
@@ -152,11 +148,12 @@ public class Startup
         app.UseCors("AllowAll");
         app.UseAuthentication();
         app.UseAuthorization();
+
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
             endpoints.MapDefaultControllerRoute();
-            //endpoints.MapRazorPages();
+            endpoints.MapRazorPages();
         });
     }
 }

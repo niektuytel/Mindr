@@ -32,71 +32,90 @@ public class Worker : IHostedService
             var manager = provider.GetRequiredService<IOpenIddictApplicationManager>();
 
             // API
+            
+            //public static IEnumerable<IdentityResource> IdentityResources =>
+            //    new IdentityResource[]
+            //    {
+            //        new IdentityResources.OpenId(),
+            //        new IdentityResources.Profile()
+            //    };
+
+            //public static IEnumerable<ApiScope> ApiScopes =>
+            //    new[]
+            //    {
+            //        new ApiScope("mindr_api", "Access to Mindr API")
+            //    };
+
+            //public static IEnumerable<ApiResource> ApiResources =>
+            //    new[]
+            //    {
+            //        new ApiResource("mindr_api", "Mindr Api") {Scopes = {"mindr_api"}}
+            //    };
+
+            //public static IEnumerable<Client> Clients =>
+            //    new[]
+            //    {
+            //        new Client
+            //        {
+            //            ClientId = "Mindr.Api",
+            //            ClientName = "Swagger UI for Mindr api",
+            //            ClientSecrets = {new Secret("mindr_api".Sha256())}, // change me!
+            //            AllowedGrantTypes = GrantTypes.Code,
+            //            RequirePkce = true,
+            //            RequireClientSecret = false,
+            //            RedirectUris = {""},
+            //            AllowedCorsOrigins = {"https://localhost:7155"},
+            //            AllowedScopes = { "mindr_api" }
+            //        }
+            //    };
             if (await manager.FindByClientIdAsync("resource_server_1") == null)
             {
                 var descriptor = new OpenIddictApplicationDescriptor
                 {
                     ClientId = "resource_server_1",
-                    ConsentType = ConsentTypes.Explicit,
-                    DisplayName = "Blazor client application",
-                    Type = ClientTypes.Public,
-                    PostLogoutRedirectUris =
+                    ClientSecret = "846B62D0-DEF9-4215-A99D-86E6B8DAB342",
+                    Permissions =
                     {
-                        new Uri("https://localhost:7163/authentication/logout-callback")
+                        Permissions.Endpoints.Introspection
                     },
                     RedirectUris =
                     {
-                        new Uri("https://localhost:7163/authentication/login-callback")
+                        new Uri("https://localhost:7155/swagger/oauth2-redirect.html")
                     },
-                    Permissions =
-                    {
-                        Permissions.Endpoints.Authorization,
-                        Permissions.Endpoints.Logout,
-                        Permissions.Endpoints.Token,
-                        Permissions.GrantTypes.AuthorizationCode,
-                        Permissions.GrantTypes.RefreshToken,
-                        Permissions.ResponseTypes.Code,
-                        Permissions.Scopes.Email,
-                        Permissions.Scopes.Profile,
-                        Permissions.Scopes.Roles
-                    },
-                    Requirements =
-                    {
-                        Requirements.Features.ProofKeyForCodeExchange
-                    }
+                    
                 };
 
                 await manager.CreateAsync(descriptor);
             }
 
-            // CLIENT
-            if (await manager.FindByClientIdAsync("balosar-blazor-client") is null)
+            // Blazor Hosted
+            if (await manager.FindByClientIdAsync("blazorcodeflowpkceclient") is null)
             {
                 await manager.CreateAsync(new OpenIddictApplicationDescriptor
                 {
-                    ClientId = "balosar-blazor-client",
+                    ClientId = "blazorcodeflowpkceclient",
                     ConsentType = ConsentTypes.Explicit,
-                    DisplayName = "Blazor client application",
-                    Type = ClientTypes.Public,
+                    DisplayName = "Blazor code PKCE",
                     PostLogoutRedirectUris =
                     {
-                        new Uri("https://localhost:7163/authentication/logout-callback")
+                        new Uri("https://localhost:44348/callback/logout/local")
                     },
-                        RedirectUris =
+                    RedirectUris =
                     {
-                        new Uri("https://localhost:7163/authentication/login-callback")
+                        new Uri("https://localhost:44348/callback/login/local")
                     },
+                    ClientSecret = "codeflow_pkce_client_secret",
                     Permissions =
                     {
                         Permissions.Endpoints.Authorization,
                         Permissions.Endpoints.Logout,
                         Permissions.Endpoints.Token,
                         Permissions.GrantTypes.AuthorizationCode,
-                        Permissions.GrantTypes.RefreshToken,
                         Permissions.ResponseTypes.Code,
                         Permissions.Scopes.Email,
                         Permissions.Scopes.Profile,
-                        Permissions.Scopes.Roles
+                        Permissions.Scopes.Roles,
+                        Permissions.Prefixes.Scope + "api1"
                     },
                     Requirements =
                     {
@@ -104,41 +123,6 @@ public class Worker : IHostedService
                     }
                 });
             }
-
-            //if (await manager.FindByClientIdAsync("blazorcodeflowpkceclient") is null)
-            //{
-            //    await manager.CreateAsync(new OpenIddictApplicationDescriptor
-            //    {
-            //        ClientId = "blazorcodeflowpkceclient",
-            //        ConsentType = ConsentTypes.Explicit,
-            //        DisplayName = "Blazor code PKCE",
-            //        PostLogoutRedirectUris =
-            //        {
-            //            new Uri("https://localhost:44348/callback/logout/local")
-            //        },
-            //        RedirectUris =
-            //        {
-            //            new Uri("https://localhost:44348/callback/login/local")
-            //        },
-            //        ClientSecret = "codeflow_pkce_client_secret",
-            //        Permissions =
-            //        {
-            //            Permissions.Endpoints.Authorization,
-            //            Permissions.Endpoints.Logout,
-            //            Permissions.Endpoints.Token,
-            //            Permissions.GrantTypes.AuthorizationCode,
-            //            Permissions.ResponseTypes.Code,
-            //            Permissions.Scopes.Email,
-            //            Permissions.Scopes.Profile,
-            //            Permissions.Scopes.Roles,
-            //            Permissions.Prefixes.Scope + "api1"
-            //        },
-            //        Requirements =
-            //        {
-            //            Requirements.Features.ProofKeyForCodeExchange
-            //        }
-            //    });
-            //}
         }
 
         static async Task RegisterScopesAsync(IServiceProvider provider)

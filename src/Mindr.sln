@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.IdentityServer", "Min
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.OpenIdDict", "Mindr.OpenIdDict\Mindr.OpenIdDict.csproj", "{CBCFCE8C-6D51-482D-A49F-E2A39D1189F5}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dantooine.Server", "Dantooine.Server\Dantooine.Server.csproj", "{23158C64-9B3F-4E4F-90E3-8A311823196B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{CBCFCE8C-6D51-482D-A49F-E2A39D1189F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBCFCE8C-6D51-482D-A49F-E2A39D1189F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBCFCE8C-6D51-482D-A49F-E2A39D1189F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23158C64-9B3F-4E4F-90E3-8A311823196B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23158C64-9B3F-4E4F-90E3-8A311823196B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23158C64-9B3F-4E4F-90E3-8A311823196B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23158C64-9B3F-4E4F-90E3-8A311823196B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
