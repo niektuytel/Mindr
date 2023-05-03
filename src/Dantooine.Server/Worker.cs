@@ -43,7 +43,7 @@ public class Worker : IHostedService
             //public static IEnumerable<ApiScope> ApiScopes =>
             //    new[]
             //    {
-            //        new ApiScope("mindr_api", "Access to Mindr API")
+            //        new ApiScope("mindr_api", "")
             //    };
 
             //public static IEnumerable<ApiResource> ApiResources =>
@@ -68,11 +68,11 @@ public class Worker : IHostedService
             //            AllowedScopes = { "mindr_api" }
             //        }
             //    };
-            if (await manager.FindByClientIdAsync("resource_server_1") == null)
+            if (await manager.FindByClientIdAsync("Mindr.Api") == null)
             {
                 var descriptor = new OpenIddictApplicationDescriptor
                 {
-                    ClientId = "resource_server_1",
+                    ClientId = "Mindr.Api",
                     ClientSecret = "846B62D0-DEF9-4215-A99D-86E6B8DAB342",
                     Permissions =
                     {
@@ -88,7 +88,7 @@ public class Worker : IHostedService
                 await manager.CreateAsync(descriptor);
             }
 
-            // Blazor Hosted
+            // CLIENT
             if (await manager.FindByClientIdAsync("blazorcodeflowpkceclient") is null)
             {
                 await manager.CreateAsync(new OpenIddictApplicationDescriptor
@@ -129,19 +129,25 @@ public class Worker : IHostedService
         {
             var manager = provider.GetRequiredService<IOpenIddictScopeManager>();
 
-            if (await manager.FindByNameAsync("api1") is null)
+            if (await manager.FindByNameAsync("mindr_api") is null)
             {
                 await manager.CreateAsync(new OpenIddictScopeDescriptor
                 {
-                    DisplayName = "Dantooine API access",
-                    DisplayNames =
-                    {
-                        [CultureInfo.GetCultureInfo("fr-FR")] = "Accès à l'API de démo"
-                    },
-                    Name = "api1",
+                    DisplayName = "Access to Mindr API",
+                    //DisplayNames =
+                    //{
+                    //    [CultureInfo.GetCultureInfo("En-FR")] = "Accès à l'API de démo"
+                    //},
+                    Name = "mindr_api",
                     Resources =
                     {
-                        "resource_server_1"
+                        //"resource_server_1"
+                        //Permissions.Scopes.Id,
+                        Permissions.Scopes.Email,
+                        Permissions.Scopes.Profile,
+                        Permissions.Prefixes.Scope + "mindr_api"
+                        //new IdentityResources.OpenId(),
+                        //new IdentityResources.Profile()
                     }
                 });
             }
