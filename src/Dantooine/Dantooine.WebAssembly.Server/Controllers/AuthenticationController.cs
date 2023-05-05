@@ -159,7 +159,10 @@ public class AuthenticationController : Controller
 
         // Ask the cookie authentication handler to return a new cookie and redirect
         // the user agent to the return URL stored in the authentication properties.
-        return SignIn(new ClaimsPrincipal(identity), properties, CookieAuthenticationDefaults.AuthenticationScheme);
+
+        //Generate the user's cookie!
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), properties);
+        return Redirect(result!.Properties!.RedirectUri);
     }
 
     // Note: this controller uses the same callback action for all providers
