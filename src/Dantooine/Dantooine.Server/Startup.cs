@@ -23,16 +23,6 @@ public class Startup
     {
         services.AddControllersWithViews();
         services.AddRazorPages();
-        services.AddCors(options =>
-        {
-            options.AddPolicy("AllowAll", builder =>
-            {
-                builder.WithOrigins("https://localhost:7163")
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials();
-            });
-        });
 
         services.AddDbContext<ApplicationDbContext>(options =>
         {
@@ -145,7 +135,6 @@ public class Startup
 
         app.UseRouting();
 
-        app.UseCors("AllowAll");
         app.UseAuthentication();
         app.UseAuthorization();
 

@@ -16,6 +16,7 @@ using Mindr.HttpRunner;
 using Microsoft.IdentityModel.Tokens;
 using MockedData = Mindr.Api.Persistence.MockedData;
 using OpenIddict.Validation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Mindr.Api;
 
@@ -104,9 +105,10 @@ public class Program
         {
             options.AddDefaultPolicy(builder =>
             {
-                builder.WithOrigins("https://localhost:7163")
+                builder.WithOrigins("https://localhost:7163", "https://localhost:44348")
                     .AllowAnyMethod()
-                    .AllowAnyHeader();
+                    .AllowAnyHeader()
+                    .AllowCredentials();
             });
         });
 
@@ -136,16 +138,11 @@ public class Program
         app.UseHangfireDashboard();
         app.UseSwaggerTools(builder.Configuration);
 
-        app.UseHttpsRedirection();
+        app.UseCors();
         app.UseRouting();
+        app.UseHttpsRedirection();
         app.UseAuthentication();
         app.UseAuthorization();
-        app.UseCors(cors => cors
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .SetIsOriginAllowed(origin => true)
-                .AllowCredentials()
-        );
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
@@ -153,6 +150,7 @@ public class Program
             endpoints.MapHangfireDashboard();
         });
         app.UseHealthChecks("/healthy");
+        app.MapGet("/api/DantooineApi", [Authorize] () => new string[] { "data1", "data2" });
         app.Run();
     }
 }
