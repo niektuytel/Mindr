@@ -28,8 +28,7 @@ public static class ClaimsPrincipalExtensions
         }
 
         // Get the "sub" claim value from the current user
-        // https://learn.microsoft.com/en-us/aspnet/core/security/authentication/claims?view=aspnetcore-5.0
-        var sub = claims.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+        var sub = claims.FindFirstValue("sub");
         if (!string.IsNullOrEmpty(sub))
         {
             return sub;

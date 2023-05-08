@@ -1,0 +1,75 @@
+﻿@namespace Mindr.Client.Pages.Connectors.Components
+@using Microsoft.Fast.Components.FluentUI
+@using Mindr.Client.Components
+
+@inherits FluentComponentBase
+
+<div>
+    <FluentDialog Modal="true" TrapFocus="true" @ref="Dialog" @ondialogdismiss="DismissDialog">
+       
+        @if (IsLoading)
+        {
+            <Stack HorizontalAlignment="StackHorizontalAlignment.Center" VerticalAlignment="StackVerticalAlignment.Center">
+                <FluentProgressRing />
+            </Stack>
+        }
+        else if(Data != null)
+        {
+            <FluentTabs ActiveIndicator=false activeId="Request">
+                <FluentTab id="Request">Request</FluentTab>
+                <FluentTab id="Response">Response</FluentTab>
+                <FluentTabPanel id="TabPanelRequest">
+                    <Stack Orientation="Orientation.Horizontal" Style="width:100%">
+                        <FluentSelect Items="@Client.Constants.RequestMethods"
+                                        OptionText="@(i => i.Text)"
+                                        OptionValue="@(i => i.Value)"
+                                        OptionSelected="@(i => i.Selected)"
+                                        @bind-Value="@Data.Request.Method"
+                                        Class="request-method"
+                                        Style="min-width:auto" />
+                        @*<FluentTextField Placeholder="Method" @bind-Value="" style="width: 100%;" />*@
+                        <FluentTextField Placeholder="Url" @bind-Value="@Data.Request.Url.Raw" Style="width:100%" />
+                    </Stack>
+
+                    <FluentTabs ActiveIndicator=false activeId="Header">
+                        <FluentTab id="Header">Headers</FluentTab>
+                        <FluentTab id="Body">Body</FluentTab>
+                        <FluentTabPanel id="TabPanelHeader">
+                            <table style="width:100%; padding:20px">
+                                @foreach (var line in Data.Request.Header)
+                                {
+                                    <tr>
+                                        <td><FluentTextField Placeholder="New value" @bind-Value="@line.Key" style="width: 100%;" /></td>
+                                        <td>:</td>
+                                        <td><FluentTextField Placeholder="New value" @bind-Value="@line.Value" style="width: 100%;" /></td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td><FluentTextField Placeholder="New value" @bind-Value="@NewHeaderKey" @onfocusout="HandleOnHeaderAdd" style="width: 100%;" /></td>
+                                    <td>:</td>
+                                    <td><FluentTextField Disabled="true" style="width: 100%;" /></td>
+                                </tr>
+                            </table>
+                        </FluentTabPanel>
+                        <FluentTabPanel id="TabPanelBody">
+                            @*<MonacoEditor @bind-Value="@Code" Language="Json" IsDarkMode="@IsDarkMode" />*@
+                            <FluentTextArea @bind-Value="@Data.Request.Body.Raw" style="width: 100%;" />
+                        </FluentTabPanel>
+                    </FluentTabs>
+                </FluentTabPanel>
+                <FluentTabPanel id="TabPanelResponse">
+                    @*TODO: response types that will been captured to add keys on.*@
+                </FluentTabPanel>
+            </FluentTabs>
+        }
+        @* // TODO:
+        Postman
+        Name
+        Description
+        *@
+        <Stack Orientation="Orientation.Horizontal" HorizontalAlignment="StackHorizontalAlignment.Right">
+            <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="CloseDialog">Close dialog</FluentButton>
+            <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="HandleOnSave">@ButtonText</FluentButton>
+        </Stack>
+    </FluentDialog>
+</div>

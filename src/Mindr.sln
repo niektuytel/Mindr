@@ -3,27 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.Shared.HttpRunner", "Mindr.HttpRunner\Mindr.Shared.HttpRunner.csproj", "{4D30BA20-E352-43BF-A61C-FC652AD930EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.Domain.HttpRunner", "Mindr.HttpRunner\Mindr.Domain.HttpRunner.csproj", "{4D30BA20-E352-43BF-A61C-FC652AD930EF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.Shared", "Mindr.Shared\Mindr.Shared.csproj", "{B8244931-4AE9-4FBC-9A1E-402217944A2C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.Server", "Mindr.Server\Mindr.Server.csproj", "{BE4C6286-ADE8-47C1-A19C-4F530D133172}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.Client", "Mindr.Client\Mindr.Client.csproj", "{8759A462-2EE0-401E-8EF2-B8D529676C49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.Domain", "Mindr.Shared\Mindr.Domain.csproj", "{B8244931-4AE9-4FBC-9A1E-402217944A2C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.Api", "Mindr.Api\Mindr.Api.csproj", "{DF305BF4-92F5-45EF-AB04-6B0896E36D47}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.IdentityServer", "Mindr.IdentityServer\Mindr.IdentityServer.csproj", "{5DB79AA2-6BEB-4E58-B3C0-B3C5C5039896}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.OIDC", "Dantooine\Dantooine.Server\Mindr.OIDC.csproj", "{EFFCD38F-02F1-4EE9-9A61-BD6E577900B9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.OpenIdDict", "Mindr.OpenIdDict\Mindr.OpenIdDict.csproj", "{CBCFCE8C-6D51-482D-A49F-E2A39D1189F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.WebAssembly.Client", "Dantooine\Dantooine.WebAssembly.Client\Mindr.WebAssembly.Client.csproj", "{41D5F021-262B-41EC-98B9-68CCB08281F9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dantooine.Server", "Dantooine\Dantooine.Server\Dantooine.Server.csproj", "{EFFCD38F-02F1-4EE9-9A61-BD6E577900B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.WebAssembly.Server", "Dantooine\Dantooine.WebAssembly.Server\Mindr.WebAssembly.Server.csproj", "{365B036E-234D-4595-BEF9-39C2640944D8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dantooine.WebAssembly.Client", "Dantooine\Dantooine.WebAssembly.Client\Dantooine.WebAssembly.Client.csproj", "{41D5F021-262B-41EC-98B9-68CCB08281F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.WebAssembly.Shared", "Dantooine\Dantooine.WebAssembly.Shared\Mindr.WebAssembly.Shared.csproj", "{822A3215-A1F8-4A6A-807C-1C1CC56BDC66}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dantooine.WebAssembly.Server", "Dantooine\Dantooine.WebAssembly.Server\Dantooine.WebAssembly.Server.csproj", "{365B036E-234D-4595-BEF9-39C2640944D8}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Website", "Website", "{7F7990B5-8170-4121-8881-2D0255193B04}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dantooine.WebAssembly.Shared", "Dantooine\Dantooine.WebAssembly.Shared\Dantooine.WebAssembly.Shared.csproj", "{822A3215-A1F8-4A6A-807C-1C1CC56BDC66}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{1ECE283A-3E11-4A09-A002-D714B6A0EAFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,26 +35,10 @@ Global
 		{B8244931-4AE9-4FBC-9A1E-402217944A2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8244931-4AE9-4FBC-9A1E-402217944A2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8244931-4AE9-4FBC-9A1E-402217944A2C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BE4C6286-ADE8-47C1-A19C-4F530D133172}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BE4C6286-ADE8-47C1-A19C-4F530D133172}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BE4C6286-ADE8-47C1-A19C-4F530D133172}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BE4C6286-ADE8-47C1-A19C-4F530D133172}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8759A462-2EE0-401E-8EF2-B8D529676C49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8759A462-2EE0-401E-8EF2-B8D529676C49}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8759A462-2EE0-401E-8EF2-B8D529676C49}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8759A462-2EE0-401E-8EF2-B8D529676C49}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DF305BF4-92F5-45EF-AB04-6B0896E36D47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DF305BF4-92F5-45EF-AB04-6B0896E36D47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF305BF4-92F5-45EF-AB04-6B0896E36D47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF305BF4-92F5-45EF-AB04-6B0896E36D47}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5DB79AA2-6BEB-4E58-B3C0-B3C5C5039896}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5DB79AA2-6BEB-4E58-B3C0-B3C5C5039896}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5DB79AA2-6BEB-4E58-B3C0-B3C5C5039896}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5DB79AA2-6BEB-4E58-B3C0-B3C5C5039896}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CBCFCE8C-6D51-482D-A49F-E2A39D1189F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CBCFCE8C-6D51-482D-A49F-E2A39D1189F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CBCFCE8C-6D51-482D-A49F-E2A39D1189F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CBCFCE8C-6D51-482D-A49F-E2A39D1189F5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EFFCD38F-02F1-4EE9-9A61-BD6E577900B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EFFCD38F-02F1-4EE9-9A61-BD6E577900B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFFCD38F-02F1-4EE9-9A61-BD6E577900B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -78,6 +58,13 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4D30BA20-E352-43BF-A61C-FC652AD930EF} = {1ECE283A-3E11-4A09-A002-D714B6A0EAFD}
+		{B8244931-4AE9-4FBC-9A1E-402217944A2C} = {1ECE283A-3E11-4A09-A002-D714B6A0EAFD}
+		{41D5F021-262B-41EC-98B9-68CCB08281F9} = {7F7990B5-8170-4121-8881-2D0255193B04}
+		{365B036E-234D-4595-BEF9-39C2640944D8} = {7F7990B5-8170-4121-8881-2D0255193B04}
+		{822A3215-A1F8-4A6A-807C-1C1CC56BDC66} = {7F7990B5-8170-4121-8881-2D0255193B04}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4BB63487-6931-4348-BFB3-F3AD2416FDEB}

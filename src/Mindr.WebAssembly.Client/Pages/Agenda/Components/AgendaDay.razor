@@ -1,0 +1,33 @@
+﻿@namespace Mindr.Client.Pages.Agenda.Components
+@using Microsoft.Fast.Components.FluentUI
+@using Mindr.Client.Pages.Agenda.Components
+@inherits FluentComponentBase
+
+
+    
+@if (IsSelectedMonth)
+{
+    <div style=@($"border-radius:10px;box-shadow: {(IsSelectedDay ? "0px 0px 3px 1px #1c7dce" : "0px 0px 5px 2px #0000001f")};width: 40px;height: 40px;cursor: pointer;margin:5px") onclick="@(async () => await HandleOnSelect())">
+        <b style="margin:2px">@Date.Day</b>
+        @if (Events?.Any() == true)
+        {
+            @foreach (var item in Events)
+            {
+                <div id="@item.Id" class="dot" style=@($"background-color: {item.Color};")/>
+            }
+        }
+    </div>
+}
+@*else
+{
+    <div style="opacity: 0.09;border-radius:10px;box-shadow: 0px 0px 5px 2px #0000001f;width: 40px;height: 40px;cursor: pointer;margin:5px;background-color: #80808014;" onclick="@(async () => await HandleOnSelect())">
+        <b style="margin:2px">@Date.Day</b>
+        @if (Events?.Any() == true)
+        {
+            @foreach (var item in Events)
+            {
+                <div id="@item.Id" class="dot" style=@($"background-color: {item.Color};") />
+            }
+        }
+    </div>
+}*@

@@ -1,0 +1,78 @@
+﻿@namespace Mindr.Client.Pages.Agenda.Components
+@using Microsoft.Fast.Components.FluentUI;
+@using Mindr.Client.Components
+@using Mindr.Shared.Models.Connectors
+@inherits FluentComponentBase
+
+<div>
+    <FluentDialog Modal="true"
+                  TrapFocus="true"
+                  @ref="Dialog"
+                  @ondialogdismiss="HandleOnDialogDismiss">
+
+        <FluentCombobox Placeholder="Whatsapp message..."
+                        Style="width: 100%;"
+                        Multiple="false"
+                        Items=@Results
+                        TOption="ConnectorBriefDTO"
+                        OptionText="@(i => i.Name)"
+                        OptionValue="@(i => i.Id.ToString())"
+                        Autocomplete="ComboboxAutocomplete.Both" 
+                        SelectedOptionChanged="@((input) => HandleOnSelect(input))"
+                        Value="@Query"
+                        @oninput="@(async (input) => await HandleOnSearch(input))"
+                        />
+
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <Stack Style="min-height:50px;border: 1px solid #D8000C;background-color: #FFBABA;padding: 3px;">
+                @ErrorMessage
+            </Stack>
+        }
+        @if (ConnectorEvent != null)
+        {
+            <div style="margin:10px">
+                @foreach (var variable in ConnectorEvent.ConnectorVariables)
+                {
+                    <FluentTextField title="@variable.Description"
+                                     Placeholder="Required"
+                                     Style="width: 100%;"
+                                     @bind-Value="@variable.Value">
+                        @variable.Name
+                    </FluentTextField>
+                }
+                <Stack HorizontalAlignment="StackHorizontalAlignment.Right" Style="margin-top:5px">
+                    @if (IsLoading)
+                    {
+                        <FluentProgressRing Style="width: 24px; height: 24px;"></FluentProgressRing>
+                    }
+                    else
+                    {
+                        <FluentButton @onclick="@GoToConnector">
+                            <FluentIcon Name="@FluentIcons.Link" 
+                                        Size="@IconSize.Size16" 
+                                        Variant="@IconVariant.Regular" 
+                                        Color="@Color.Accent" 
+                            />
+                        </FluentButton>
+                        if (IsCreating == false)
+                        {
+                            <FluentButton Appearance="Appearance.Accent"
+                                  Autofocus="true"
+                                  @onclick="HandleOnDelete">
+                                Delete
+                            </FluentButton>
+                        }
+                        <FluentButton Appearance="Appearance.Accent"
+                                      Autofocus="true"
+                                      @onclick="HandleOnUpsert"
+                        >
+                            @(IsCreating ? "Create" : "Update")
+                        </FluentButton>
+                    }
+                </Stack>
+            </div>
+        }
+    </FluentDialog>
+</div>
+

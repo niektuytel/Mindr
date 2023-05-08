@@ -1,0 +1,33 @@
+@using Microsoft.Fast.Components.FluentUI;
+@using Mindr.Client.Components
+@using Mindr.Client.Models;
+
+@namespace Mindr.Client.Shared
+@inherits FluentComponentBase
+
+@if(Page != null && Page.UseBreadcrumb)
+{
+    <Stack Orientation="Orientation.Horizontal" HorizontalGap=0 Style="padding-top: 4px;padding-left: 4px;">
+        <FluentIcon Name="@Page.Icon" Size="@IconSize.Size24" Color=Color.Neutral Style="margin-top:6px;margin-right:6px;" />
+        <Stack Orientation="Orientation.Horizontal" VerticalAlignment="StackVerticalAlignment.Bottom">
+            @if(!string.IsNullOrEmpty(Path))
+            {        
+                <h3><a href="@Page.Name.ToLower()">@Page.Name</a></h3>
+                <div class="breadcrumb-devider"/>
+                @if(string.IsNullOrEmpty(DisplayValue))
+                {
+                    <h3 class="breadcrumb-child">@Path</h3>
+                }
+                else
+                {
+                    <h3 class="breadcrumb-child">@DisplayValue</h3>
+                }
+            }
+            else
+            {
+                <h3>@Page.Name</h3>
+            }
+        </Stack>
+    </Stack>
+}
+

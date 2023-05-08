@@ -1,0 +1,16 @@
+﻿@namespace Mindr.Client.Pages.Connectors.Components
+@using Microsoft.Fast.Components.FluentUI;
+@using Mindr.Client.Components
+@inherits FluentComponentBase
+
+<div>
+    <FluentDialog @ref="@Dialog" Modal="true" TrapFocus="true" @ondialogdismiss="OnHandleDismiss" Style="height:fit-content">
+        <div>
+            @Text
+        </div>
+        <Stack Orientation="Orientation.Horizontal" HorizontalAlignment="StackHorizontalAlignment.Right" Style="padding:5px">
+            <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="OnHandleClose">Close</FluentButton>
+            <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="OnConfirm">Confirm</FluentButton>
+        </Stack>
+    </FluentDialog>
+</div>
