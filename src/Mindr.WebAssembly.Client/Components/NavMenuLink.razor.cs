@@ -4,7 +4,7 @@ using Microsoft.Fast.Components.FluentUI;
 using Microsoft.Fast.Components.FluentUI.Utilities;
 using System.Threading.Tasks;
 
-namespace Mindr.Client.Components;
+namespace Mindr.WebAssembly.Client.Components;
 
 public partial class NavMenuLink : FluentComponentBase
 {

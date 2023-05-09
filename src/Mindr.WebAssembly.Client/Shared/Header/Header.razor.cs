@@ -3,7 +3,7 @@ using Microsoft.Fast.Components.FluentUI;
 using Microsoft.Fast.Components.FluentUI.DesignTokens;
 using System.Threading.Tasks;
 
-namespace Mindr.Client.Shared;
+namespace Mindr.WebAssembly.Client.Shared.Header;
 
 public partial class Header : FluentComponentBase
 {

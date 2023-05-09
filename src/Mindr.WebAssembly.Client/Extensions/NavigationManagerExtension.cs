@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace Mindr.Client.Extensions
+namespace Mindr.WebAssembly.Client.Extensions
 {
     internal static class NavigationManagerExtension
     {

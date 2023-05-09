@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System;
 
-namespace Mindr.HttpRunner.Models
+namespace Mindr.Domain.HttpRunner.Models
 {
     public class HttpBody : PostmanBody
     {

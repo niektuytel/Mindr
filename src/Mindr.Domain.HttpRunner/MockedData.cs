@@ -1,10 +1,10 @@
-﻿using Mindr.HttpRunner.Enums;
-using Mindr.HttpRunner.Models;
+﻿using Mindr.Domain.HttpRunner.Enums;
+using Mindr.Domain.HttpRunner.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Mindr.HttpRunner
+namespace Mindr.Domain.HttpRunner
 {
     public static class MockedData
     {

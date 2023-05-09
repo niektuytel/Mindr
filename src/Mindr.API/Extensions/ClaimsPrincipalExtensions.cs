@@ -1,7 +1,7 @@
 ﻿using Microsoft.Graph;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Tokens;
-using Mindr.API.Exceptions;
+using Mindr.Api.Exceptions;
 using System;
 using System.Net;
 using System.Security.Claims;

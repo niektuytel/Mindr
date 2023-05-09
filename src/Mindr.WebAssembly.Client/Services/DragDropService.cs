@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("namespace Mindr.Client.Test")]
-namespace Mindr.Client.Services;
+[assembly: InternalsVisibleTo("namespace Mindr.WebAssembly.Client.Test")]
+namespace Mindr.WebAssembly.Client.Services;
 
 internal class DragDropService<T>
 {

@@ -1,27 +1,26 @@
-﻿@namespace Mindr.Client.Pages.Connectors.Views
-@using Microsoft.AspNetCore.Authorization;
+﻿@using Microsoft.AspNetCore.Authorization;
 @using System.Collections.ObjectModel;
 @using Microsoft.Fast.Components.FluentUI;
-@using Mindr.Client.Components
-@using Mindr.Client.Models;
-@using Mindr.Client.Shared
-@using Newtonsoft.Json;
+@using Mindr.WebAssembly.Client.Components
+@using Mindr.WebAssembly.Client.Models;
+@using Mindr.WebAssembly.Client.Shared
+@using System.Text.Json.Serialization;
 
-@inherits FluentComponentBase
+@namespace Mindr.WebAssembly.Client.Pages.Connectors.Views
 @attribute [Authorize]
-
+@inherits FluentComponentBase
 
 @if (ConnectorInfo != null)
 {
     <Breadcrumb DisplayValue="@ConnectorInfo.Name"/>
 }
 <Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="height:100%">
-    <Mindr.Client.Components.NavMenu Class="nav-menu" Expanded="false" Collapsible="false" Style="height: 100%;">
+    <Mindr.WebAssembly.Client.Components.NavMenu Class="nav-menu" Expanded="false" Collapsible="false" Style="height: 100%;">
         @foreach (Page _page in Client.Constants.ConnectorPage)
         {
             <NavMenuLink Icon="@_page.Icon" Text="@_page.Name" Href=@($"/connectors/{ConnectorId}/{_page.Name.ToLower()}") Disabled="@_page.Disabled" />
         }
-    </Mindr.Client.Components.NavMenu>
+    </Mindr.WebAssembly.Client.Components.NavMenu>
     @if (!string.IsNullOrEmpty(ErrorMessage))
     {
         <Stack Style="min-height:50px;border: 1px solid #D8000C;background-color: #FFBABA;padding: 3px;">

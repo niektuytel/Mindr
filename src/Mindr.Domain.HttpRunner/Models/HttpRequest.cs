@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Mindr.HttpRunner.Models
+namespace Mindr.Domain.HttpRunner.Models
 {
     public class HttpRequest : PostmanRequest
     {

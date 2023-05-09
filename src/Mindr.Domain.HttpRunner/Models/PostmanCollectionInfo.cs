@@ -1,23 +1,23 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
-namespace Mindr.HttpRunner.Models
+namespace Mindr.Domain.HttpRunner.Models
 {
     public class PostmanCollectionInfo
     {
 
-        [JsonProperty("_postman_id")]
+        [JsonPropertyName("_postman_id")]
         public string PostmanId { get; set; }
 
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        [JsonProperty("description")]
+        [JsonPropertyName("description")]
         public string Description { get; set; }
 
-        [JsonProperty("schema")]
+        [JsonPropertyName("schema")]
         public string Schema { get; set; }
 
-        [JsonProperty("_exporter_id")]
+        [JsonPropertyName("_exporter_id")]
         public string ExporterId { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Mindr.Api.Persistence;
-using Mindr.Shared.Models.ConnectorEvents;
-using Mindr.Shared.Models.Connectors;
+using Mindr.Domain.Enums;
+using Mindr.Domain.Models.DTO.Connector;
+
 using System.Net;
 
 namespace Mindr.Api.Services.ConnectorEvents
@@ -20,11 +21,11 @@ namespace Mindr.Api.Services.ConnectorEvents
             {
                 if (string.IsNullOrEmpty(variable.Key))
                 {
-                    throw new API.Exceptions.HttpException(HttpStatusCode.BadRequest, $"Variable key of {{'{variable.Key}': '{variable.Value}'}} is invalid");
+                    throw new Api.Exceptions.HttpException(HttpStatusCode.BadRequest, $"Variable key of {{'{variable.Key}': '{variable.Value}'}} is invalid");
                 }
                 else if (string.IsNullOrEmpty(variable.Value))
                 {
-                    throw new API.Exceptions.HttpException(HttpStatusCode.BadRequest, $"Variable value of {{'{variable.Key}': '{variable.Value}'}} is invalid");
+                    throw new Api.Exceptions.HttpException(HttpStatusCode.BadRequest, $"Variable value of {{'{variable.Key}': '{variable.Value}'}} is invalid");
                 }
             }
         }
@@ -36,7 +37,7 @@ namespace Mindr.Api.Services.ConnectorEvents
                 var entity = _context.ConnectorVariables.FirstOrDefault(item => item.Id == variable.Id);
                 if(entity != null)
                 {
-                    throw new API.Exceptions.HttpException(HttpStatusCode.BadRequest, $"Connector variable of {{'id': '{variable.Id}'}} already exists");
+                    throw new Api.Exceptions.HttpException(HttpStatusCode.BadRequest, $"Connector variable of {{'id': '{variable.Id}'}} already exists");
                 }
             }
         }
@@ -45,7 +46,7 @@ namespace Mindr.Api.Services.ConnectorEvents
         {
             if (string.IsNullOrEmpty(eventId))
             {
-                throw new API.Exceptions.HttpException(HttpStatusCode.BadRequest, $"Unknown {nameof(eventId)}:'{eventId}'");
+                throw new Api.Exceptions.HttpException(HttpStatusCode.BadRequest, $"Unknown {nameof(eventId)}:'{eventId}'");
             }
         }
 
@@ -54,23 +55,23 @@ namespace Mindr.Api.Services.ConnectorEvents
             var entity = _context.Connectors.FirstOrDefault(item => item.Id == connectorId);
             if (entity == null)
             {
-                throw new API.Exceptions.HttpException(HttpStatusCode.NotFound, $"Connector of {{'id': '{connectorId}'}} not found");
+                throw new Api.Exceptions.HttpException(HttpStatusCode.NotFound, $"Connector of {{'id': '{connectorId}'}} not found");
             }
         }
 
-        public void ThrowOnInvalidEventParameters(IEnumerable<ConnectorEventParameter> eventParameters)
+        public void ThrowOnInvalidEventParameters(IEnumerable<ConnectorEventVariable> eventParameters)
         {
             foreach (var parameter in eventParameters)
             {
                 if (string.IsNullOrEmpty(parameter.Value))
                 {
-                    throw new API.Exceptions.HttpException(HttpStatusCode.BadRequest, $"EventParameter value of {{'{parameter.Key}': '{parameter.Value}'}} is invalid");
+                    throw new Api.Exceptions.HttpException(HttpStatusCode.BadRequest, $"EventParameter value of {{'{parameter.Key}': '{parameter.Value}'}} is invalid");
                 }
 
                 // datetime validation
-                if (parameter.Key == Shared.Enums.EventType.OnDateTime && !DateTime.TryParse(parameter.Value, out var _))
+                if (parameter.Key == EventType.OnDateTime && !DateTime.TryParse(parameter.Value, out var _))
                 {
-                    throw new API.Exceptions.HttpException(HttpStatusCode.BadRequest, $"EventParameter value of {{'{parameter.Key}': '{parameter.Value}'}} is invalid on given key");
+                    throw new Api.Exceptions.HttpException(HttpStatusCode.BadRequest, $"EventParameter value of {{'{parameter.Key}': '{parameter.Value}'}} is invalid on given key");
                 }
             }
         }
@@ -79,7 +80,7 @@ namespace Mindr.Api.Services.ConnectorEvents
         {
             if (string.IsNullOrEmpty(query))
             {
-                throw new API.Exceptions.HttpException(HttpStatusCode.BadRequest, $"Unknown {nameof(query)}:'{query}'");
+                throw new Api.Exceptions.HttpException(HttpStatusCode.BadRequest, $"Unknown {nameof(query)}:'{query}'");
             }
         }
 
@@ -87,7 +88,7 @@ namespace Mindr.Api.Services.ConnectorEvents
         {
             if (string.IsNullOrEmpty(userId))
             {
-                throw new API.Exceptions.HttpException(HttpStatusCode.BadRequest, $"Unknown {nameof(userId)}:'{userId}'");
+                throw new Api.Exceptions.HttpException(HttpStatusCode.BadRequest, $"Unknown {nameof(userId)}:'{userId}'");
             }
         }
 
@@ -95,12 +96,12 @@ namespace Mindr.Api.Services.ConnectorEvents
         {
             if (id == null)
             {
-                throw new API.Exceptions.HttpException(HttpStatusCode.BadRequest, $"Connector id '{id}' is null");
+                throw new Api.Exceptions.HttpException(HttpStatusCode.BadRequest, $"Connector id '{id}' is null");
             }
 
             if (connector == null)
             {
-                throw new API.Exceptions.HttpException(HttpStatusCode.NotFound, $"Can't find connector on {nameof(id)}:'{id}' that is public");
+                throw new Api.Exceptions.HttpException(HttpStatusCode.NotFound, $"Can't find connector on {nameof(id)}:'{id}' that is public");
             }
         }
 
@@ -108,7 +109,7 @@ namespace Mindr.Api.Services.ConnectorEvents
         {
             if (entity == null)
             {
-                throw new API.Exceptions.HttpException(HttpStatusCode.NotFound, $" Can't find event on {nameof(id)}:'{id}' and {nameof(userId)}:'{userId}'");
+                throw new Api.Exceptions.HttpException(HttpStatusCode.NotFound, $" Can't find event on {nameof(id)}:'{id}' and {nameof(userId)}:'{userId}'");
             }
         }
 

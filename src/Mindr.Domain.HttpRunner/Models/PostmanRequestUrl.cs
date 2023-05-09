@@ -1,26 +1,26 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Mindr.HttpRunner.Models
+namespace Mindr.Domain.HttpRunner.Models
 {
     public class PostmanRequestUrl
     {
 
-        [JsonProperty("raw")]
+        [JsonPropertyName("raw")]
         public string Raw { get; set; }
 
-        [JsonProperty("protocol")]
+        [JsonPropertyName("protocol")]
         public string Protocol { get; set; }
 
         [JsonIgnore]
         public string Host { get; set; } = "";
 
         [NotMapped]
-        [JsonProperty("host")]
+        [JsonPropertyName("host")]
         public string[] Hosts
         {
             get => Host?.Split(".")?.ToArray();
@@ -31,14 +31,14 @@ namespace Mindr.HttpRunner.Models
         public string Path { get; set; } = "";
 
         [NotMapped]
-        [JsonProperty("path")]
+        [JsonPropertyName("path")]
         public string[] Paths
         {
             get => Path?.Split("/")?.ToArray();
             set => Path = string.Join("/", value);
         }
 
-        [JsonProperty("query")]
+        [JsonPropertyName("query")]
         public IEnumerable<HttpRequestUrlQuery> Query { get; set; }
 
     }

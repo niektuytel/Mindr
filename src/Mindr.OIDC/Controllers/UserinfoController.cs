@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
-using Dantooine.Server.Data;
+using Mindr.Server.Data;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace Dantooine.Server.Controllers;
+namespace Mindr.Server.Controllers;
 
 public class UserinfoController : Controller
 {

@@ -7,10 +7,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Quartz;
-using Dantooine.Server.Data;
+using Mindr.Server.Data;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace Dantooine.Server;
+namespace Mindr.Server;
 
 public class Startup
 {

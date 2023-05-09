@@ -2,13 +2,13 @@ using System;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
-using Dantooine.Server.Data;
+using Mindr.Server.Data;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OpenIddict.Abstractions;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace Dantooine.Server;
+namespace Mindr.Server;
 
 public class Worker : IHostedService
 {

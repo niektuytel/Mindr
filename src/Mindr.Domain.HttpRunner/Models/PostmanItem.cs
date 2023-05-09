@@ -1,26 +1,26 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Mindr.HttpRunner.Models
+namespace Mindr.Domain.HttpRunner.Models
 {
     public class PostmanItem
     {
         // nested items
         [NotMapped]
-        [JsonProperty("item")]
+        [JsonPropertyName("item")]
         public IEnumerable<HttpItem> Items { get; set; } = null;
 
-        [JsonProperty("name"), JsonRequired]
+        [JsonPropertyName("name"), JsonInclude]
         public string Name { get; set; } = "";
 
-        [JsonProperty("description")]
+        [JsonPropertyName("description")]
         public string Description { get; set; } = "";
 
-        [JsonProperty("request")]
+        [JsonPropertyName("request")]
         public HttpRequest Request { get; set; } = new HttpRequest();
 
-        [JsonProperty("response")]
+        [JsonPropertyName("response")]
         public IEnumerable<HttpResponse> Response { get; set; } = new List<HttpResponse>();
     }
 }

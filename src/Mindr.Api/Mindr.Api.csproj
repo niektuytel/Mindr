@@ -45,7 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Mindr.Shared\Mindr.Domain.csproj" />
+    <ProjectReference Include="..\Mindr.Domain\Mindr.Domain.csproj" />
   </ItemGroup>
 
 </Project>

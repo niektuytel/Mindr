@@ -1,9 +1,9 @@
 ﻿using Microsoft.Fast.Components.FluentUI;
-using Mindr.Client.Models;
+using Mindr.WebAssembly.Client.Models;
 using System;
 using System.Collections.Generic;
 
-namespace Mindr.Client;
+namespace Mindr.WebAssembly.Client;
 
 internal static class Constants
 {

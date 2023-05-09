@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
-namespace Mindr.HttpRunner.Models
+namespace Mindr.Domain.HttpRunner.Models
 {
     public class PostmanBodyOption
     {
 
-        [JsonProperty("raw")]
+        [JsonPropertyName("raw")]
         public HttpBodyOptionRaw Raw { get; set; } = new HttpBodyOptionRaw();
     }
 }

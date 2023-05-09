@@ -70,7 +70,7 @@ namespace Mindr.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ConnectorEventParameter",
+                name: "ConnectorEventVariable",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -80,9 +80,9 @@ namespace Mindr.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ConnectorEventParameter", x => x.Id);
+                    table.PrimaryKey("PK_ConnectorEventVariable", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ConnectorEventParameter_ConnectorEvents_ConnectorEventId",
+                        name: "FK_ConnectorEventVariable_ConnectorEvents_ConnectorEventId",
                         column: x => x.ConnectorEventId,
                         principalTable: "ConnectorEvents",
                         principalColumn: "Id");
@@ -322,8 +322,8 @@ namespace Mindr.Api.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ConnectorEventParameter_ConnectorEventId",
-                table: "ConnectorEventParameter",
+                name: "IX_ConnectorEventVariable_ConnectorEventId",
+                table: "ConnectorEventVariable",
                 column: "ConnectorEventId");
 
             migrationBuilder.CreateIndex(
@@ -410,7 +410,7 @@ namespace Mindr.Api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ConnectorEventParameter");
+                name: "ConnectorEventVariable");
 
             migrationBuilder.DropTable(
                 name: "ConnectorVariables");

@@ -1,8 +1,8 @@
-﻿using Mindr.Shared.Enums;
-using Mindr.Shared.Models.ConnectorEvents;
-using Mindr.Shared.Models.Connectors;
-using Mindr.HttpRunner.Enums;
-using Mindr.HttpRunner.Models;
+﻿using Mindr.Domain.Enums;
+using Mindr.Domain.Models.DTO.Connector;
+
+using Mindr.Domain.HttpRunner.Enums;
+using Mindr.Domain.HttpRunner.Models;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,7 +17,7 @@ namespace Mindr.Api.Persistence
             return new Connector()
             {
                 Id = Guid.Parse("c98d9b51-cf20-4938-b7cb-76e8743f673c"),
-                CreatedBy = "8c1bb04b-3842-4e05-903d-06b9d40198ab",
+                CreatedBy = "c89260ba-f540-416b-a908-191dc3cf2801",
                 Color = "orange",
                 IsPublic = true,
                 Name = "Send Whatsapp Text Message",
@@ -57,7 +57,7 @@ namespace Mindr.Api.Persistence
                                 Value = "31618395668"
                             }
                         },
-                Pipeline = HttpRunner.MockedData.GetPipeline()
+                Pipeline = Domain.HttpRunner.MockedData.GetPipeline()
             };
         }
         public static Connector GetConnector2()
@@ -65,7 +65,7 @@ namespace Mindr.Api.Persistence
             return new Connector()
             {
                 Id = Guid.Parse("60994748-0cf3-452b-bbbc-44930e8fb052"),
-                CreatedBy = "8c1bb04b-3842-4e05-903d-06b9d40198ab",
+                CreatedBy = "c89260ba-f540-416b-a908-191dc3cf2801",
                 Color = "blue",
                 IsPublic = true,
                 Name = "Send WhatsApp Sample Text Message",
@@ -113,17 +113,17 @@ namespace Mindr.Api.Persistence
                             Value = "unser inputed content"
                         }
                     },
-                Pipeline = HttpRunner.MockedData.GetPipeline()
+                Pipeline = Domain.HttpRunner.MockedData.GetPipeline()
             };
         }
 
         public static ConnectorEvent GetConnectorEvent1()
         {
             var connector1 = GetConnector1();
-            var event1 = new ConnectorEvent("8c1bb04b-3842-4e05-903d-06b9d40198ab", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", connector1);
-            var events1 = new List<ConnectorEventParameter>()
+            var event1 = new ConnectorEvent("c89260ba-f540-416b-a908-191dc3cf2801", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", connector1);
+            var events1 = new List<ConnectorEventVariable>()
             {
-                new ConnectorEventParameter()
+                new ConnectorEventVariable()
                 {
                     Key = EventType.OnDateTime,
                     Value = DateTime.Now.AddDays(1).ToLongDateString()
@@ -138,10 +138,10 @@ namespace Mindr.Api.Persistence
         public static ConnectorEvent GetConnectorEvent2()
         {
             var connector2 = GetConnector2();
-            var event2 = new ConnectorEvent("8c1bb04b-3842-4e05-903d-06b9d40198ab", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", connector2);
-            var events2 = new List<ConnectorEventParameter>()
+            var event2 = new ConnectorEvent("c89260ba-f540-416b-a908-191dc3cf2801", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", connector2);
+            var events2 = new List<ConnectorEventVariable>()
             {
-                new ConnectorEventParameter()
+                new ConnectorEventVariable()
                 {
                     Key = EventType.OnDateTime,
                     Value = DateTime.Now.AddDays(1).ToLongDateString()

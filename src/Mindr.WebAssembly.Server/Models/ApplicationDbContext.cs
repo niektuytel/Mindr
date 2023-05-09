@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Dantooine.WebAssembly.Server.Models;
+namespace Mindr.WebAssembly.Server.Models;
 
 public class ApplicationDbContext : DbContext
 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Mindr.HttpRunner.Enums
+namespace Mindr.Domain.HttpRunner.Enums
 {
     public enum VariablePosition
     {

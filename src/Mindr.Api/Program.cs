@@ -7,12 +7,12 @@ using Mindr.Api.Persistence;
 using Mindr.Api.Swagger;
 using Hangfire;
 using Hangfire.SqlServer;
-using Mindr.Shared.Enums;
+using Mindr.Domain.Enums;
 using Mindr.Api.Services.ConnectorEvents;
 using Mindr.Api.Services.Connectors;
-using Mindr.HttpRunner.Models;
+using Mindr.Domain.HttpRunner.Models;
 
-using Mindr.HttpRunner;
+using Mindr.Domain.HttpRunner;
 using Microsoft.IdentityModel.Tokens;
 using MockedData = Mindr.Api.Persistence.MockedData;
 using OpenIddict.Validation.AspNetCore;

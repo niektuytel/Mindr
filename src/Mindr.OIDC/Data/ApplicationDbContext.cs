@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Dantooine.Server.Data;
+namespace Mindr.Server.Data;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {

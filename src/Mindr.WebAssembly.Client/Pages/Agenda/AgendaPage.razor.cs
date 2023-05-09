@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
-using Mindr.Shared.Models;
-using Mindr.Client.Services;
+using Mindr.Domain.Models;
+using Mindr.WebAssembly.Client.Services;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using Mindr.WebAssembly.Client.Models;
 
-namespace Mindr.Client.Pages.Agenda;
+namespace Mindr.WebAssembly.Client.Pages.Agenda;
 
 public partial class AgendaPage : FluentComponentBase
 {

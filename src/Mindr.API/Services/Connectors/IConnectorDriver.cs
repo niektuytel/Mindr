@@ -1,5 +1,6 @@
-﻿using Mindr.Shared.Models.Connectors;
-using Mindr.HttpRunner.Models;
+﻿
+using Mindr.Domain.HttpRunner.Models;
+using Mindr.Domain.Models.DTO.Connector;
 
 namespace Mindr.Api.Services.Connectors
 {

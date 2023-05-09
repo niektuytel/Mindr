@@ -1,9 +1,9 @@
-﻿@namespace Mindr.Client.Pages.Agenda.Components
-@using Microsoft.Fast.Components.FluentUI
-@using Mindr.Client.Components
-@using Mindr.Client.Pages.Agenda.Components
-@inherits FluentComponentBase
+﻿@using Microsoft.Fast.Components.FluentUI
+@using Mindr.WebAssembly.Client.Components
+@using Mindr.WebAssembly.Client.Pages.Agenda.Components
 
+@namespace Mindr.WebAssembly.Client.Pages.Agenda.Components
+@inherits FluentComponentBase
 
 <div style=@("width: -webkit-fill-available;border-radius: 5px;box-shadow: 0px 0px 5px 2px #0000001f;margin: 10px;" + "border-color:" + Data.Color)>
     <div>@Data.StartDate.DateTime.ToShortTimeString() - @Data.EndDate.DateTime.ToShortTimeString()</div>

@@ -2,10 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Mindr.Api.Persistence;
 using Mindr.Api.Services.Connectors;
-using Mindr.Shared.Models.ConnectorEvents;
-using Mindr.Shared.Models.Connectors;
-using Mindr.HttpRunner.Services;
+using Mindr.Domain.Models.DTO.Connector;
+
+using Mindr.Domain.HttpRunner.Services;
 using System.Net;
+using Mindr.Domain.Enums;
 
 namespace Mindr.Api.Services.ConnectorEvents
 {
@@ -56,14 +57,14 @@ namespace Mindr.Api.Services.ConnectorEvents
 
         private async Task<string?> ScheduleConnectorEventAsync(ConnectorEvent entity)
         {
-            var schedule = entity.EventParameters.FirstOrDefault(item => item.Key == Shared.Enums.EventType.OnDateTime)?.Value;
+            var schedule = entity.EventParameters.FirstOrDefault(item => item.Key == EventType.OnDateTime)?.Value;
             if (string.IsNullOrEmpty(schedule) || !DateTime.TryParse(schedule, out var datetime))
             {
                 return null;
             }
             else if (datetime < DateTime.Now)
             {
-                throw new API.Exceptions.HttpException(HttpStatusCode.BadRequest, "Scheduled datetime must be in the future.");
+                throw new Api.Exceptions.HttpException(HttpStatusCode.BadRequest, "Scheduled datetime must be in the future.");
             }
 
             var connector = await GetConnectorAsync(entity.ConnectorId);
@@ -98,7 +99,7 @@ namespace Mindr.Api.Services.ConnectorEvents
 
             if (connector == null)
             {
-                throw new API.Exceptions.HttpException(HttpStatusCode.BadRequest, $"connector on id: '{connectorId}' is unknown");
+                throw new Api.Exceptions.HttpException(HttpStatusCode.BadRequest, $"connector on id: '{connectorId}' is unknown");
             }
 
             return connector;

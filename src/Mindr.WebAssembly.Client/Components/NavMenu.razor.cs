@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Mindr.Client.Components;
+namespace Mindr.WebAssembly.Client.Components;
 
 public partial class NavMenu : FluentComponentBase
 {

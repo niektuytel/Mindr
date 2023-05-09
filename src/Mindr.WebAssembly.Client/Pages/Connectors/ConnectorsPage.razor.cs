@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
 
-namespace Mindr.Client.Pages.Connectors
+namespace Mindr.WebAssembly.Client.Pages.Connectors
 {
     public partial class ConnectorsPage : FluentComponentBase
     {

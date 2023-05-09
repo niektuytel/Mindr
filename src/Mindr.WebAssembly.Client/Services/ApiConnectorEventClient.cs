@@ -1,24 +1,24 @@
 ﻿using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Options;
-using Mindr.Client.Models.Options;
-using Mindr.Shared.Models.ConnectorEvents;
-using Mindr.Client.Handlers;
+using Mindr.WebAssembly.Client.Models.Options;
+using Mindr.Domain.Models.DTO.Connector;
+using Mindr.WebAssembly.Client.Handlers;
 using System.Text;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System;
-using Mindr.Shared.Models.Connectors;
+
 using Microsoft.JSInterop;
-using Dantooine.WebAssembly.Client.Models;
 using System.Collections.Generic;
 using System.Text.Json;
+using Mindr.WebAssembly.Client.Models;
 
-namespace Mindr.Client.Services;
+namespace Mindr.WebAssembly.Client.Services;
 
 public class ApiConnectorEventClient : ApiClientBase, IApiConnectorEventClient
 {
     private static readonly string Path = "api/connectorevent/personal";
-    private static readonly string HttpClientName = "authorizedClient";
+    private static readonly string HttpClientName = nameof(AuthorizedMindrApiHandler);
 
     public ApiConnectorEventClient(IJSRuntime JSRuntime, IHttpClientFactory factory) 
         : base(JSRuntime, factory.CreateClient(HttpClientName))

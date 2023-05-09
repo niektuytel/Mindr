@@ -1,30 +1,31 @@
 ﻿using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Extensions.Options;
-using Mindr.Client.Models.Options;
-using Mindr.Client.Handlers;
+using Mindr.WebAssembly.Client.Models.Options;
+using Mindr.WebAssembly.Client.Handlers;
 using System.Text;
 using System.Text.Json.Serialization;
-using Mindr.Shared;
+using Mindr.Domain;
 using System.Text.Json;
-using Mindr.Shared.Models.Connectors;
-using Mindr.HttpRunner.Models;
+
+using Mindr.Domain.HttpRunner.Models;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Collections.Generic;
 using Microsoft.JSInterop;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
-using Dantooine.WebAssembly.Client.Models;
 using Microsoft.Fast.Components.FluentUI;
 using Microsoft.Extensions.Logging;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Mindr.Domain.Models.DTO.Connector;
+using Mindr.WebAssembly.Client.Models;
 
-namespace Mindr.Client.Services;
+namespace Mindr.WebAssembly.Client.Services;
 
 public class ApiConnectorClient : ApiClientBase, IApiConnectorClient
 {
     private static readonly string Path = "api/connector";
-    private static readonly string HttpClientName = "authorizedClient";
+    private static readonly string HttpClientName = nameof(AuthorizedMindrApiHandler);
 
     public ApiConnectorClient(IJSRuntime JSRuntime, IHttpClientFactory factory) 
         : base(JSRuntime, factory.CreateClient(HttpClientName))

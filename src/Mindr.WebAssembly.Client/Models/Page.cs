@@ -1,4 +1,4 @@
-﻿namespace Mindr.Client.Models;
+﻿namespace Mindr.WebAssembly.Client.Models;
 
 public class Page
 {

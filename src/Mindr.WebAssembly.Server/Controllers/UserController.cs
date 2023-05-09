@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using Dantooine.WebAssembly.Shared.Authorization;
+using Mindr.Domain.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace Dantooine.WebAssembly.Server.Controllers;
+namespace Mindr.WebAssembly.Server.Controllers;
 
 // Original source: https://github.com/berhir/BlazorWebAssemblyCookieAuth.
 [Route("api/[controller]")]

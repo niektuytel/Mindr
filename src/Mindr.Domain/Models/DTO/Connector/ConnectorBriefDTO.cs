@@ -1,24 +1,24 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 
-namespace Mindr.Shared.Models.Connectors
+namespace Mindr.Domain.Models.DTO.Connector
 {
     public class ConnectorBriefDTO
     {
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public Guid Id { get; set; }
 
-        [JsonProperty("color")]
+        [JsonPropertyName("color")]
         public string Color { get; set; }
 
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        [JsonProperty("description")]
+        [JsonPropertyName("description")]
         public string Description { get; set; }
 
-        [JsonProperty("variables")]
+        [JsonPropertyName("variables")]
         public IEnumerable<ConnectorVariable> Variables { get; set; }
 
     }

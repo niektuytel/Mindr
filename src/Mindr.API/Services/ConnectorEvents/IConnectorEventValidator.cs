@@ -1,6 +1,5 @@
 ﻿using Mindr.Api.Models;
-using Mindr.Shared.Models.ConnectorEvents;
-using Mindr.Shared.Models.Connectors;
+using Mindr.Domain.Models.DTO.Connector;
 
 namespace Mindr.Api.Services.ConnectorEvents
 {
@@ -9,7 +8,7 @@ namespace Mindr.Api.Services.ConnectorEvents
         void ThrowOnInvalidConnectorVariables(IEnumerable<ConnectorVariable> connectorVariables);
         void ThrowOnNotUniqueConnectorVariables(IEnumerable<ConnectorVariable> connectorVariables);
         void ThrowOnInvalidEventId(string eventId);
-        void ThrowOnInvalidEventParameters(IEnumerable<ConnectorEventParameter> eventParameters);
+        void ThrowOnInvalidEventParameters(IEnumerable<ConnectorEventVariable> eventVariables);
         void ThrowOnInvalidQuery(string query);
         void ThrowOnInvalidUserId(string? userId);
         void ThrowOnNullConnector(Guid? id, Connector? connector);

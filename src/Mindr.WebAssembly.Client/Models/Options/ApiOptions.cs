@@ -1,14 +1,13 @@
-﻿using Mindr.Client.Interfaces;
+﻿using Mindr.WebAssembly.Client.Interfaces;
 
-namespace Mindr.Client.Models.Options
+namespace Mindr.WebAssembly.Client.Models.Options;
+
+public class ApiOptions : IHasPosition
 {
-    public class ApiOptions : IHasPosition
-    {
-        public string Position => "Api";
+    public string Position => "Api";
 
-        public string? BaseUrl { get; set; }
+    public string? BaseUrl { get; set; }
 
-        public string[]? Scopes { get; set; }
+    public string[]? Scopes { get; set; }
 
-    }
 }

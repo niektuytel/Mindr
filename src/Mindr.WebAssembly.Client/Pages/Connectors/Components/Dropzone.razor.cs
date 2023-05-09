@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Mindr.Client.Pages.Connectors.Components;
+namespace Mindr.WebAssembly.Client.Pages.Connectors.Components;
 
 public partial class Dropzone<TItem>
 {

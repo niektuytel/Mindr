@@ -1,9 +1,10 @@
-@namespace Mindr.Client.Pages.Connectors.Components
+@using System.Text
+@using Mindr.WebAssembly.Client.Services;
+
+@namespace Mindr.WebAssembly.Client.Pages.Connectors.Components
+@implements IDisposable
 @typeparam TItem
 @inject DragDropService<TItem> DragDropService
-@using System.Text
-@using Mindr.Client.Services;
-@implements IDisposable
 
 <div id="@Id" class="@GetClassesForDropzone()" @ondragover:preventDefault @ondragover="()=> { }" @ondragenter:preventDefault @ondragenter="()=> { }" @ondrop="()=>OnDrop()" @ondrop:preventDefault ondragstart="event.dataTransfer.setData('text', event.target.id);"
      @ondrop:stopPropagation

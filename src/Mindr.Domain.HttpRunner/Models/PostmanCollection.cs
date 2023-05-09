@@ -1,19 +1,18 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Serialization;
 using System.Collections.Generic;
 
-namespace Mindr.HttpRunner.Models
+namespace Mindr.Domain.HttpRunner.Models
 {
     public class PostmanCollection
     {
 
-        [JsonProperty("info")]
+        [JsonPropertyName("info")]
         public HttpCollectionInfo Info { get; set; }
 
-        [JsonProperty("item")]
+        [JsonPropertyName("item")]
         public IEnumerable<HttpItem> Items { get; set; }
 
-        [JsonProperty("variable")]
+        [JsonPropertyName("variable")]
         public IEnumerable<HttpVariable> Variable { get; set; }
 
     }

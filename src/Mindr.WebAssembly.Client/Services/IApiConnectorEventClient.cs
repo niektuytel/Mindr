@@ -1,6 +1,5 @@
-﻿using Dantooine.WebAssembly.Client.Models;
-using Mindr.Shared.Models.ConnectorEvents;
-using Mindr.Shared.Models.Connectors;
+﻿using Mindr.Domain.Models.DTO.Connector;
+using Mindr.WebAssembly.Client.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mindr.Client.Services;
+namespace Mindr.WebAssembly.Client.Services;
 
 public interface IApiConnectorEventClient
 {

@@ -1,21 +1,21 @@
-﻿using Mindr.Shared.Enums;
-using Newtonsoft.Json;
+﻿using Mindr.Domain.Enums;
+using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Mindr.Shared.Models.ConnectorEvents
+namespace Mindr.Domain.Models.DTO.Connector
 {
-    public class ConnectorEventParameter
+    public class ConnectorEventVariable
     {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [JsonProperty("type")]
+        [JsonPropertyName("type")]
         public EventType Key { get; set; } = EventType.OnDateTime;
 
-        [JsonProperty("value")]
+        [JsonPropertyName("value")]
         public string Value { get; set; }
     }
 }

@@ -3,7 +3,7 @@ using Mindr.Api.Models;
 using System.Net;
 using System.Runtime.Serialization;
 
-namespace Mindr.API.Exceptions
+namespace Mindr.Api.Exceptions
 {
     [Serializable]
     internal class HttpException : Exception

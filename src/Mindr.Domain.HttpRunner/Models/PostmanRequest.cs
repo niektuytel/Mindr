@@ -1,20 +1,20 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System.Collections.Generic;
 
-namespace Mindr.HttpRunner.Models
+namespace Mindr.Domain.HttpRunner.Models
 {
     public class PostmanRequest
     {
-        [JsonProperty("method")]
+        [JsonPropertyName("method")]
         public string Method { get; set; } = "";
 
-        [JsonProperty("header")]
+        [JsonPropertyName("header")]
         public IEnumerable<HttpHeader> Header { get; set; } = new List<HttpHeader>();
 
-        [JsonProperty("body")]
+        [JsonPropertyName("body")]
         public HttpBody Body { get; set; } = new HttpBody();
 
-        [JsonProperty("url")]
+        [JsonPropertyName("url")]
         public HttpRequestUrl Url { get; set; } = new HttpRequestUrl();
 
     }

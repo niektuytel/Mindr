@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
-using Mindr.Shared.Models;
-using Mindr.Shared.Models.ConnectorEvents;
-using Mindr.Client.Services;
-using Newtonsoft.Json;
+using Mindr.Domain.Models;
+using Mindr.Domain.Models.DTO.Connector;
+using Mindr.WebAssembly.Client.Services;
+using System.Text.Json.Serialization;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using System.Linq;
+using Mindr.WebAssembly.Client.Models;
 
-namespace Mindr.Client.Pages.Agenda.Components;
+namespace Mindr.WebAssembly.Client.Pages.Agenda.Components;
 
 public partial class AgendaEventItem : FluentComponentBase
 {

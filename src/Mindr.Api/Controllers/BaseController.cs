@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 using Mindr.Api.Persistence;
-using Mindr.API.Exceptions;
+using Mindr.Api.Exceptions;
 
 namespace Mindr.Api.Controllers;
 

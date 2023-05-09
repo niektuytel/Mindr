@@ -1,4 +1,4 @@
-﻿namespace Mindr.Shared.Models.GoogleCalendar
+﻿namespace Mindr.Domain.Models.GoogleCalendar
 {
     // https://developers.google.com/calendar/api/v3/reference/calendarList/list#examples
     public class GoogleCalendarList

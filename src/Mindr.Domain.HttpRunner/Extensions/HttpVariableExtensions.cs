@@ -5,10 +5,10 @@ using System.Net.Http.Headers;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Mindr.HttpRunner.Models;
-using Mindr.HttpRunner.Enums;
+using Mindr.Domain.HttpRunner.Models;
+using Mindr.Domain.HttpRunner.Enums;
 
-namespace Mindr.HttpRunner.Extensions
+namespace Mindr.Domain.HttpRunner.Extensions
 {
     public static class HttpVariableExtensions
     {

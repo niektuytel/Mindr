@@ -1,4 +1,4 @@
-﻿namespace Mindr.API.Enums;
+﻿namespace Mindr.Api.Enums;
 
 public enum HttpStatusCode
 {

@@ -3,12 +3,12 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Dantooine.WebAssembly.Shared.Authorization;
+using Mindr.Domain.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;
 
-namespace Dantooine.WebAssembly.Client.Services;
+namespace Mindr.WebAssembly.Client.Providers;
 
 // Original source: https://github.com/berhir/BlazorWebAssemblyCookieAuth.
 public class HostAuthenticationStateProvider : AuthenticationStateProvider

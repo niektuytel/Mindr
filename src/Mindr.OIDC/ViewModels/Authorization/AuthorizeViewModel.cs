@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Dantooine.Server.ViewModels.Authorization;
+namespace Mindr.Server.ViewModels.Authorization;
 
 public class AuthorizeViewModel
 {

@@ -1,4 +1,6 @@
-﻿using Mindr.Shared.Models.ConnectorEvents;
+﻿
+
+using Mindr.Domain.Models.DTO.Connector;
 
 namespace Mindr.Api.Services.ConnectorEvents
 {

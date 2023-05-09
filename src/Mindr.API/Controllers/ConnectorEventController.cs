@@ -5,7 +5,7 @@ using Mindr.Api.Extensions;
 using Mindr.Api.Models;
 using Mindr.Api.Models.ConnectorEvents;
 using Mindr.Api.Services.ConnectorEvents;
-using Mindr.Shared.Models.ConnectorEvents;
+using Mindr.Domain.Models.DTO.Connector;
 using System.Net;
 
 namespace Mindr.Api.Controllers;

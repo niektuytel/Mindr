@@ -18,10 +18,10 @@
 		<PackageReference Include="Quartz.Extensions.Hosting" Version="3.6.2" />
 		<PackageReference Include="Yarp.ReverseProxy" Version="2.0.0" />
 	</ItemGroup>
-	
-  <ItemGroup>
-    <ProjectReference Include="..\Dantooine.WebAssembly.Client\Mindr.WebAssembly.Client.csproj" />
-    <ProjectReference Include="..\Dantooine.WebAssembly.Shared\Mindr.WebAssembly.Shared.csproj" />
-  </ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Mindr.Domain\Mindr.Domain.csproj" />
+	  <ProjectReference Include="..\Mindr.WebAssembly.Client\Mindr.WebAssembly.Client.csproj" />
+	</ItemGroup>
 
 </Project>

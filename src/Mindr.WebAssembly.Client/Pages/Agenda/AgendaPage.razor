@@ -1,19 +1,17 @@
-﻿@namespace Mindr.Client.Pages.Agenda
-@page "/agenda"
-
+﻿@page "/agenda"
 @using Microsoft.AspNetCore.Authorization;
 @using System.Globalization;
 @using Microsoft.Fast.Components.FluentUI;
-@using Mindr.Client.Components
-@using Mindr.Client.Shared
-@using Mindr.Shared.Models.Connectors;
-@using Mindr.Client.Pages.Agenda.Components
-@using Mindr.Shared.Models;
-@using Newtonsoft.Json;
+@using Mindr.WebAssembly.Client.Components
+@using Mindr.WebAssembly.Client.Models;
+@using Mindr.WebAssembly.Client.Shared
+@using Mindr.WebAssembly.Client.Pages.Agenda.Components
+@using Mindr.Domain.Models;
+@using System.Text.Json.Serialization;
 
-
-@inherits FluentComponentBase
+@namespace Mindr.WebAssembly.Client.Pages.Agenda
 @attribute [Authorize]
+@inherits FluentComponentBase
 
 <Breadcrumb />
 <Stack Orientation="Orientation.Horizontal">

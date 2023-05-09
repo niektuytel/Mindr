@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Client.AspNetCore;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace Dantooine.WebAssembly.Server.Controllers;
+namespace Mindr.WebAssembly.Server.Controllers;
 
 public class AuthenticationController : Controller
 {

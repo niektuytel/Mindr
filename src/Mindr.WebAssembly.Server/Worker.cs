@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Dantooine.WebAssembly.Server.Models;
+using Mindr.WebAssembly.Server.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Dantooine.WebAssembly.Server;
+namespace Mindr.WebAssembly.Server;
 
 public class Worker : IHostedService
 {

@@ -2,7 +2,7 @@
 using Microsoft.Fast.Components.FluentUI;
 using Microsoft.Fast.Components.FluentUI.Utilities;
 
-namespace Mindr.Client.Components;
+namespace Mindr.WebAssembly.Client.Components;
 
 public enum DeviderDesignType
 {

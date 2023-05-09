@@ -1,9 +1,8 @@
 using System; 
 
-namespace Mindr.Shared.Models
+namespace Mindr.WebAssembly.Client.Models;
+
+public class GraphEventsResponse
 {
-    public class GraphEventsResponse
-    {
-        public AgendaEvent[] Value { get; set; }
-    }
+    public AgendaEvent[] Value { get; set; }
 }

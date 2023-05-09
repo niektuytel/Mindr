@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System;
-using Mindr.HttpRunner.Enums;
+using Mindr.Domain.HttpRunner.Enums;
 
-namespace Mindr.HttpRunner.Models
+namespace Mindr.Domain.HttpRunner.Models
 {
     public class HttpVariable : PostmanVariable
     {

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Mindr.Api.Models.ConnectorEvents;
 using Mindr.Api.Persistence;
-using Mindr.Shared.Models.ConnectorEvents;
+using Mindr.Domain.Models.DTO.Connector;
 
 namespace Mindr.Api.Services.ConnectorEvents;
 
@@ -134,7 +134,7 @@ public class ConnectorEventManager : IConnectorEventManager
     {
         _connectorEventValidator.ThrowOnInvalidUserId(userId);
         _connectorEventValidator.ThrowOnInvalidEventId(input.EventId);
-        _connectorEventValidator.ThrowOnInvalidEventParameters(input.EventParameters);
+        _connectorEventValidator.ThrowOnInvalidEventParameters(input.EventVariables);
         _connectorEventValidator.ThrowOnInvalidConnectorVariables(input.ConnectorVariables);
         _connectorEventValidator.ThrowOnNotUniqueConnectorVariables(input.ConnectorVariables);
 

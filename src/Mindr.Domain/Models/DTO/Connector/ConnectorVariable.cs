@@ -1,4 +1,4 @@
-﻿using Mindr.HttpRunner.Models;
+﻿using Mindr.Domain.HttpRunner.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace Mindr.Shared.Models.Connectors
+namespace Mindr.Domain.Models.DTO.Connector
 {
     public class ConnectorVariable : PostmanVariable
     {

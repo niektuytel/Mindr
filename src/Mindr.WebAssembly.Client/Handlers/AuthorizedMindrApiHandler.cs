@@ -2,15 +2,16 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Mindr.WebAssembly.Client.Providers;
 
-namespace Dantooine.WebAssembly.Client.Services;
+namespace Mindr.WebAssembly.Client.Handlers;
 
 // Original source: https://github.com/berhir/BlazorWebAssemblyCookieAuth.
-public class AuthorizedHandler : DelegatingHandler
+public class AuthorizedMindrApiHandler : DelegatingHandler
 {
     private readonly HostAuthenticationStateProvider _authenticationStateProvider;
 
-    public AuthorizedHandler(HostAuthenticationStateProvider authenticationStateProvider)
+    public AuthorizedMindrApiHandler(HostAuthenticationStateProvider authenticationStateProvider)
     {
         _authenticationStateProvider = authenticationStateProvider;
     }

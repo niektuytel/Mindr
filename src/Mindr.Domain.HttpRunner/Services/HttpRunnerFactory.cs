@@ -1,13 +1,13 @@
 ﻿using Force.DeepCloner;
-using Mindr.HttpRunner.Extensions;
-using Mindr.HttpRunner.Models;
+using Mindr.Domain.HttpRunner.Extensions;
+using Mindr.Domain.HttpRunner.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 
-namespace Mindr.HttpRunner.Services
+namespace Mindr.Domain.HttpRunner.Services
 {
     public class HttpRunnerFactory : IHttpRunnerFactory
     {

@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Net.Http.Headers;
-using Dantooine.WebAssembly.Server.Models;
+using Mindr.WebAssembly.Server.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -17,7 +17,7 @@ using Yarp.ReverseProxy.Transforms;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 using static OpenIddict.Client.AspNetCore.OpenIddictClientAspNetCoreConstants;
 
-namespace Dantooine.WebAssembly.Server;
+namespace Mindr.WebAssembly.Server;
 
 public class Startup
 {

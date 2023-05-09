@@ -1,17 +1,19 @@
-﻿using Newtonsoft.Json;
+﻿
 
-namespace Mindr.HttpRunner.Models
+using System.Text.Json.Serialization;
+
+namespace Mindr.Domain.HttpRunner.Models
 {
     public class PostmanBody
     {
 
-        [JsonProperty("mode")]
+        [JsonPropertyName("mode")]
         public string Mode { get; set; }
 
-        [JsonProperty("raw")]
+        [JsonPropertyName("raw")]
         public string Raw { get; set; }
 
-        [JsonProperty("options")]
+        [JsonPropertyName("options")]
         public HttpBodyOption Options { get; set; } = new HttpBodyOption();
     }
 }

@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.Fast.Components.FluentUI;
-using Mindr.Client.Models;
+using Mindr.WebAssembly.Client.Models;
 using System.Linq;
 
-namespace Mindr.Client.Shared;
+namespace Mindr.WebAssembly.Client.Shared.Header;
 
 public partial class Breadcrumb : FluentComponentBase
 {

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Mindr.HttpRunner.Services;
+using Mindr.Domain.HttpRunner.Services;
 using System.Reflection;
 
-namespace Mindr.HttpRunner
+namespace Mindr.Domain.HttpRunner
 {
     public static class ServicesConfiguration
     {

@@ -1,24 +1,25 @@
 ﻿using Microsoft.Graph;
-using Mindr.Shared.Models.ConnectorEvents;
-using Mindr.Shared.Models.Connectors;
-using Newtonsoft.Json;
+using Mindr.Domain.Models.DTO.Connector;
+
+using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using Mindr.Domain.Models.DTO.Connector;
 
 namespace Mindr.Api.Models.ConnectorEvents
 {
     public class ConnectorEventOnCreate
     {
-        [JsonProperty("event_id")]
+        [JsonPropertyName("event_id")]
         public string EventId { get; set; }
 
-        [JsonProperty("event_params")]
-        public IEnumerable<ConnectorEventParameter> EventParameters { get; set; } = new List<ConnectorEventParameter>();
+        [JsonPropertyName("event_params")]
+        public IEnumerable<ConnectorEventVariable> EventVariables { get; set; } = new List<ConnectorEventVariable>();
 
-        [JsonProperty("connector_id")]
+        [JsonPropertyName("connector_id")]
         public Guid? ConnectorId { get; set; } = null;
 
-        [JsonProperty("connector_variables")]
+        [JsonPropertyName("connector_variables")]
         public IEnumerable<ConnectorVariable> ConnectorVariables { get; set; } = new List<ConnectorVariable>();
 
         public ConnectorEvent ToConnectorEvent(string userId, Connector connector)
@@ -27,7 +28,7 @@ namespace Mindr.Api.Models.ConnectorEvents
             {
                 UserId = userId,
                 EventId = EventId,
-                EventParameters = EventParameters,
+                EventParameters = EventVariables,
                 ConnectorVariables = ConnectorVariables,
                 ConnectorId = connector.Id,
                 ConnectorName = connector.Name,

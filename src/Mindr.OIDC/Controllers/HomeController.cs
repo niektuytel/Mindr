@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Dantooine.Server.Controllers;
+namespace Mindr.Server.Controllers;
 
 public class HomeController : Controller
 {

@@ -1,17 +1,14 @@
-﻿using Mindr.Shared.Models.Connectors;
-using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 
-namespace Mindr.Shared.Models.ConnectorEvents
+namespace Mindr.Domain.Models.DTO.Connector
 {
     public class ConnectorEvent
     {
-        private Connector connector;
-
         public ConnectorEvent()
         {
 
@@ -27,31 +24,31 @@ namespace Mindr.Shared.Models.ConnectorEvents
         }
 
         [Key]
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [JsonProperty("user_id")]
+        [JsonPropertyName("user_id")]
         public string UserId { get; set; } = "";
 
-        [JsonProperty("job_id")]
+        [JsonPropertyName("job_id")]
         public string JobId { get; set; } = "";
 
-        [JsonProperty("event_id")]
+        [JsonPropertyName("event_id")]
         public string EventId { get; set; }
 
-        [JsonProperty("event_parameters")]
-        public IEnumerable<ConnectorEventParameter> EventParameters { get; set; }
+        [JsonPropertyName("event_parameters")]
+        public IEnumerable<ConnectorEventVariable> EventParameters { get; set; }
 
-        [JsonProperty("connector_id")]
+        [JsonPropertyName("connector_id")]
         public Guid? ConnectorId { get; set; } = null;
 
-        [JsonProperty("connector_name")]
+        [JsonPropertyName("connector_name")]
         public string ConnectorName { get; set; } = "";
 
-        [JsonProperty("connector_variables")]
+        [JsonPropertyName("connector_variables")]
         public IEnumerable<ConnectorVariable> ConnectorVariables { get; set; } = new List<ConnectorVariable>();
 
-        [JsonProperty("connector_color")]
+        [JsonPropertyName("connector_color")]
         public string ConnectorColor { get; set; } = "#000000";
 
     }

@@ -1,16 +1,16 @@
-﻿@namespace Mindr.Client.Pages.Connectors.Views
-@using Microsoft.Fast.Components.FluentUI;
-@using Mindr.Client.Components
-@using Mindr.Client.Shared
-@using Mindr.Shared.Models.Connectors;
-@using Mindr.Client.Pages.Connectors.Components
+﻿@using Microsoft.Fast.Components.FluentUI;
+@using Mindr.Domain.Models.DTO.Connector;
+@using Mindr.WebAssembly.Client.Components
+@using Mindr.WebAssembly.Client.Shared
+@using Mindr.WebAssembly.Client.Pages.Connectors.Components
 @using Microsoft.AspNetCore.Authorization;
 @using System.Collections.ObjectModel;
-@using Mindr.Client.Models;
-@using Newtonsoft.Json;
+@using Mindr.WebAssembly.Client.Models;
+@using System.Text.Json.Serialization;
 
-@inherits FluentComponentBase
+@namespace Mindr.WebAssembly.Client.Pages.Connectors.Views
 @attribute [Authorize]
+@inherits FluentComponentBase
 
 
 <Breadcrumb />

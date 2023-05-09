@@ -1,14 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System;
 
-namespace Mindr.Shared.Models
-{
-    public class AgendaEventDateTime
-    {
-        [JsonProperty("dateTime")]
-        public DateTime DateTime { get; set; }
+namespace Mindr.WebAssembly.Client.Models;
 
-        [JsonProperty("timeZone")]
-        public string TimeZone { get; set; }
-    }
+public class AgendaEventDateTime
+{
+    [JsonPropertyName("dateTime")]
+    public DateTime DateTime { get; set; }
+
+    [JsonPropertyName("timeZone")]
+    public string TimeZone { get; set; }
 }

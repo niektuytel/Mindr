@@ -1,7 +1,6 @@
-﻿namespace Mindr.Client.Interfaces
+﻿namespace Mindr.WebAssembly.Client.Interfaces;
+
+public interface IHasPosition
 {
-    public interface IHasPosition
-    {
-        public string Position { get; }
-    }
+    public string Position { get; }
 }

@@ -6,9 +6,9 @@
 
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
-using Dantooine.Server.ViewModels.Shared;
+using Mindr.Server.ViewModels.Shared;
 
-namespace Dantooine.Server.Controllers;
+namespace Mindr.Server.Controllers;
 
 public class ErrorController : Controller
 {

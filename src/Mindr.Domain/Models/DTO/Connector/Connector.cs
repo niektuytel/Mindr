@@ -1,11 +1,11 @@
-﻿using Mindr.HttpRunner.Models;
-using Newtonsoft.Json;
+﻿using Mindr.Domain.HttpRunner.Models;
+using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Mindr.Shared.Models.Connectors
+namespace Mindr.Domain.Models.DTO.Connector
 {
     /// <summary>
     /// Used to execute pipeline with etc.
@@ -15,28 +15,28 @@ namespace Mindr.Shared.Models.Connectors
         public Connector() { }
 
         [Key]
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [JsonProperty("created_by")]
+        [JsonPropertyName("created_by")]
         public string CreatedBy { get; set; }
 
-        [JsonProperty("color")]
+        [JsonPropertyName("color")]
         public string Color { get; set; } = GetRandomColorClass();
 
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        [JsonProperty("description")]
+        [JsonPropertyName("description")]
         public string Description { get; set; }
 
-        [JsonProperty("is_public")]
+        [JsonPropertyName("is_public")]
         public bool IsPublic { get; set; }
 
-        [JsonProperty("variables")]
+        [JsonPropertyName("variables")]
         public IEnumerable<ConnectorVariable> Variables { get; set; } = new List<ConnectorVariable>();
 
-        [JsonProperty("pipeline")]
+        [JsonPropertyName("pipeline")]
         public IEnumerable<HttpItem> Pipeline { get; set; } = new List<HttpItem>();
 
         private static string GetRandomColorClass()

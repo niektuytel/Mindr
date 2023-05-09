@@ -1,5 +1,5 @@
 ﻿using Force.DeepCloner;
-using Mindr.HttpRunner.Models;
+using Mindr.Domain.HttpRunner.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Net.WebRequestMethods;
 
-namespace Mindr.HttpRunner.Services
+namespace Mindr.Domain.HttpRunner.Services
 {
     public class HttpRunnerClient : IHttpRunnerClient
     {

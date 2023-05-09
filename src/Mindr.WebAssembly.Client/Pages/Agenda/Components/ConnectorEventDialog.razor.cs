@@ -1,18 +1,19 @@
 ﻿
 using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
-using Mindr.Shared.Enums;
-using Mindr.Shared.Models;
-using Mindr.Shared.Models.ConnectorEvents;
-using Mindr.Shared.Models.Connectors;
-using Mindr.Client.Services;
-using Newtonsoft.Json;
+using Mindr.Domain.Enums;
+using Mindr.Domain.Models;
+using Mindr.Domain.Models.DTO.Connector;
+
+using Mindr.WebAssembly.Client.Services;
+using System.Text.Json.Serialization;
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using Mindr.WebAssembly.Client.Models;
 
-namespace Mindr.Client.Pages.Agenda.Components;
+namespace Mindr.WebAssembly.Client.Pages.Agenda.Components;
 
 public partial class ConnectorEventDialog : FluentComponentBase
 {
@@ -124,9 +125,9 @@ public partial class ConnectorEventDialog : FluentComponentBase
 
         if (IsCreating)
         {
-            var events = new List<ConnectorEventParameter>
+            var events = new List<ConnectorEventVariable>
             {
-                new ConnectorEventParameter()
+                new ConnectorEventVariable()
                 {
                     Key = EventType.OnDateTime,
                     Value = AgendaEvent.StartDate.DateTime.ToLongDateString()

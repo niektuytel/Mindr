@@ -1,20 +1,21 @@
 ﻿@attribute [Route($"/")]
-@*Constants.CounterRoute*@
-
 @using Microsoft.AspNetCore.Authorization;
-@using Mindr.Client.Components
-@using Mindr.Shared.Models.ConnectorEvents;
-@using Mindr.Shared.Models.Connectors;
+@using Microsoft.Fast.Components.FluentUI;
+@using Mindr.WebAssembly.Client.Components
+@using Mindr.WebAssembly.Client.Models;
+@using Mindr.WebAssembly.Client.Shared
+@using Mindr.Domain.Models.DTO.Connector;
 @using System.Collections.ObjectModel;
-@using Mindr.Client.Pages.Agenda.Components
-@using Mindr.Client.Services;
-@using Mindr.Shared.Models;
-@using Newtonsoft.Json;
-@using Mindr.Client.Interfaces;
+@using Mindr.WebAssembly.Client.Pages.Agenda.Components
+@using Mindr.WebAssembly.Client.Services;
+@using Mindr.Domain.Models;
+@using System.Text.Json.Serialization;
+@using Mindr.WebAssembly.Client.Interfaces;
 @using System.Globalization;
 
-@inherits FluentComponentBase
+@namespace Mindr.WebAssembly.Client.Pages
 @attribute [Authorize]
+@inherits FluentComponentBase
 
 <PageTitle>Overview</PageTitle>
 @*
@@ -50,7 +51,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for (int i = 0; i < Client.Constants.COUNT_DAYS_IN_CALENDAR; i++)
+                    @for (int i = 0; i < Mindr.WebAssembly.Client.Constants.COUNT_DAYS_IN_CALENDAR; i++)
                     {
                         <tr>
                             @foreach (var day in Days.Skip(i * 7).Take<CalendarDay>(7))

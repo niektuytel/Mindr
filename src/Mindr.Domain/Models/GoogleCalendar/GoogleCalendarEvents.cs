@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Mindr.Shared.Models.GoogleCalendar
+namespace Mindr.Domain.Models.GoogleCalendar
 {
     // https://developers.google.com/calendar/api/v3/reference/events/list?apix_params=%7B%22calendarId%22%3A%22angeliquehak5%40gmail.com%22%7D#try-it
     public class GoogleCalendarEvents

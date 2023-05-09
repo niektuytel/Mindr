@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Dantooine.Server.Helpers;
+namespace Mindr.Server.Helpers;
 
 public static class AsyncEnumerableExtensions
 {

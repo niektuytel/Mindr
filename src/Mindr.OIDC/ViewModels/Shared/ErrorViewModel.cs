@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Dantooine.Server.ViewModels.Shared;
+namespace Mindr.Server.ViewModels.Shared;
 
 public class ErrorViewModel
 {

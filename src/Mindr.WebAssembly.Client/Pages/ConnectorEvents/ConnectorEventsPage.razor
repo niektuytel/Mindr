@@ -1,14 +1,13 @@
 ﻿@page "/connectorevents/{EventId?}"
-@namespace Mindr.Client.Pages
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.Fast.Components.FluentUI
-@using Mindr.Shared.Models.Connectors
+@using Mindr.Domain.Models.DTO.Connector
 @using System.Collections.ObjectModel
-@using Mindr.Client.Models
-@using Newtonsoft.Json
+@using Mindr.WebAssembly.Client.Models
 
-@inherits FluentComponentBase
+@namespace Mindr.WebAssembly.Client.Pages.ConnectorEvents
 @attribute [Authorize]
+@inherits FluentComponentBase
 
 <div>Connector Event</div>
 

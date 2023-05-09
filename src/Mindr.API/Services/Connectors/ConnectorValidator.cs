@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Mindr.Api.Persistence;
-using Mindr.API.Exceptions;
-using Mindr.Shared.Models.Connectors;
+using Mindr.Api.Exceptions;
 using System.Net;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Mindr.Domain.Models.DTO.Connector;
 
 namespace Mindr.Api.Services.Connectors
 {
@@ -21,7 +21,7 @@ namespace Mindr.Api.Services.Connectors
         {
             if (string.IsNullOrEmpty(userId))
             {
-                throw new API.Exceptions.HttpException(HttpStatusCode.BadRequest, $"Unknown {nameof(userId)}:'{userId}'");
+                throw new Api.Exceptions.HttpException(HttpStatusCode.BadRequest, $"Unknown {nameof(userId)}:'{userId}'");
             }
         }
 
@@ -37,12 +37,12 @@ namespace Mindr.Api.Services.Connectors
         {
             if (id == null)
             {
-                throw new API.Exceptions.HttpException(HttpStatusCode.BadRequest, $"Connector id '{id}' is null");
+                throw new Api.Exceptions.HttpException(HttpStatusCode.BadRequest, $"Connector id '{id}' is null");
             }
 
             if (connector == null)
             {
-                throw new API.Exceptions.HttpException(HttpStatusCode.NotFound, $"Can't find connector on {nameof(id)}:'{id}' that is public");
+                throw new Api.Exceptions.HttpException(HttpStatusCode.NotFound, $"Can't find connector on {nameof(id)}:'{id}' that is public");
             }
         }
 

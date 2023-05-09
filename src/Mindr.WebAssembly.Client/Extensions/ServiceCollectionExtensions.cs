@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Mindr.Client.Extensions;
-using Mindr.Client.Interfaces;
-using Mindr.Client.Services;
+using Mindr.WebAssembly.Client.Extensions;
+using Mindr.WebAssembly.Client.Interfaces;
+using Mindr.WebAssembly.Client.Services;
 
-namespace Mindr.Client.Extensions;
+namespace Mindr.WebAssembly.Client.Extensions;
 
 public static class ServiceCollectionExtensions
 {

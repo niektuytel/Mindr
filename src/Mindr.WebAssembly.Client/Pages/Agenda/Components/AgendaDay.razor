@@ -1,10 +1,9 @@
-﻿@namespace Mindr.Client.Pages.Agenda.Components
-@using Microsoft.Fast.Components.FluentUI
-@using Mindr.Client.Pages.Agenda.Components
+﻿@using Microsoft.Fast.Components.FluentUI
+@using Mindr.WebAssembly.Client.Pages.Agenda.Components
+
+@namespace Mindr.WebAssembly.Client.Pages.Agenda.Components
 @inherits FluentComponentBase
 
-
-    
 @if (IsSelectedMonth)
 {
     <div style=@($"border-radius:10px;box-shadow: {(IsSelectedDay ? "0px 0px 3px 1px #1c7dce" : "0px 0px 5px 2px #0000001f")};width: 40px;height: 40px;cursor: pointer;margin:5px") onclick="@(async () => await HandleOnSelect())">

@@ -4,9 +4,9 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Dantooine.Server.Data;
-using Dantooine.Server.Helpers;
-using Dantooine.Server.ViewModels.Authorization;
+using Mindr.Server.Data;
+using Mindr.Server.Helpers;
+using Mindr.Server.ViewModels.Authorization;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -19,7 +19,7 @@ using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace Dantooine.Server.Controllers;
+namespace Mindr.Server.Controllers;
 
 public class AuthorizationController : Controller
 {

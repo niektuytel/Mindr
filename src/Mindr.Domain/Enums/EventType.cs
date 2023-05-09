@@ -1,4 +1,4 @@
-﻿namespace Mindr.Shared.Enums
+﻿namespace Mindr.Domain.Enums
 {
     public enum EventType
     {
