@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Quartz;
 using Mindr.Server.Data;
 using static OpenIddict.Abstractions.OpenIddictConstants;
+using Microsoft.Extensions.Options;
 
 namespace Mindr.Server;
 
@@ -33,6 +34,15 @@ public class Startup
                 options.UseOpenIddict();
             });
 
+        services.AddAuthentication()
+            .AddGoogle(googleOptions =>
+            {
+                //    .SetRedirectUri();
+                googleOptions.ClientId = "889842565350-hmf83o017dfqpg6akp35c941ocj5arha.apps.googleusercontent.com";
+                googleOptions.ClientSecret = "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";
+                googleOptions.CallbackPath = "/callback/login/google";
+            });
+
         services.AddDatabaseDeveloperPageExceptionFilter();
 
         // Register the Identity services.
@@ -40,6 +50,7 @@ public class Startup
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders()
             .AddDefaultUI();
+
 
         // OpenIddict offers native integration with Quartz.NET to perform scheduled tasks
         // (like pruning orphaned authorizations/tokens from the database) at regular intervals.
@@ -65,6 +76,37 @@ public class Startup
 
                 // Enable Quartz.NET integration.
                 options.UseQuartz();
+            })
+
+            // Register the OpenIddict client components.
+            .AddClient(options =>
+            {
+                // Allow the OpenIddict client to negotiate the authorization code flow.
+                options.AllowAuthorizationCodeFlow();
+
+                // Register the signing and encryption credentials used to protect
+                // sensitive data like the state tokens produced by OpenIddict.
+                options.AddDevelopmentEncryptionCertificate()
+                       .AddDevelopmentSigningCertificate();
+
+                // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
+                options.UseAspNetCore()
+                       .EnableRedirectionEndpointPassthrough();
+
+                // Register the GitHub integration.
+                options.UseWebProviders()
+                        .UseGoogle(options =>
+                        {
+                            options.SetClientId("889842565350-hmf83o017dfqpg6akp35c941ocj5arha.apps.googleusercontent.com")
+                                .SetClientSecret("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")
+                                .SetRedirectUri("callback/login/google");
+                        })
+                       .UseGitHub(options =>
+                       {
+                           options.SetClientId("c4ade52327b01ddacff3")
+                                  .SetClientSecret("da6bed851b75e317bf6b2cb67013679d9467c122")
+                                  .SetRedirectUri("callback/login/github");
+                       });
             })
 
             // Register the OpenIddict server components.
