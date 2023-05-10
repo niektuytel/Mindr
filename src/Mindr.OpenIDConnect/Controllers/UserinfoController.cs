@@ -14,9 +14,9 @@ namespace Mindr.Server.Controllers;
 
 public class UserinfoController : Controller
 {
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly UserManager<Domain.OpenId.ApplicationUser> _userManager;
 
-    public UserinfoController(UserManager<ApplicationUser> userManager)
+    public UserinfoController(UserManager<Domain.OpenId.ApplicationUser> userManager)
         => _userManager = userManager;
 
     //

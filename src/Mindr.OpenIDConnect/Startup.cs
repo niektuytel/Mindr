@@ -24,21 +24,19 @@ public class Startup
         services.AddControllersWithViews();
         services.AddRazorPages();
 
-        services.AddDbContext<ApplicationDbContext>(options =>
-        {
-            // Configure the context to use sqlite.
-            options.UseSqlite($"Filename={Path.Combine(Path.GetTempPath(), "openiddict-dantooine-server.sqlite3")}");
+        services.AddDbContext<ApplicationDbContext>(options => {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
 
-            // Register the entity sets needed by OpenIddict.
-            // Note: use the generic overload if you need
-            // to replace the default OpenIddict entities.
-            options.UseOpenIddict();
-        });
+                // Register the entity sets needed by OpenIddict.
+                // Note: use the generic overload if you need
+                // to replace the default OpenIddict entities.
+                options.UseOpenIddict();
+            });
 
         services.AddDatabaseDeveloperPageExceptionFilter();
 
         // Register the Identity services.
-        services.AddIdentity<ApplicationUser, IdentityRole>()
+        services.AddIdentity<Domain.OpenId.ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders()
             .AddDefaultUI();
@@ -121,6 +119,11 @@ public class Startup
         {
             app.UseDeveloperExceptionPage();
             app.UseMigrationsEndPoint();
+
+            // https://jasonwatmore.com/post/2022/02/01/net-6-execute-ef-database-migrations-from-code-on-startup
+            using var scope = app.ApplicationServices.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var created = context.Database.EnsureCreated();
         }
         else
         {
@@ -130,6 +133,7 @@ public class Startup
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             //app.UseHsts();
         }
+
         app.UseHttpsRedirection();
         app.UseStaticFiles();
 

@@ -17,7 +17,7 @@ namespace Mindr.Api.Persistence
             return new Connector()
             {
                 Id = Guid.Parse("c98d9b51-cf20-4938-b7cb-76e8743f673c"),
-                CreatedBy = "c89260ba-f540-416b-a908-191dc3cf2801",
+                CreatedBy = "79c0ff3d-32aa-445b-b9e5-330799cb03c1",
                 Color = "orange",
                 IsPublic = true,
                 Name = "Send Whatsapp Text Message",
@@ -65,7 +65,7 @@ namespace Mindr.Api.Persistence
             return new Connector()
             {
                 Id = Guid.Parse("60994748-0cf3-452b-bbbc-44930e8fb052"),
-                CreatedBy = "c89260ba-f540-416b-a908-191dc3cf2801",
+                CreatedBy = "79c0ff3d-32aa-445b-b9e5-330799cb03c1",
                 Color = "blue",
                 IsPublic = true,
                 Name = "Send WhatsApp Sample Text Message",
@@ -120,7 +120,7 @@ namespace Mindr.Api.Persistence
         public static ConnectorEvent GetConnectorEvent1()
         {
             var connector1 = GetConnector1();
-            var event1 = new ConnectorEvent("c89260ba-f540-416b-a908-191dc3cf2801", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", connector1);
+            var event1 = new ConnectorEvent("79c0ff3d-32aa-445b-b9e5-330799cb03c1", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", connector1);
             var events1 = new List<ConnectorEventVariable>()
             {
                 new ConnectorEventVariable()
@@ -138,7 +138,7 @@ namespace Mindr.Api.Persistence
         public static ConnectorEvent GetConnectorEvent2()
         {
             var connector2 = GetConnector2();
-            var event2 = new ConnectorEvent("c89260ba-f540-416b-a908-191dc3cf2801", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", connector2);
+            var event2 = new ConnectorEvent("79c0ff3d-32aa-445b-b9e5-330799cb03c1", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", connector2);
             var events2 = new List<ConnectorEventVariable>()
             {
                 new ConnectorEventVariable()

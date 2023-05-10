@@ -26,15 +26,15 @@ public class AuthorizationController : Controller
     private readonly IOpenIddictApplicationManager _applicationManager;
     private readonly IOpenIddictAuthorizationManager _authorizationManager;
     private readonly IOpenIddictScopeManager _scopeManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly SignInManager<Domain.OpenId.ApplicationUser> _signInManager;
+    private readonly UserManager<Domain.OpenId.ApplicationUser> _userManager;
 
     public AuthorizationController(
         IOpenIddictApplicationManager applicationManager,
         IOpenIddictAuthorizationManager authorizationManager,
         IOpenIddictScopeManager scopeManager,
-        SignInManager<ApplicationUser> signInManager,
-        UserManager<ApplicationUser> userManager)
+        SignInManager<Domain.OpenId.ApplicationUser> signInManager,
+        UserManager<Domain.OpenId.ApplicationUser> userManager)
     {
         _applicationManager = applicationManager;
         _authorizationManager = authorizationManager;

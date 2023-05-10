@@ -16,22 +16,22 @@ namespace Mindr.Domain.HttpRunner.Models
         [JsonPropertyName("protocol")]
         public string Protocol { get; set; }
 
-        [JsonIgnore]
+        [JsonPropertyName("host")]
         public string Host { get; set; } = "";
 
         [NotMapped]
-        [JsonPropertyName("host")]
+        [JsonIgnore]
         public string[] Hosts
         {
             get => Host?.Split(".")?.ToArray();
             set => Host = string.Join(".", value);
         }
 
-        [JsonIgnore]
+        [JsonPropertyName("path")]
         public string Path { get; set; } = "";
 
         [NotMapped]
-        [JsonPropertyName("path")]
+        [JsonIgnore]
         public string[] Paths
         {
             get => Path?.Split("/")?.ToArray();

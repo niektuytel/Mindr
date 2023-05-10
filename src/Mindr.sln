@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Website", "Website", "{7F79
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{1ECE283A-3E11-4A09-A002-D714B6A0EAFD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.OIDC", "Mindr.OIDC\Mindr.OIDC.csproj", "{9FFA477C-E9CB-4FAE-8D41-B612099B146C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.OpenIDConnect", "Mindr.OpenIDConnect\Mindr.OpenIDConnect.csproj", "{9FFA477C-E9CB-4FAE-8D41-B612099B146C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.WebAssembly.Client", "Mindr.WebAssembly.Client\Mindr.WebAssembly.Client.csproj", "{A4108C38-F4D5-451C-8332-6DAB3FEB53AF}"
 EndProject
