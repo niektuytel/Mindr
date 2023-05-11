@@ -150,7 +150,6 @@ public class Program
             endpoints.MapHangfireDashboard();
         });
         app.UseHealthChecks("/healthy");
-        app.MapGet("/api/DantooineApi", [Authorize] () => new string[] { "data1", "data2" });
         app.Run();
     }
 }

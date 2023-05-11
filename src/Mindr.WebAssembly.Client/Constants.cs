@@ -1,5 +1,6 @@
 ﻿using Microsoft.Fast.Components.FluentUI;
 using Mindr.WebAssembly.Client.Models;
+using Mindr.WebAssembly.Client.Pages.Agenda.Components;
 using System;
 using System.Collections.Generic;
 
@@ -61,6 +62,10 @@ internal static class Constants
             Href = "",
         }
     };
+
+    public static string GoogleAgendaClientId = "889842565350-hmf83o017dfqpg6akp35c941ocj5arha.apps.googleusercontent.com";
+    public static string GoogleAgendaClientSecret = "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";
+    public static string GoogleAgendaScopes = "https://www.googleapis.com/auth/calendar";
 
     internal static List<Option<string>> Years = new()
     {

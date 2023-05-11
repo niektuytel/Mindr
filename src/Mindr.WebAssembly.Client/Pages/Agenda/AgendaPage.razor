@@ -15,7 +15,23 @@
 @inherits FluentComponentBase
 
 <Breadcrumb />
-<Stack Orientation="Orientation.Horizontal">
+<GoogleCalendarDialog   
+    @ref="AddGoogleCalendarDialog" 
+    RedirectUri="@RedirectUri" 
+    ClientId="889842565350-hmf83o017dfqpg6akp35c941ocj5arha.apps.googleusercontent.com" 
+    ClientSecret="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"
+    Scopes="https://www.googleapis.com/auth/calendar" 
+/>
+
+
+
+<Stack Orientation="Orientation.Horizontal" Class="editable-stack">
+    <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="HandleAddGoogleCalendarDialogOpen">
+        <FluentIcon Slot="start" Name="@FluentIcons.Add" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
+        Add Google Calendar
+    </FluentButton>
+</Stack>
+@*<Stack Orientation="Orientation.Horizontal">
     <div>
         <style>
             .dot {
@@ -88,3 +104,4 @@
     </div>
 </Stack>
 
+*@
