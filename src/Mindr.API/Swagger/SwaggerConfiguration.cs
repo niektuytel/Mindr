@@ -29,15 +29,14 @@ public static class SwaggerConfiguration
                 {
                     AuthorizationCode = new OpenApiOAuthFlow
                     {
-                        AuthorizationUrl = new Uri($"{configuration["IdentityServer:Authority"]}/connect/authorize"),
-                        TokenUrl = new Uri($"{configuration["IdentityServer:Authority"]}/connect/token"),
+                        AuthorizationUrl = new Uri("https://localhost:44319/connect/authorize"),
+                        TokenUrl = new Uri("https://localhost:44319/connect/token"),
                         Scopes = new Dictionary<string, string>
                         {
-                            {configuration["IdentityServer:Audience"], "Mindr API - access"}
+                            { "api1", "resource server scope" }
                         }
-                    }
+                    },
                 }
-
             });
 
             options.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -45,13 +44,9 @@ public static class SwaggerConfiguration
                 {
                     new OpenApiSecurityScheme
                     {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "oauth2"
-                        }
+                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
                     },
-                    new[] { configuration["IdentityServer:Audience"] }
+                    Array.Empty<string>()
                 }
             });
 
@@ -81,10 +76,8 @@ public static class SwaggerConfiguration
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
 
             // Enable OAuth2.0 authentication in Swagger UI
-            c.OAuthClientId(configuration["IdentityServer:ClientId"]);
-            c.OAuthAppName("Mindr API - Swagger");
-            c.OAuthScopes(configuration["IdentityServer:Audience"]);
-            c.OAuthUsePkce();
+            c.OAuthClientId("web-client");
+            c.OAuthClientSecret("901564A5-E7FE-42CB-B10D-61EF6A8F3654");
         });
     }
 }

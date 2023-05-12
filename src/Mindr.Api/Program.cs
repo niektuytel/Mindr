@@ -78,16 +78,11 @@ public class Program
                 options.SetIssuer("https://localhost:44319/");
                 options.AddAudiences("resource_server_1");
 
-                // Configure the validation handler to use introspection and register the client
-                // credentials used when communicating with the remote introspection endpoint.
-                options.UseIntrospection()
-                       .SetClientId("resource_server_1")
-                       .SetClientSecret("846B62D0-DEF9-4215-A99D-86E6B8DAB342");
+                options.AddEncryptionKey(new SymmetricSecurityKey(
+                    Convert.FromBase64String("DRjd/GnduI3Efzen9V9BvbNUfc/VKgXltV7Kbk9sMkY=")));
 
-                // Register the System.Net.Http integration.
                 options.UseSystemNetHttp();
 
-                // Register the ASP.NET Core host.
                 options.UseAspNetCore();
             });
 
@@ -99,13 +94,13 @@ public class Program
         //  {
         //      options.Authority = builder.Configuration["IdentityServer:Authority"];
         //      options.Audience = builder.Configuration["IdentityServer:Audience"];
-        //  });
+        ////  });
 
         builder.Services.AddCors(options =>
         {
-            options.AddDefaultPolicy(builder =>
+            options.AddPolicy("All", builder =>
             {
-                builder.WithOrigins("https://localhost:7163", "https://localhost:44348")
+                builder.WithOrigins("https://localhost:7163", "https://localhost:44348", "https://localhost:44319")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();
@@ -138,7 +133,7 @@ public class Program
         app.UseHangfireDashboard();
         app.UseSwaggerTools(builder.Configuration);
 
-        app.UseCors();
+        app.UseCors("All");
         app.UseRouting();
         app.UseHttpsRedirection();
         app.UseAuthentication();

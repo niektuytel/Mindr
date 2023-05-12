@@ -10,6 +10,8 @@ using Quartz;
 using Mindr.Server.Data;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System;
 
 namespace Mindr.Server;
 
@@ -123,6 +125,9 @@ public class Startup
                 // Mark the "email", "profile" and "roles" scopes as supported scopes.
                 options.RegisterScopes(Scopes.Email, Scopes.Profile, Scopes.Roles);
 
+                options.AddEncryptionKey(new SymmetricSecurityKey(
+                    Convert.FromBase64String("DRjd/GnduI3Efzen9V9BvbNUfc/VKgXltV7Kbk9sMkY=")));
+
                 // Note: this sample only uses the authorization code flow but you can enable
                 // the other flows if you need to support implicit, password or client credentials.
                 options.AllowAuthorizationCodeFlow();
@@ -153,6 +158,15 @@ public class Startup
         // Register the worker responsible for seeding the database.
         // Note: in a real world application, this step should be part of a setup script.
         services.AddHostedService<Worker>();
+
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(policy =>
+            {
+                policy.WithOrigins("https://localhost:7155")
+                    .AllowAnyHeader();
+            });
+        });
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -179,6 +193,7 @@ public class Startup
         app.UseHttpsRedirection();
         app.UseStaticFiles();
 
+        app.UseCors();
         app.UseRouting();
 
         app.UseAuthentication();
