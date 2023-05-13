@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Mindr.Domain.HttpRunner.Models;
+using Mindr.Domain.Models.DTO.CalendarEvent;
 using Mindr.Domain.Models.DTO.Connector;
 using Mindr.Domain.Models.DTO.PersonalCredential;
 using NuGet.Common;
@@ -15,9 +16,9 @@ public class ApplicationContext : DbContext, IApplicationContext
     {
         base.OnModelCreating(modelBuilder);
     }
-
+    
+    public virtual DbSet<CalendarEvent> CalendarEvents => Set<CalendarEvent>();
     public virtual DbSet<PersonalCredential> PersonalCredentials => Set<PersonalCredential>();
-
     public virtual DbSet<Connector> Connectors => Set<Connector>();
     public virtual DbSet<ConnectorVariable> ConnectorVariables => Set<ConnectorVariable>();
     public virtual DbSet<ConnectorEvent> ConnectorEvents => Set<ConnectorEvent>();

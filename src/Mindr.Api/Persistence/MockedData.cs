@@ -19,7 +19,7 @@ namespace Mindr.Api.Persistence
         
         public static PersonalCredential GetPersonalCredential() 
         { 
-            return new PersonalCredential(UserId, new PersonalCredentialDTO()
+            return new PersonalCredential(UserId, CredentialTarget.GoogleCalendar, new PersonalCredentialDTO()
             {
                 AccessToken = "ya29.a0AWY7CklqaLHr3A6x_du7-JrtifzPBVTMAapV6zjTEJgPZWiGcdbAPoGYs9m8h4dXC5tM5eAZPMys2ooPrs-EYUd25wXKPS8uLg3TdSpmKKWLPH0YghddBj60ZxbhUGYGfxMytqFMMJt0f71oa12g4I7m1WAraCgYKATQSARESFQG1tDrpZu-pcnhWAKCbDk_1Gv31CA0163",
                 ExpiresIn = 3599,

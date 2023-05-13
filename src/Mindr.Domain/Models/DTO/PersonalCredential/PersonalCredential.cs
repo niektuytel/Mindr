@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mindr.Domain.Enums;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -10,9 +11,11 @@ namespace Mindr.Domain.Models.DTO.PersonalCredential
         {
             
         }
-        public PersonalCredential(string userId, PersonalCredentialDTO dto)
+
+        public PersonalCredential(string userId, CredentialTarget target, PersonalCredentialDTO dto)
         {
             UserId = userId;
+            Target = target;
             AccessToken = dto.AccessToken;
             RefreshToken = dto.RefreshToken;
             Scope = dto.Scope;
@@ -26,6 +29,9 @@ namespace Mindr.Domain.Models.DTO.PersonalCredential
 
         [JsonPropertyName("user_id")]
         public string UserId { get; set; }
+
+        [JsonIgnore]
+        public CredentialTarget Target { get; set; }
 
         [JsonPropertyName("access_token")]
         public string AccessToken { get; set; }

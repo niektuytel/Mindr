@@ -18,6 +18,7 @@ using MockedData = Mindr.Api.Persistence.MockedData;
 using OpenIddict.Validation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Mindr.Api.Services.PersonalCredentials;
+using Mindr.Api.Services.CalendarEvents;
 
 namespace Mindr.Api;
 
@@ -70,6 +71,11 @@ public class Program
 
         builder.Services.AddScoped<IPersonalCredentialValidator, PersonalCredentialValidator>();
         builder.Services.AddScoped<IPersonalCredentialManager, PersonalCredentialManager>();
+
+        builder.Services.AddScoped<IGoogleCalendarClient, GoogleCalendarClient>();
+        builder.Services.AddScoped<ICalendarEventValidator, CalendarEventValidator>();
+        builder.Services.AddScoped<ICalendarEventDriver, CalendarEventDriver>();
+        builder.Services.AddScoped<ICalendarEventManager, CalendarEventManager>();
 
         // Register the OpenIddict validation components.
         builder.Services.AddOpenIddict()
