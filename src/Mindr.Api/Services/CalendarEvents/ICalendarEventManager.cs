@@ -10,7 +10,7 @@ namespace Mindr.Api.Services.CalendarEvents
     public interface ICalendarEventManager
     {
         Task<CalendarEvent> GetById(string userId, Guid id);
-        Task<IEnumerable<CalendarEvent>> GetEventsOnCalendarId(string userId, string calendarId);
+        Task<IEnumerable<CalendarEvent>> GetEventsOnCalendarId(string userId, string calendarId, DateTime startTimeDate, DateTime endTimeDate);
         Task<CalendarEvent> Create(string userId, CalendarEventDTO input);
         Task<CalendarEvent> Update(string userId, Guid id, CalendarEventDTO input);
         Task<CalendarEvent> Delete(string userId, Guid id);

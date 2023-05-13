@@ -14,6 +14,7 @@ using Mindr.Api.Models.Connectors;
 using Mindr.Domain.Models.DTO.Connector;
 using Mindr.Domain.Models.DTO.PersonalCredential;
 using Mindr.Domain.Models.DTO.CalendarEvent;
+using Mindr.Domain.Models.GoogleCalendar;
 
 namespace Mindr.Api.Services.CalendarEvents
 {
@@ -48,7 +49,7 @@ namespace Mindr.Api.Services.CalendarEvents
             return entity!;
         }
 
-        public async Task<IEnumerable<CalendarEvent>> GetEventsOnCalendarId(string userId, string calendarId)
+        public async Task<IEnumerable<CalendarEvent>> GetEventsOnCalendarId(string userId, string calendarId, DateTime startDateTime, DateTime endDateTime)
         {
             _connectorValidator.ThrowOnInvalidUserId(userId);
 
@@ -59,23 +60,27 @@ namespace Mindr.Api.Services.CalendarEvents
             foreach (var credential in googleCalendarCredentials)
             {
                 var accessToken = _googleClient.GetAccessToken(credential.RefreshToken);
+                var events = _googleClient.GetCalendarEvents(accessToken, calendarId, startDateTime, endDateTime);
                 await Console.Out.WriteLineAsync(   );
 
 
 
+                //_calendarEvents = JsonSerializer.Deserialize<GoogleCalendarEvents>(content);
+                //if (_calendarEvents?.items.Any() == true)
+                //{
+                //    var events = new List<AgendaEvent>();
+                //    foreach (var item in _calendarEvents.items)
+                //    {
+                //        if (item == null || string.IsNullOrEmpty(item.id)) continue;
 
-                //var response = await _httpClient.SendAsync();
+                //        var newItem = new AgendaEvent(item);
+                //        events.Add(newItem);
+                //    }
 
-                //RestClient restClient = new RestClient();
-                //RestRequest request = new RestRequest();
+                //    return events;
+                //}
 
-                //request.AddQueryParameter("client_id", "value");
-                //request.AddQueryParameter("client_secret", "value");
-                //request.AddQueryParameter("grant_type", "refresh_token");
-                //request.AddQueryParameter("refresh_token", "value");
-
-                //restClient.BaseUrl = new System.Uri("https://oauth2.googleapis.com/token");
-                //restClient.Post(request);
+                //return new List<AgendaEvent>();
             }
 
             return null;
