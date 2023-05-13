@@ -7,17 +7,34 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using Mindr.Domain.Models.DTO.PersonalCredential;
+using System.Text.Json.Serialization;
 
 namespace Mindr.Api.Persistence
 {
     public static class MockedData
     {
+        public const string UserId = "79c0ff3d-32aa-445b-b9e5-330799cb03c1";// test@test.com
+        public const string UserId2 = "410786db-7682-45e5-9099-686c21626d9c";// tuytelniek@gmail.com (3th parties, gmail/google login)
+        
+        public static PersonalCredential GetPersonalCredential() 
+        { 
+            return new PersonalCredential(UserId, new PersonalCredentialDTO()
+            {
+                AccessToken = "ya29.a0AWY7CklqaLHr3A6x_du7-JrtifzPBVTMAapV6zjTEJgPZWiGcdbAPoGYs9m8h4dXC5tM5eAZPMys2ooPrs-EYUd25wXKPS8uLg3TdSpmKKWLPH0YghddBj60ZxbhUGYGfxMytqFMMJt0f71oa12g4I7m1WAraCgYKATQSARESFQG1tDrpZu-pcnhWAKCbDk_1Gv31CA0163",
+                ExpiresIn = 3599,
+                RefreshToken = "1//09f8d-mKU1D2RCgYIARAAGAkSNwF-L9IrZ_GsMEG0Z-UsAuFJvLVh7y1bW0jr83HIOOfybWJ6OmL1M74lOpjH1_BQzjAtdzPWCu4",
+                Scope = "https://www.googleapis.com/auth/calendar",
+                TokenType = "Bearer"
+            }); 
+        }
+
         public static Connector GetConnector1()
         {
             return new Connector()
             {
                 Id = Guid.Parse("c98d9b51-cf20-4938-b7cb-76e8743f673c"),
-                CreatedBy = "79c0ff3d-32aa-445b-b9e5-330799cb03c1",
+                CreatedBy = UserId,
                 Color = "orange",
                 IsPublic = true,
                 Name = "Send Whatsapp Text Message",
@@ -60,12 +77,13 @@ namespace Mindr.Api.Persistence
                 Pipeline = Domain.HttpRunner.MockedData.GetPipeline()
             };
         }
+        
         public static Connector GetConnector2()
         {
             return new Connector()
             {
                 Id = Guid.Parse("60994748-0cf3-452b-bbbc-44930e8fb052"),
-                CreatedBy = "79c0ff3d-32aa-445b-b9e5-330799cb03c1",
+                CreatedBy = UserId,
                 Color = "blue",
                 IsPublic = true,
                 Name = "Send WhatsApp Sample Text Message",
@@ -120,7 +138,7 @@ namespace Mindr.Api.Persistence
         public static ConnectorEvent GetConnectorEvent1()
         {
             var connector1 = GetConnector1();
-            var event1 = new ConnectorEvent("79c0ff3d-32aa-445b-b9e5-330799cb03c1", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", connector1);
+            var event1 = new ConnectorEvent(UserId, "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", connector1);
             var events1 = new List<ConnectorEventVariable>()
             {
                 new ConnectorEventVariable()
@@ -138,7 +156,7 @@ namespace Mindr.Api.Persistence
         public static ConnectorEvent GetConnectorEvent2()
         {
             var connector2 = GetConnector2();
-            var event2 = new ConnectorEvent("79c0ff3d-32aa-445b-b9e5-330799cb03c1", "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", connector2);
+            var event2 = new ConnectorEvent(UserId, "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", connector2);
             var events2 = new List<ConnectorEventVariable>()
             {
                 new ConnectorEventVariable()

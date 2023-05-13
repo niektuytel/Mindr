@@ -11,7 +11,7 @@ public static class SwaggerConfiguration
     public static void AddSwaggerTools(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGenNewtonsoftSupport();
+        //services.AddSwaggerGenNewtonsoftSupport();
 
         services.AddSwaggerGen(options =>
         {
@@ -50,6 +50,11 @@ public static class SwaggerConfiguration
                 }
             });
 
+
+            options.DocumentFilter<LowercaseDocumentFilter>();
+            //options.SchemaFilter<FieldsSchemaFilter>();
+            options.OperationFilter<AuthorizeCheckOperationFilter>();
+
             // Set the comments path for the Swagger JSON and UI.
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlFullFile = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -62,8 +67,6 @@ public static class SwaggerConfiguration
                 File.Create(xmlFullFile);
             }
 
-            options.DocumentFilter<LowercaseDocumentFilter>();
-            options.OperationFilter<AuthorizeCheckOperationFilter>();
             options.IncludeXmlComments(xmlFullFile);
         });
     }

@@ -64,7 +64,8 @@ public partial class GoogleAuthentication : FluentComponentBase
                 { new StringContent(_code), "code" },
                 { new StringContent(ClientId), "client_id" },
                 { new StringContent(ClientSecret), "client_secret" },
-                { new StringContent(RedirectUri), "redirect_uri" }
+                { new StringContent(RedirectUri), "redirect_uri" }//,
+                //{ new StringContent(AccessType), "access_type" },
             }
             };
 
@@ -73,9 +74,10 @@ public partial class GoogleAuthentication : FluentComponentBase
             response.EnsureSuccessStatusCode();
 
             //{
-            //    "access_token": "ya29.a0Ael9sCMA4dpOa3KsaesbdeSDt7PFJp4UcGlyaF0XjktteENXAw6SIoeq5hgn3CT7pLogIz0G9Nyhne55LYnYNyzklQqhtvvYzsaCgYKAfwSARESFQF4udJhsnAsZsf1cB3fRK9fUwmeTw0163",
-            //    "expires_in": 3463,
-            //    "scope": "",
+            //    "access_token": "ya29.a0AWY7CklqaLHr3A6x_du7-JrtifzPBVTMAapV6zjTEJgPZWiGcdbAPoGYs9m8h4dXC5tM5eAZPMys2ooPrs-EYUd25wXKPS8uLg3TdSpmKKWLPH0YghddBj60ZxbhUGYGfxMytqFMMJt0f71oa12g4I7m1WAraCgYKATQSARESFQG1tDrpZu-pcnhWAKCbDk_1Gv31CA0163",
+            //    "expires_in": 3599,
+            //    "refresh_token": "1//09f8d-mKU1D2RCgYIARAAGAkSNwF-L9IrZ_GsMEG0Z-UsAuFJvLVh7y1bW0jr83HIOOfybWJ6OmL1M74lOpjH1_BQzjAtdzPWCu4",
+            //    "scope": "https://www.googleapis.com/auth/calendar",
             //    "token_type": "Bearer"
             //}
             var jsonString = await response.Content.ReadAsStringAsync();

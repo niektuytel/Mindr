@@ -17,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using MockedData = Mindr.Api.Persistence.MockedData;
 using OpenIddict.Validation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
+using Mindr.Api.Services.PersonalCredentials;
 
 namespace Mindr.Api;
 
@@ -52,7 +53,7 @@ public class Program
         {
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
         }
-        builder.Services.AddControllers().AddNewtonsoftJson();
+        builder.Services.AddControllers();//.AddNewtonsoftJson();
         builder.Services.AddSwaggerTools(builder.Configuration);
         builder.Services.AddHealthChecks();
 
@@ -67,7 +68,8 @@ public class Program
         builder.Services.AddScoped<IConnectorManager, ConnectorManager>();
         builder.Services.AddScoped<IConnectorDriver, ConnectorDriver>();
 
-        // Authentication
+        builder.Services.AddScoped<IPersonalCredentialValidator, PersonalCredentialValidator>();
+        builder.Services.AddScoped<IPersonalCredentialManager, PersonalCredentialManager>();
 
         // Register the OpenIddict validation components.
         builder.Services.AddOpenIddict()
@@ -88,13 +90,6 @@ public class Program
 
         builder.Services.AddAuthentication(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
         builder.Services.AddAuthorization();
-
-        //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        //  .AddJwtBearer(options =>
-        //  {
-        //      options.Authority = builder.Configuration["IdentityServer:Authority"];
-        //      options.Audience = builder.Configuration["IdentityServer:Audience"];
-        ////  });
 
         builder.Services.AddCors(options =>
         {
@@ -121,6 +116,7 @@ public class Program
             var created = context.Database.EnsureCreated();
             if(created)
             {
+                context.PersonalCredentials.Add(MockedData.GetPersonalCredential());
                 context.Connectors.Add(MockedData.GetConnector1());
                 context.Connectors.Add(MockedData.GetConnector2());
                 context.ConnectorEvents.Add(MockedData.GetConnectorEvent1());

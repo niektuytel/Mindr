@@ -4,7 +4,7 @@ using Mindr.Api.Extensions;
 using Mindr.Api.Models;
 using Mindr.Api.Models.Connectors;
 using Mindr.Api.Services.Connectors;
-
+using Mindr.Api.Services.PersonalCredentials;
 using Mindr.Domain.Enums;
 
 using Mindr.Domain.HttpRunner.Models;

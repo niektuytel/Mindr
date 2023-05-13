@@ -1,12 +1,12 @@
 ﻿using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Mindr.Api.Persistence;
-using Mindr.Api.Services.Connectors;
 using Mindr.Domain.Models.DTO.Connector;
 
 using Mindr.Domain.HttpRunner.Services;
 using System.Net;
 using Mindr.Domain.Enums;
+using Mindr.Api.Services.Connectors;
 
 namespace Mindr.Api.Services.ConnectorEvents
 {

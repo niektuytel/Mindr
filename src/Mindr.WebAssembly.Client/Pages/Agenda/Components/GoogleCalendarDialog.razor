@@ -7,8 +7,8 @@
 
 @namespace Mindr.WebAssembly.Client.Pages.Agenda.Components
 @inherits FluentComponentBase
-
-<GoogleAuthentication @ref="Authentication" RedirectUri="@RedirectUri" ClientId="@Constants.GoogleAgendaClientId" ClientSecret="@Constants.GoogleAgendaClientSecret" Scopes="@Constants.GoogleAgendaScopes">
+@*AccessType="offline" | Explain = https://support.google.com/calendar/thread/94064838/how-do-i-share-a-calendar-with-a-service-account?hl=en*@
+<GoogleAuthentication @ref="Authentication" RedirectUri="@RedirectUri" ClientId="@Constants.GoogleAgendaClientId" ClientSecret="@Constants.GoogleAgendaClientSecret" Scopes="@Constants.GoogleAgendaScopes" AccessType="offline">
     <AuthenticatedView>
             <FluentDialog Modal="true" TrapFocus="true" @ref="Dialog" @ondialogdismiss="HandleDialogDismiss" Style="height:fit-content">
 

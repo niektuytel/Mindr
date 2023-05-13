@@ -1,5 +1,4 @@
 ﻿using Mindr.Api.Models.Connectors;
-
 using Mindr.Domain.HttpRunner.Models;
 using Mindr.Domain.Models.DTO.Connector;
 
