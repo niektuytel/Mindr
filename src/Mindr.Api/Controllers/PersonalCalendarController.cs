@@ -7,20 +7,21 @@ using Mindr.Api.Services.CalendarEvents;
 using Mindr.Domain.Enums;
 
 using Mindr.Domain.HttpRunner.Models;
-using Mindr.Domain.Models.DTO.CalendarEvent;
+using Mindr.Domain.Models.DTO.Calendar;
+using Mindr.Domain.Models.DTO.Personal;
 using System.Net;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Mindr.Api.Controllers;
 
 [Authorize]
-public class CalendarEventController : BaseController
+public class PersonalCalendarController : BaseController
 {
-    private readonly ICalendarEventManager _calendarEventManager;
+    private readonly IPersonalCalendarManager _manager;
 
-    public CalendarEventController(ICalendarEventManager connectorManager)
+    public PersonalCalendarController(IPersonalCalendarManager manager)
     {
-        _calendarEventManager = connectorManager;
+        _manager = manager;
     }
 
     /// <remarks>
@@ -29,96 +30,87 @@ public class CalendarEventController : BaseController
     /// <credentials code="200">Success</credentials>
     /// <credentials code="400">Invalid credentials</credentials>
     /// <credentials code="401">Unauthorized</credentials>
-    [HttpGet("{id}")]
-    [ProducesResponseType(typeof(CalendarEvent), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
-    public async Task<IActionResult> GetById(Guid id)
-    {
-        var response = await HandleRequest(async () => {
-            var userId = User.GetUserId();
-
-            return await _calendarEventManager.GetById(userId, id);
-        });
-
-        return response;
-    }
-
-    /// <remarks>
-    /// Retrieves all personal calendar events by id for the authenticated user.
-    /// </remarks>
-    /// <credentials code="200">Success</credentials>
-    /// <credentials code="400">Invalid credentials</credentials>
-    /// <credentials code="401">Unauthorized</credentials>
-    [HttpGet("{calendarId}")]
+    /// <credentials code="404">Not Found</credentials>
+    [HttpGet("events")]
     [ProducesResponseType(typeof(IEnumerable<CalendarEvent>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
-    public async Task<IActionResult> GetAll([FromRoute]string calendarId)
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> GetPersonalCalendarEvents([FromQuery] DateTime dateTimeStart, [FromQuery] DateTime dateTimeEnd, [FromQuery] string? calendarId = null)
     {
         var response = await HandleRequest(async () => {
             var userId = User.GetUserId();
-            return await _calendarEventManager.GetEventsOnCalendarId(userId, calendarId);
+
+            if(!string.IsNullOrEmpty(calendarId))
+            {
+                return await _manager.GetEventsOnCalendarId(userId, calendarId, dateTimeStart, dateTimeEnd);
+            }
+
+            return await _manager.GetEvents(userId, dateTimeStart, dateTimeEnd);
+        });
+
+        return response;
+    }
+
+
+    /// <remarks>
+    /// Retrieves all personal calendars by id for the authenticated user.
+    /// </remarks>
+    /// <credentials code="200">Success</credentials>
+    /// <credentials code="400">Invalid credentials</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
+    /// <credentials code="404">Not Found</credentials>
+    [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<PersonalCalendar>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> GetPersonalCalendars()
+    {
+        var response = await HandleRequest(async () => {
+            var userId = User.GetUserId();
+            return await _manager.GetCalendars(userId);
         });
 
         return response;
     }
 
     /// <remarks>
-    /// Create a new personal calendar events by id for the authenticated user.
+    /// Create a new personal calendar by id for the authenticated user.
     /// </remarks>
     /// <credentials code="200">Success</credentials>
     /// <credentials code="400">Invalid credentials</credentials>
     /// <credentials code="401">Unauthorized</credentials>
     /// <credentials code="404">Not Found</credentials>
     [HttpPost]
-    [ProducesResponseType(typeof(CalendarEvent), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(PersonalCalendar), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
-    public async Task<IActionResult> Create([FromBody] CalendarEventDTO input)
+    public async Task<IActionResult> AddPersonalCalendar([FromBody] PersonalCalendarWithCredential input)
     {
-        var response = await HandleRequest(async () => {
+        var response = await HandleRequest(async () =>
+        {
             var userId = User.GetUserId();
-            return await _calendarEventManager.Create(userId, input);
+            return await _manager.CreateCalendar(userId, input);
         });
 
         return response;
     }
-
+    
     /// <remarks>
-    /// Update personal calendar events by id for the authenticated user.
+    /// Delete personal calendar by id for the authenticated user.
     /// </remarks>
     /// <credentials code="200">Success</credentials>
     /// <credentials code="400">Invalid credentials</credentials>
     /// <credentials code="401">Unauthorized</credentials>
     /// <credentials code="404">Not Found</credentials>
-    [HttpPut("{id}")]
+    [HttpDelete("{calendarId}")]
     [ProducesResponseType(typeof(CalendarEvent), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> Update(Guid id, [FromBody] CalendarEventDTO input)
+    public async Task<IActionResult> DeletePersonalCalendar(string calendarId)
     {
-        var response = await HandleRequest(async () => {
+        var response = await HandleRequest(async () =>
+        {
             var userId = User.GetUserId();
-            return await _calendarEventManager.Update(userId, id, input);
-        });
-
-        return response;
-    }
-
-    /// <remarks>
-    /// Delete personal calendar events by id for the authenticated user.
-    /// </remarks>
-    /// <credentials code="200">Success</credentials>
-    /// <credentials code="400">Invalid credentials</credentials>
-    /// <credentials code="401">Unauthorized</credentials>
-    /// <credentials code="404">Not Found</credentials>
-    [HttpDelete("{id}")]
-    [ProducesResponseType(typeof(CalendarEvent), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> Delete(Guid id)
-    {
-        var response = await HandleRequest(async () => {
-            var userId = User.GetUserId();
-            return await _calendarEventManager.Delete(userId, id);
+            return await _manager.DeleteCalendar(userId, calendarId);
         });
 
         return response;

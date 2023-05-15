@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Mindr.Domain.Models.DTO.Connector;
-using Mindr.Domain.Models.DTO.PersonalCredential;
+using Mindr.Domain.Models.DTO.Personal;
 using Newtonsoft.Json.Linq;
 
 namespace Mindr.Api.Profiles;

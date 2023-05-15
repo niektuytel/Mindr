@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Mindr.Api.Extensions;
 using Mindr.Api.Models;
+using Mindr.Api.Services.CalendarEvents;
 using Mindr.Api.Services.PersonalCredentials;
 using Mindr.Domain.Enums;
 
 using Mindr.Domain.HttpRunner.Models;
-using Mindr.Domain.Models.DTO.PersonalCredential;
+using Mindr.Domain.Models.DTO.Personal;
 using System.Net;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 

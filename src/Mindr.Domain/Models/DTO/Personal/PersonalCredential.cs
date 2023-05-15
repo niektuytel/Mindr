@@ -3,7 +3,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace Mindr.Domain.Models.DTO.PersonalCredential
+namespace Mindr.Domain.Models.DTO.Personal
 {
     public class PersonalCredential
     {
@@ -12,15 +12,26 @@ namespace Mindr.Domain.Models.DTO.PersonalCredential
             
         }
 
-        public PersonalCredential(string userId, CredentialTarget target, PersonalCredentialDTO dto)
+        public PersonalCredential(string userId, PersonalCredentialDTO dto)
         {
             UserId = userId;
-            Target = target;
+            Target = dto.Target;
             AccessToken = dto.AccessToken;
             RefreshToken = dto.RefreshToken;
             Scope = dto.Scope;
             TokenType = dto.TokenType;
             ExpiresIn = dto.ExpiresIn;
+        }
+
+        public PersonalCredential(string userId, CredentialTarget target, string accessToken, string refreshToken, string scope, string tokenType, int expiresIn)
+        {
+            UserId = userId;
+            Target = target;
+            AccessToken = accessToken;
+            RefreshToken = refreshToken;
+            Scope = scope;
+            TokenType = tokenType;
+            ExpiresIn = expiresIn;
         }
 
         [Key]

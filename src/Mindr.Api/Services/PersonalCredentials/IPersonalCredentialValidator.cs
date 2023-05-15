@@ -1,5 +1,5 @@
 ﻿using Mindr.Domain.Models.DTO.Connector;
-using Mindr.Domain.Models.DTO.PersonalCredential;
+using Mindr.Domain.Models.DTO.Personal;
 
 namespace Mindr.Api.Services.PersonalCredentials
 {

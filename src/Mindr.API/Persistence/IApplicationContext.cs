@@ -1,14 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Mindr.Domain.HttpRunner.Models;
-using Mindr.Domain.Models.DTO.CalendarEvent;
 using Mindr.Domain.Models.DTO.Connector;
-using Mindr.Domain.Models.DTO.PersonalCredential;
+using Mindr.Domain.Models.DTO.Personal;
 
 namespace Mindr.Api.Persistence
 {
     public interface IApplicationContext
     {
-        DbSet<CalendarEvent> CalendarEvents { get; }
+        DbSet<PersonalCalendar> PersonalCalendars { get; }
         DbSet<PersonalCredential> PersonalCredentials { get; }
         DbSet<Connector> Connectors { get; }
         DbSet<ConnectorVariable> ConnectorVariables { get; }

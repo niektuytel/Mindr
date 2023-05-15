@@ -73,9 +73,8 @@ public class Program
         builder.Services.AddScoped<IPersonalCredentialManager, PersonalCredentialManager>();
 
         builder.Services.AddScoped<IGoogleCalendarClient, GoogleCalendarClient>();
-        builder.Services.AddScoped<ICalendarEventValidator, CalendarEventValidator>();
-        builder.Services.AddScoped<ICalendarEventDriver, CalendarEventDriver>();
-        builder.Services.AddScoped<ICalendarEventManager, CalendarEventManager>();
+        builder.Services.AddScoped<IPersonalCalendarValidator, PersonalCalendarValidator>();
+        builder.Services.AddScoped<IPersonalCalendarManager, PersonalCalendarManager>();
 
         // Register the OpenIddict validation components.
         builder.Services.AddOpenIddict()
@@ -122,6 +121,7 @@ public class Program
             var created = context.Database.EnsureCreated();
             if(created)
             {
+                context.PersonalCalendars.Add(MockedData.GetPersonalCalendar());
                 context.PersonalCredentials.Add(MockedData.GetPersonalCredential());
                 context.Connectors.Add(MockedData.GetConnector1());
                 context.Connectors.Add(MockedData.GetConnector2());

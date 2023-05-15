@@ -15,19 +15,19 @@
             public string kind { get; set; }
             public string etag { get; set; }
             public string id { get; set; }
-            public string summary { get; set; }
             public string timeZone { get; set; }
             public string summaryOverride { get; set; }
-            public string colorId { get; set; }
             public string backgroundColor { get; set; }
             public string foregroundColor { get; set; }
-            public bool selected { get; set; }
             public string accessRole { get; set; }
             public Defaultreminder[] defaultReminders { get; set; }
             public Conferenceproperties conferenceProperties { get; set; }
             public Notificationsettings notificationSettings { get; set; }
             public bool primary { get; set; }
             public string description { get; set; }
+            public string summary { get; set; }
+            public bool selected { get; set; }
+            public string colorId { get; set; }
         }
 
         public class Conferenceproperties

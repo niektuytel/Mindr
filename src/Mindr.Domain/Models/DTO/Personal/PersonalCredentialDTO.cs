@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Mindr.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace Mindr.Domain.Models.DTO.PersonalCredential
+namespace Mindr.Domain.Models.DTO.Personal
 {
     public class PersonalCredentialDTO
     {
@@ -19,6 +20,9 @@ namespace Mindr.Domain.Models.DTO.PersonalCredential
 
         [JsonPropertyName("token_type")]
         public string TokenType { get; set; }
+
+        [JsonPropertyName("target")]
+        public CredentialTarget Target { get; set; }
 
     }
 }

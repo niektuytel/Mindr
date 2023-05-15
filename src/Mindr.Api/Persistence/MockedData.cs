@@ -7,8 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
-using Mindr.Domain.Models.DTO.PersonalCredential;
+using Mindr.Domain.Models.DTO.Personal;
 using System.Text.Json.Serialization;
+using Microsoft.Graph;
 
 namespace Mindr.Api.Persistence
 {
@@ -17,16 +18,29 @@ namespace Mindr.Api.Persistence
         public const string UserId = "79c0ff3d-32aa-445b-b9e5-330799cb03c1";// test@test.com
         public const string UserId2 = "410786db-7682-45e5-9099-686c21626d9c";// tuytelniek@gmail.com (3th parties, gmail/google login)
         
-        public static PersonalCredential GetPersonalCredential() 
-        { 
-            return new PersonalCredential(UserId, CredentialTarget.GoogleCalendar, new PersonalCredentialDTO()
+        public static PersonalCalendar GetPersonalCalendar()
+        {
+            return new PersonalCalendar()
             {
+                Id = Guid.Parse("129a67ce-8f3a-45ae-929d-460e19b5cd06"),
+                UserId = UserId,
+                CalendarId = "a38067012fae80d9b938b59ff0be170eed5d4dc0109d438bebb6273a83eb1301@group.calendar.google.com",
+                CredentialId = Guid.Parse("49fa5022-66dc-45b6-bf27-e512e41a905f"),
+                From = CalendarFrom.Google
+            };
+        }
+
+        public static PersonalCredential GetPersonalCredential() 
+        {
+            return new PersonalCredential(UserId, new PersonalCredentialDTO()
+            {
+                Target = CredentialTarget.GoogleCalendar,
                 AccessToken = "ya29.a0AWY7CklqaLHr3A6x_du7-JrtifzPBVTMAapV6zjTEJgPZWiGcdbAPoGYs9m8h4dXC5tM5eAZPMys2ooPrs-EYUd25wXKPS8uLg3TdSpmKKWLPH0YghddBj60ZxbhUGYGfxMytqFMMJt0f71oa12g4I7m1WAraCgYKATQSARESFQG1tDrpZu-pcnhWAKCbDk_1Gv31CA0163",
                 ExpiresIn = 3599,
                 RefreshToken = "1//09f8d-mKU1D2RCgYIARAAGAkSNwF-L9IrZ_GsMEG0Z-UsAuFJvLVh7y1bW0jr83HIOOfybWJ6OmL1M74lOpjH1_BQzjAtdzPWCu4",
                 Scope = "https://www.googleapis.com/auth/calendar",
                 TokenType = "Bearer"
-            }); 
+            }); ; 
         }
 
         public static Connector GetConnector1()
@@ -143,7 +157,7 @@ namespace Mindr.Api.Persistence
             {
                 new ConnectorEventVariable()
                 {
-                    Key = EventType.OnDateTime,
+                    Key = Domain.Enums.EventType.OnDateTime,
                     Value = DateTime.Now.AddDays(1).ToLongDateString()
                 }
             };
@@ -161,7 +175,7 @@ namespace Mindr.Api.Persistence
             {
                 new ConnectorEventVariable()
                 {
-                    Key = EventType.OnDateTime,
+                    Key = Domain.Enums.EventType.OnDateTime,
                     Value = DateTime.Now.AddDays(1).ToLongDateString()
                 }
             };

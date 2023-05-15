@@ -48,6 +48,14 @@ public partial class GoogleAuthentication : FluentComponentBase
 
     public string AccessToken { get; set; } = default!;
 
+    public int ExpiresIn { get; set; } = default!;
+    
+    public string RefreshToken { get; set; } = default!;
+    
+    public string Scope { get; set; } = default!;
+    
+    public string TokenType { get; set; } = default!;
+
     protected override async Task OnInitializedAsync()
     {
         _code = NavigationManager.ExtractQueryStringByKey<string>("code");
@@ -64,8 +72,7 @@ public partial class GoogleAuthentication : FluentComponentBase
                 { new StringContent(_code), "code" },
                 { new StringContent(ClientId), "client_id" },
                 { new StringContent(ClientSecret), "client_secret" },
-                { new StringContent(RedirectUri), "redirect_uri" }//,
-                //{ new StringContent(AccessType), "access_type" },
+                { new StringContent(RedirectUri), "redirect_uri" }
             }
             };
 
@@ -73,6 +80,7 @@ public partial class GoogleAuthentication : FluentComponentBase
             var response = await httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
+            var jsonString = await response.Content.ReadAsStringAsync();
             //{
             //    "access_token": "ya29.a0AWY7CklqaLHr3A6x_du7-JrtifzPBVTMAapV6zjTEJgPZWiGcdbAPoGYs9m8h4dXC5tM5eAZPMys2ooPrs-EYUd25wXKPS8uLg3TdSpmKKWLPH0YghddBj60ZxbhUGYGfxMytqFMMJt0f71oa12g4I7m1WAraCgYKATQSARESFQG1tDrpZu-pcnhWAKCbDk_1Gv31CA0163",
             //    "expires_in": 3599,
@@ -80,9 +88,12 @@ public partial class GoogleAuthentication : FluentComponentBase
             //    "scope": "https://www.googleapis.com/auth/calendar",
             //    "token_type": "Bearer"
             //}
-            var jsonString = await response.Content.ReadAsStringAsync();
             var jsonObject = JsonSerializer.Deserialize<JsonObject>(jsonString);
             AccessToken = jsonObject!["access_token"]!.GetValue<string>();
+            ExpiresIn = jsonObject!["expires_in"]!.GetValue<int>();
+            RefreshToken = jsonObject!["refresh_token"]!.GetValue<string>();
+            Scope = jsonObject!["scope"]!.GetValue<string>();
+            TokenType = jsonObject!["token_type"]!.GetValue<string>();
         }
     }
 
@@ -91,7 +102,7 @@ public partial class GoogleAuthentication : FluentComponentBase
         if (string.IsNullOrEmpty(_code) || string.IsNullOrEmpty(_scope))
         {
             // Request consent
-            var consentUri = $"{BaseUri}/v2/auth?scope={Scopes}&response_type={ResponseType}&access_type={AccessType}&redirect_uri={RedirectUri}&client_id={ClientId}";
+            var consentUri = $"{BaseUri}/v2/auth?scope={Scopes}&response_type={ResponseType}&access_type={AccessType}&redirect_uri={RedirectUri}&client_id={ClientId}&prompt=select_account";
             await JSRuntime.InvokeAsync<object>("open", consentUri);//, "_blank");// Ok but need to be as iframe than
 
             return false;

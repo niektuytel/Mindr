@@ -12,7 +12,8 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Mindr.Domain.HttpRunner.Models;
 using Mindr.Api.Models.Connectors;
 using Mindr.Domain.Models.DTO.Connector;
-using Mindr.Domain.Models.DTO.PersonalCredential;
+using Mindr.Domain.Models.DTO.Personal;
+using Mindr.Domain.Enums;
 
 namespace Mindr.Api.Services.PersonalCredentials
 {

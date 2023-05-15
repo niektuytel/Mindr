@@ -4,7 +4,7 @@ using Mindr.Api.Exceptions;
 using System.Net;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Mindr.Domain.Models.DTO.Connector;
-using Mindr.Domain.Models.DTO.PersonalCredential;
+using Mindr.Domain.Models.DTO.Personal;
 
 namespace Mindr.Api.Services.PersonalCredentials
 {

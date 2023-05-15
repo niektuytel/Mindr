@@ -11,7 +11,9 @@
 <GoogleAuthentication @ref="Authentication" RedirectUri="@RedirectUri" ClientId="@Constants.GoogleAgendaClientId" ClientSecret="@Constants.GoogleAgendaClientSecret" Scopes="@Constants.GoogleAgendaScopes" AccessType="offline">
     <AuthenticatedView>
             <FluentDialog Modal="true" TrapFocus="true" @ref="Dialog" @ondialogdismiss="HandleDialogDismiss" Style="height:fit-content">
+                @{
 
+                }
                 @if (!string.IsNullOrEmpty(ErrorMessage))
                 {
                     <Stack Style="min-height:50px;border: 1px solid #D8000C;background-color: #FFBABA;padding: 3px;">
@@ -19,7 +21,7 @@
                     </Stack>
                 }
 
-                @if (!IsLoadingDialog)
+                @if (true)
                 {
                     @* <FluentTextField @bind-Value="@Data.Name" Placeholder="Title" style="width: 100%;" />
                 <FluentTextArea @bind-Value="@Data.Description" Placeholder="Description" style="width: 100%;" />
