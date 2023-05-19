@@ -9,7 +9,7 @@ public partial class MainLayout
 
     //private ErrorBoundary ErrorBoundary;
 
-    private bool open = false;
+    //private bool open = false;
 
     //protected override void OnInitialized()
     //{
