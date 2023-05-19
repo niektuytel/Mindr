@@ -5,19 +5,21 @@ namespace Mindr.WebAssembly.Client.Shared;
 
 public partial class MainLayout
 {
-    private ElementReference Container;
+    //private ElementReference Container;
 
-    private ErrorBoundary ErrorBoundary;
+    //private ErrorBoundary ErrorBoundary;
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-    }
+    private bool open = false;
 
-    protected override void OnParametersSet()
-    {
-        ErrorBoundary?.Recover();
-    }
+    //protected override void OnInitialized()
+    //{
+    //    base.OnInitialized();
+    //}
+
+    //protected override void OnParametersSet()
+    //{
+    //    ErrorBoundary?.Recover();
+    //}
 
 }
 

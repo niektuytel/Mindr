@@ -12,16 +12,32 @@
     <Compile Remove="Pages\Agenda\Components\AgendaDay.razor.cs" />
     <Compile Remove="Pages\Agenda\Components\AgendaEventItem.razor.cs" />
     <Compile Remove="Pages\Agenda\Components\ConnectorEventDialog.razor.cs" />
+    <Compile Remove="Pages\Index.razor.cs" />
+    <Compile Remove="Shared\Header\Breadcrumb.razor.cs" />
+    <Compile Remove="Shared\Header\Header.razor.cs" />
+    <Compile Remove="Shared\Header\ProfileButton.razor.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Remove="Pages\Agenda\Components\AgendaDay.razor" />
     <Content Remove="Pages\Agenda\Components\AgendaEventItem.razor" />
     <Content Remove="Pages\Agenda\Components\ConnectorEventDialog.razor" />
+    <Content Remove="Pages\Index.razor" />
+    <Content Remove="Shared\Header\Breadcrumb.razor" />
+    <Content Remove="Shared\Header\Header.razor" />
+    <Content Remove="Shared\Header\ProfileButton.razor" />
+    <Content Remove="wwwroot\css\fonts.google.icons.css" />
+    <Content Remove="wwwroot\css\fonts.gstatic.flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2" />
+    <Content Remove="wwwroot\css\googlefontsroboto.css" />
+    <Content Remove="wwwroot\css\site.css" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="Pages\Agenda\Components\ConnectorEventDialog.razor.css" />
+    <None Remove="Pages\Index.razor.css" />
+    <None Remove="Shared\Header\Breadcrumb.razor.css" />
+    <None Remove="Shared\Header\Header.razor.css" />
+    <None Remove="Shared\Header\ProfileButton.razor.css" />
   </ItemGroup>
 
 	<ItemGroup>
@@ -32,9 +48,11 @@
 		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Fast.Components.FluentUI" Version="2.0.1" />
 		<PackageReference Include="Microsoft.Fast.Components.FluentUI.DataGrid.EntityFrameworkAdapter" Version="2.0.1" />
+		<PackageReference Include="MudBlazor" Version="6.2.5" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\BlazorScheduler\BlazorScheduler.csproj" />
 	  <ProjectReference Include="..\Mindr.Domain\Mindr.Domain.csproj" />
 	</ItemGroup>
 

@@ -1,13 +1,59 @@
-﻿@using Microsoft.Fast.Components.FluentUI;
-@using Mindr.WebAssembly.Client.Components
-@using Mindr.WebAssembly.Client.Models;
+﻿@using Mindr.WebAssembly.Client.Models;
 @using Mindr.WebAssembly.Client.Shared.Header
+@using MudBlazor
 
 @namespace Mindr.WebAssembly.Client.Shared
 @inherits LayoutComponentBase
 
 <PageTitle>Mindr.WebUI</PageTitle>
 
+<MudThemeProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<MudLayout>
+    <MudAppBar Color="Color.Primary" Fixed="false" Dense="true">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" />
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" />
+    </MudAppBar>
+    @*<Header/>*@
+    <MudPaper Height="100%" Style="overflow:hidden; position:relative;">
+        <NavMenu Open="@open"/>
+        @*
+        <MudDrawerContainer Class="mud-height-full">
+            <div class="d-flex justify-center mud-height-full">
+            </div>
+        </MudDrawerContainer>
+        *@
+        <MudMainContent Class="pt-16 px-16">
+            <MudContainer Class="mt-6">
+                @Body
+            </MudContainer>
+        </MudMainContent>
+    </MudPaper>
+    @*<Footer/>*@
+</MudLayout>
+
+@*
+<div class="page">
+
+
+
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <div class="main">
+        <div class="top-row px-4">
+            <a href="https://github.com/valincius/BlazorScheduler" target="_blank" class="ml-md-auto">GitHub</a>
+        </div>
+
+        <div class="content px-4">
+            @Body
+        </div>
+    </div>
+</div>
 <div id="page-container" @ref="Container">
     <Header Container="Container" />
     <main id="content-wrap">
@@ -32,4 +78,4 @@
         </Stack>
     </main>
     <Footer />
-</div>
+</div>*@

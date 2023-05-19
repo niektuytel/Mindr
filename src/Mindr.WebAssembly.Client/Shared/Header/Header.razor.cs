@@ -5,31 +5,31 @@ using System.Threading.Tasks;
 
 namespace Mindr.WebAssembly.Client.Shared.Header;
 
-public partial class Header : FluentComponentBase
+public partial class Header : LayoutComponentBase
 {
-    [Parameter]
-    public ElementReference Container { get; set; } = default!;
+    //[Parameter]
+    //public ElementReference Container { get; set; } = default!;
 
-    [Inject]
-    private GlobalState GlobalState { get; set; } = default!;
+    //[Inject]
+    //private GlobalState GlobalState { get; set; } = default!;
 
-    [Inject]
-    private BaseLayerLuminance BaseLayerLuminance { get; set; } = default!;
+    //[Inject]
+    //private BaseLayerLuminance BaseLayerLuminance { get; set; } = default!;
 
-    private StandardLuminance LuminanceTheme = StandardLuminance.LightMode;
+    //private StandardLuminance LuminanceTheme = StandardLuminance.LightMode;
 
-    public async Task ChangeTheme()
-    {
-        if (LuminanceTheme == StandardLuminance.LightMode)
-            LuminanceTheme = StandardLuminance.DarkMode;
-        else
-            LuminanceTheme = StandardLuminance.LightMode;
+    //public async Task ChangeTheme()
+    //{
+    //    if (LuminanceTheme == StandardLuminance.LightMode)
+    //        LuminanceTheme = StandardLuminance.DarkMode;
+    //    else
+    //        LuminanceTheme = StandardLuminance.LightMode;
 
-        await BaseLayerLuminance.SetValueFor(Container, LuminanceTheme.GetLuminanceValue());
+    //    await BaseLayerLuminance.SetValueFor(Container, LuminanceTheme.GetLuminanceValue());
 
-        GlobalState.SetLuminance(LuminanceTheme);
+    //    GlobalState.SetLuminance(LuminanceTheme);
 
-        StateHasChanged();
-    }
+    //    StateHasChanged();
+    //}
 
 }

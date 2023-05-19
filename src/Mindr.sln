@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.Domain", "Mindr.Domai
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindr.Domain.HttpRunner", "Mindr.Domain.HttpRunner\Mindr.Domain.HttpRunner.csproj", "{38902DBE-8C66-4CC8-B30A-6523A04D6F72}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorScheduler", "BlazorScheduler\BlazorScheduler.csproj", "{04D75CC2-D1F7-4BE8-8E7D-74078F048457}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{38902DBE-8C66-4CC8-B30A-6523A04D6F72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38902DBE-8C66-4CC8-B30A-6523A04D6F72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38902DBE-8C66-4CC8-B30A-6523A04D6F72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04D75CC2-D1F7-4BE8-8E7D-74078F048457}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04D75CC2-D1F7-4BE8-8E7D-74078F048457}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04D75CC2-D1F7-4BE8-8E7D-74078F048457}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04D75CC2-D1F7-4BE8-8E7D-74078F048457}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

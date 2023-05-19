@@ -14,6 +14,8 @@ using Mindr.WebAssembly.Client.Models.Options;
 using Mindr.WebAssembly.Client.Services;
 using Mindr.Domain.HttpRunner.Services;
 using Mindr.WebAssembly.Client.Providers;
+using DemoApp;
+using MudBlazor.Services;
 
 namespace Mindr.WebAssembly.Client;
 
@@ -25,10 +27,13 @@ public static class Program
         builder.RootComponents.Add<App>("#app");
         builder.RootComponents.Add<HeadOutlet>("head::after");
 
+        builder.Services.AddSingleton<AppointmentService>();
+
         builder.Services.AddOptions();
         builder.Services.AddHttpClient();
         builder.Services.AddFluentUIComponents();
         builder.Services.AddBlazorDragDrop();
+        builder.Services.AddMudServices();
 
         // Authentication
         builder.Services.AddAuthorizationCore();

@@ -1,18 +1,33 @@
-﻿@using Microsoft.Fast.Components.FluentUI;
-@using Mindr.WebAssembly.Client.Components
+﻿@using Mindr.WebAssembly.Client.Components
+@using MudBlazor
 
 @namespace Mindr.WebAssembly.Client.Shared.Header
-@inherits FluentComponentBase
+@inherits LayoutComponentBase
 
+
+<MudMenu FullWidth="true" ActivationEvent="@MouseEvent.MouseOver" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+    <ActivatorContent>
+        <MudAvatar>
+            <MudImage Src="@Client.Constants.Logo" height="35" />
+        </MudAvatar>
+    </ActivatorContent>
+    <ChildContent>
+        <MudMenuItem>Profile</MudMenuItem>
+        <MudMenuItem>Theme</MudMenuItem>
+        <MudMenuItem>Usage</MudMenuItem>
+        <MudMenuItem>Sign Out</MudMenuItem>
+    </ChildContent>
+</MudMenu>
+
+@*
 <header>
-    <img src="@Client.Constants.Logo" height="35" />
+    <img src=""  />
     <Stack 
         Orientation="Orientation.Horizontal" 
         HorizontalAlignment="StackHorizontalAlignment.Right" 
         VerticalAlignment="StackVerticalAlignment.Center"
         HorizontalGap="1" 
     >
-        @*<AdministratorsMenu />*@
         <FluentButton 
             class="light-switch" 
             title="light/dark mode"
@@ -29,4 +44,4 @@
         </FluentButton>
         <ProfileButton />
     </Stack>
-</header>
+</header>*@
