@@ -11,26 +11,24 @@
 @attribute [Authorize]
 @inherits LayoutComponentBase
 
-<MudStack>
-    @if (ConnectorInfo != null)
+@if (ConnectorInfo != null)
+{
+    <Breadcrumb DisplayValue="@ConnectorInfo.Name"/>
+}
+<MudStack Row="true">
+    <ConnectorNavMenu ConnectorId="@ConnectorId"/>
+    @if(IsLoading)
     {
-        <Breadcrumb DisplayValue="@ConnectorInfo.Name"/>
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
     }
-    <MudStack Row="true">
-        <ConnectorNavMenu ConnectorId="@ConnectorId"/>
-        @if(IsLoading)
-        {
-            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
-        }
-        else if (string.IsNullOrEmpty(NavName) || NavName.ToLower() == "overview")
-        {
-            <ConnectorOverview Overview="@ConnectorInfo" />
-        }
-        else if (NavName.ToLower() == "pipeline")
-        {
-            <ConnectorPipeline ConnectorId="@ConnectorId" />
-        }
-    </MudStack>
+    else if (string.IsNullOrEmpty(NavName) || NavName.ToLower() == "overview")
+    {
+        <ConnectorOverview Overview="@ConnectorInfo" />
+    }
+    else if (NavName.ToLower() == "pipeline")
+    {
+        <ConnectorPipeline ConnectorId="@ConnectorId" />
+    }
 </MudStack>
 
 
