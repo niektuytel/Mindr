@@ -71,7 +71,7 @@ public class ApiConnectorClient : ApiClientBase, IApiConnectorClient
         request.Headers.Add("accept", "*/*");
 
         var json = JsonSerializer.Serialize(connectorOverview);
-        request.Content = new StringContent(json, Encoding.UTF8, "application/content");
+        request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
         var response = await ApiRequest<ConnectorOverviewDTO>(request);
         return response;
@@ -83,7 +83,7 @@ public class ApiConnectorClient : ApiClientBase, IApiConnectorClient
         request.Headers.Add("accept", "*/*");
 
         var json = JsonSerializer.Serialize(pipeline);
-        request.Content = new StringContent(json, Encoding.UTF8, "application/content");
+        request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
         var response = await ApiRequest<Connector>(request);
         return response;
@@ -95,7 +95,7 @@ public class ApiConnectorClient : ApiClientBase, IApiConnectorClient
         request.Headers.Add("accept", "*/*");
 
         var content = JsonSerializer.Serialize(connector);
-        request.Content = new StringContent(content, Encoding.UTF8, "application/content");
+        request.Content = new StringContent(content, Encoding.UTF8, "application/json");
 
         var response = await ApiRequest<Connector>(request);
         return response;

@@ -4,72 +4,52 @@ using Mindr.WebAssembly.Client.Services;
 using Mindr.Domain.Models.DTO.Connector;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using MudBlazor;
+using System;
 
 namespace Mindr.WebAssembly.Client.Pages.Connectors.Components;
 
-public partial class ConnectorDialog : FluentComponentBase
+public partial class ConnectorDialog
 {
     [Inject]
-    public NavigationManager NavigationManager { get; set; }
+    public IApiConnectorClient ConnectorClient { get; set; } = default!;
 
     [Inject]
-    public IApiConnectorClient ConnectorClient { get; set; }
+    public ISnackbar Snackbar { get; set; } = default!;
 
-    public Connector Data { get; set; } = new();
+    [CascadingParameter]
+    public MudDialogInstance Dialog { get; set; } = default!;
 
-    private string? ErrorMessage { get; set; }
+    [Parameter]
+    public Connector Connector { get; set; } = new Connector();
 
-    public FluentDialog Dialog = default!;
-    private bool IsLoadingData = false;
-    private bool IsLoadingDialog = false;
-
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    private bool IsLoading = false;
+    
+    public async Task HandleOnCreate()
     {
-        if (firstRender)
+        IsLoading = true;
+        var response = await ConnectorClient.Create(Connector);
+        (var data, var error) = response.AsTuple();
+        IsLoading = false;
+
+        if (!string.IsNullOrEmpty(error))
         {
-            Dialog.Hide();
-        }
-
-        await base.OnAfterRenderAsync(firstRender);
-    }
-
-    public async Task OnConnectorAdd()
-    {
-        IsLoadingData = true;
-
-        var response = await ConnectorClient.Create(Data);
-        (var data, ErrorMessage) = response.AsTuple();
-        if (!string.IsNullOrEmpty(ErrorMessage))
-        {
+            Snackbar.Add(error, Severity.Error);
             base.StateHasChanged();
         }
         else if (data != null)
         {
-            NavigationManager.NavigateTo($"/connectors/{data!.Id}/pipeline");
-            HandleDialogClose();
+            Snackbar.Add("Create connector", Severity.Success);
+            Dialog.Close(DialogResult.Ok(data.Id));
         }
 
-        IsLoadingData = false;
+        IsLoading = false;
         base.StateHasChanged();
-    }
-
-    public void HandleDialogOpen()
-    {
-
-        Dialog.Show();
     }
 
     public void HandleDialogClose()
     {
-        Dialog.Hide();
+        Dialog.Cancel();
     }
 
-    public void HandleDialogDismiss(DialogEventArgs args)
-    {
-        if (args is not null && args.Reason is not null && args.Reason == "dismiss")
-        {
-            Dialog.Hide();
-        }
-    }
 }

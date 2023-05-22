@@ -1,17 +1,15 @@
-﻿@page "/connectors/{ConnectorId?}/{NavName?}"
+﻿@attribute [Route("/connectors/{ConnectorId?}/{NavName?}")]
 @using Microsoft.AspNetCore.Authorization;
-@using Microsoft.Fast.Components.FluentUI;
 @using System.Collections.ObjectModel;
 @using Mindr.WebAssembly.Client.Models;
-@using Mindr.WebAssembly.Client.Pages.Connectors.Views
 @using System.Text.Json.Serialization;
+@using Mindr.WebAssembly.Client.Pages.Connectors.Views
 
 @namespace Mindr.WebAssembly.Client.Pages.Connectors
 @attribute [Authorize]
-@inherits FluentComponentBase
-@*
-    // TODO: Display how much time been used
-*@
+@inherits LayoutComponentBase
+
+
 
 @if (string.IsNullOrEmpty(ConnectorId))
 {

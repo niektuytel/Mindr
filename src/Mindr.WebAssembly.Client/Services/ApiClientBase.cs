@@ -6,8 +6,6 @@ using System.Text;
 using System.Text.Json.Serialization;
 using Mindr.Domain;
 using System.Text.Json;
-
-using Mindr.Domain.HttpRunner.Models;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Collections.Generic;

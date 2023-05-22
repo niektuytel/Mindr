@@ -24,6 +24,9 @@ namespace Mindr.Domain.Models.DTO.Connector
         [JsonPropertyName("color")]
         public string Color { get; set; } = GetRandomColorClass();
 
+        [JsonPropertyName("total_using")]
+        public int TotalUsing { get; set; } = 0;
+
         [JsonPropertyName("name")]
         public string Name { get; set; }
 

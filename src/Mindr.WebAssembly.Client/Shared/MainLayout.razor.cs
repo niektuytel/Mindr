@@ -5,22 +5,14 @@ namespace Mindr.WebAssembly.Client.Shared;
 
 public partial class MainLayout
 {
-    //private ElementReference Container;
+    bool OpenNavMenu = false;
 
-    //private ErrorBoundary ErrorBoundary;
+    Task ToggleDrawer()
+    {
+        OpenNavMenu = !OpenNavMenu;
 
-    //private bool open = false;
-
-    //protected override void OnInitialized()
-    //{
-    //    base.OnInitialized();
-    //}
-
-    //protected override void OnParametersSet()
-    //{
-    //    ErrorBoundary?.Recover();
-    //}
-
+        return Task.CompletedTask;
+    }
 }
 
 

@@ -1,47 +1,31 @@
-﻿@using Microsoft.Fast.Components.FluentUI;
-@using Mindr.Domain.Models.DTO.Connector;
+﻿@using Mindr.Domain.Models.DTO.Connector
 @using Mindr.WebAssembly.Client.Components
 @using Mindr.WebAssembly.Client.Shared
 @using Mindr.WebAssembly.Client.Pages.Connectors.Components
-@using Microsoft.AspNetCore.Authorization;
-@using System.Collections.ObjectModel;
-@using Mindr.WebAssembly.Client.Models;
-@using System.Text.Json.Serialization;
-@using Mindr.WebAssembly.Client.Shared.Header
+@using Microsoft.AspNetCore.Authorization
+@using System.Collections.ObjectModel
+@using Mindr.WebAssembly.Client.Models
+@using System.Text.Json.Serialization
+@using MudBlazor
 
 @namespace Mindr.WebAssembly.Client.Pages.Connectors.Views
-@attribute [Authorize]
-@inherits FluentComponentBase
+@inherits LayoutComponentBase
 
-<Breadcrumb />
-<Stack Orientation="Orientation.Horizontal" Class="editable-stack">
-    <FluentButton Disabled="false" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="HandleDialogOpen">
-        <FluentIcon Slot="start" Name="@FluentIcons.Add" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
-        Add
-    </FluentButton>
-</Stack>
-<Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="height:100%">
-    @if (!string.IsNullOrEmpty(ErrorMessage))
-    {
-        <Stack Style="min-height:50px;border: 1px solid #D8000C;background-color: #FFBABA;padding: 3px;">
-            @ErrorMessage
-        </Stack>
-    }
-    @if (!IsLoadingData)
-    {
-        <FluentDataGrid TGridItem="ConnectorBriefDTO"
-                    RowsDataProvider="@DataProvider"
-                    OnCellFocus="HandleCellFocus">
-            <PropertyColumn Property="@(p => p.Name)" />
-            <PropertyColumn Property="@(p => p.Color)" />
-            <PropertyColumn Property="@(p => p.Description)" />
-        </FluentDataGrid>
-    }
-    else
-    {
-        <Stack HorizontalAlignment="StackHorizontalAlignment.Center" VerticalAlignment="StackVerticalAlignment.Center">
-            <FluentProgressRing />
-        </Stack>
-    }
-</Stack>
-<ConnectorDialog @ref="Dialog"/>
+<Breadcrumb/>
+<MudStack Row="true">
+    <MudButton StartIcon="@Icons.Material.Filled.Add" IconColor="Color.Primary" Size="Size.Large" @onclick="HandleDialogOpen">Add</MudButton>
+</MudStack>
+<MudTable T="ConnectorBriefDTO" Items="@DataCollection" Hover="true" OnRowClick="HandleRowClick" Breakpoint="Breakpoint.Sm" Loading="@IsLoading" LoadingProgressColor="Color.Info">
+    <HeaderContent>
+        <MudTh>Name</MudTh>
+        <MudTh>Description</MudTh>
+        <MudTh>Total Using</MudTh>
+        <MudTh>Color</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Description">@context.Description</MudTd>
+        <MudTd DataLabel="TotalUsing">@context.TotalUsing</MudTd>
+        <MudTd DataLabel="Color">@context.Color</MudTd>
+    </RowTemplate>
+</MudTable>

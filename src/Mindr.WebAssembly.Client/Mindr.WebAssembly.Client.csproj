@@ -9,23 +9,39 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Shared\Header\**" />
+    <Content Remove="Shared\Header\**" />
+    <EmbeddedResource Remove="Shared\Header\**" />
+    <None Remove="Shared\Header\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Components\Devider.razor.cs" />
+    <Compile Remove="Components\NavMenu.razor.cs" />
+    <Compile Remove="Components\NavMenuLink.razor.cs" />
+    <Compile Remove="Components\ProfileButton.razor.cs" />
+    <Compile Remove="Components\Stack.razor.cs" />
     <Compile Remove="Pages\Agenda\Components\AgendaDay.razor.cs" />
     <Compile Remove="Pages\Agenda\Components\AgendaEventItem.razor.cs" />
     <Compile Remove="Pages\Agenda\Components\ConnectorEventDialog.razor.cs" />
     <Compile Remove="Pages\Index.razor.cs" />
-    <Compile Remove="Shared\Header\Breadcrumb.razor.cs" />
-    <Compile Remove="Shared\Header\Header.razor.cs" />
-    <Compile Remove="Shared\Header\ProfileButton.razor.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Components\Devider.razor" />
+    <Content Remove="Components\NavMenu.razor" />
+    <Content Remove="Components\NavMenuLink.razor" />
+    <Content Remove="Components\ProfileButton.razor" />
+    <Content Remove="Components\Stack.razor" />
     <Content Remove="Pages\Agenda\Components\AgendaDay.razor" />
     <Content Remove="Pages\Agenda\Components\AgendaEventItem.razor" />
     <Content Remove="Pages\Agenda\Components\ConnectorEventDialog.razor" />
+    <Content Remove="Pages\Calendar\AppointmentTemplating.razor" />
+    <Content Remove="Pages\Calendar\Basic.razor" />
+    <Content Remove="Pages\Calendar\Configuration.razor" />
+    <Content Remove="Pages\Calendar\DayTemplating.razor" />
+    <Content Remove="Pages\Calendar\HeaderTemplating.razor" />
     <Content Remove="Pages\Index.razor" />
-    <Content Remove="Shared\Header\Breadcrumb.razor" />
-    <Content Remove="Shared\Header\Header.razor" />
-    <Content Remove="Shared\Header\ProfileButton.razor" />
     <Content Remove="wwwroot\css\fonts.google.icons.css" />
     <Content Remove="wwwroot\css\fonts.gstatic.flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2" />
     <Content Remove="wwwroot\css\googlefontsroboto.css" />
@@ -33,11 +49,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Components\Devider.razor.css" />
+    <None Remove="Components\Stack.razor.css" />
     <None Remove="Pages\Agenda\Components\ConnectorEventDialog.razor.css" />
+    <None Remove="Pages\Connectors\Components\ConnectorDialog.razor.css" />
+    <None Remove="Pages\Dashboard\Index.razor.css" />
     <None Remove="Pages\Index.razor.css" />
-    <None Remove="Shared\Header\Breadcrumb.razor.css" />
-    <None Remove="Shared\Header\Header.razor.css" />
-    <None Remove="Shared\Header\ProfileButton.razor.css" />
   </ItemGroup>
 
 	<ItemGroup>

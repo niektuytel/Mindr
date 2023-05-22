@@ -1,15 +1,15 @@
-﻿
+﻿@using MudBlazor
 
 @namespace Mindr.WebAssembly.Client.Shared
 
 <footer>
-    <div class="version">
+    <MudText Style="margin-top:10px" Align="Align.Center">
         <small>
             Version: 1.0.0
             &nbsp;-&nbsp;
+        </small> 
+        <small>
+            <b>Mindr</b>© @(DateTime.Now.Year.ToString()). All rights reserved.
         </small>
-    </div>
-    <div class="copy">
-        <small>Dutchgrit © @(DateTime.Now.Year.ToString()). All rights reserved.</small>
-    </div>
+    </MudText>
 </footer>

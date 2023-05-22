@@ -121,7 +121,7 @@ public partial class ConnectorEventsView : FluentComponentBase
     public void HandleDialogOpen()
     {
 
-        Dialog.HandleDialogOpen();
+        //Dialog.HandleDialogOpen();
     }
 
     public void HandleDialogClose()

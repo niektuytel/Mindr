@@ -4,11 +4,10 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Fast.Components.FluentUI;
 using Microsoft.Fast.Components.FluentUI.DesignTokens;
 using Microsoft.JSInterop;
-using Mindr.WebAssembly.Client.Components;
 using System;
 using System.Threading.Tasks;
 
-namespace Mindr.WebAssembly.Client.Shared.Header;
+namespace Mindr.WebAssembly.Client.Components;
 
 public partial class ProfileButton : FluentComponentBase, IAsyncDisposable
 {

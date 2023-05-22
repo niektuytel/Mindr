@@ -1,0 +1,13 @@
+﻿@using MudBlazor
+
+@namespace Mindr.WebAssembly.Client.Shared
+@inherits LayoutComponentBase
+
+<MudDrawer @bind-Open="@Open" ClipMode="@DrawerClipMode.Always" Breakpoint="@Breakpoint.Md" PreserveOpenState="false" Elevation="1" Variant="@DrawerVariant.Mini">
+    <MudNavMenu>
+        @foreach (var endpoint in StaticUtils.Endpoints.Where(item => item.Target == Enums.NavBarTarget.MainNavBar))
+        {
+            <MudNavLink Href="@endpoint.Href" Match="NavLinkMatch.All" Icon="@endpoint.Icon">@endpoint.Name</MudNavLink>
+        }
+    </MudNavMenu>
+</MudDrawer>

@@ -1,4 +1,37 @@
-﻿@attribute [Route($"/")]
+﻿@attribute [Route($"/calendar")]
+@attribute [Authorize]
+@inherits LayoutComponentBase
+@inject AppointmentService AppointmentService
+@inject IDialogService DialogService
+
+@namespace Mindr.WebAssembly.Client.Pages.Calendar
+
+@using BlazorScheduler
+@using DemoApp.Models;
+@using DemoApp;
+@using Microsoft.AspNetCore.Authorization;
+@using Mindr.WebAssembly.Client.Pages.Calendar.Dialogs;
+@using MudBlazor;
+
+
+<Scheduler
+    OnRequestNewData="OnRequestNewData"
+    OnAddingNewAppointment="OnAddingNewAppointment"
+    OnOverflowAppointmentClick="OnOverflowAppointmentClick"
+    EnableRescheduling="true">
+    <Appointments>
+        @foreach (var app in _appointments)
+        {
+            <Appointment Start="@app.Start" End="@app.End" Color="@app.Color" OnClick="() => OnAppointmentClicked(app)" OnReschedule="(start, end) => HandleReschedule(app, start, end)">
+                @app.Title
+            </Appointment>
+        }
+    </Appointments>
+</Scheduler>
+
+
+@*
+    @attribute [Route($"/")]
 @using Microsoft.AspNetCore.Authorization;
 @using Microsoft.Fast.Components.FluentUI;
 @using Mindr.WebAssembly.Client.Components
@@ -12,16 +45,12 @@
 @using System.Text.Json.Serialization;
 @using Mindr.WebAssembly.Client.Interfaces;
 @using System.Globalization;
-@using Mindr.WebAssembly.Client.Shared.Header
 
 @namespace Mindr.WebAssembly.Client.Pages
 @attribute [Authorize]
 @inherits FluentComponentBase
 
 <PageTitle>Overview</PageTitle>
-@*
-    // TODO: extra tab to display clicked connector event
-*@
 
 <Breadcrumb />
 
@@ -106,7 +135,6 @@
     @if (_calendarList != null && _calendarList?.items?.Any() == true)
     {
         <FluentTabs OnTabChange="@(async (input) => await HandleOnTabChange(input))">
-            @*// ActiveId="@_activeCalendarId"*@
             @foreach (var calendar in _calendarList.items)
             {
                 <FluentTab id="@calendar.id" Text="@calendar.summary" />
@@ -123,4 +151,7 @@
     }
 </div>
 
+
+
+as*@
 

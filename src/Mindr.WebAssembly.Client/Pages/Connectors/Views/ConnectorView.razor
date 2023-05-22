@@ -1,50 +1,36 @@
 ﻿@using Microsoft.AspNetCore.Authorization;
 @using System.Collections.ObjectModel;
-@using Microsoft.Fast.Components.FluentUI;
 @using Mindr.WebAssembly.Client.Components
 @using Mindr.WebAssembly.Client.Models;
+@using Mindr.WebAssembly.Client.Pages.Connectors.Components
 @using Mindr.WebAssembly.Client.Shared
 @using System.Text.Json.Serialization;
-@using Mindr.WebAssembly.Client.Shared.Header
+@using MudBlazor
 
 @namespace Mindr.WebAssembly.Client.Pages.Connectors.Views
 @attribute [Authorize]
-@inherits FluentComponentBase
+@inherits LayoutComponentBase
 
-@if (ConnectorInfo != null)
-{
-    <Breadcrumb DisplayValue="@ConnectorInfo.Name"/>
-}
-<Stack Orientation="Orientation.Horizontal" HorizontalGap="0" Style="height:100%">
-    <Mindr.WebAssembly.Client.Components.NavMenu Class="nav-menu" Expanded="false" Collapsible="false" Style="height: 100%;">
-        @foreach (Page _page in Client.Constants.ConnectorPage)
+<MudStack>
+    @if (ConnectorInfo != null)
+    {
+        <Breadcrumb DisplayValue="@ConnectorInfo.Name"/>
+    }
+    <MudStack Row="true">
+        <ConnectorNavMenu ConnectorId="@ConnectorId"/>
+        @if(IsLoading)
         {
-            <NavMenuLink Icon="@_page.Icon" Text="@_page.Name" Href=@($"/connectors/{ConnectorId}/{_page.Name.ToLower()}") Disabled="@_page.Disabled" />
+            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
         }
-    </Mindr.WebAssembly.Client.Components.NavMenu>
-    @if (!string.IsNullOrEmpty(ErrorMessage))
-    {
-        <Stack Style="min-height:50px;border: 1px solid #D8000C;background-color: #FFBABA;padding: 3px;">
-            @ErrorMessage
-        </Stack>
-    }
-    @if(IsLoading)
-    {
-        <Stack HorizontalAlignment="StackHorizontalAlignment.Center" VerticalAlignment="StackVerticalAlignment.Center">
-            <FluentProgressRing />
-        </Stack>
-    }
-    else if (string.IsNullOrEmpty(NavName) || NavName.ToLower() == "overview")
-    {
-        <ConnectorOverview Overview="@ConnectorInfo" />
-    }
-    else if (NavName.ToLower() == "pipeline")
-    {
-        <ConnectorPipeline ConnectorId="@ConnectorId" />
-    }
-</Stack>
-
-
-
+        else if (string.IsNullOrEmpty(NavName) || NavName.ToLower() == "overview")
+        {
+            <ConnectorOverview Overview="@ConnectorInfo" />
+        }
+        else if (NavName.ToLower() == "pipeline")
+        {
+            <ConnectorPipeline ConnectorId="@ConnectorId" />
+        }
+    </MudStack>
+</MudStack>
 
 

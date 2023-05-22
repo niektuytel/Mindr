@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Mindr.WebAssembly.Client.Components
 @using Mindr.WebAssembly.Client.Shared;
 @inject NavigationManager Navigation
 
@@ -9,9 +10,7 @@
                 <NotAuthorized>
                     @if (context.User.Identity?.IsAuthenticated != true)
                     {
-                        
                         <RedirectToLogin />
-                        @*<RemoteAuthenticatorView Action=@($"login?returnUrl={Uri.EscapeDataString(Navigation.Uri)}") />*@
                     }
                     else
                     {

@@ -1,56 +1,43 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.Fast.Components.FluentUI;
-
 using Mindr.WebAssembly.Client.Services;
 using Mindr.Domain.Models.DTO.Connector;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using MudBlazor;
 
 namespace Mindr.WebAssembly.Client.Pages.Connectors.Views;
 
-public partial class ConnectorView : FluentComponentBase
+public partial class ConnectorView
 {
     [Inject]
-    public IApiConnectorClient ConnectorClient { get; set; }
+    public IApiConnectorClient ConnectorClient { get; set; } = default!;
+
+    [Inject]
+    public ISnackbar Snackbar { get; set; } = default!;
 
     [Parameter, EditorRequired]
-    public string? ConnectorId { get; set; }
+    public string ConnectorId { get; set; } = default!;
 
-    [Parameter, EditorRequired]
-    public string? NavName { get; set; }
-    private string? ErrorMessage { get; set; }
+    [Parameter, EditorRequired] 
+    public string? NavName { get; set; } = default!;
 
     private bool IsLoading = false;
 
     private ConnectorOverviewDTO? ConnectorInfo { get; set; } = null;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        if (firstRender)
-        {
-            await OnConnectorLoad();
-        }
-
-        await base.OnAfterRenderAsync(firstRender);
-    }
-
-    private async Task OnConnectorLoad()
-    {
-        if (string.IsNullOrEmpty(ConnectorId))
-        {
-            return;
-        }
-
         IsLoading = true;
-
         var response = await ConnectorClient.GetOverview(ConnectorId);
-        (ConnectorInfo, ErrorMessage) = response.AsTuple();
-        if(!string.IsNullOrEmpty(ErrorMessage))
+        (ConnectorInfo, var error) = response.AsTuple();
+        IsLoading = false;
+
+        if (!string.IsNullOrEmpty(error))
         {
+            Snackbar.Add(error, Severity.Error);
             base.StateHasChanged();
         }
 
-        IsLoading = false;
         base.StateHasChanged();
     }
 }

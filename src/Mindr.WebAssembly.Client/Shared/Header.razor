@@ -1,0 +1,11 @@
+﻿@using MudBlazor
+
+@namespace Mindr.WebAssembly.Client.Shared
+@inherits LayoutComponentBase
+
+<div style="margin-top:50px"/>
+<MudAppBar Elevation="1" Dense="true">
+    <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+    <MudSpacer />
+    <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/MudBlazor/MudBlazor" Target="_blank" />
+</MudAppBar>
