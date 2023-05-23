@@ -9,126 +9,46 @@
 @namespace Mindr.WebAssembly.Client.Pages.Connectors.Views
 @inherits LayoutComponentBase
 
-<MudStack Row="true">
-    <MudButton StartIcon="@Icons.Material.Filled.Save" IconColor="Color.Primary" Size="Size.Large" @onclick="OnSave" Disabled="@(!DataHasChanged || !success)">Save</MudButton>
-    <MudButton StartIcon="@Icons.Material.Filled.Delete" IconColor="Color.Primary" Size="Size.Large" @onclick="RemoveItemDialog.OpenDialog">Delete</MudButton>
+<MudStack Style="width: 100%;">
+    <MudStack Row="true">
+        <MudButton StartIcon="@Icons.Material.Filled.Save" IconColor="Color.Primary" Size="Size.Large" @onclick="HandleOnSave" Disabled="@(!DataHasChanged || !success)">Save</MudButton>
+        <MudButton StartIcon="@Icons.Material.Filled.Delete" IconColor="Color.Primary" Size="Size.Large" @onclick="HandleOnDelete">Delete</MudButton>
+    </MudStack>
+    @if (IsLoading)
+    {
+        <MudProgressLinear Color="Color.Info" Indeterminate="true" />
+    }
+    @if (Overview != null)
+    {
+        <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors" FieldChanged="@((args) => DataHasChanged = true)">
+            <MudTextField @bind-Value="@Overview.Id" Label="Id" ReadOnly="true" Variant="Variant.Outlined" />
+            <MudTextField @bind-Value="@Overview.CreatedBy" Label="Created by" ReadOnly="true" Variant="Variant.Outlined" />
+            <MudTextField @bind-Value="@Overview.Name" Label="Name" Variant="Variant.Outlined" Required="true" RequiredError="Name is required!" />
+            <MudTextField 
+                @bind-Value="@Overview.Description"
+                Label="Description" 
+                Variant="Variant.Outlined" 
+                Required="true" 
+                RequiredError="Description is required!" 
+                Lines="10" 
+            />
+            <MudCard Style="margin-top:10px">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6" Align="Align.Center">Variables</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    @foreach (var variable in Overview.Variables)
+                    {
+                        <MudStack Row="true">
+                            <MudTextField @bind-Value="@variable.Value" Label="@variable.Name" Variant="Variant.Outlined" Required="true" RequiredError="@($"{variable.Name} is required!")" />
+                            <MudCheckBox @bind-Checked="@variable.IsPublic" Label="Publish"></MudCheckBox>
+                        </MudStack>
+                    }
+                </MudCardContent>
+            </MudCard>
+            <MudCheckBox @bind-Checked="@Overview.IsPublic" Label="Publish"></MudCheckBox>
+        </MudForm>
+    }
 </MudStack>
-@if (Overview != null)
-{
-    <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors" Style="width: 100%;" FieldChanged="@((args) => DataHasChanged = true)">
-        <MudCheckBox @bind-Checked="@Overview.IsPublic" Label="Publish"></MudCheckBox>
-        <MudTextField @bind-Value="@Overview.Id" Label="Id" ReadOnly="true" Variant="Variant.Outlined" />
-        <MudTextField @bind-Value="@Overview.CreatedBy" Label="Created by" ReadOnly="true" Variant="Variant.Outlined" />
-        <MudTextField @bind-Value="@Overview.Name" Label="Name" Variant="Variant.Outlined" Required="true" RequiredError="Name is required!" />
-        <MudTextField 
-            T="string" 
-            Label="Description" 
-            Text="@Overview.Description" 
-            Variant="Variant.Outlined" 
-            Lines="10" 
-            Required="true" 
-            RequiredError="Description is required!" 
-        />
-        <MudCard>
-            <MudCardHeader>
-                <CardHeaderContent>
-                    <MudText Typo="Typo.h6" Align="Align.Center">Variables</MudText>
-                </CardHeaderContent>
-            </MudCardHeader>
-            <MudCardContent>
-                @foreach (var variable in Overview.Variables)
-                {
-                    <MudStack Row="true">
-                        <MudTextField @bind-Value="@variable.Value" Label="@variable.Name" Variant="Variant.Outlined" Required="true" RequiredError="@($"{variable.Name} is required!")" />
-                        <MudCheckBox @bind-Checked="@variable.IsPublic" Label="Publish"></MudCheckBox>
-                    </MudStack>
-                }
-            </MudCardContent>
-        </MudCard>
-
-@*
-
-        <MudTextField T="string" Label="Username" Required="true" RequiredError="User name is required!" />
-        <MudTextField T="string" Label="Email" Required="true" RequiredError="Email is required!"
-                      Validation="@(new EmailAddressAttribute() {ErrorMessage = "The email address is invalid"})" />
-        <MudTextField T="string" Label="Password" HelperText="Choose a strong password" @ref="pwField1"
-                      InputType="InputType.Password"
-                      Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))" Required="true"
-                      RequiredError="Password is required!" />
-        <MudTextField T="string"
-                      Label="Password" HelperText="Repeat the password" InputType="InputType.Password"
-                      Validation="@(new Func<string, string>(PasswordMatch))" />
-        <div class="d-flex">
-            <MudRadioGroup T="string" Required="true" RequiredError="Account type is required!">
-                <MudRadio Option="@("Personal")">Personal</MudRadio>
-                <MudRadio Option="@("Professional")">Professional</MudRadio>
-            </MudRadioGroup>
-        </div>
-        <div class="d-flex align-center justify-space-between">
-            <MudCheckBox T="bool" Required="true" RequiredError="You must agree" Label="I agree!" />
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto">Register</MudButton>
-        </div>*@
-    </MudForm>
-}
-@code {
-    bool success;
-    string[] errors = { };
-    MudTextField<string> pwField1;
-    MudForm form;
-
-    private IEnumerable<string> PasswordStrength(string pw)
-    {
-        if (string.IsNullOrWhiteSpace(pw))
-        {
-            yield return "Password is required!";
-            yield break;
-        }
-        if (pw.Length < 8)
-            yield return "Password must be at least of length 8";
-        if (!Regex.IsMatch(pw, @"[A-Z]"))
-            yield return "Password must contain at least one capital letter";
-        if (!Regex.IsMatch(pw, @"[a-z]"))
-            yield return "Password must contain at least one lowercase letter";
-        if (!Regex.IsMatch(pw, @"[0-9]"))
-            yield return "Password must contain at least one digit";
-    }
-
-    private string PasswordMatch(string arg)
-    {
-        if (pwField1.Value != arg)
-            return "Passwords don't match";
-        return null;
-    }
-
-}
-@*
-        <FluentDivider Role="DividerRole.Separator"></FluentDivider>
-        <tr>
-            <td style="vertical-align: -webkit-baseline-middle;">variables</td>
-            <td style="vertical-align: -webkit-baseline-middle;">:</td>
-            <td>
-                <FluentCard Style="margin:0px">    
-                    <table style="width:100%; margin:10px">
-                        @foreach (var item in Overview.Variables)
-                        {
-                            <tr>
-                                <td>
-                                    @item.Name
-                                </td>
-                                <td>:</td>
-                                <td>
-                                    <FluentTextField @onchange="@OnDataChanged" @bind-Value="@item.Value" style="width: 100%;" />
-                                    <FluentCheckbox @onchange="@OnDataChanged" @bind-Value="@item.IsPublic">user dependent</FluentCheckbox>
-                                </td>
-                            </tr>
-                            <FluentDivider Role="DividerRole.Separator"></FluentDivider>
-                        }
-                    </table>
-                </FluentCard>
-            </td>
-        </tr>
-    </table>
-}
-<ConfirmDialog @ref="RemoveItemDialog" Text="Are you sure to delete this connector?" OnConfirm="OnRemove" />
-
-*@

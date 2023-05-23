@@ -130,7 +130,7 @@ public class ConnectorController : BaseController
     {
         var response = await HandleRequest(async () => {
             var userId = User.GetUserId();
-            await _connectorManager.UpdateOverview(userId, id, input);
+            return await _connectorManager.UpdateOverview(userId, id, input);
         });
 
         return response;
@@ -151,7 +151,7 @@ public class ConnectorController : BaseController
     {
         var response = await HandleRequest(async () => {
             var userId = User.GetUserId();
-            await _connectorManager.UpdateHttpItems(userId, id, input);
+            return await _connectorManager.UpdateHttpItems(userId, id, input);
         });
 
         return response;
@@ -172,7 +172,7 @@ public class ConnectorController : BaseController
     {
         var response = await HandleRequest(async () => {
             var userId = User.GetUserId();
-            await _connectorManager.Delete(userId, id);
+            return await _connectorManager.Delete(userId, id);
         });
 
         return response;

@@ -1,17 +1,20 @@
-﻿@using Microsoft.Fast.Components.FluentUI;
-@using Mindr.WebAssembly.Client.Components
+﻿@using Mindr.WebAssembly.Client.Components
+@using MudBlazor
 
 @namespace Mindr.WebAssembly.Client.Pages.Connectors.Components
-@inherits FluentComponentBase
+@inherits LayoutComponentBase
 
-<div>
-    <FluentDialog @ref="@Dialog" Modal="true" TrapFocus="true" @ondialogdismiss="OnHandleDismiss" Style="height:fit-content">
-        <div>
-            @Text
-        </div>
-        <Stack Orientation="Orientation.Horizontal" HorizontalAlignment="StackHorizontalAlignment.Right" Style="padding:5px">
-            <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="OnHandleClose">Close</FluentButton>
-            <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="OnConfirm">Confirm</FluentButton>
-        </Stack>
-    </FluentDialog>
-</div>
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            Delete Connector
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        Are you sure to delete this connector?
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="HandleDialogClose">Cancel</MudButton>
+        <MudButton Color="Color.Transparent" OnClick="HandleOnConfirm">Confirm</MudButton>
+    </DialogActions>
+</MudDialog>

@@ -147,7 +147,7 @@ namespace Mindr.Api.Services.Connectors
         public async Task<ConnectorOverviewDTO> UpdateOverview(string userId, Guid id, ConnectorOverviewDTO input)
         {
             var entity = await _context.Connectors
-                .Include(item => item.Variables)
+                //.Include(item => item.Variables)
                 .Where(item => (item.IsPublic || item.CreatedBy == userId))
                 .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -161,6 +161,7 @@ namespace Mindr.Api.Services.Connectors
             _context.Connectors.Update(entity);
             await _context.SaveChangesAsync();
 
+            entity.Variables = input.Variables;
             var item = _mapper.Map<Connector, ConnectorOverviewDTO>(entity);
             return item;
         }

@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.Fast.Components.FluentUI;
-
 using Mindr.WebAssembly.Client.Pages.Connectors.Components;
 using Mindr.WebAssembly.Client.Services;
 using Mindr.Domain.Models.DTO.Connector;
@@ -18,6 +16,9 @@ public partial class ConnectorOverview
     public IApiConnectorClient ConnectorClient { get; set; } = default!;
 
     [Inject]
+    public IDialogService DialogService { get; set; } = default!;
+
+    [Inject]
     public ISnackbar Snackbar { get; set; } = default!;
 
     [Parameter, EditorRequired]
@@ -25,14 +26,21 @@ public partial class ConnectorOverview
 
     private bool DataHasChanged { get; set; } = false;
 
-    public ConfirmDialog RemoveItemDialog = default!;
+    private bool IsLoading { get; set; } = false;
 
-    public async Task OnSave()
+    bool success;
+    string[] errors = { };
+    MudForm form;
+
+    public async Task HandleOnSave()
     {
         if (Overview == null) return;
 
+        DataHasChanged = false;
+        IsLoading = true;
         var response = await ConnectorClient.UpdateOverview(Overview);
         (_, var error) = response.AsTuple();
+        IsLoading = true;
 
         if (!string.IsNullOrEmpty(error))
         {
@@ -41,39 +49,27 @@ public partial class ConnectorOverview
         }
     }
 
-    public async Task OnRemove()
+    public async Task HandleOnDelete()
     {
-        if (Overview == null) return;
+        var dialog = await DialogService.ShowAsync<ConfirmDialog>();
+        var result = await dialog.Result;
 
-        var response = await ConnectorClient.Delete(Overview.Id.ToString());
-        (_, var error) = response.AsTuple();
-        if (!string.IsNullOrEmpty(error))
+        if (!result.Canceled)
         {
-            Snackbar.Add(error, Severity.Error);
-            base.StateHasChanged();
-            return;
+            if (Overview == null) return;
+
+            var response = await ConnectorClient.Delete(Overview.Id.ToString());
+            (_, var error) = response.AsTuple();
+            if (!string.IsNullOrEmpty(error))
+            {
+                Snackbar.Add(error, Severity.Error);
+                base.StateHasChanged();
+                return;
+            }
+
+            NavigationManager.NavigateTo($"/connectors");
         }
-
-        NavigationManager.NavigateTo($"/connectors");
-        base.StateHasChanged();
     }
 
-    private void OnChangeName(string value)
-    {
-        if (Overview == null) return;
-
-        Overview.Name = value;
-        DataHasChanged = true;
-        base.StateHasChanged();
-    }
-
-    private void OnChangeDescription(string value)
-    {
-        if (Overview == null) return;
-
-        Overview.Description = value;
-        DataHasChanged = true;
-        base.StateHasChanged();
-    }
 
 }

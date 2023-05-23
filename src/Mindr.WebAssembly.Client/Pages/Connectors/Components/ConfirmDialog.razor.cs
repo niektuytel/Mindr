@@ -1,51 +1,32 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Fast.Components.FluentUI;
+using Mindr.Domain.Models.DTO.Connector;
+using Mindr.WebAssembly.Client.Services;
+using MudBlazor;
 using System;
 using System.Threading.Tasks;
 
 namespace Mindr.WebAssembly.Client.Pages.Connectors.Components;
 
-public partial class ConfirmDialog : FluentComponentBase
+public partial class ConfirmDialog
 {
-    [Parameter, EditorRequired]
-    public string Text { get; set; } = default!;
+    [Inject]
+    public IApiConnectorClient ConnectorClient { get; set; } = default!;
 
-    [Parameter, EditorRequired]
-    public Func<Task> OnConfirm { get; set; } = default!;
+    [Inject]
+    public ISnackbar Snackbar { get; set; } = default!;
 
-    public FluentDialog Dialog = default!;
+    [CascadingParameter]
+    public MudDialogInstance Dialog { get; set; } = default!;
 
-    protected override Task OnAfterRenderAsync(bool firstRender)
+    public void HandleOnConfirm()
     {
-        if (firstRender)
-        {
-            Dialog.Hide();
-        }
-
-        return base.OnAfterRenderAsync(firstRender);
+        Dialog.Close();
     }
 
-    //protected override void OnInitialized()
-    //{
-    //    base.OnInitialized();
-    //}
-
-    public void OnHandleClose()
+    public void HandleDialogClose()
     {
-        Dialog.Hide();
-    }
-
-    public void OpenDialog()
-    {
-        Dialog.Show();
-    }
-
-    public void OnHandleDismiss(DialogEventArgs args)
-    {
-        if (args is not null && args.Reason is not null && args.Reason == "dismiss")
-        {
-            Dialog.Hide();
-        }
+        Dialog.Cancel();
     }
 
 }

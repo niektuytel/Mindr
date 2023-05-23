@@ -19,7 +19,7 @@
     <ConnectorNavMenu ConnectorId="@ConnectorId"/>
     @if(IsLoading)
     {
-        <MudProgressLinear Color="Color.Primary" Indeterminate="true"/>
+        <MudProgressLinear Color="Color.Info" Indeterminate="true"/>
     }
     else if (string.IsNullOrEmpty(NavName) || NavName.ToLower() == "overview")
     {

@@ -7,6 +7,7 @@ using MudBlazor;
 using System.Linq;
 using static MudBlazor.CategoryTypes;
 using System.Xml.Linq;
+using Force.DeepCloner;
 
 namespace Mindr.WebAssembly.Client.Components;
 
@@ -23,19 +24,19 @@ public partial class Breadcrumb
 
     protected override void OnInitialized()
     {
-        NavigationManager.LocationChanged += HandleLocationChanged;
+        //NavigationManager.LocationChanged += HandleLocationChanged;
 
         var path = $"/{NavigationManager.ToBaseRelativePath(NavigationManager.Uri).ToLower()}";
         HandlePath(path);
     }
 
-    private void HandleLocationChanged(object sender, LocationChangedEventArgs e)
-    {
-        var path = $"/{NavigationManager.ToBaseRelativePath(NavigationManager.Uri).ToLower()}";
-        HandlePath(path);
+    //private void HandleLocationChanged(object sender, LocationChangedEventArgs e)
+    //{
+    //    var path = $"/{NavigationManager.ToBaseRelativePath(NavigationManager.Uri).ToLower()}";
+    //    HandlePath(path);
 
-        base.StateHasChanged();
-    }
+    //    base.StateHasChanged();
+    //}
 
     private void HandlePath(string fullpath)
     {
@@ -62,7 +63,7 @@ public partial class Breadcrumb
                 var href = "/" + string.Join("/", endpointPaths);
                 if(href.ToLower() == value || href.ToLower() == fullpath)
                 {
-                    breadcrumb = endpoint;
+                    breadcrumb = endpoint.DeepClone();
                     break;
                 }
             }
