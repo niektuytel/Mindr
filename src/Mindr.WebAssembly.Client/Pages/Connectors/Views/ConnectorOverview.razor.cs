@@ -12,23 +12,25 @@ namespace Mindr.WebAssembly.Client.Pages.Connectors.Views;
 public partial class ConnectorOverview
 {
     [Inject]
-    public NavigationManager NavigationManager { get; set; }
+    public NavigationManager NavigationManager { get; set; } = default!;
 
     [Inject]
-    public IApiConnectorClient ConnectorClient { get; set; }
+    public IApiConnectorClient ConnectorClient { get; set; } = default!;
 
     [Inject]
     public ISnackbar Snackbar { get; set; } = default!;
 
     [Parameter, EditorRequired]
-    public ConnectorOverviewDTO Overview { get; set; } = null!;
+    public ConnectorOverviewDTO? Overview { get; set; } = null!;
 
-    private bool DataHasChanged = false;
+    private bool DataHasChanged { get; set; } = false;
 
     public ConfirmDialog RemoveItemDialog = default!;
 
     public async Task OnSave()
     {
+        if (Overview == null) return;
+
         var response = await ConnectorClient.UpdateOverview(Overview);
         (_, var error) = response.AsTuple();
 
@@ -41,10 +43,13 @@ public partial class ConnectorOverview
 
     public async Task OnRemove()
     {
+        if (Overview == null) return;
+
         var response = await ConnectorClient.Delete(Overview.Id.ToString());
-        (_, ErrorMessage) = response.AsTuple();
-        if (!string.IsNullOrEmpty(ErrorMessage))
+        (_, var error) = response.AsTuple();
+        if (!string.IsNullOrEmpty(error))
         {
+            Snackbar.Add(error, Severity.Error);
             base.StateHasChanged();
             return;
         }
@@ -55,18 +60,18 @@ public partial class ConnectorOverview
 
     private void OnChangeName(string value)
     {
+        if (Overview == null) return;
+
         Overview.Name = value;
-        OnDataChanged();
+        DataHasChanged = true;
+        base.StateHasChanged();
     }
 
     private void OnChangeDescription(string value)
     {
-        Overview.Description = value;
-        OnDataChanged();
-    }
+        if (Overview == null) return;
 
-    private void OnDataChanged()
-    {
+        Overview.Description = value;
         DataHasChanged = true;
         base.StateHasChanged();
     }

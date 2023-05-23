@@ -47,27 +47,31 @@ public partial class Breadcrumb
         {
             value += $"/{paths[x]}";
 
+            var breadcrumb = (Models.Page?)null;
             foreach (var endpoint in StaticUtils.Endpoints)
             {
                 if (endpoint.Href == "") continue;
                 var endpointPaths = endpoint.Href.Split("/").Where(x => !string.IsNullOrEmpty(x)).ToArray();
                 
                 // skip dynamic parameters
-                if (endpointPaths[x] == "*")
+                if (x < endpointPaths.Length && endpointPaths[x] == "*")
                 {
                     endpointPaths[x] = paths[index];
                 }
 
-                var href = string.Join("/", endpointPaths);
-                if(href == value)
+                var href = "/" + string.Join("/", endpointPaths);
+                if(href.ToLower() == value || href.ToLower() == fullpath)
                 {
-                    pages.Add(endpoint);
+                    breadcrumb = endpoint;
+                    break;
                 }
             }
 
-            var breadcrumb = StaticUtils.Endpoints.FirstOrDefault(item => item.Href == value);
-            if (breadcrumb != null) pages.Add(breadcrumb);
-
+            if(breadcrumb != null)
+            {
+                pages.Add(breadcrumb);
+            }
+            
             index ++;
         }
 

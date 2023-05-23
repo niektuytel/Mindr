@@ -3,49 +3,105 @@
 @using System.Reflection;
 @using Mindr.Domain.Models.DTO.Connector
 @using MudBlazor
+@using System.Text.RegularExpressions;
+@using System.ComponentModel.DataAnnotations;
 
 @namespace Mindr.WebAssembly.Client.Pages.Connectors.Views
 @inherits LayoutComponentBase
 
 <MudStack Row="true">
-    <MudButton StartIcon="@Icons.Material.Filled.Save" IconColor="Color.Primary" Size="Size.Large" @onclick="OnSave">Save</MudButton>
+    <MudButton StartIcon="@Icons.Material.Filled.Save" IconColor="Color.Primary" Size="Size.Large" @onclick="OnSave" Disabled="@(!DataHasChanged || !success)">Save</MudButton>
     <MudButton StartIcon="@Icons.Material.Filled.Delete" IconColor="Color.Primary" Size="Size.Large" @onclick="RemoveItemDialog.OpenDialog">Delete</MudButton>
 </MudStack>
-@*
-@if(Overview!= null)
+@if (Overview != null)
 {
-    <table style="width:100%; margin-left:10px; margin-top:10px">
-        <tr>
-            <td>id</td>
-            <td>:</td>
-            <td>@Overview.Id</td>
-        </tr>
-        <FluentDivider Role="DividerRole.Separator"></FluentDivider>
-        <tr>
-            <td>created by</td>
-            <td>:</td>
-            <td>@Overview.CreatedBy</td>
-        </tr>
-        <FluentDivider Role="DividerRole.Separator"></FluentDivider>
-        <tr>
-            <td>name</td>
-            <td>:</td>
-            <td><FluentTextField ValueChanged="@OnChangeName" Value="@Overview.Name" style="width: 100%;" /></td>
-        </tr>
-        <FluentDivider Role="DividerRole.Separator"></FluentDivider>
-        <tr>
-            <td style="vertical-align: -webkit-baseline-middle;">description</td>
-            <td style="vertical-align: -webkit-baseline-middle;">:</td>
-            <td><FluentTextArea ValueChanged="@OnChangeDescription" Value="@Overview.Description" style="width: 100%;" /></td>
-        </tr>
-        <FluentDivider Role="DividerRole.Separator"></FluentDivider>
-        <tr>
-            <td style="vertical-align: -webkit-baseline-middle;">is public</td>
-            <td style="vertical-align: -webkit-baseline-middle;">:</td>
-            <td>
-                <FluentCheckbox @onchange="@OnDataChanged" @bind-Value="@Overview.IsPublic"/>
-            </td>
-        </tr>
+    <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors" Style="width: 100%;" FieldChanged="@((args) => DataHasChanged = true)">
+        <MudCheckBox @bind-Checked="@Overview.IsPublic" Label="Publish"></MudCheckBox>
+        <MudTextField @bind-Value="@Overview.Id" Label="Id" ReadOnly="true" Variant="Variant.Outlined" />
+        <MudTextField @bind-Value="@Overview.CreatedBy" Label="Created by" ReadOnly="true" Variant="Variant.Outlined" />
+        <MudTextField @bind-Value="@Overview.Name" Label="Name" Variant="Variant.Outlined" Required="true" RequiredError="Name is required!" />
+        <MudTextField 
+            T="string" 
+            Label="Description" 
+            Text="@Overview.Description" 
+            Variant="Variant.Outlined" 
+            Lines="10" 
+            Required="true" 
+            RequiredError="Description is required!" 
+        />
+        <MudCard>
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6" Align="Align.Center">Variables</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                @foreach (var variable in Overview.Variables)
+                {
+                    <MudStack Row="true">
+                        <MudTextField @bind-Value="@variable.Value" Label="@variable.Name" Variant="Variant.Outlined" Required="true" RequiredError="@($"{variable.Name} is required!")" />
+                        <MudCheckBox @bind-Checked="@variable.IsPublic" Label="Publish"></MudCheckBox>
+                    </MudStack>
+                }
+            </MudCardContent>
+        </MudCard>
+
+@*
+
+        <MudTextField T="string" Label="Username" Required="true" RequiredError="User name is required!" />
+        <MudTextField T="string" Label="Email" Required="true" RequiredError="Email is required!"
+                      Validation="@(new EmailAddressAttribute() {ErrorMessage = "The email address is invalid"})" />
+        <MudTextField T="string" Label="Password" HelperText="Choose a strong password" @ref="pwField1"
+                      InputType="InputType.Password"
+                      Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))" Required="true"
+                      RequiredError="Password is required!" />
+        <MudTextField T="string"
+                      Label="Password" HelperText="Repeat the password" InputType="InputType.Password"
+                      Validation="@(new Func<string, string>(PasswordMatch))" />
+        <div class="d-flex">
+            <MudRadioGroup T="string" Required="true" RequiredError="Account type is required!">
+                <MudRadio Option="@("Personal")">Personal</MudRadio>
+                <MudRadio Option="@("Professional")">Professional</MudRadio>
+            </MudRadioGroup>
+        </div>
+        <div class="d-flex align-center justify-space-between">
+            <MudCheckBox T="bool" Required="true" RequiredError="You must agree" Label="I agree!" />
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto">Register</MudButton>
+        </div>*@
+    </MudForm>
+}
+@code {
+    bool success;
+    string[] errors = { };
+    MudTextField<string> pwField1;
+    MudForm form;
+
+    private IEnumerable<string> PasswordStrength(string pw)
+    {
+        if (string.IsNullOrWhiteSpace(pw))
+        {
+            yield return "Password is required!";
+            yield break;
+        }
+        if (pw.Length < 8)
+            yield return "Password must be at least of length 8";
+        if (!Regex.IsMatch(pw, @"[A-Z]"))
+            yield return "Password must contain at least one capital letter";
+        if (!Regex.IsMatch(pw, @"[a-z]"))
+            yield return "Password must contain at least one lowercase letter";
+        if (!Regex.IsMatch(pw, @"[0-9]"))
+            yield return "Password must contain at least one digit";
+    }
+
+    private string PasswordMatch(string arg)
+    {
+        if (pwField1.Value != arg)
+            return "Passwords don't match";
+        return null;
+    }
+
+}
+@*
         <FluentDivider Role="DividerRole.Separator"></FluentDivider>
         <tr>
             <td style="vertical-align: -webkit-baseline-middle;">variables</td>

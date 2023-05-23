@@ -15,11 +15,11 @@
 {
     <Breadcrumb DisplayValue="@ConnectorInfo.Name"/>
 }
-<MudStack Row="true">
+<MudStack Row="true" Style="margin-right:10px">
     <ConnectorNavMenu ConnectorId="@ConnectorId"/>
     @if(IsLoading)
     {
-        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true"/>
     }
     else if (string.IsNullOrEmpty(NavName) || NavName.ToLower() == "overview")
     {
