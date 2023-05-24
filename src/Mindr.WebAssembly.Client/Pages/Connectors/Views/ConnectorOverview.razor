@@ -20,7 +20,8 @@
     }
     @if (Overview != null)
     {
-        <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors" FieldChanged="@((args) => DataHasChanged = true)">
+        @*@ref="form" *@
+        <MudForm @bind-IsValid="@success" @bind-Errors="@errors" FieldChanged="@((args) => DataHasChanged = true)">
             <MudTextField @bind-Value="@Overview.Id" Label="Id" ReadOnly="true" Variant="Variant.Outlined" />
             <MudTextField @bind-Value="@Overview.CreatedBy" Label="Created by" ReadOnly="true" Variant="Variant.Outlined" />
             <MudTextField @bind-Value="@Overview.Name" Label="Name" Variant="Variant.Outlined" Required="true" RequiredError="Name is required!" />

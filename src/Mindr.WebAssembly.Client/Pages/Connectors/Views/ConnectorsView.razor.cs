@@ -3,6 +3,7 @@ using Mindr.WebAssembly.Client.Pages.Connectors.Components;
 using Mindr.WebAssembly.Client.Services;
 using Mindr.Domain.Models.DTO.Connector;
 using MudBlazor;
+using Mindr.WebAssembly.Client.Pages.Connectors.Dialogs;
 
 namespace Mindr.WebAssembly.Client.Pages.Connectors.Views;
 
@@ -40,7 +41,7 @@ public partial class ConnectorsView
 
     public async Task HandleDialogOpen()
     {
-        var dialog = await DialogService.ShowAsync<ConnectorDialog>();
+        var dialog = await DialogService.ShowAsync<ConnectorCreateDialog>();
         var result = await dialog.Result;
 
         if (!result.Canceled)

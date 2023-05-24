@@ -1,15 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.Fast.Components.FluentUI;
 using Mindr.WebAssembly.Client.Services;
 using Mindr.Domain.Models.DTO.Connector;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using MudBlazor;
-using System;
 
-namespace Mindr.WebAssembly.Client.Pages.Connectors.Components;
+namespace Mindr.WebAssembly.Client.Pages.Connectors.Dialogs;
 
-public partial class ConnectorDialog
+public partial class ConnectorCreateDialog
 {
     [Inject]
     public IApiConnectorClient ConnectorClient { get; set; } = default!;

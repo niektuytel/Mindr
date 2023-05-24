@@ -4,6 +4,7 @@ using Mindr.WebAssembly.Client.Services;
 using Mindr.Domain.Models.DTO.Connector;
 using System.Threading.Tasks;
 using MudBlazor;
+using Mindr.WebAssembly.Client.Pages.Connectors.Dialogs;
 
 namespace Mindr.WebAssembly.Client.Pages.Connectors.Views;
 
@@ -30,7 +31,7 @@ public partial class ConnectorOverview
 
     bool success;
     string[] errors = { };
-    MudForm form;
+    //MudForm form;
 
     public async Task HandleOnSave()
     {
@@ -40,33 +41,29 @@ public partial class ConnectorOverview
         IsLoading = true;
         var response = await ConnectorClient.UpdateOverview(Overview);
         (_, var error) = response.AsTuple();
-        IsLoading = true;
+        IsLoading = false;
 
         if (!string.IsNullOrEmpty(error))
         {
             Snackbar.Add(error, Severity.Error);
-            base.StateHasChanged();
         }
     }
 
     public async Task HandleOnDelete()
     {
-        var dialog = await DialogService.ShowAsync<ConfirmDialog>();
+        if (Overview == null) return;
+
+        var parameters = new DialogParameters
+        {
+            { "Overview", Overview }
+        };
+
+        var dialog = await DialogService.ShowAsync<ConnectorDeleteDialog>("Delete", parameters);
         var result = await dialog.Result;
 
         if (!result.Canceled)
         {
             if (Overview == null) return;
-
-            var response = await ConnectorClient.Delete(Overview.Id.ToString());
-            (_, var error) = response.AsTuple();
-            if (!string.IsNullOrEmpty(error))
-            {
-                Snackbar.Add(error, Severity.Error);
-                base.StateHasChanged();
-                return;
-            }
-
             NavigationManager.NavigateTo($"/connectors");
         }
     }
