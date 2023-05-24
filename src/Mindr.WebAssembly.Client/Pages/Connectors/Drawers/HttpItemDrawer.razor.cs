@@ -6,10 +6,10 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Mindr.WebAssembly.Client.Pages.Connectors.Components;
+namespace Mindr.WebAssembly.Client.Pages.Connectors.Dialogs;
 
 // Usefull to use? https://www.postman.com/cs-demo/workspace/public-rest-apis/overview
-public partial class HttpItemDialog : FluentComponentBase
+public partial class HttpItemCreateDialog
 {
     [Parameter, EditorRequired]
     public Func<HttpItem, Task> OnCreate { get; set; } = default!;
@@ -60,7 +60,7 @@ public partial class HttpItemDialog : FluentComponentBase
 
         IsLoading = false;
         CloseDialog();
-        base.StateHasChanged();
+        StateHasChanged();
     }
 
     private async Task HandleOnHeaderAdd(FocusEventArgs args)
@@ -72,7 +72,7 @@ public partial class HttpItemDialog : FluentComponentBase
         Data.Request.Header = headers;
 
         NewHeaderKey = "";
-        base.StateHasChanged();
+        StateHasChanged();
     }
 
     public void DismissDialog(DialogEventArgs args)

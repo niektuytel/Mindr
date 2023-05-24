@@ -1,14 +1,39 @@
-﻿@using Microsoft.Fast.Components.FluentUI;
-@using Mindr.WebAssembly.Client.Components
+﻿@using Mindr.WebAssembly.Client.Components
 @using Mindr.Domain.HttpRunner.Models;
 @using Mindr.WebAssembly.Client.Pages.Connectors.Components
+@using MudBlazor
 
 @namespace Mindr.WebAssembly.Client.Pages.Connectors.Views
-@inherits FluentComponentBase
+@inherits LayoutComponentBase
 
-<Stack Orientation="Orientation.Vertical" VerticalGap="0" Style="border-top: 1px solid #00000026;">
+<MudStack Style="width: 100%;">
+    <MudStack Row="true">
+        <MudButton StartIcon="@Icons.Material.Filled.Save" IconColor="Color.Primary" Size="Size.Large" @onclick="HandleOnSave" Disabled="@(!DataHasChanged)">Save</MudButton>
+        <MudButton StartIcon="@Icons.Material.Filled.Add" IconColor="Color.Primary" Size="Size.Large" @onclick="HandleHttpDrawerOpen">Add</MudButton>
+        <MudButton StartIcon="@Icons.Material.Filled.LocalPlay" IconColor="Color.Primary" Size="Size.Large" @onclick="HandleOnRunAll">Run All</MudButton>
+    </MudStack>
+    @if (IsLoading)
+    {
+        <MudProgressLinear Color="Color.Info" Indeterminate="true" />
+    }
+    else if (HttpItems?.Any() == true)
+    {
+        <Dropzone Items="HttpItems">
+            <HttpItemCard Data="@context"
+                      IsSelected="@(SelectedHttpItem?.Id == context.Id)"
+                      OnRemove="@OnHandleRemove"
+                      OnSelect="@OnHandleChange" />
+            @*<HttpItemSettings Data="@SelectedHttpItem"
+                              OnUpdate="@OnOpenEditor"
+                              OnChange="@OnHandleChange" />*@
+        </Dropzone>
+    }
+</MudStack>
+
+
+@*<Stack Orientation="Orientation.Vertical" VerticalGap="0" Style="border-top: 1px solid #00000026;">
     <Stack Orientation="Orientation.Horizontal" Class="editable-stack" HorizontalGap="0">
-        <FluentButton Disabled="@(!DataHasChanged)" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OnHandleSave">
+        <FluentButton Disabled="@(!DataHasChanged)" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="HandleOnSave">
             <FluentIcon Slot="start" Name="@FluentIcons.Save" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
             Save
         </FluentButton>
@@ -16,12 +41,12 @@
             <FluentIcon Slot="start" Name="@FluentIcons.Add" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
             Add
         </FluentButton>
-        <FluentButton Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="OnHandleRun">
+        <FluentButton Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="HandleOnRunAll">
             <FluentIcon Slot="start" Name="@FluentIcons.Play" Size="@IconSize.Size16" Variant="@IconVariant.Regular" Color="@Color.Accent" />
             Run
         </FluentButton>
-    </Stack>
-    <Stack Orientation="Orientation.Horizontal">
+    </Stack>*@
+    @*<Stack Orientation="Orientation.Horizontal">
         @if (!string.IsNullOrEmpty(ErrorMessage))
         {
             <Stack Style="min-height:50px;border: 1px solid #D8000C;background-color: #FFBABA;padding: 3px;">
@@ -33,7 +58,6 @@
             <Stack HorizontalAlignment="StackHorizontalAlignment.Center" VerticalAlignment="StackVerticalAlignment.Center">
                 <FluentProgressRing />
             </Stack>
-        }
         else if (HttpItems?.Any() == true)
         {
             <Dropzone Items="HttpItems">
@@ -49,6 +73,7 @@
             OnUpdate="@OnOpenEditor"
             OnChange="@OnHandleChange" 
         />
+        }
         
     </Stack>
     <HttpItemDialog 
@@ -58,3 +83,5 @@
         OnUpdate="OnHandleUpdate" 
     />
 </Stack>
+        *@
+        
