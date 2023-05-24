@@ -11,9 +11,9 @@
 @attribute [Authorize]
 @inherits LayoutComponentBase
 
-@if (ConnectorInfo != null)
+@if (Overview != null)
 {
-    <Breadcrumb DisplayValue="@ConnectorInfo.Name"/>
+    <Breadcrumb DisplayValue="@Overview.Name"/>
 }
 <MudStack Row="true" Style="margin-right:10px">
     <ConnectorNavMenu ConnectorId="@ConnectorId"/>
@@ -23,7 +23,7 @@
     }
     else if (string.IsNullOrEmpty(NavName) || NavName.ToLower() == "overview")
     {
-        <ConnectorOverview Overview="@ConnectorInfo" />
+        <ConnectorOverview Overview="@Overview" />
     }
     else if (NavName.ToLower() == "pipeline")
     {

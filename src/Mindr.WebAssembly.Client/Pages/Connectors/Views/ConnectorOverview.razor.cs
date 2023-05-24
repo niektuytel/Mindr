@@ -29,9 +29,7 @@ public partial class ConnectorOverview
 
     private bool IsLoading { get; set; } = false;
 
-    bool success;
-    string[] errors = { };
-    //MudForm form;
+    private bool success;
 
     public async Task HandleOnSave()
     {

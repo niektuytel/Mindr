@@ -23,13 +23,13 @@ public partial class ConnectorView
 
     private bool IsLoading = false;
 
-    private ConnectorOverviewDTO? ConnectorInfo { get; set; } = null;
+    private ConnectorOverviewDTO? Overview { get; set; } = null;
 
     protected override async Task OnInitializedAsync()
     {
         IsLoading = true;
         var response = await ConnectorClient.GetOverview(ConnectorId);
-        (ConnectorInfo, var error) = response.AsTuple();
+        (Overview, var error) = response.AsTuple();
         IsLoading = false;
 
         if (!string.IsNullOrEmpty(error))
