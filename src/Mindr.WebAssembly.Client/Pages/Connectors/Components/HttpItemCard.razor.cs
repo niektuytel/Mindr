@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Mindr.WebAssembly.Client.Pages.Connectors.Components;
 
-public partial class HttpItemCard : FluentComponentBase
+public partial class HttpItemCard
 {
     [Parameter, EditorRequired]
     public HttpItem Data { get; set; } = default!;

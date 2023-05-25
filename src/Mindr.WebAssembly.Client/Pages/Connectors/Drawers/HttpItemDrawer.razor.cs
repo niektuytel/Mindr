@@ -6,10 +6,10 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Mindr.WebAssembly.Client.Pages.Connectors.Dialogs;
+namespace Mindr.WebAssembly.Client.Pages.Connectors.Drawers;
 
 // Usefull to use? https://www.postman.com/cs-demo/workspace/public-rest-apis/overview
-public partial class HttpItemCreateDialog
+public partial class HttpItemDrawer
 {
     [Parameter, EditorRequired]
     public Func<HttpItem, Task> OnCreate { get; set; } = default!;
@@ -18,25 +18,25 @@ public partial class HttpItemCreateDialog
     public Func<HttpItem, Task> OnUpdate { get; set; } = default!;
 
     [Parameter, EditorRequired]
-    public HttpItem? Data { get; set; } = default!;
+    public HttpItem? Item { get; set; } = default!;
 
     public string NewHeaderKey { get; set; } = "";
 
     public string ButtonText { get; set; } = "";
 
-    public FluentDialog Dialog = default!;
+    //public FluentDialog Dialog = default!;
 
     private bool IsLoading = false;
 
-    protected override Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            Dialog.Hide();
-        }
+    //protected override Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    if (firstRender)
+    //    {
+    //        Dialog.Hide();
+    //    }
 
-        return base.OnAfterRenderAsync(firstRender);
-    }
+    //    return base.OnAfterRenderAsync(firstRender);
+    //}
 
     public async Task HandleOnSave()
     {
@@ -44,12 +44,12 @@ public partial class HttpItemCreateDialog
 
         if (ButtonText == "Create")
         {
-            await OnCreate.Invoke(Data);
+            await OnCreate.Invoke(Item);
 
         }
         else if (ButtonText == "Update")
         {
-            await OnUpdate.Invoke(Data);
+            await OnUpdate.Invoke(Item);
 
         }
         else
@@ -60,55 +60,55 @@ public partial class HttpItemCreateDialog
 
         IsLoading = false;
         CloseDialog();
-        StateHasChanged();
+        //StateHasChanged();
     }
 
     private async Task HandleOnHeaderAdd(FocusEventArgs args)
     {
         if (string.IsNullOrEmpty(NewHeaderKey)) return;
 
-        var headers = Data.Request.Header.Where(item => !string.IsNullOrEmpty(item.Key) || !string.IsNullOrEmpty(item.Value)).ToList();
+        var headers = Item.Request.Header.Where(item => !string.IsNullOrEmpty(item.Key) || !string.IsNullOrEmpty(item.Value)).ToList();
         headers.Add(new HttpHeader() { Key = NewHeaderKey, Value = "" });
-        Data.Request.Header = headers;
+        Item.Request.Header = headers;
 
         NewHeaderKey = "";
-        StateHasChanged();
+        //StateHasChanged();
     }
 
     public void DismissDialog(DialogEventArgs args)
     {
         if (args is not null && args.Reason is not null && args.Reason == "dismiss")
         {
-            Dialog.Hide();
+            //Dialog.Hide();
         }
     }
 
     public void CloseDialog()
     {
-        Dialog.Hide();
+        //Dialog.Hide();
     }
 
     public void OpenAddDialog()
     {
-        Data = new();
+        Item = new();
         ButtonText = "Create";
         //if (Collection == null)
         //{// TODO: 
         //    //Collection = JsonConvert.DeserializeObject<HttpCollection>(_Constants.Json);
         //}
 
-        Dialog.Show();
+        //Dialog.Show();
     }
 
     public void OpenEditDialog(HttpItem item)
     {
-        Data = item;
+        Item = item;
         ButtonText = "Update";
         //if (Collection == null)
         //{// TODO: 
         //    //Collection = JsonConvert.DeserializeObject<HttpCollection>(_Constants.Json);
         //}
 
-        Dialog.Show();
+        //Dialog.Show();
     }
 }

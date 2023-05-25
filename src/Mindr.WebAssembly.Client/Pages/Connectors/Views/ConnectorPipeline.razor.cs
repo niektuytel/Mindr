@@ -81,6 +81,57 @@ public partial class ConnectorPipeline
         base.StateHasChanged();
     }
 
+    public async Task HandleOnRunAll()
+    {
+        // reload all results
+        HttpItems.ForEach(item => item.IsLoading = true);
+        HttpItems = await CollectionClient.SendAsync(HttpItems);
+
+        base.StateHasChanged();
+    }
+
+    public async Task HandleOnCreateItem(HttpItem item)
+    {
+        IsLoading = true;
+        SelectedHttpItem = CollectionFactory.PrepareHttpItem(item, HttpItems.AsEnumerable(), Collection);
+        HttpItems.Add(SelectedHttpItem);
+        IsLoading = false;
+
+        DataHasChanged = true;
+        base.StateHasChanged();
+    }
+
+    public async Task HandleOnUpdateItem(HttpItem item)
+    {
+        IsLoading = true;
+        SelectedHttpItem = CollectionFactory.PrepareHttpItem(item, HttpItems.AsEnumerable(), Collection);
+        HttpItems[SelectedIndex] = SelectedHttpItem;
+        IsLoading = false;
+
+        DataHasChanged = true;
+        base.StateHasChanged();
+    }
+
+    public async Task HandleOnSelectItem(HttpItem item)
+    {
+        if (item == null) return;
+        if (SelectedHttpItem?.Id == item.Id) return;
+
+        SelectedHttpItem = item;
+
+        base.StateHasChanged();
+    }
+
+    public async Task HandleOnRemoveItem(HttpItem item)
+    {
+        HttpItems.Remove(item);
+        SelectedHttpItem = HttpItems.Count() > 0 ? HttpItems.Last() : null;
+
+        DataHasChanged = true;
+        base.StateHasChanged();
+    }
+
+
     public async Task HandleHttpDrawerOpen()
     {
         // TODO: Open drawer 
@@ -115,61 +166,10 @@ public partial class ConnectorPipeline
         //base.StateHasChanged();
     }
 
-    public async Task HandleOnRunAll()
-    {
-        // reload all results
-        HttpItems.ForEach(item => item.IsLoading = true);
-        HttpItems = await CollectionClient.SendAsync(HttpItems);
-
-        base.StateHasChanged();
-    }
-
-
-    public async Task OnHandleCreate(HttpItem item)
-    {
-        IsLoading = true;
-        SelectedHttpItem = CollectionFactory.PrepareHttpItem(item, HttpItems.AsEnumerable(), Collection);
-        HttpItems.Add(SelectedHttpItem);
-        IsLoading = false;
-
-        DataHasChanged = true;
-        base.StateHasChanged();
-    }
-
-    public async Task OnHandleUpdate(HttpItem item)
-    {
-        IsLoading = true;
-        SelectedHttpItem = CollectionFactory.PrepareHttpItem(item, HttpItems.AsEnumerable(), Collection);
-        HttpItems[SelectedIndex] = SelectedHttpItem;
-        IsLoading = false;
-
-        DataHasChanged = true;
-        base.StateHasChanged();
-    }
-
-    public async Task OnHandleChange(HttpItem item)
-    {
-        if (item == null) return;
-        if (SelectedHttpItem?.Id == item.Id) return;
-
-        SelectedHttpItem = item;
-
-        base.StateHasChanged();
-    }
-
-    public async Task OnHandleRemove(HttpItem item)
-    {
-        HttpItems.Remove(item);
-        SelectedHttpItem = HttpItems.Count() > 0 ? HttpItems.Last() : null;
-
-        DataHasChanged = true;
-        base.StateHasChanged();
-    }
-
     public async Task OnOpenEditor(HttpItem item)
     {
         if (item == null) return;
-        HttpItemEditor.OpenEditDialog(item);
+        //HttpItemEditor.OpenEditDialog(item);
         base.StateHasChanged();
     }
 

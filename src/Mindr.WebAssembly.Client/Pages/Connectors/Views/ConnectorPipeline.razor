@@ -9,7 +9,7 @@
 <MudStack Style="width: 100%;">
     <MudStack Row="true">
         <MudButton StartIcon="@Icons.Material.Filled.Save" IconColor="Color.Primary" Size="Size.Large" @onclick="HandleOnSave" Disabled="@(!DataHasChanged)">Save</MudButton>
-        <MudButton StartIcon="@Icons.Material.Filled.Add" IconColor="Color.Primary" Size="Size.Large" @onclick="HandleHttpDrawerOpen">Add</MudButton>
+        <MudButton StartIcon="@Icons.Material.Filled.Add" IconColor="Color.Primary" Size="Size.Large" @onclick="ToggleHttpItemDrawer">Add</MudButton>
         <MudButton StartIcon="@Icons.Material.Filled.LocalPlay" IconColor="Color.Primary" Size="Size.Large" @onclick="HandleOnRunAll">Run All</MudButton>
     </MudStack>
     @if (IsLoading)
@@ -21,8 +21,8 @@
         <Dropzone Items="HttpItems">
             <HttpItemCard Data="@context"
                       IsSelected="@(SelectedHttpItem?.Id == context.Id)"
-                      OnRemove="@OnHandleRemove"
-                      OnSelect="@OnHandleChange" />
+                      OnRemove="@HandleOnRemoveItem"
+                      OnSelect="@HandleOnSelectItem" />
             @*<HttpItemSettings Data="@SelectedHttpItem"
                               OnUpdate="@OnOpenEditor"
                               OnChange="@OnHandleChange" />*@
@@ -30,6 +30,24 @@
     }
 </MudStack>
 
+<MudDrawer @bind-Open="@open" Width="400px" Height="100%" Anchor="Anchor.End" Elevation="1" Variant="@DrawerVariant.Temporary">
+    <MudDrawerHeader>
+        <MudText Typo="Typo.h6">My App</MudText>
+    </MudDrawerHeader>
+    <MudNavMenu>
+        <MudNavLink Match="NavLinkMatch.All">Store</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All">Library</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All">Community</MudNavLink>
+    </MudNavMenu>
+</MudDrawer>
+@code {
+    bool open;
+
+    void ToggleHttpItemDrawer()
+    {
+        open = true;
+    }
+}
 
 @*<Stack Orientation="Orientation.Vertical" VerticalGap="0" Style="border-top: 1px solid #00000026;">
     <Stack Orientation="Orientation.Horizontal" Class="editable-stack" HorizontalGap="0">

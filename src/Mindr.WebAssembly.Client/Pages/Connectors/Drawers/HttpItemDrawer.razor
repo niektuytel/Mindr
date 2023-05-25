@@ -1,10 +1,43 @@
-﻿@using Microsoft.Fast.Components.FluentUI
-@using Mindr.WebAssembly.Client.Components
+﻿@using Mindr.WebAssembly.Client.Components
+@using MudBlazor;
 
-@namespace Mindr.WebAssembly.Client.Pages.Connectors.Components
-@inherits FluentComponentBase
+@namespace Mindr.WebAssembly.Client.Pages.Connectors.Drawers
+@inherits LayoutComponentBase
 
-<div>
+<MudDrawer @bind-Open="@open" Width="400px" Height="100%" Anchor="Anchor.End" Elevation="1" Variant="@DrawerVariant.Persistent">
+    <MudDrawerHeader>
+        <MudStack Row="true">
+            <MudText Typo="Typo.h6">Create Http Request</MudText>
+        </MudStack>
+    </MudDrawerHeader>
+    <MudDrawerContainer>
+        <MudTabs>
+            <MudTabPanel>
+                <MudTextField Label="Name" Variant="Variant.Filled" @bind-Value="@Item.Name" />
+                <MudTextField Label="Description" Variant="Variant.Filled" @bind-Value="@Item.Description" />
+                <MudTextField Label="Url" Variant="Variant.Filled" @bind-Value="@Item.Request.Url.Raw" />
+               @* <MudSelect Label="Method" Variant="Variant.Filled" @bind-Value="@Item.Request.Method">
+                    <MudSelectItem Value="GET">GET</MudSelectItem>
+                    <MudSelectItem Value="POST">POST</MudSelectItem>
+                    <MudSelectItem Value="PUT">PUT</MudSelectItem>
+                    <MudSelectItem Value="DELETE">DELETE</MudSelectItem>
+                </MudSelect>
+                <MudTextField Label="Headers" Variant="Variant.Filled" @bind-Value="@Item.Request.Headers" />
+                <MudTextField Label="Body" Variant="Variant.Filled" @bind-Value="@Item.Body" />*@
+            </MudTabPanel>
+        </MudTabs>
+    </MudDrawerContainer>
+</MudDrawer>
+@code {
+    bool open;
+
+    void ToggleHttpItemDrawer()
+    {
+        open = true;
+    }
+}
+
+@*Use mudblazor components <div>
     <FluentDialog Modal="true" TrapFocus="true" @ref="Dialog" @ondialogdismiss="DismissDialog">
        
         @if (IsLoading)
@@ -27,7 +60,7 @@
                                         @bind-Value="@Data.Request.Method"
                                         Class="request-method"
                                         Style="min-width:auto" />
-                        @*<FluentTextField Placeholder="Method" @bind-Value="" style="width: 100%;" />*@
+                        //<FluentTextField Placeholder="Method" @bind-Value="" style="width: 100%;" />
                         <FluentTextField Placeholder="Url" @bind-Value="@Data.Request.Url.Raw" Style="width:100%" />
                     </Stack>
 
@@ -52,24 +85,24 @@
                             </table>
                         </FluentTabPanel>
                         <FluentTabPanel id="TabPanelBody">
-                            @*<MonacoEditor @bind-Value="@Code" Language="Json" IsDarkMode="@IsDarkMode" />*@
+                            //<MonacoEditor @bind-Value="@Code" Language="Json" IsDarkMode="@IsDarkMode" />
                             <FluentTextArea @bind-Value="@Data.Request.Body.Raw" style="width: 100%;" />
                         </FluentTabPanel>
                     </FluentTabs>
                 </FluentTabPanel>
                 <FluentTabPanel id="TabPanelResponse">
-                    @*TODO: response types that will been captured to add keys on.*@
+                    //TODO: response types that will been captured to add keys on.
                 </FluentTabPanel>
             </FluentTabs>
         }
-        @* // TODO:
-        Postman
-        Name
-        Description
-        *@
+        // // TOD
+        // Postman
+        // Name
+        // Description
         <Stack Orientation="Orientation.Horizontal" HorizontalAlignment="StackHorizontalAlignment.Right">
             <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="CloseDialog">Close dialog</FluentButton>
             <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="HandleOnSave">@ButtonText</FluentButton>
         </Stack>
     </FluentDialog>
 </div>
+*@
