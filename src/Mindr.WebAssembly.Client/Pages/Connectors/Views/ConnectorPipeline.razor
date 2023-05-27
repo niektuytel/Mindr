@@ -1,7 +1,9 @@
 ﻿@using Mindr.WebAssembly.Client.Components
 @using Mindr.Domain.HttpRunner.Models;
 @using Mindr.WebAssembly.Client.Pages.Connectors.Components
+@using Mindr.WebAssembly.Client.Pages.Connectors.Drawers
 @using MudBlazor
+@using MudBlazor.Utilities;
 
 @namespace Mindr.WebAssembly.Client.Pages.Connectors.Views
 @inherits LayoutComponentBase
@@ -9,46 +11,62 @@
 <MudStack Style="width: 100%;">
     <MudStack Row="true">
         <MudButton StartIcon="@Icons.Material.Filled.Save" IconColor="Color.Primary" Size="Size.Large" @onclick="HandleOnSave" Disabled="@(!DataHasChanged)">Save</MudButton>
-        <MudButton StartIcon="@Icons.Material.Filled.Add" IconColor="Color.Primary" Size="Size.Large" @onclick="ToggleHttpItemDrawer">Add</MudButton>
+        <MudButton StartIcon="@Icons.Material.Filled.Add" IconColor="Color.Primary" Size="Size.Large" @onclick="ItemDrawer!.HandleOpenOnCreate">Add</MudButton>
         <MudButton StartIcon="@Icons.Material.Filled.LocalPlay" IconColor="Color.Primary" Size="Size.Large" @onclick="HandleOnRunAll">Run All</MudButton>
     </MudStack>
     @if (IsLoading)
     {
         <MudProgressLinear Color="Color.Info" Indeterminate="true" />
     }
-    else if (HttpItems?.Any() == true)
+    <MudDropContainer T="DropItem" Items="@Items" @ref="Container" Class="d-flex flex-wrap flex-grow-1" ItemsSelector="@((item,column) => item.Identifier == column)" ItemDropped="ItemUpdated">
+            <ChildContent>
+                <MudDropZone T="DropItem" Identifier="dropzone1" Class="flex-grow-1" AllowReorder="true" />
+            </ChildContent>
+            <ItemRenderer>
+                <MudPaper Class="pa-1 ma-1" Elevation="3">
+                    <MudStack Row="true">
+                        <div style=@(GetMethodStyle(context))>
+                            @context.Request.Method.ToUpper()
+                        </div>
+                        <div class="overflow-ellipsis">
+                            @context.Request.Url.Raw
+                        </div>
+                    </MudStack>
+                    <MudStack Row="true">
+                        <div class="overflow-ellipsis">
+                            @context.Name
+                        </div>
+                    </MudStack>
+                </MudPaper>
+
+                <MudStack Row="true">
+                    @if (HasEmptyVariable(context))
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Warning" />
+                    }
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" aria-label="edit" OnClick="@(() => ItemDrawer.HandleOpenOnUpdate((HttpItem)context))"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="@(async () => await HandleOnRemoveItem(context))"></MudIconButton>
+                </MudStack>
+            </ItemRenderer>
+        </MudDropContainer>
+    @*else if (Items?.Any() == true)
     {
-        <Dropzone Items="HttpItems">
-            <HttpItemCard Data="@context"
-                      IsSelected="@(SelectedHttpItem?.Id == context.Id)"
-                      OnRemove="@HandleOnRemoveItem"
-                      OnSelect="@HandleOnSelectItem" />
-            @*<HttpItemSettings Data="@SelectedHttpItem"
-                              OnUpdate="@OnOpenEditor"
-                              OnChange="@OnHandleChange" />*@
-        </Dropzone>
-    }
+    }*@
 </MudStack>
+<HttpItemDrawer @ref="ItemDrawer" OnCreate="@HandleOnCreateItem" OnUpdate="HandleOnUpdateItem"/>
 
-<MudDrawer @bind-Open="@open" Width="400px" Height="100%" Anchor="Anchor.End" Elevation="1" Variant="@DrawerVariant.Temporary">
-    <MudDrawerHeader>
-        <MudText Typo="Typo.h6">My App</MudText>
-    </MudDrawerHeader>
-    <MudNavMenu>
-        <MudNavLink Match="NavLinkMatch.All">Store</MudNavLink>
-        <MudNavLink Match="NavLinkMatch.All">Library</MudNavLink>
-        <MudNavLink Match="NavLinkMatch.All">Community</MudNavLink>
-    </MudNavMenu>
-</MudDrawer>
+
 @code {
-    bool open;
-
-    void ToggleHttpItemDrawer()
+    private void ItemUpdated(MudItemDropInfo<DropItem> dropItem)
     {
-        open = true;
-    }
-}
+        if (dropItem?.Item == null) return;
 
+        dropItem.Item.Identifier = dropItem.DropzoneIdentifier;
+        DataHasChanged = true;
+    }
+
+
+}
 @*<Stack Orientation="Orientation.Vertical" VerticalGap="0" Style="border-top: 1px solid #00000026;">
     <Stack Orientation="Orientation.Horizontal" Class="editable-stack" HorizontalGap="0">
         <FluentButton Disabled="@(!DataHasChanged)" Appearance="Appearance.Stealth" Style="border-radius: 0;" @onclick="HandleOnSave">

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Reflection;
 
 namespace Mindr.Api.Swagger;
@@ -77,6 +78,7 @@ public static class SwaggerConfiguration
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            c.DocExpansion(DocExpansion.None);//This will not expand all the API's.
 
             // Enable OAuth2.0 authentication in Swagger UI
             c.OAuthClientId("web-client");

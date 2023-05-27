@@ -17,51 +17,17 @@ public partial class HttpItemDrawer
     [Parameter, EditorRequired]
     public Func<HttpItem, Task> OnUpdate { get; set; } = default!;
 
-    [Parameter, EditorRequired]
-    public HttpItem? Item { get; set; } = default!;
+    private HttpItem Item = new();
 
     public string NewHeaderKey { get; set; } = "";
 
-    public string ButtonText { get; set; } = "";
+    public string Title { get; set; } = "";
 
-    //public FluentDialog Dialog = default!;
+    private bool DataHasChanged = false;
 
-    private bool IsLoading = false;
+    private bool Open = false;
 
-    //protected override Task OnAfterRenderAsync(bool firstRender)
-    //{
-    //    if (firstRender)
-    //    {
-    //        Dialog.Hide();
-    //    }
-
-    //    return base.OnAfterRenderAsync(firstRender);
-    //}
-
-    public async Task HandleOnSave()
-    {
-        IsLoading = true;
-
-        if (ButtonText == "Create")
-        {
-            await OnCreate.Invoke(Item);
-
-        }
-        else if (ButtonText == "Update")
-        {
-            await OnUpdate.Invoke(Item);
-
-        }
-        else
-        {
-            throw new NotImplementedException($"{ButtonText} does not exist");
-        }
-
-
-        IsLoading = false;
-        CloseDialog();
-        //StateHasChanged();
-    }
+    private bool success;
 
     private async Task HandleOnHeaderAdd(FocusEventArgs args)
     {
@@ -75,40 +41,43 @@ public partial class HttpItemDrawer
         //StateHasChanged();
     }
 
-    public void DismissDialog(DialogEventArgs args)
-    {
-        if (args is not null && args.Reason is not null && args.Reason == "dismiss")
-        {
-            //Dialog.Hide();
-        }
-    }
-
-    public void CloseDialog()
-    {
-        //Dialog.Hide();
-    }
-
-    public void OpenAddDialog()
+    public void HandleOpenOnCreate()
     {
         Item = new();
-        ButtonText = "Create";
-        //if (Collection == null)
-        //{// TODO: 
-        //    //Collection = JsonConvert.DeserializeObject<HttpCollection>(_Constants.Json);
-        //}
-
-        //Dialog.Show();
+        Title = "Create HTTP";
+        Open = true;
     }
 
-    public void OpenEditDialog(HttpItem item)
+    public void HandleOpenOnUpdate(HttpItem item)
     {
         Item = item;
-        ButtonText = "Update";
-        //if (Collection == null)
-        //{// TODO: 
-        //    //Collection = JsonConvert.DeserializeObject<HttpCollection>(_Constants.Json);
-        //}
-
-        //Dialog.Show();
+        Title = "Update HTTP";
+        Open = true;
     }
+
+    public async Task HandleOnConfirm()
+    {
+        if (Item == null) return;
+
+        if (Title.ToLower().Contains("create"))
+        {
+            await OnCreate.Invoke(Item);
+
+        }
+        else if (Title.ToLower().Contains("update"))
+        {
+            await OnUpdate.Invoke(Item);
+
+        }
+
+        Open = false;
+    }
+
+    public void HandleOnCancel()
+    {
+        Open = false;
+    }
+
+
+
 }

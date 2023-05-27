@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using MudBlazor;
 using Mindr.WebAssembly.Client.Pages.Connectors.Dialogs;
+using System.ComponentModel.DataAnnotations.Schema;
+using Mindr.WebAssembly.Client.Pages.Connectors.Drawers;
 
 namespace Mindr.WebAssembly.Client.Pages.Connectors.Views;
 
@@ -33,15 +35,18 @@ public partial class ConnectorPipeline
     [Parameter, EditorRequired]
     public string ConnectorId { get; set; } = default!;
 
-    public List<HttpItem> HttpItems { get; set; } = new List<HttpItem>();
+    public List<DropItem> Items { get; set; } = new List<DropItem>();
 
-    public HttpItem? SelectedHttpItem { get; set; } = null;
+    public DropItem? SelectedItem { get; set; } = null;
 
-    public int SelectedIndex => SelectedHttpItem != null ? HttpItems.IndexOf(SelectedHttpItem) : 0;
+    public int TransactionIndex = 0;
 
-    private HttpCollection Collection { get; set; } = new HttpCollection();
+    private HttpItemDrawer? ItemDrawer = default!;
 
     //public HttpItemDialog HttpItemEditor = default!;
+
+    private MudDropContainer<DropItem> Container = default!;
+
 
     private bool DataHasChanged = false;
 
@@ -60,14 +65,15 @@ public partial class ConnectorPipeline
         }
         else if (connector != null)
         {
-            HttpItems = connector!.Pipeline.ToList();
+            Items = connector!.Pipeline.Select(item => new DropItem(item)).ToList();
+            Container.Refresh();
         }
     }
 
     public async Task HandleOnSave()
     {
         IsLoading = true;
-        var response = await ConnectorClient.UpdatePipeline(ConnectorId, HttpItems.AsEnumerable());
+        var response = await ConnectorClient.UpdatePipeline(ConnectorId, Items.AsEnumerable());
         (_, var error) = response.AsTuple();
         IsLoading = false;
 
@@ -84,48 +90,57 @@ public partial class ConnectorPipeline
     public async Task HandleOnRunAll()
     {
         // reload all results
-        HttpItems.ForEach(item => item.IsLoading = true);
-        HttpItems = await CollectionClient.SendAsync(HttpItems);
+        Items.ForEach(item => item.IsLoading = true);
+
+        var items = (Items as IEnumerable<HttpItem>).ToList();
+        items = await CollectionClient.SendAsync(items);
+        Items = items.Select(item => new DropItem(item)).ToList();
 
         base.StateHasChanged();
     }
 
     public async Task HandleOnCreateItem(HttpItem item)
     {
-        IsLoading = true;
-        SelectedHttpItem = CollectionFactory.PrepareHttpItem(item, HttpItems.AsEnumerable(), Collection);
-        HttpItems.Add(SelectedHttpItem);
-        IsLoading = false;
-
+        var dropItem = new DropItem(CollectionFactory.PrepareHttpItem(item, Items.AsEnumerable() as IEnumerable<HttpItem>, new HttpCollection()));
+        Items.Add(dropItem);
+        
         DataHasChanged = true;
+        Container.Refresh();
         base.StateHasChanged();
     }
 
     public async Task HandleOnUpdateItem(HttpItem item)
     {
-        IsLoading = true;
-        SelectedHttpItem = CollectionFactory.PrepareHttpItem(item, HttpItems.AsEnumerable(), Collection);
-        HttpItems[SelectedIndex] = SelectedHttpItem;
-        IsLoading = false;
+        var dropItem = new DropItem(CollectionFactory.PrepareHttpItem(item, Items.AsEnumerable() as IEnumerable<HttpItem>, new HttpCollection()));
+        Items = Items.Select(elem => elem.Id == item.Id ? dropItem : elem).ToList();
 
         DataHasChanged = true;
+        Container.Refresh();
         base.StateHasChanged();
     }
+
+
+
+    public async Task HandleOnEditItem(HttpItem item)
+    {
+
+    }
+
+
 
     public async Task HandleOnSelectItem(HttpItem item)
     {
         if (item == null) return;
-        if (SelectedHttpItem?.Id == item.Id) return;
+        if (SelectedItem?.Id == item.Id) return;
 
-        SelectedHttpItem = item;
-
+        SelectedItem = new DropItem(item);
         base.StateHasChanged();
     }
 
     public async Task HandleOnRemoveItem(HttpItem item)
     {
-        HttpItems.Remove(item);
-        SelectedHttpItem = HttpItems.Count() > 0 ? HttpItems.Last() : null;
+        Items.Remove(new DropItem(item));
+        SelectedItem = Items.Count() > 0 ? Items.Last() : null;
 
         DataHasChanged = true;
         base.StateHasChanged();
@@ -173,4 +188,61 @@ public partial class ConnectorPipeline
         base.StateHasChanged();
     }
 
+
+    private bool HasEmptyVariable(DropItem item)
+    {
+        if (item.Request.Variables == null) return false;
+
+        var emptyVars = item.Request.Variables.Where(value => string.IsNullOrEmpty(value.Value));
+        return emptyVars.Any();
+    }
+
+    private string GetMethodStyle(DropItem item)
+    {
+        var style = "border-right: ridge;padding-right:5px;margin-right:5px;font-weight: bold;";
+        var value = item.Request.Method.ToLower();
+        if (value == "get")
+        {
+            return $"{style}color: green;";
+        }
+
+        if (value == "post")
+        {
+            return $"{style}color: orange;";
+        }
+
+        if (value == "delete")
+        {
+            return $"{style}color: red;";
+        }
+
+        return style;
+    }
+
+    private string GetStatusCodeStyle(DropItem item)
+    {
+        if (item.Result == null) return "";
+
+        return item.Result.IsSuccessStatusCode ? "highlight" : "lowlight";
+    }
+
+
+}
+public class DropItem: HttpItem
+{
+    public DropItem(HttpItem item)
+    {
+        Id = item.Id;
+        IsLoading = item.IsLoading;
+        Result = item.Result;
+        Items = item.Items;
+        Name = item.Name;
+        Description = item.Description;
+        Request = item.Request;
+        Response = item.Response;
+    }
+
+    public bool IsSelected { get; set; } = false;
+    //public bool TransactionIndex { get; set; } = 0;
+    public string Identifier { get; set; } = "dropzone1";
 }

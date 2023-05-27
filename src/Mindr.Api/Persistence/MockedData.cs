@@ -51,7 +51,7 @@ namespace Mindr.Api.Persistence
                 CreatedBy = UserId,
                 Color = "orange",
                 IsPublic = true,
-                Name = "Send Whatsapp Text Message",
+                Name = "Send Whatsapp Text Message 1",
                 Description = "Some description explain the product",
                 Variables = new ConnectorVariable[]
                         {
@@ -100,8 +100,8 @@ namespace Mindr.Api.Persistence
                 CreatedBy = UserId,
                 Color = "blue",
                 IsPublic = true,
-                Name = "Send WhatsApp Sample Text Message",
-                Description = "Some description explain the product",
+                Name = "Send WhatsApp Sample Text Message (2)",
+                Description = "Some description explain the product (2)",
                 Variables = new ConnectorVariable[]
                         {
                         new()

@@ -55,6 +55,7 @@
     <None Remove="Components\Stack.razor.css" />
     <None Remove="Pages\Agenda\Components\ConnectorEventDialog.razor.css" />
     <None Remove="Pages\Connectors\Components\ConnectorDialog.razor.css" />
+    <None Remove="Pages\Connectors\Components\HttpItemCard.razor.css" />
     <None Remove="Pages\Connectors\Dialogs\HttpItemCreateDialog.razor.css" />
     <None Remove="Pages\Connectors\Drawers\HttpItemSettings.razor.css" />
     <None Remove="Pages\Connectors\Views\ConnectorPipeline.razor.css" />
