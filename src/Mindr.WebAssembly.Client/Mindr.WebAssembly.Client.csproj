@@ -24,6 +24,8 @@
     <Compile Remove="Pages\Agenda\Components\AgendaDay.razor.cs" />
     <Compile Remove="Pages\Agenda\Components\AgendaEventItem.razor.cs" />
     <Compile Remove="Pages\Agenda\Components\ConnectorEventDialog.razor.cs" />
+    <Compile Remove="Pages\Connectors\Components\Dropzone.razor.cs" />
+    <Compile Remove="Pages\Connectors\Components\HttpItemCard.razor.cs" />
     <Compile Remove="Pages\Connectors\Drawers\HttpItemSettings.razor.cs" />
     <Compile Remove="Pages\Index.razor.cs" />
   </ItemGroup>
@@ -42,6 +44,10 @@
     <Content Remove="Pages\Calendar\Configuration.razor" />
     <Content Remove="Pages\Calendar\DayTemplating.razor" />
     <Content Remove="Pages\Calendar\HeaderTemplating.razor" />
+    <Content Remove="Pages\Connectors\Components\Collection.razor" />
+    <Content Remove="Pages\Connectors\Components\CollectionItem.razor" />
+    <Content Remove="Pages\Connectors\Components\Dropzone.razor" />
+    <Content Remove="Pages\Connectors\Components\HttpItemCard.razor" />
     <Content Remove="Pages\Connectors\Drawers\HttpItemSettings.razor" />
     <Content Remove="Pages\Index.razor" />
     <Content Remove="wwwroot\css\fonts.google.icons.css" />

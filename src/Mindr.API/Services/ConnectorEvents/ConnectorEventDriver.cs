@@ -48,7 +48,7 @@ namespace Mindr.Api.Services.ConnectorEvents
             }
 
             var connector = await GetConnectorAsync(entity.ConnectorId);
-            connector.Variables = entity.ConnectorVariables;
+            connector.Variables = entity.ConnectorVariables.ToList();
 
             var jobId = _backgroundJobs.Enqueue(() => _connectorDriver.ProcessHttpRunnerAsync(connector));
 
@@ -68,7 +68,7 @@ namespace Mindr.Api.Services.ConnectorEvents
             }
 
             var connector = await GetConnectorAsync(entity.ConnectorId);
-            connector.Variables = entity.ConnectorVariables;
+            connector.Variables = entity.ConnectorVariables.ToList();
 
             if (!string.IsNullOrEmpty(entity.JobId))
             {

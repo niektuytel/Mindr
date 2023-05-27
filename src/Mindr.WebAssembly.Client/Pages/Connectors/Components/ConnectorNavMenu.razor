@@ -6,6 +6,8 @@
 <MudNavMenu>
     @foreach (var endpoint in StaticUtils.Endpoints.Where(item => item.Target == Enums.NavBarTarget.ConnectorNavBar))
     {
-        <MudNavLink Href="@endpoint.Href.Replace("*", ConnectorId)" Match="NavLinkMatch.All" Icon="@endpoint.Icon">@endpoint.Name</MudNavLink>
+        <MudNavLink Href="@endpoint.Href.Replace("*", ConnectorId)" Match="NavLinkMatch.All" Icon="@endpoint.Icon">
+            @endpoint.Name
+        </MudNavLink>
     }
 </MudNavMenu>

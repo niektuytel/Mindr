@@ -88,7 +88,7 @@ namespace Mindr.Api.Persistence
                                 Value = "31618395668"
                             }
                         },
-                Pipeline = Domain.HttpRunner.MockedData.GetPipeline()
+                Pipeline = Domain.HttpRunner.MockedData.GetPipeline1().ToList()
             };
         }
         
@@ -145,7 +145,7 @@ namespace Mindr.Api.Persistence
                             Value = "unser inputed content"
                         }
                     },
-                Pipeline = Domain.HttpRunner.MockedData.GetPipeline()
+                Pipeline = Domain.HttpRunner.MockedData.GetPipeline2().ToList()
             };
         }
 

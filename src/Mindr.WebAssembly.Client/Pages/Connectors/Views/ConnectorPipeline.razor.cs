@@ -3,6 +3,7 @@ using Microsoft.Fast.Components.FluentUI;
 
 using Mindr.Domain.HttpRunner.Models;
 using Mindr.Domain.HttpRunner.Services;
+using Mindr.Domain.HttpRunner.Extensions;
 using Mindr.WebAssembly.Client.Services;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -45,7 +46,7 @@ public partial class ConnectorPipeline
 
     //public HttpItemDialog HttpItemEditor = default!;
 
-    private MudDropContainer<DropItem> Container = default!;
+    private MudDropContainer<DropItem>? Container = default!;
 
 
     private bool DataHasChanged = false;
@@ -66,8 +67,10 @@ public partial class ConnectorPipeline
         else if (connector != null)
         {
             Items = connector!.Pipeline.Select(item => new DropItem(item)).ToList();
-            Container.Refresh();
         }
+
+        base.StateHasChanged();
+        Container.Refresh();
     }
 
     public async Task HandleOnSave()
@@ -96,6 +99,7 @@ public partial class ConnectorPipeline
         items = await CollectionClient.SendAsync(items);
         Items = items.Select(item => new DropItem(item)).ToList();
 
+        Container!.Refresh();
         base.StateHasChanged();
     }
 
@@ -105,7 +109,7 @@ public partial class ConnectorPipeline
         Items.Add(dropItem);
         
         DataHasChanged = true;
-        Container.Refresh();
+        Container!.Refresh();
         base.StateHasChanged();
     }
 
@@ -115,25 +119,7 @@ public partial class ConnectorPipeline
         Items = Items.Select(elem => elem.Id == item.Id ? dropItem : elem).ToList();
 
         DataHasChanged = true;
-        Container.Refresh();
-        base.StateHasChanged();
-    }
-
-
-
-    public async Task HandleOnEditItem(HttpItem item)
-    {
-
-    }
-
-
-
-    public async Task HandleOnSelectItem(HttpItem item)
-    {
-        if (item == null) return;
-        if (SelectedItem?.Id == item.Id) return;
-
-        SelectedItem = new DropItem(item);
+        Container!.Refresh();
         base.StateHasChanged();
     }
 
@@ -143,52 +129,95 @@ public partial class ConnectorPipeline
         SelectedItem = Items.Count() > 0 ? Items.Last() : null;
 
         DataHasChanged = true;
+        Container!.Refresh();
         base.StateHasChanged();
     }
 
-
-    public async Task HandleHttpDrawerOpen()
-    {
-        // TODO: Open drawer 
-        //var dialog = await DialogService.ShowAsync<HttpItemCreateDialog>();
-        //var result = await dialog.Result;
-
-        //if (!result.Canceled)
-        //{
-        //    if (Guid.TryParse(result.Data.ToString(), out Guid connectorId))
-        //    {
-        //        NavigationManager.NavigateTo($"/connectors/{connectorId}/pipeline");
-        //    }
-        //    else
-        //    {
-        //        Snackbar.Add($"Can't navigate, connector id is invalid", Severity.Error);
-        //    }
-        //}
-
-
-
-        //IsLoading = true;
-
-        ////var response = await ConnectorClient.UpdatePipeline(ConnectorId, HttpItems.AsEnumerable());
-        ////(_, ErrorMessage) = response.AsTuple();
-        ////if (!string.IsNullOrEmpty(ErrorMessage))
-        ////{
-        ////    base.StateHasChanged();
-        ////}
-
-        //IsLoading = false;
-        //DataHasChanged = true;
-        //base.StateHasChanged();
-    }
-
-    public async Task OnOpenEditor(HttpItem item)
+    public async Task HandleOnSelectItem(HttpItem item)
     {
         if (item == null) return;
-        //HttpItemEditor.OpenEditDialog(item);
+        if (SelectedItem?.Id == item.Id) return;
+
+        SelectedItem = new DropItem(item);
+        Container!.Refresh();
         base.StateHasChanged();
     }
 
+    public async Task HandleOnRunItem(HttpItem item)
+    {
+        // reload all results
+        item.IsLoading = true;
+        item = await CollectionClient.SendAsync(item);
+        Items = Items.Select(elem => elem.Id == item.Id ? new DropItem(item) : elem).ToList();
 
+        Container!.Refresh();
+    }
+
+    private void ItemDropped(MudItemDropInfo<DropItem> dropItem)
+    {
+        if (dropItem?.Item == null) return;
+
+        dropItem.Item.Identifier = dropItem.DropzoneIdentifier;
+        DataHasChanged = true;
+    }
+
+    //public async Task HandleHttpDrawerOpen()
+    //{
+    //    // TODO: Open drawer 
+    //    //var dialog = await DialogService.ShowAsync<HttpItemCreateDialog>();
+    //    //var result = await dialog.Result;
+
+    //    //if (!result.Canceled)
+    //    //{
+    //    //    if (Guid.TryParse(result.Data.ToString(), out Guid connectorId))
+    //    //    {
+    //    //        NavigationManager.NavigateTo($"/connectors/{connectorId}/pipeline");
+    //    //    }
+    //    //    else
+    //    //    {
+    //    //        Snackbar.Add($"Can't navigate, connector id is invalid", Severity.Error);
+    //    //    }
+    //    //}
+
+
+
+    //    //IsLoading = true;
+
+    //    ////var response = await ConnectorClient.UpdatePipeline(ConnectorId, HttpItems.AsEnumerable());
+    //    ////(_, ErrorMessage) = response.AsTuple();
+    //    ////if (!string.IsNullOrEmpty(ErrorMessage))
+    //    ////{
+    //    ////    base.StateHasChanged();
+    //    ////}
+
+    //    //IsLoading = false;
+    //    //DataHasChanged = true;
+    //    //base.StateHasChanged();
+    //}
+
+    //public async Task OnOpenEditor(HttpItem item)
+    //{
+    //    if (item == null) return;
+    //    //HttpItemEditor.OpenEditDialog(item);
+    //    base.StateHasChanged();
+    //}
+
+
+    public List<HttpVariable> GetItemResponseVariables()
+    {
+        var result = new List<HttpVariable>();
+        var responses = SelectedItem?.Response;
+        if (responses == null) return result;
+
+        // TODO: Add more options to respond on: [201, 302, 404, 500, etc.]
+        var response = responses.FirstOrDefault(item => item.Code == 200);
+        if (response != null && response.Variables != null)
+        {
+            result = response.GetVariables().ToList();
+        }
+
+        return result;
+    }
     private bool HasEmptyVariable(DropItem item)
     {
         if (item.Request.Variables == null) return false;
@@ -243,6 +272,6 @@ public class DropItem: HttpItem
     }
 
     public bool IsSelected { get; set; } = false;
-    //public bool TransactionIndex { get; set; } = 0;
+
     public string Identifier { get; set; } = "dropzone1";
 }

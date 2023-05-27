@@ -77,7 +77,7 @@ public class ApiConnectorClient : ApiClientBase, IApiConnectorClient
         return response;
     }
 
-    public async Task<JsonResponse<Connector>> UpdatePipeline(string connectorId, IEnumerable<HttpItem> pipeline)
+    public async Task<JsonResponse<IEnumerable<HttpItem>>> UpdatePipeline(string connectorId, IEnumerable<HttpItem> pipeline)
     {
         var request = new HttpRequestMessage(HttpMethod.Put, $"{Path}/personal/{connectorId}/pipeline");
         request.Headers.Add("accept", "*/*");
@@ -85,7 +85,7 @@ public class ApiConnectorClient : ApiClientBase, IApiConnectorClient
         var json = JsonSerializer.Serialize(pipeline);
         request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var response = await ApiRequest<Connector>(request);
+        var response = await ApiRequest<IEnumerable<HttpItem>>(request);
         return response;
     }
 

@@ -9,7 +9,7 @@ namespace Mindr.Domain.HttpRunner.Models
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public IEnumerable<HttpVariable> Variables { get; set; } = null;
+        public ICollection<HttpVariable> Variables { get; set; } = null;
 
     }
 }

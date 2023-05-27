@@ -11,8 +11,8 @@
 
 <MudStack Style="width: 100%;">
     <MudStack Row="true">
-        <MudButton StartIcon="@Icons.Material.Filled.Save" IconColor="Color.Primary" Size="Size.Large" @onclick="HandleOnSave" Disabled="@(!DataHasChanged || !success)">Save</MudButton>
-        <MudButton StartIcon="@Icons.Material.Filled.Delete" IconColor="Color.Primary" Size="Size.Large" @onclick="HandleOnDelete">Delete</MudButton>
+        <MudButton StartIcon="@Icons.Material.Filled.Save" IconColor="Color.Primary" Size="Size.Small" @onclick="HandleOnSave" Disabled="@(!DataHasChanged || !success)">Save</MudButton>
+        <MudButton StartIcon="@Icons.Material.Filled.Delete" IconColor="Color.Primary" Size="Size.Small" @onclick="HandleOnDelete">Delete</MudButton>
     </MudStack>
     @if (IsLoading)
     {

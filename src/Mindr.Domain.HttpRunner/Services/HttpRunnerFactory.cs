@@ -56,7 +56,7 @@ namespace Mindr.Domain.HttpRunner.Services
             // set item variables
             if (item.Request.Variables == null)
             {
-                item.Request.Variables = item.Request.GetVariables();
+                item.Request.Variables = item.Request.GetVariables().ToList();
             }
 
             foreach (var variable in item.Request.Variables)

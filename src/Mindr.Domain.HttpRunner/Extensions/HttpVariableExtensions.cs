@@ -113,7 +113,7 @@ namespace Mindr.Domain.HttpRunner.Extensions
             if (request.Variables == null) return;
 
             request.Url.Raw = request.Variables.SetVariables(request.Url.Raw, VariablePosition.Uri);
-            request.Header = request.Variables.SetVariables(request.Header, VariablePosition.Header);
+            request.Header = request.Variables.SetVariables(request.Header.AsEnumerable(), VariablePosition.Header).ToList();
             request.Body.Raw = request.Variables.SetVariables(request.Body.Raw, VariablePosition.Body);
         }
         

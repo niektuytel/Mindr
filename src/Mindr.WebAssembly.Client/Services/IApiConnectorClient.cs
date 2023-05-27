@@ -20,7 +20,7 @@ public interface IApiConnectorClient
 
     Task<JsonResponse<ConnectorOverviewDTO>> UpdateOverview(ConnectorOverviewDTO connectorOverview);
 
-    Task<JsonResponse<Connector>> UpdatePipeline(string connectorId, IEnumerable<HttpItem> pipeline);
+    Task<JsonResponse<IEnumerable<HttpItem>>> UpdatePipeline(string connectorId, IEnumerable<HttpItem> pipeline);
 
     Task<JsonResponse<Connector>> Create(Connector connector);
 

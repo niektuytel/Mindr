@@ -161,28 +161,64 @@ namespace Mindr.Api.Services.Connectors
             _context.Connectors.Update(entity);
             await _context.SaveChangesAsync();
 
-            entity.Variables = input.Variables;
+            entity.Variables = input.Variables.ToList();
             var item = _mapper.Map<Connector, ConnectorOverviewDTO>(entity);
             return item;
         }
 
+        //public async Task<IEnumerable<HttpItem>> UpdateHttpItems(string userId, Guid id, IEnumerable<HttpItem> input)
+        //{
+        //    var entity = await GetById(userId, id);
+        //    var items = await _connectorDriver.AutoCompletePipeline(entity.Variables, input);
+
+        //    // Remove pipeline
+        //    _context.HttpItems.RemoveRange(entity.Pipeline);
+        //    await _context.SaveChangesAsync();
+
+        //    // create pipeline
+        //    entity.Pipeline = items;
+        //    _context.Connectors.Update(entity);
+        //    await _context.SaveChangesAsync();
+
+        //    return items;
+        //}
+
         public async Task<IEnumerable<HttpItem>> UpdateHttpItems(string userId, Guid id, IEnumerable<HttpItem> input)
         {
             var entity = await GetById(userId, id);
-
-            // remove pipeline
-            _context.HttpItems.RemoveRange(entity.Pipeline);
-            await _context.SaveChangesAsync();
-
-            // create pipeline
             var items = await _connectorDriver.AutoCompletePipeline(entity.Variables, input);
 
-            entity.Pipeline = items;
-            _context.Connectors.Update(entity);
+            var newItems = items.Select(item =>
+            {
+                item.Id = Guid.NewGuid();
+                item.Request.Id = Guid.NewGuid();
+                item.Request.Header = item.Request.Header.Select(item2 =>
+                {
+                    item2.Id = Guid.NewGuid();
+                    return item2;
+                }).ToList();
+                item.Request.Url.Id = Guid.NewGuid();
+                item.Request.Body.Id = Guid.NewGuid();
+                item.Request.Body.Options.Id = Guid.NewGuid();
+                item.Request.Body.Options.Raw.Id = Guid.NewGuid();
+                item.Request.Variables = item.Request.Variables.Select(item2 =>
+                {
+                    item2.Id = Guid.NewGuid();
+                    return item2;
+                }).ToList();
+
+                return item;
+            }).ToList();
+
+            entity.Pipeline = newItems;
+
+            _context.Attach(entity);
+            _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
-            return items;
+            return newItems;
         }
+
 
         public async Task<Connector> Delete(string userId, Guid id)
         {

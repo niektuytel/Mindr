@@ -37,10 +37,10 @@ namespace Mindr.Domain.Models.DTO.Connector
         public bool IsPublic { get; set; }
 
         [JsonPropertyName("variables")]
-        public IEnumerable<ConnectorVariable> Variables { get; set; } = new List<ConnectorVariable>();
+        public ICollection<ConnectorVariable> Variables { get; set; } = new List<ConnectorVariable>();
 
         [JsonPropertyName("pipeline")]
-        public IEnumerable<HttpItem> Pipeline { get; set; } = new List<HttpItem>();
+        public ICollection<HttpItem> Pipeline { get; set; } = new List<HttpItem>();
 
         private static string GetRandomColorClass()
         {
