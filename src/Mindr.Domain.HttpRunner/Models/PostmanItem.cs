@@ -9,7 +9,7 @@ namespace Mindr.Domain.HttpRunner.Models
         // nested items
         [NotMapped]
         [JsonPropertyName("item")]
-        public ICollection<HttpItem> Items { get; set; } = null;
+        public IEnumerable<HttpItem> Items { get; set; } = null;
 
         [JsonPropertyName("name"), JsonInclude]
         public string Name { get; set; } = "";
@@ -21,6 +21,6 @@ namespace Mindr.Domain.HttpRunner.Models
         public HttpRequest Request { get; set; } = new HttpRequest();
 
         [JsonPropertyName("response")]
-        public ICollection<HttpResponse> Response { get; set; } = new List<HttpResponse>();
+        public IEnumerable<HttpResponse> Response { get; set; } = new List<HttpResponse>();
     }
 }

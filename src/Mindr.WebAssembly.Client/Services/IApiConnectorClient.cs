@@ -14,7 +14,7 @@ public interface IApiConnectorClient
 {
     Task<JsonResponse<Connector>> Get(string connectorId);
 
-    Task<JsonResponse<ICollection<ConnectorBriefDTO>>> GetAll(string query = "", string eventId = "");
+    Task<JsonResponse<IEnumerable<ConnectorBriefDTO>>> GetAll(string query = "", string eventId = "");
 
     Task<JsonResponse<ConnectorOverviewDTO>> GetOverview(string connectorId);
 

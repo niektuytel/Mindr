@@ -6,6 +6,15 @@ namespace Mindr.Domain.HttpRunner.Models
 {
     public class HttpCookie
     {
+        public HttpCookie()
+        { }
+
+        public HttpCookie(Guid id, HttpCookie entity)
+        {
+            Id = id;
+            Expires = entity.Expires;
+        }
+
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
 

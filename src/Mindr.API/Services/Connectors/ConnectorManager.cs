@@ -12,6 +12,8 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Mindr.Domain.HttpRunner.Models;
 using Mindr.Api.Models.Connectors;
 using Mindr.Domain.Models.DTO.Connector;
+using NuGet.Packaging;
+using Force.DeepCloner;
 
 namespace Mindr.Api.Services.Connectors
 {
@@ -182,43 +184,29 @@ namespace Mindr.Api.Services.Connectors
 
         //    return items;
         //}
-
-        public async Task<IEnumerable<HttpItem>> UpdateHttpItems(string userId, Guid id, IEnumerable<HttpItem> input)
+        public async Task<IEnumerable<HttpItem>> UpdateHttpItems(string userId, Guid id, IEnumerable<HttpItem> items)
         {
             var entity = await GetById(userId, id);
-            var items = await _connectorDriver.AutoCompletePipeline(entity.Variables, input);
 
-            var newItems = items.Select(item =>
-            {
-                item.Id = Guid.NewGuid();
-                item.Request.Id = Guid.NewGuid();
-                item.Request.Header = item.Request.Header.Select(item2 =>
-                {
-                    item2.Id = Guid.NewGuid();
-                    return item2;
-                }).ToList();
-                item.Request.Url.Id = Guid.NewGuid();
-                item.Request.Body.Id = Guid.NewGuid();
-                item.Request.Body.Options.Id = Guid.NewGuid();
-                item.Request.Body.Options.Raw.Id = Guid.NewGuid();
-                item.Request.Variables = item.Request.Variables.Select(item2 =>
-                {
-                    item2.Id = Guid.NewGuid();
-                    return item2;
-                }).ToList();
-
-                return item;
-            }).ToList();
-
-            entity.Pipeline = newItems;
-
-            _context.Attach(entity);
-            _context.Entry(entity).State = EntityState.Modified;
+            // remove pipeline
+            _context.HttpItems.RemoveRange(entity.Pipeline);
             await _context.SaveChangesAsync();
 
-            return newItems;
-        }
+            // create pipeline
+            var pipeline = new List<HttpItem>();
+            foreach (var item in items)
+            {
+                //create a new instance to avoid tracking conflicts
+                pipeline.Add(new HttpItem(Guid.NewGuid(), item));
+            }
+            entity.Pipeline = pipeline;
 
+            _context.HttpItems.AddRange(pipeline);
+            _context.Connectors.Update(entity);
+            await _context.SaveChangesAsync();
+
+            return items;
+        }
 
         public async Task<Connector> Delete(string userId, Guid id)
         {

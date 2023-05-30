@@ -40,7 +40,7 @@ public class ApiConnectorClient : ApiClientBase, IApiConnectorClient
         return response;
     }
 
-    public async Task<JsonResponse<ICollection<ConnectorBriefDTO>>> GetAll(string query = "", string eventId = "")
+    public async Task<JsonResponse<IEnumerable<ConnectorBriefDTO>>> GetAll(string query = "", string eventId = "")
     {
         if (!string.IsNullOrEmpty(query))
         {
@@ -53,7 +53,7 @@ public class ApiConnectorClient : ApiClientBase, IApiConnectorClient
         }
 
         var request = new HttpRequestMessage(HttpMethod.Get, $"{Path}?{query}{eventId}");
-        var response = await ApiRequest<ICollection<ConnectorBriefDTO>>(request);
+        var response = await ApiRequest<IEnumerable<ConnectorBriefDTO>>(request);
         return response;
     }
 

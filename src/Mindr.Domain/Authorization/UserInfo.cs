@@ -13,6 +13,6 @@ namespace Mindr.Domain.Authorization
 
         public string RoleClaimType { get; set; }
 
-        public ICollection<ClaimValue> Claims { get; set; }
+        public IEnumerable<ClaimValue> Claims { get; set; }
     }
 }

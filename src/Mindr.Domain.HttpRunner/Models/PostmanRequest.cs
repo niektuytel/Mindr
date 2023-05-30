@@ -9,7 +9,7 @@ namespace Mindr.Domain.HttpRunner.Models
         public string Method { get; set; } = "";
 
         [JsonPropertyName("header")]
-        public ICollection<HttpHeader> Header { get; set; } = new List<HttpHeader>();
+        public IEnumerable<HttpHeader> Header { get; set; } = new List<HttpHeader>();
 
         [JsonPropertyName("body")]
         public HttpBody Body { get; set; } = new HttpBody();
