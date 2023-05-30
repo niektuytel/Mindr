@@ -34,14 +34,14 @@ public class ApiPersonalCalendarClient : ApiClientBase, IApiPersonalCalendarClie
     {
     }
 
-    public async Task<JsonResponse<IEnumerable<CalendarEvent>>> GetAllEvents(DateTime dateStart, DateTime dateEnd)
+    public async Task<JsonResponse<IEnumerable<CalendarEvent>>> GetAllEvents(DateTime dateStart, DateTime dateEnd, string calendarId)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{Path}/events?dateTimeStart={dateStart}&dateTimeEnd={dateEnd}");
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{Path}/events?dateTimeStart={dateStart}&dateTimeEnd={dateEnd}&calendarId={calendarId}");
         var response = await ApiRequest<IEnumerable<CalendarEvent>>(request);
         return response;
     }
 
-    public async Task<JsonResponse<IEnumerable<PersonalCalendar>>> GetAll()
+    public async Task<JsonResponse<IEnumerable<PersonalCalendar>>> GetAllCalendars()
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"{Path}");
         var response = await ApiRequest<IEnumerable<PersonalCalendar>>(request);

@@ -44,14 +44,14 @@ public partial class ConnectorPipeline
 
     private HttpItemDrawer? ItemDrawer = default!;
 
-    //public HttpItemDialog HttpItemEditor = default!;
-
     private MudDropContainer<DropItem>? Container = default!;
 
 
     private bool DataHasChanged = false;
 
     private bool IsLoading = false;
+
+    private bool success;
 
     protected override async Task OnInitializedAsync()
     {
@@ -77,7 +77,7 @@ public partial class ConnectorPipeline
     {
         IsLoading = true;
         var response = await ConnectorClient.UpdatePipeline(ConnectorId, Items.AsEnumerable());
-        (_, var error) = response.AsTuple();
+        (var items, var error) = response.AsTuple();
         IsLoading = false;
 
         if (!string.IsNullOrEmpty(error))
@@ -86,7 +86,10 @@ public partial class ConnectorPipeline
             return;
         }
 
+        Items = items.Select(item => new DropItem(item)).ToList();
+
         DataHasChanged = false;
+        Container!.Refresh();
         base.StateHasChanged();
     }
 
@@ -105,8 +108,8 @@ public partial class ConnectorPipeline
 
     public async Task HandleOnCreateItem(HttpItem item)
     {
-        var dropItem = new DropItem(CollectionFactory.PrepareHttpItem(item, Items.AsEnumerable() as IEnumerable<HttpItem>, new HttpCollection()));
-        Items.Add(dropItem);
+        SelectedItem = new DropItem(CollectionFactory.PrepareHttpItem(item, Items.AsEnumerable() as IEnumerable<HttpItem>, new HttpCollection()));
+        Items.Add(SelectedItem);
         
         DataHasChanged = true;
         Container!.Refresh();
@@ -115,8 +118,9 @@ public partial class ConnectorPipeline
 
     public async Task HandleOnUpdateItem(HttpItem item)
     {
-        var dropItem = new DropItem(CollectionFactory.PrepareHttpItem(item, Items.AsEnumerable() as IEnumerable<HttpItem>, new HttpCollection()));
-        Items = Items.Select(elem => elem.Id == item.Id ? dropItem : elem).ToList();
+        var httpItem = CollectionFactory.PrepareHttpItem(item, Items.AsEnumerable() as IEnumerable<HttpItem>, new HttpCollection());
+        SelectedItem = new DropItem(httpItem);
+        Items = Items.Select(elem => elem.Id == item.Id ? SelectedItem : elem).ToList();
 
         DataHasChanged = true;
         Container!.Refresh();
@@ -125,7 +129,10 @@ public partial class ConnectorPipeline
 
     public async Task HandleOnRemoveItem(HttpItem item)
     {
-        Items.Remove(new DropItem(item));
+        var dropItem = Items.FirstOrDefault(elem => elem.Id == item.Id);
+        if (dropItem == null) return;
+
+        Items.Remove(dropItem);
         SelectedItem = Items.Count() > 0 ? Items.Last() : null;
 
         DataHasChanged = true;
@@ -137,8 +144,8 @@ public partial class ConnectorPipeline
     {
         if (item == null) return;
         if (SelectedItem?.Id == item.Id) return;
-
         SelectedItem = new DropItem(item);
+
         Container!.Refresh();
         base.StateHasChanged();
     }
@@ -160,48 +167,6 @@ public partial class ConnectorPipeline
         dropItem.Item.Identifier = dropItem.DropzoneIdentifier;
         DataHasChanged = true;
     }
-
-    //public async Task HandleHttpDrawerOpen()
-    //{
-    //    // TODO: Open drawer 
-    //    //var dialog = await DialogService.ShowAsync<HttpItemCreateDialog>();
-    //    //var result = await dialog.Result;
-
-    //    //if (!result.Canceled)
-    //    //{
-    //    //    if (Guid.TryParse(result.Data.ToString(), out Guid connectorId))
-    //    //    {
-    //    //        NavigationManager.NavigateTo($"/connectors/{connectorId}/pipeline");
-    //    //    }
-    //    //    else
-    //    //    {
-    //    //        Snackbar.Add($"Can't navigate, connector id is invalid", Severity.Error);
-    //    //    }
-    //    //}
-
-
-
-    //    //IsLoading = true;
-
-    //    ////var response = await ConnectorClient.UpdatePipeline(ConnectorId, HttpItems.AsEnumerable());
-    //    ////(_, ErrorMessage) = response.AsTuple();
-    //    ////if (!string.IsNullOrEmpty(ErrorMessage))
-    //    ////{
-    //    ////    base.StateHasChanged();
-    //    ////}
-
-    //    //IsLoading = false;
-    //    //DataHasChanged = true;
-    //    //base.StateHasChanged();
-    //}
-
-    //public async Task OnOpenEditor(HttpItem item)
-    //{
-    //    if (item == null) return;
-    //    //HttpItemEditor.OpenEditDialog(item);
-    //    base.StateHasChanged();
-    //}
-
 
     public List<HttpVariable> GetItemResponseVariables()
     {

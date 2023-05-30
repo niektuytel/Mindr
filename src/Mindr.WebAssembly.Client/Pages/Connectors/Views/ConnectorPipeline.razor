@@ -59,26 +59,28 @@
                         <MudButton StartIcon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" Size="Size.Small" @onclick="@(() => ItemDrawer!.HandleOpenOnUpdate((HttpItem)SelectedItem))">Edit</MudButton>
                         <MudButton StartIcon="@Icons.Material.Filled.Delete" IconColor="Color.Primary" Size="Size.Small" @onclick="@(async () => await HandleOnRemoveItem(SelectedItem))">Delete</MudButton>
                     </MudStack>
-                    <MudTabs Elevation="0" Border="true" ApplyEffectsToContainer="true">
-                        <MudTabPanel Text="Inbound">
-                            @foreach (var variable in SelectedItem.Request.Variables)
-                            {
-                                <MudTextField @bind-Value="@variable.Value" Placeholder="@variable.Key" Label="@variable.Key" Required="true" RequiredError="Value is required!" />
-                            }
-                        </MudTabPanel>
-                        @if (SelectedItem.Result != null)
-                        {
-                            <MudTabPanel Text="Response">
-                                <pre style="border: solid 1px lightgray;">@SelectedItem.Result.ToString()</pre>
+                    <MudForm @bind-IsValid="@success" FieldChanged="@((args) => DataHasChanged = true)" Class="overflow-auto">
+                        <MudTabs Elevation="0" Border="true" ApplyEffectsToContainer="true">
+                            <MudTabPanel Text="Inbound">
+                                @foreach (var variable in SelectedItem.Request.Variables)
+                                {
+                                    <MudTextField @bind-Value="@variable.Value" Placeholder="@variable.Key" Label="@variable.Key" Required="true" RequiredError="Value is required!" />
+                                }
                             </MudTabPanel>
-                        }
-                        <MudTabPanel Text="Outbound">
-                            @foreach (var variable in GetItemResponseVariables()!)
+                            @if (SelectedItem.Result != null)
                             {
-                                <MudTextField @bind-Value="@variable.Value" Placeholder="@variable.Key" Label="@variable.Key" Required="true" RequiredError="Value is required!" />
+                                <MudTabPanel Text="Response">
+                                    <pre style="border: solid 1px lightgray;">@SelectedItem.Result.ToString()</pre>
+                                </MudTabPanel>
                             }
-                        </MudTabPanel>
-                    </MudTabs>
+                            <MudTabPanel Text="Outbound">
+                                @foreach (var variable in GetItemResponseVariables()!)
+                                {
+                                    <MudTextField @bind-Value="@variable.Value" Placeholder="@variable.Key" Label="@variable.Key" Required="true" RequiredError="Value is required!" />
+                                }
+                            </MudTabPanel>
+                        </MudTabs>
+                    </MudForm>
                 </MudPaper>
             }
         </MudItem>

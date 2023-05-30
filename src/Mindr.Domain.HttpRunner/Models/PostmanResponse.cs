@@ -10,7 +10,7 @@ namespace Mindr.Domain.HttpRunner.Models
         public string Name { get; set; }
 
         [JsonPropertyName("originalRequest")]
-        public HttpRequest OriginalRequest { get; set; }
+        public HttpRequest OriginalRequest { get; set; } = new HttpRequest();
 
         [JsonPropertyName("status")]
         public string Status { get; set; }

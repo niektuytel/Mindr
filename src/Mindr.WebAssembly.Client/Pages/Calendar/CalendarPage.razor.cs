@@ -7,21 +7,70 @@ using System.Text.Json;
 using DemoApp.Models;
 using Mindr.WebAssembly.Client.Pages.Calendar.Dialogs;
 using MudBlazor;
+using Mindr.Domain.HttpRunner.Services;
+using Mindr.WebAssembly.Client.Services;
+using Mindr.Domain.Models.DTO.Connector;
+using Mindr.WebAssembly.Client.Pages.Connectors.Views;
+using Mindr.Domain.Models.DTO.Personal;
+using Mindr.Domain.Models.DTO.Calendar;
 
 namespace Mindr.WebAssembly.Client.Pages.Calendar;
 
 public partial class CalendarPage
 {
+    [Inject]
+    public IApiPersonalCalendarClient CalendarClient { get; set; } = default!;
 
-    private List<AppointmentDto> _appointments = new();
+    [Inject]
+    public IHttpRunnerClient CollectionClient { get; set; } = default!;
+
+    [Inject]
+    public IHttpRunnerFactory CollectionFactory { get; set; } = default!;
+
+    [Inject]
+    public IDialogService DialogService { get; set; } = default!;
+
+    [Inject]
+    public ISnackbar Snackbar { get; set; } = default!;
+
+    public IEnumerable<PersonalCalendar> Calendars = new List<PersonalCalendar>();
+    public IEnumerable<CalendarEvent> Events = new List<CalendarEvent>();
+
+    private bool IsLoading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // TODO: Get selected calendar from user cookies
+        //IsLoading = true;
+        //var response = await CalendarClient.GetAllCalendars();
+        //(Calendars, var error) = response.AsTuple();
+        //IsLoading = false;
+
+        //if (!string.IsNullOrEmpty(error))
+        //{
+        //    Snackbar.Add(error, Severity.Error);
+        //}
+       
+        base.StateHasChanged();
+    }
 
     async Task OnRequestNewData(DateTime start, DateTime end)
     {
-        await Task.Delay(500);
-        _appointments = AppointmentService.GetAppointments(start, end).ToList();
+        string calendarId = null;
+
+        var response = await CalendarClient.GetAllEvents(start, end, calendarId);
+        (Events, var error) = response.AsTuple();
+
+        if (!string.IsNullOrEmpty(error))
+        {
+            Snackbar.Add(error, Severity.Error);
+        }
+
+        //await Task.Delay(500);
+        //_appointments = AppointmentService.GetAppointments(start, end).ToList();
     }
 
-    async Task OnAppointmentClicked(AppointmentDto app)
+    async Task OnAppointmentClicked(CalendarEvent app)
     {
         var dialog = DialogService.Show<EditAppointmentDialog>("Edit Appointment", new DialogParameters
         {
@@ -34,15 +83,15 @@ public partial class CalendarPage
 
     Task OnAddingNewAppointment(DateTime start, DateTime end)
     {
-        // POST to a database so it's persisted
-        _appointments.Add(new AppointmentDto { Start = start, End = end, Title = "A newly added appointment!", Color = "aqua" });
+        // TODO: POST to a database so it's persisted
+        //_appointments.Add(new CalendarEvent { Start = start, End = end, Title = "A newly added appointment!", Color = "aqua" });
         return Task.CompletedTask;
     }
 
-    Task HandleReschedule(AppointmentDto appointment, DateTime newStart, DateTime newEnd)
+    Task HandleReschedule(CalendarEvent appointment, DateTime newStart, DateTime newEnd)
     {
-        appointment.Start = newStart;
-        appointment.End = newEnd;
+        appointment.StartDate.DateTime = newStart;
+        appointment.EndDate.DateTime = newEnd;
 
         return Task.CompletedTask;
     }
@@ -51,7 +100,7 @@ public partial class CalendarPage
     {
         var dialog = DialogService.Show<OverflowAppointmentDialog>($"Appointments for {day.ToShortDateString()}", new DialogParameters
         {
-            ["Appointments"] = _appointments,
+            ["Appointments"] = Events,
             ["SelectedDate"] = day,
         });
         await dialog.Result;

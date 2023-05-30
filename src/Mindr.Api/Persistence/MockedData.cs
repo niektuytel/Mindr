@@ -32,7 +32,7 @@ namespace Mindr.Api.Persistence
 
         public static PersonalCredential GetPersonalCredential() 
         {
-            return new PersonalCredential(UserId, new PersonalCredentialDTO()
+            return new PersonalCredential(Guid.Parse("49fa5022-66dc-45b6-bf27-e512e41a905f"), UserId, new PersonalCredentialDTO()
             {
                 Target = CredentialTarget.GoogleCalendar,
                 AccessToken = "ya29.a0AWY7CklqaLHr3A6x_du7-JrtifzPBVTMAapV6zjTEJgPZWiGcdbAPoGYs9m8h4dXC5tM5eAZPMys2ooPrs-EYUd25wXKPS8uLg3TdSpmKKWLPH0YghddBj60ZxbhUGYGfxMytqFMMJt0f71oa12g4I7m1WAraCgYKATQSARESFQG1tDrpZu-pcnhWAKCbDk_1Gv31CA0163",
@@ -40,7 +40,7 @@ namespace Mindr.Api.Persistence
                 RefreshToken = "1//09f8d-mKU1D2RCgYIARAAGAkSNwF-L9IrZ_GsMEG0Z-UsAuFJvLVh7y1bW0jr83HIOOfybWJ6OmL1M74lOpjH1_BQzjAtdzPWCu4",
                 Scope = "https://www.googleapis.com/auth/calendar",
                 TokenType = "Bearer"
-            }); ; 
+            }); 
         }
 
         public static Connector GetConnector1()

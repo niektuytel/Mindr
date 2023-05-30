@@ -14,6 +14,7 @@ using Mindr.Api.Models.Connectors;
 using Mindr.Domain.Models.DTO.Connector;
 using NuGet.Packaging;
 using Force.DeepCloner;
+using System.Data.SqlClient;
 
 namespace Mindr.Api.Services.Connectors
 {
@@ -23,7 +24,6 @@ namespace Mindr.Api.Services.Connectors
         private readonly IConnectorDriver _connectorDriver;
         private readonly IConnectorEventManager _eventClient;
         private readonly IMapper _mapper;
-        //private readonly ConnectorPipelineDriver _helper;
         private readonly ApplicationContext _context;
 
         public ConnectorManager(
@@ -38,30 +38,30 @@ namespace Mindr.Api.Services.Connectors
             _mapper = mapper;
             _eventClient = eventClient;
             _context = context;
-
-            //_helper = new ConnectorPipelineDriver();
         }
 
         public async Task<Connector> GetById(string userId, Guid id)
         {
-            var entity = await _context.Connectors
+            var entity = _context.Connectors
                 .Include(item => item.Variables)
                 .Include(item => item.Pipeline).ThenInclude(item => item.Request).ThenInclude(item => item.Variables)
                 .Include(item => item.Pipeline).ThenInclude(item => item.Request).ThenInclude(item => item.Url)
                 .Include(item => item.Pipeline).ThenInclude(item => item.Request).ThenInclude(item => item.Header)
                 .Include(item => item.Pipeline).ThenInclude(item => item.Request).ThenInclude(item => item.Body).ThenInclude(item => item.Options).ThenInclude(item => item.Raw)
-                .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.Variables)
-                .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.OriginalRequest).ThenInclude(item => item.Variables)
-                .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.OriginalRequest).ThenInclude(item => item.Url).ThenInclude(item => item.Query)
-                .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.OriginalRequest).ThenInclude(item => item.Header)
-                .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.OriginalRequest).ThenInclude(item => item.Body).ThenInclude(item => item.Options).ThenInclude(item => item.Raw)
-                .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.Header)
-                .Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.Cookie)
+
+                // TODO: issue TimeOut! (using same objects mayby cause infinity join issue)
+                //.Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.Variables)
+                //.Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.OriginalRequest).ThenInclude(item => item.Variables)
+                //.Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.OriginalRequest).ThenInclude(item => item.Url).ThenInclude(item => item.Query)
+                //.Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.OriginalRequest).ThenInclude(item => item.Header)
+                //.Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.OriginalRequest).ThenInclude(item => item.Body).ThenInclude(item => item.Options).ThenInclude(item => item.Raw)
+                //.Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.Header)
+                //.Include(item => item.Pipeline).ThenInclude(item => item.Response).ThenInclude(item => item.Cookie)
+
                 .Where(item => (item.IsPublic || item.CreatedBy == userId))
-                .FirstOrDefaultAsync(item => item.Id == id);
+                .FirstOrDefault(item => item.Id == id);
 
             _connectorValidator.ThrowOnNullConnector(id, entity);
-
             return entity!;
         }
 
@@ -168,22 +168,6 @@ namespace Mindr.Api.Services.Connectors
             return item;
         }
 
-        //public async Task<IEnumerable<HttpItem>> UpdateHttpItems(string userId, Guid id, IEnumerable<HttpItem> input)
-        //{
-        //    var entity = await GetById(userId, id);
-        //    var items = await _connectorDriver.AutoCompletePipeline(entity.Variables, input);
-
-        //    // Remove pipeline
-        //    _context.HttpItems.RemoveRange(entity.Pipeline);
-        //    await _context.SaveChangesAsync();
-
-        //    // create pipeline
-        //    entity.Pipeline = items;
-        //    _context.Connectors.Update(entity);
-        //    await _context.SaveChangesAsync();
-
-        //    return items;
-        //}
         public async Task<IEnumerable<HttpItem>> UpdateHttpItems(string userId, Guid id, IEnumerable<HttpItem> items)
         {
             var entity = await GetById(userId, id);

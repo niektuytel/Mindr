@@ -12,6 +12,18 @@ namespace Mindr.Domain.Models.DTO.Personal
             
         }
 
+        public PersonalCredential(Guid id, string userId, PersonalCredentialDTO dto)
+        {
+            Id = id;
+            UserId = userId;
+            Target = dto.Target;
+            AccessToken = dto.AccessToken;
+            RefreshToken = dto.RefreshToken;
+            Scope = dto.Scope;
+            TokenType = dto.TokenType;
+            ExpiresIn = dto.ExpiresIn;
+        }
+
         public PersonalCredential(string userId, PersonalCredentialDTO dto)
         {
             UserId = userId;

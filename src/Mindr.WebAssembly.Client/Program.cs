@@ -31,7 +31,6 @@ public static class Program
 
         builder.Services.AddOptions();
         builder.Services.AddHttpClient();
-        builder.Services.AddBlazorDragDrop();
         builder.Services.AddMudServices();
 
         // Authentication
