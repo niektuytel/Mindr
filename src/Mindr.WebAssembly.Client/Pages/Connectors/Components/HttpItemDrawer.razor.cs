@@ -6,7 +6,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Mindr.WebAssembly.Client.Pages.Connectors.Drawers;
+namespace Mindr.WebAssembly.Client.Pages.Connectors.Components;
 
 // Usefull to use? https://www.postman.com/cs-demo/workspace/public-rest-apis/overview
 public partial class HttpItemDrawer

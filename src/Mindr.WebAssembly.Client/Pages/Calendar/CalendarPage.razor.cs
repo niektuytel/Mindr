@@ -13,6 +13,8 @@ using Mindr.Domain.Models.DTO.Connector;
 using Mindr.WebAssembly.Client.Pages.Connectors.Views;
 using Mindr.Domain.Models.DTO.Personal;
 using Mindr.Domain.Models.DTO.Calendar;
+using Mindr.WebAssembly.Client.Pages.Connectors.Components;
+using Mindr.WebAssembly.Client.Pages.Calendar.Components;
 
 namespace Mindr.WebAssembly.Client.Pages.Calendar;
 
@@ -20,6 +22,9 @@ public partial class CalendarPage
 {
     [Inject]
     public IApiPersonalCalendarClient CalendarClient { get; set; } = default!;
+
+    [Inject]
+    public IApiPersonalCredentialClient CredentialClient { get; set; } = default!;
 
     [Inject]
     public IHttpRunnerClient CollectionClient { get; set; } = default!;
@@ -33,10 +38,19 @@ public partial class CalendarPage
     [Inject]
     public ISnackbar Snackbar { get; set; } = default!;
 
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = default!;
+
+    public GoogleAuthentication? GoogleAuthentication { get; set; } = default!;
+
+    public string RedirectUri => $"{NavigationManager.BaseUri[..^1]}/calendar";
+
     public IEnumerable<PersonalCalendar> Calendars = new List<PersonalCalendar>();
+
     public IEnumerable<CalendarEvent> Events = new List<CalendarEvent>();
 
     private bool IsLoading = false;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -54,23 +68,40 @@ public partial class CalendarPage
         base.StateHasChanged();
     }
 
-    async Task OnRequestNewData(DateTime start, DateTime end)
+    public async Task OnRequestNewData(DateTime start, DateTime end)
     {
-        string calendarId = null;
+        string? calendarId = null;
 
         var response = await CalendarClient.GetAllEvents(start, end, calendarId);
         (Events, var error) = response.AsTuple();
 
         if (!string.IsNullOrEmpty(error))
         {
-            Snackbar.Add(error, Severity.Error);
+            var isHandled = await GoogleAuthentication!.HandleConsent();
+            if (isHandled)
+            {
+                Snackbar.Add("Ask consent", Severity.Success);
+            }
+            else
+            {
+                Snackbar.Add(error, Severity.Error);
+            }
         }
 
-        //await Task.Delay(500);
-        //_appointments = AppointmentService.GetAppointments(start, end).ToList();
+        if(Calendars?.Any() == false)
+        {
+            var response2 = await CalendarClient.GetAllCalendars();
+            (Calendars, error) = response2.AsTuple();
+            if (!string.IsNullOrEmpty(error))
+            {
+                Snackbar.Add(error, Severity.Error);
+            }
+        }
+
+
     }
 
-    async Task OnAppointmentClicked(CalendarEvent app)
+    public async Task OnAppointmentClicked(CalendarEvent app)
     {
         var dialog = DialogService.Show<EditAppointmentDialog>("Edit Appointment", new DialogParameters
         {

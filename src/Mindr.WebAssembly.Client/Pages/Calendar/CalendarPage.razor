@@ -1,18 +1,28 @@
 ﻿@attribute [Route($"/calendar")]
-@attribute [Authorize]
-@inherits LayoutComponentBase
-@inject AppointmentService AppointmentService
-
-@namespace Mindr.WebAssembly.Client.Pages.Calendar
-
 @using BlazorScheduler
 @using DemoApp.Models;
 @using DemoApp;
 @using Microsoft.AspNetCore.Authorization;
 @using Mindr.WebAssembly.Client.Pages.Calendar.Dialogs;
+@using Mindr.WebAssembly.Client.Pages.Calendar.Components;
 @using MudBlazor;
 
+@attribute [Authorize]
+@inherits LayoutComponentBase
+@inject AppointmentService AppointmentService
+@namespace Mindr.WebAssembly.Client.Pages.Calendar
 
+
+
+<GoogleAuthentication @ref="GoogleAuthentication" RedirectUri="@RedirectUri" ClientId="@Constants.GoogleAgendaClientId" ClientSecret="@Constants.GoogleAgendaClientSecret" Scopes="@Constants.GoogleAgendaScopes" AccessType="offline">
+    <AuthenticatedView>
+        <MudSelect Margin="Margin.Dense" T="string" Label="Google calendar account" Placeholder="Recent used" Variant="Variant.Outlined">
+            <MudSelectItem Value="@("Tyrannosaur")" />
+            <MudSelectItem Value="@("Triceratops")" />
+            <MudSelectItem Value="@("Henon Rex")" />
+        </MudSelect>
+    </AuthenticatedView>
+</GoogleAuthentication>
 <Scheduler
     OnRequestNewData="OnRequestNewData"
     OnAddingNewAppointment="OnAddingNewAppointment"

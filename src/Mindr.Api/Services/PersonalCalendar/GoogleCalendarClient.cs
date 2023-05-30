@@ -1,8 +1,11 @@
 ﻿using Azure.Core;
 using Google.Apis.Calendar.v3.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Graph;
 using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 using Microsoft.IdentityModel.Tokens;
+using Mindr.Api.Exceptions;
+using Mindr.Api.Persistence;
 using Mindr.Domain.Models.DTO.Calendar;
 using Mindr.Domain.Models.DTO.Personal;
 using Newtonsoft.Json;
@@ -16,15 +19,17 @@ namespace Mindr.Api.Services.CalendarEvents
     public class GoogleCalendarClient : IGoogleCalendarClient
     {
         private readonly IConfiguration _configuration;
+        private readonly ApplicationContext _context;
         private readonly HttpClient _httpClient;
 
-        public GoogleCalendarClient(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public GoogleCalendarClient(IHttpClientFactory httpClientFactory, ApplicationContext context, IConfiguration configuration)
         {
             _httpClient = httpClientFactory.CreateClient(nameof(GoogleCalendarClient));
+            _context = context;
             _configuration = configuration;
         }
 
-        public async Task<string> GetAccessToken(string refreshToken)
+        public async Task<string?> GetAccessToken(string refreshToken)
         {
             var clientId = _configuration["Google:ClientId"];
             var clientSecret = _configuration["Google:ClientSecret"];
@@ -43,12 +48,28 @@ namespace Mindr.Api.Services.CalendarEvents
                 return accessToken;
             }
 
-            throw new Exception($"Failed getting access token [Code:{response.StatusCode}]");
+            return null;
         }
 
         public async Task<IEnumerable<PersonalCalendar>?> GetCalendars(string userId, PersonalCredential credential)
         {
             var accessToken = await GetAccessToken(credential.RefreshToken);
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                var calendar = await _context.PersonalCalendars.FirstOrDefaultAsync(item => item.CredentialId == credential.Id);
+                if (calendar != null)
+                {
+                    _context.PersonalCalendars.Remove(calendar);
+                    _context.SaveChanges();
+                }
+
+                _context.PersonalCredentials.Remove(credential);
+                _context.SaveChanges();
+
+                throw new HttpException(System.Net.HttpStatusCode.BadRequest, $"Failed getting access token [Code:BadRequest]");
+            }
+
+
             var uri = $"https://www.googleapis.com/calendar/v3/users/me/calendarList";
 
             var request = new HttpRequestMessage(HttpMethod.Get, uri);
@@ -62,7 +83,7 @@ namespace Mindr.Api.Services.CalendarEvents
                 var jsonString = await response.Content.ReadAsStringAsync();
                 var calendarList = JsonConvert.DeserializeObject<CalendarList>(jsonString);
 
-                if (calendarList?.Items?.Any() != true)
+                if (calendarList?.Items?.Any() == false)
                 {
                     return null;
                 }
@@ -85,6 +106,7 @@ namespace Mindr.Api.Services.CalendarEvents
                     };
 
                     calendars.Add(calendarItem);
+
                 }
 
                 return calendars;
@@ -96,6 +118,25 @@ namespace Mindr.Api.Services.CalendarEvents
         public async Task<IEnumerable<CalendarEvent>?> GetCalendarEvents(string refreshToken, string calendarId, DateTime startDateTime, DateTime endDateTime)
         {   
             var accessToken = await GetAccessToken(refreshToken);
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                var credential = _context.PersonalCredentials.FirstOrDefault(item => item.RefreshToken == refreshToken);
+                if (credential != null)
+                {
+                    var calendar = await _context.PersonalCalendars.FirstOrDefaultAsync(item => item.CredentialId == credential.Id);
+                    if (calendar != null)
+                    {
+                        _context.PersonalCalendars.Remove(calendar);
+                        _context.SaveChanges();
+                    }
+
+                    _context.PersonalCredentials.Remove(credential);
+                    _context.SaveChanges();
+                }
+
+                throw new HttpException(System.Net.HttpStatusCode.BadRequest, $"Failed, by getting access token [Code:BadRequest]");
+            }
+
             var timespan = $"timeMin={startDateTime.Year}-{startDateTime.Month}-{startDateTime.Day}T00%3A00%3A00-00%3A00&timeMax={endDateTime.Year}-{endDateTime.Month}-{endDateTime.Day}T23%3A59%3A59-00%3A00";
             var uri = $"https://www.googleapis.com/calendar/v3/calendars/{calendarId}/events?{timespan}";
 
@@ -110,7 +151,7 @@ namespace Mindr.Api.Services.CalendarEvents
                 var jsonString = await response.Content.ReadAsStringAsync();
                 var dataEvents = JsonConvert.DeserializeObject<Events>(jsonString);
 
-                if (dataEvents?.Items?.Any() != true)
+                if (dataEvents?.Items?.Any() == false)
                 {
                     return null;
                 }

@@ -3,7 +3,7 @@ using Mindr.WebAssembly.Client.Services;
 using Mindr.Domain.Models.DTO.Connector;
 using MudBlazor;
 
-namespace Mindr.WebAssembly.Client.Pages.Connectors.Dialogs;
+namespace Mindr.WebAssembly.Client.Pages.Connectors.Components;
 
 public partial class ConnectorCreateDialog
 {
@@ -20,7 +20,7 @@ public partial class ConnectorCreateDialog
     public Connector Connector { get; set; } = new Connector();
 
     private bool IsLoading = false;
-    
+
     public async Task HandleOnCreate()
     {
         IsLoading = true;

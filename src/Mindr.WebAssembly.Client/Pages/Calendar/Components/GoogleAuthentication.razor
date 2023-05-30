@@ -1,0 +1,21 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Fast.Components.FluentUI
+@using Mindr.WebAssembly.Client.Components
+@using Mindr.Domain.Models.DTO.Connector
+@using System.Collections.ObjectModel
+@using Mindr.WebAssembly.Client.Models
+
+@namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
+@inherits LayoutComponentBase
+
+
+@*AccessType="offline" | Explain = https://support.google.com/calendar/thread/94064838/how-do-i-share-a-calendar-with-a-service-account?hl=en*@
+@if (!string.IsNullOrEmpty(AccessToken))
+{
+    @AuthenticatedView
+}
+
+
+
+
+

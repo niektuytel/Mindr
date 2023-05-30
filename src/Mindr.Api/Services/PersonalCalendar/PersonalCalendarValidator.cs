@@ -37,7 +37,7 @@ namespace Mindr.Api.Services.CalendarEvents
         {
             if (entity == null)
             {
-                throw new HttpException(HttpStatusCode.NotFound, $"Can't find credential found for calendar:{calendarId} on User:{userId}");
+                throw new HttpException(HttpStatusCode.NotFound, $"Can't find credential for calendar:{calendarId} on User:{userId}");
             }
         }
 

@@ -26,7 +26,6 @@
     <Compile Remove="Pages\Agenda\Components\ConnectorEventDialog.razor.cs" />
     <Compile Remove="Pages\Connectors\Components\Dropzone.razor.cs" />
     <Compile Remove="Pages\Connectors\Components\HttpItemCard.razor.cs" />
-    <Compile Remove="Pages\Connectors\Drawers\HttpItemSettings.razor.cs" />
     <Compile Remove="Pages\Index.razor.cs" />
   </ItemGroup>
 
@@ -48,7 +47,6 @@
     <Content Remove="Pages\Connectors\Components\CollectionItem.razor" />
     <Content Remove="Pages\Connectors\Components\Dropzone.razor" />
     <Content Remove="Pages\Connectors\Components\HttpItemCard.razor" />
-    <Content Remove="Pages\Connectors\Drawers\HttpItemSettings.razor" />
     <Content Remove="Pages\Index.razor" />
     <Content Remove="wwwroot\css\fonts.google.icons.css" />
     <Content Remove="wwwroot\css\fonts.gstatic.flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2" />
@@ -60,10 +58,9 @@
     <None Remove="Components\Devider.razor.css" />
     <None Remove="Components\Stack.razor.css" />
     <None Remove="Pages\Agenda\Components\ConnectorEventDialog.razor.css" />
+    <None Remove="Pages\Calendar\Components\GoogleCalendarDialog.razor.css" />
     <None Remove="Pages\Connectors\Components\ConnectorDialog.razor.css" />
     <None Remove="Pages\Connectors\Components\HttpItemCard.razor.css" />
-    <None Remove="Pages\Connectors\Dialogs\HttpItemCreateDialog.razor.css" />
-    <None Remove="Pages\Connectors\Drawers\HttpItemSettings.razor.css" />
     <None Remove="Pages\Connectors\Views\ConnectorPipeline.razor.css" />
     <None Remove="Pages\Dashboard\Index.razor.css" />
     <None Remove="Pages\Index.razor.css" />

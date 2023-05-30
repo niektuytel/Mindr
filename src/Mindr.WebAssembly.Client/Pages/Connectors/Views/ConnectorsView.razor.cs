@@ -3,7 +3,6 @@ using Mindr.WebAssembly.Client.Pages.Connectors.Components;
 using Mindr.WebAssembly.Client.Services;
 using Mindr.Domain.Models.DTO.Connector;
 using MudBlazor;
-using Mindr.WebAssembly.Client.Pages.Connectors.Dialogs;
 
 namespace Mindr.WebAssembly.Client.Pages.Connectors.Views;
 

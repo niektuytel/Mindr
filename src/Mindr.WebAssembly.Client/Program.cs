@@ -50,6 +50,7 @@ public static class Program
         builder.Services.AddScoped<IApiConnectorClient, ApiConnectorClient>();
         builder.Services.AddScoped<IApiConnectorEventClient, ApiConnectorEventClient>();
         builder.Services.AddScoped<IApiPersonalCalendarClient, ApiPersonalCalendarClient>();
+        builder.Services.AddScoped<IApiPersonalCredentialClient, ApiPersonalCredentialClient>();
         builder.Services.AddScoped<IHttpRunnerFactory, HttpRunnerFactory>();
         builder.Services.AddScoped<IHttpRunnerClient, HttpRunnerClient>();
 

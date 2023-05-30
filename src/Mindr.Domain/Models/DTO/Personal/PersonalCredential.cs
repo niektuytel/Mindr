@@ -46,6 +46,16 @@ namespace Mindr.Domain.Models.DTO.Personal
             ExpiresIn = expiresIn;
         }
 
+        public PersonalCredential(CredentialTarget target, string accessToken, string refreshToken, string scope, string tokenType, int expiresIn)
+        {
+            Target = target;
+            AccessToken = accessToken;
+            RefreshToken = refreshToken;
+            Scope = scope;
+            TokenType = tokenType;
+            ExpiresIn = expiresIn;
+        }
+
         [Key]
         [JsonPropertyName("id")]
         public Guid Id { get; set; } = Guid.NewGuid();

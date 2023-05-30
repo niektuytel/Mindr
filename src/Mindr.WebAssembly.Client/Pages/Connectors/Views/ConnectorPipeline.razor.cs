@@ -10,11 +10,10 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using MudBlazor;
-using Mindr.WebAssembly.Client.Pages.Connectors.Dialogs;
 using System.ComponentModel.DataAnnotations.Schema;
-using Mindr.WebAssembly.Client.Pages.Connectors.Drawers;
+using Mindr.WebAssembly.Client.Pages.Connectors.Components;
 
-namespace Mindr.WebAssembly.Client.Pages.Connectors.Views;
+namespace Mindr.WebAssembly.Client.Pages.Connectors.Components;
 
 public partial class ConnectorPipeline
 {

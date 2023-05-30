@@ -3,7 +3,7 @@ using Mindr.Domain.Models.DTO.Connector;
 using Mindr.WebAssembly.Client.Services;
 using MudBlazor;
 
-namespace Mindr.WebAssembly.Client.Pages.Connectors.Dialogs;
+namespace Mindr.WebAssembly.Client.Pages.Connectors.Components;
 
 public partial class ConnectorDeleteDialog
 {
