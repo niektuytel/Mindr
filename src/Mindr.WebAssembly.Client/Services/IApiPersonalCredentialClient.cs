@@ -6,6 +6,6 @@ namespace Mindr.WebAssembly.Client.Services
 {
     public interface IApiPersonalCredentialClient
     {
-        Task<JsonResponse<PersonalCredential>> Create(PersonalCredentialDTO credential);
+        Task<JsonResponse<PersonalCredential>> Upsert(PersonalCredential credential);
     }
 }

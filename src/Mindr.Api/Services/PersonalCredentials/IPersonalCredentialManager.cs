@@ -10,7 +10,7 @@ namespace Mindr.Api.Services.PersonalCredentials
     {
         Task<IEnumerable<PersonalCredential>> GetAllById(string userId, Guid id);
         Task<IEnumerable<PersonalCredential>> GetAll(string userId);
-        Task<PersonalCredential> Create(string userId, PersonalCredentialDTO input);
+        Task<PersonalCredential> Upsert(string userId, PersonalCredential input);
         Task<PersonalCredential> Update(string userId, Guid id, PersonalCredentialDTO input);
         Task<PersonalCredential> Delete(string userId, Guid id);
     }

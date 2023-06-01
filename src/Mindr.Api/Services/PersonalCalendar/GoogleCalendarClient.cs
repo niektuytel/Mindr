@@ -29,11 +29,11 @@ namespace Mindr.Api.Services.CalendarEvents
             _configuration = configuration;
         }
 
-        public async Task<string?> GetAccessToken(string refreshToken)
+        public async Task<string?> GetAccessToken(PersonalCredential credential)
         {
             var clientId = _configuration["Google:ClientId"];
             var clientSecret = _configuration["Google:ClientSecret"];
-            var uri = $"https://oauth2.googleapis.com/token?client_id={clientId}&client_secret={clientSecret}&grant_type=refresh_token&refresh_token={refreshToken}";
+            var uri = $"https://oauth2.googleapis.com/token?client_id={clientId}&client_secret={clientSecret}&grant_type=refresh_token&refresh_token={credential.RefreshToken}";
 
             var request = new HttpRequestMessage(HttpMethod.Post, uri);
             request.Content = new StringContent(string.Empty);
@@ -48,28 +48,12 @@ namespace Mindr.Api.Services.CalendarEvents
                 return accessToken;
             }
 
-            return null;
+            throw new HttpException<PersonalCredential>(System.Net.HttpStatusCode.NotFound, credential);
         }
 
-        public async Task<IEnumerable<PersonalCalendar>?> GetCalendars(string userId, PersonalCredential credential)
+        public async Task<IEnumerable<PersonalCalendar>?> GetCalendars(PersonalCredential credential, string userId)
         {
-            var accessToken = await GetAccessToken(credential.RefreshToken);
-            if (string.IsNullOrEmpty(accessToken))
-            {
-                var calendar = await _context.PersonalCalendars.FirstOrDefaultAsync(item => item.CredentialId == credential.Id);
-                if (calendar != null)
-                {
-                    _context.PersonalCalendars.Remove(calendar);
-                    _context.SaveChanges();
-                }
-
-                _context.PersonalCredentials.Remove(credential);
-                _context.SaveChanges();
-
-                throw new HttpException(System.Net.HttpStatusCode.BadRequest, $"Failed getting access token [Code:BadRequest]");
-            }
-
-
+            var accessToken = await GetAccessToken(credential);
             var uri = $"https://www.googleapis.com/calendar/v3/users/me/calendarList";
 
             var request = new HttpRequestMessage(HttpMethod.Get, uri);
@@ -115,28 +99,9 @@ namespace Mindr.Api.Services.CalendarEvents
             throw new Exception($"Failed getting calendars from credentials({credential.Id}) [Code:{response.StatusCode}]");
         }
 
-        public async Task<IEnumerable<CalendarEvent>?> GetCalendarEvents(string refreshToken, string calendarId, DateTime startDateTime, DateTime endDateTime)
+        public async Task<IEnumerable<CalendarEvent>?> GetCalendarEvents(PersonalCredential credential, DateTime startDateTime, DateTime endDateTime, string calendarId)
         {   
-            var accessToken = await GetAccessToken(refreshToken);
-            if (string.IsNullOrEmpty(accessToken))
-            {
-                var credential = _context.PersonalCredentials.FirstOrDefault(item => item.RefreshToken == refreshToken);
-                if (credential != null)
-                {
-                    var calendar = await _context.PersonalCalendars.FirstOrDefaultAsync(item => item.CredentialId == credential.Id);
-                    if (calendar != null)
-                    {
-                        _context.PersonalCalendars.Remove(calendar);
-                        _context.SaveChanges();
-                    }
-
-                    _context.PersonalCredentials.Remove(credential);
-                    _context.SaveChanges();
-                }
-
-                throw new HttpException(System.Net.HttpStatusCode.BadRequest, $"Failed, by getting access token [Code:BadRequest]");
-            }
-
+            var accessToken = await GetAccessToken(credential);
             var timespan = $"timeMin={startDateTime.Year}-{startDateTime.Month}-{startDateTime.Day}T00%3A00%3A00-00%3A00&timeMax={endDateTime.Year}-{endDateTime.Month}-{endDateTime.Day}T23%3A59%3A59-00%3A00";
             var uri = $"https://www.googleapis.com/calendar/v3/calendars/{calendarId}/events?{timespan}";
 

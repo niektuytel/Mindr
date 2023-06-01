@@ -12,6 +12,7 @@ using System.Linq;
 using MudBlazor;
 using System.ComponentModel.DataAnnotations.Schema;
 using Mindr.WebAssembly.Client.Pages.Connectors.Components;
+using Mindr.Domain.Models.DTO.Connector;
 
 namespace Mindr.WebAssembly.Client.Pages.Connectors.Components;
 
@@ -43,7 +44,7 @@ public partial class ConnectorPipeline
 
     private HttpItemDrawer? ItemDrawer = default!;
 
-    private MudDropContainer<DropItem>? Container = default!;
+    private MudDropContainer<DropItem> Container = default!;
 
 
     private bool DataHasChanged = false;
@@ -56,39 +57,43 @@ public partial class ConnectorPipeline
     {
         IsLoading = true;
         var response = await ConnectorClient.Get(ConnectorId);
-        (var connector, var error) = response.AsTuple();
         IsLoading = false;
 
-        if (!string.IsNullOrEmpty(error))
+        if (response.IsError())
         {
+            var error = response.GetContent();
             Snackbar.Add(error, Severity.Error);
         }
-        else if (connector != null)
+        else if(response.IsSuccessful())
         {
+            var connector = response.GetContent<Connector>();
             Items = connector!.Pipeline.Select(item => new DropItem(item)).ToList();
+            Container.Refresh();
         }
 
         base.StateHasChanged();
-        Container.Refresh();
     }
 
     public async Task HandleOnSave()
     {
         IsLoading = true;
         var response = await ConnectorClient.UpdatePipeline(ConnectorId, Items.AsEnumerable());
-        (var items, var error) = response.AsTuple();
         IsLoading = false;
 
-        if (!string.IsNullOrEmpty(error))
+        if (response.IsError())
         {
+            var error = response.GetContent();
             Snackbar.Add(error, Severity.Error);
-            return;
+        }
+        else if (response.IsSuccessful())
+        {
+            var items = response.GetContent<IEnumerable<HttpItem>>();
+            Items = items.Select(item => new DropItem(item)).ToList();
+            DataHasChanged = false;
+
+            Container!.Refresh();
         }
 
-        Items = items.Select(item => new DropItem(item)).ToList();
-
-        DataHasChanged = false;
-        Container!.Refresh();
         base.StateHasChanged();
     }
 

@@ -27,15 +27,19 @@ public partial class ConnectorsView
     {
         IsLoading = true;
         var response = await ConnectorClient.GetAll();
-        (DataCollection, var error) = response.AsTuple();
         IsLoading = false;
-        
-        if (!string.IsNullOrEmpty(error))
-        {
-            Snackbar.Add(error, Severity.Error);
-            base.StateHasChanged();
-        }
 
+        if (response.IsError())
+        {
+            var error = response.GetContent();
+            Snackbar.Add(error, Severity.Error);
+        }
+        else if (response.IsSuccessful())
+        {
+            DataCollection = response.GetContent<IEnumerable<ConnectorBriefDTO>>();
+        }
+        
+        base.StateHasChanged();
     }
 
     public async Task HandleDialogOpen()

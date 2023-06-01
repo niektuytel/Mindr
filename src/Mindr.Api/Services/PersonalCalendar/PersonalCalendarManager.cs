@@ -46,7 +46,7 @@ namespace Mindr.Api.Services.CalendarEvents
 
             if (calendar!.From == Domain.Enums.CalendarFrom.Google)
             {
-                var events = await _googleClient.GetCalendarEvents(credential!.RefreshToken, calendarId, startDateTime, endDateTime);
+                var events = await _googleClient.GetCalendarEvents(credential!, startDateTime, endDateTime, calendarId);
                 if (events != null)
                 {
                     return events;
@@ -75,7 +75,7 @@ namespace Mindr.Api.Services.CalendarEvents
                 var credential = await _context.PersonalCredentials.FirstOrDefaultAsync(item => item.UserId == userId && item.Id == calendar.CredentialId);
                 _validator.ThrowOnNullPersonalCredential(userId, calendar.CalendarId, credential);
 
-                var response = await _googleClient.GetCalendarEvents(credential!.RefreshToken, calendar.CalendarId, startDateTime, endDateTime);
+                var response = await _googleClient.GetCalendarEvents(credential!, startDateTime, endDateTime, calendar.CalendarId);
                 if(response == null)
                 {
                     continue;
@@ -99,7 +99,7 @@ namespace Mindr.Api.Services.CalendarEvents
             foreach (var credential in credentials)
             {
                 // Google Credentials
-                var googleCalendars = await _googleClient.GetCalendars(userId, credential);
+                var googleCalendars = await _googleClient.GetCalendars(credential, userId);
                 foreach (var calendar in googleCalendars)
                 {
                     calendar.Selected = _context.PersonalCalendars.Select(item => item.CalendarId).Contains(calendar.CalendarId);

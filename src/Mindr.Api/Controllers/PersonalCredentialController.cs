@@ -50,7 +50,7 @@ public class PersonalCredentialController : BaseController
     }
 
     /// <remarks>
-    /// Create a new personal credential for the authenticated user.
+    /// Update/Insert a new personal credential for the authenticated user.
     /// </remarks>
     /// <credentials code="200">Success</credentials>
     /// <credentials code="400">Invalid credentials</credentials>
@@ -59,32 +59,11 @@ public class PersonalCredentialController : BaseController
     [HttpPost]
     [ProducesResponseType(typeof(PersonalCredential), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
-    public async Task<IActionResult> Create([FromBody] PersonalCredentialDTO input)
+    public async Task<IActionResult> Upsert([FromBody] PersonalCredential input)
     {
         var response = await HandleRequest(async () => {
             var userId = User.GetUserId();
-            return await _personalCredentialManager.Create(userId, input);
-        });
-
-        return response;
-    }
-
-    /// <remarks>
-    /// Update personal credential object for the authenticated user.
-    /// </remarks>
-    /// <credentials code="200">Success</credentials>
-    /// <credentials code="400">Invalid credentials</credentials>
-    /// <credentials code="401">Unauthorized</credentials>
-    /// <credentials code="404">Not Found</credentials>
-    [HttpPut("{id}")]
-    [ProducesResponseType(typeof(PersonalCredential), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> Update(Guid id, [FromBody] PersonalCredentialDTO input)
-    {
-        var response = await HandleRequest(async () => {
-            var userId = User.GetUserId();
-            return await _personalCredentialManager.Update(userId, id, input);
+            return await _personalCredentialManager.Upsert(userId, input);
         });
 
         return response;

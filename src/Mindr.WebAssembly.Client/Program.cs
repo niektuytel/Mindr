@@ -16,6 +16,7 @@ using Mindr.Domain.HttpRunner.Services;
 using Mindr.WebAssembly.Client.Providers;
 using DemoApp;
 using MudBlazor.Services;
+using Blazored.LocalStorage;
 
 namespace Mindr.WebAssembly.Client;
 
@@ -31,7 +32,8 @@ public static class Program
 
         builder.Services.AddOptions();
         builder.Services.AddHttpClient();
-        builder.Services.AddMudServices();
+        builder.Services.AddMudServices(); 
+        builder.Services.AddBlazoredLocalStorageAsSingleton();
 
         // Authentication
         builder.Services.AddAuthorizationCore();

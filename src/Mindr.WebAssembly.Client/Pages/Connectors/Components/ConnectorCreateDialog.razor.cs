@@ -25,18 +25,18 @@ public partial class ConnectorCreateDialog
     {
         IsLoading = true;
         var response = await ConnectorClient.Create(Connector);
-        (var data, var error) = response.AsTuple();
         IsLoading = false;
 
-        if (!string.IsNullOrEmpty(error))
+        if(response.IsError())
         {
+            var error = response.GetContent();
             Snackbar.Add(error, Severity.Error);
-            base.StateHasChanged();
         }
-        else if (data != null)
+        else if (response.IsSuccessful())
         {
+            var data = response.GetContent<Connector>();
             Snackbar.Add("Create connector", Severity.Success);
-            Dialog.Close(DialogResult.Ok(data.Id));
+            Dialog.Close(DialogResult.Ok(data!.Id));
         }
 
         IsLoading = false;

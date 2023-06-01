@@ -1,24 +1,42 @@
-﻿namespace Mindr.WebAssembly.Client.Models;
+﻿using System.Net;
+using System.Text.Json;
 
-public class JsonResponse<TData>
+namespace Mindr.WebAssembly.Client.Models;
+
+public class JsonResponse<TJSON>
 {
-    public JsonResponse(TData data)
+    public JsonResponse(HttpStatusCode httpStatusCode, string content)
     {
-        Data = data;
+        StatusCode = httpStatusCode;
+        Content = content;
     }
 
-    public JsonResponse(string error)
+    public HttpStatusCode StatusCode { get; set; }
+
+    public string Content { get; set; }
+
+    public bool IsError()
     {
-        Error = error;
+        return StatusCode != HttpStatusCode.OK;
     }
 
-    public TData Data { get; set; }
-
-    public string Error { get; set; } = "";
-
-
-    public (TData data, string error) AsTuple()
+    public bool IsSuccessful()
     {
-        return (Data, Error);
+        return StatusCode == HttpStatusCode.OK;
+    }
+
+    public string GetContent()
+    {
+        return Content;
+    }
+
+    public T GetContent<T>()
+    {
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+        };
+
+        return JsonSerializer.Deserialize<T>(Content, options)!;
     }
 }

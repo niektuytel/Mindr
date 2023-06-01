@@ -10,6 +10,9 @@ using Mindr.Domain.Models.DTO.Personal;
 using MudBlazor;
 using Mindr.Domain.Models.DTO.Connector;
 using static MudBlazor.CategoryTypes;
+using Microsoft.Extensions.Logging;
+using System.Globalization;
+using System;
 
 namespace Mindr.WebAssembly.Client.Pages.Calendar.Components;
 
@@ -57,6 +60,9 @@ public partial class GoogleAuthentication
     [Inject]
     public ISnackbar Snackbar { get; set; } = default!;
 
+    [Inject]
+    public Blazored.LocalStorage.ILocalStorageService LocalStorage { get; set; } = default!;
+
     public string AccessToken { get; set; } = default!;
 
     public int ExpiresIn { get; set; } = default!;
@@ -66,6 +72,8 @@ public partial class GoogleAuthentication
     public string Scope { get; set; } = default!;
     
     public string TokenType { get; set; } = default!;
+
+    public PersonalCredential Credential { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -106,39 +114,45 @@ public partial class GoogleAuthentication
             Scope = jsonObject!["scope"]!.GetValue<string>();
             TokenType = jsonObject!["token_type"]!.GetValue<string>();
 
-            await CreatePersonalCredential();
+            await UpsertPersonalCredential();
         }
     }
 
-    private async Task CreatePersonalCredential()
+    private async Task UpsertPersonalCredential()
     {
-        var response = await CredentialClient.Create(new PersonalCredentialDTO()
+        if(await LocalStorage.ContainKeyAsync($"{nameof(PersonalCredential)}"))
         {
-            Target = Domain.Enums.CredentialTarget.GoogleCalendar,
-            AccessToken = AccessToken,
-            ExpiresIn = ExpiresIn,
-            RefreshToken = RefreshToken,
-            Scope = Scope,
-            TokenType = TokenType
-        });
-        (var data, var error) = response.AsTuple();
-
-        if (!string.IsNullOrEmpty(error))
-        {
-            Snackbar.Add(error, Severity.Error);
+            Credential = await LocalStorage.GetItemAsync<PersonalCredential>($"{nameof(PersonalCredential)}");
+            await LocalStorage.RemoveItemAsync($"{nameof(PersonalCredential)}");
         }
-        else if (data != null)
+
+        Credential.Target = Domain.Enums.CredentialTarget.GoogleCalendar;
+        Credential.AccessToken = AccessToken;
+        Credential.RefreshToken = RefreshToken;
+        Credential.Scope = Scope;
+        Credential.TokenType = TokenType;
+        Credential.ExpiresIn = ExpiresIn;
+
+        var response = await CredentialClient.Upsert(Credential);
+        if (response.IsSuccessful())
         {
             Snackbar.Add("Successfully bind google account", Severity.Success);
+        }
+        else if (response.IsError())
+        {
+            var error = response.GetContent();
+            Snackbar.Add(error, Severity.Error);
         }
 
         base.StateHasChanged();
     }
 
-    public async Task<bool> HandleConsent()
+    public async Task<bool> HandleConsent(PersonalCredential credential)
     {
         if (string.IsNullOrEmpty(_code) || string.IsNullOrEmpty(_scope))
         {
+            await LocalStorage.SetItemAsync($"{nameof(PersonalCredential)}", credential);
+
             // Request consent
             var consentUri = $"{BaseUri}/v2/auth?scope={Scopes}&response_type={ResponseType}&access_type={AccessType}&redirect_uri={RedirectUri}&client_id={ClientId}&prompt=select_account";
             await JSRuntime.InvokeAsync<object>("open", consentUri);//, "_blank");// Ok but need to be as iframe than

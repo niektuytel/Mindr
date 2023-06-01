@@ -21,7 +21,7 @@ namespace Mindr.Api.Services.CalendarEvents
         {
             if (string.IsNullOrEmpty(userId))
             {
-                throw new HttpException(HttpStatusCode.BadRequest, $"Unknown {nameof(userId)}:'{userId}'");
+                throw new HttpException<string>(HttpStatusCode.BadRequest, $"Unknown {nameof(userId)}:'{userId}'");
             }
         }
 
@@ -29,7 +29,7 @@ namespace Mindr.Api.Services.CalendarEvents
         {
             if (entity == null)
             {
-                throw new HttpException(HttpStatusCode.NotFound, $"Can't find calendar:{calendarId} on User:{userId}");
+                throw new HttpException<string>(HttpStatusCode.NotFound, $"Can't find calendar:{calendarId} on User:{userId}");
             }
         }
 
@@ -37,7 +37,7 @@ namespace Mindr.Api.Services.CalendarEvents
         {
             if (entity == null)
             {
-                throw new HttpException(HttpStatusCode.NotFound, $"Can't find credential for calendar:{calendarId} on User:{userId}");
+                throw new HttpException<string>(HttpStatusCode.NotFound, $"Can't find credential for calendar:{calendarId} on User:{userId}");
             }
         }
 

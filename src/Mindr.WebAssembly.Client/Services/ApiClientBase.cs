@@ -36,22 +36,9 @@ public class ApiClientBase
         _httpClient.DefaultRequestHeaders.Add("X-XSRF-TOKEN", token);
 
         var response = await _httpClient.SendAsync(message);
-        if (response.IsSuccessStatusCode)
-        {
-            var content = await response.Content.ReadAsStreamAsync();
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
+        var content = await response.Content.ReadAsStringAsync();
 
-            var json = await JsonSerializer.DeserializeAsync<T>(content, options);
-            return new JsonResponse<T>(data: json);
-        }
-        else
-        {
-            var content = await response.Content.ReadAsStringAsync();
-            return new JsonResponse<T>(error: content);
-        }
+        return new JsonResponse<T>(response.StatusCode, content);
     }
 
 }

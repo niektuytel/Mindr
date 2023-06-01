@@ -34,7 +34,7 @@ public class ApiPersonalCredentialClient : ApiClientBase, IApiPersonalCredential
         : base(JSRuntime, factory.CreateClient(HttpClientName))
     { }
 
-    public async Task<JsonResponse<PersonalCredential>> Create(PersonalCredentialDTO credential)
+    public async Task<JsonResponse<PersonalCredential>> Upsert(PersonalCredential credential)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, $"{Path}");
         request.Headers.Add("accept", "*/*");

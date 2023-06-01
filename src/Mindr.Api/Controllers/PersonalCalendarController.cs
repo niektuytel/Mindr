@@ -33,6 +33,7 @@ public class PersonalCalendarController : BaseController
     /// <credentials code="404">Not Found</credentials>
     [HttpGet("events")]
     [ProducesResponseType(typeof(IEnumerable<CalendarEvent>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(PersonalCredential), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> GetPersonalCalendarEvents([FromQuery] DateTime dateTimeStart, [FromQuery] DateTime dateTimeEnd, [FromQuery] string? calendarId = null)

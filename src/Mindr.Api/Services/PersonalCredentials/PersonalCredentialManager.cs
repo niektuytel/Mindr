@@ -53,14 +53,32 @@ namespace Mindr.Api.Services.PersonalCredentials
             return entities;
         }
 
-        public async Task<PersonalCredential> Create(string userId, PersonalCredentialDTO input)
+        public async Task<PersonalCredential> Upsert(string userId, PersonalCredential input)
         {
+            input.UserId = userId;
             _connectorValidator.ThrowOnInvalidUserId(userId);
-            var entity = new PersonalCredential(userId, input);
 
-            _context.PersonalCredentials.Add(entity);
+            var entity = await _context.PersonalCredentials
+                .Where(item => item.UserId == userId)
+                .FirstOrDefaultAsync(x => x.Id == input.Id);
+
+            if (entity == null)
+            {
+                entity = input;
+                _context.PersonalCredentials.Add(entity);
+            }
+            else
+            {
+                entity!.AccessToken = input.AccessToken;
+                entity!.ExpiresIn = input.ExpiresIn;
+                entity!.RefreshToken = input.RefreshToken;
+                entity!.Scope = input.Scope;
+                entity!.TokenType = input.TokenType;
+
+                _context.PersonalCredentials.Update(entity);
+            }
+
             await _context.SaveChangesAsync();
-
             return entity!;
         }
 

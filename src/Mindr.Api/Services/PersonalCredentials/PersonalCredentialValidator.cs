@@ -17,7 +17,7 @@ namespace Mindr.Api.Services.PersonalCredentials
         {
             if (string.IsNullOrEmpty(userId))
             {
-                throw new HttpException(HttpStatusCode.BadRequest, $"Unknown {nameof(userId)}:'{userId}'");
+                throw new HttpException<string>(HttpStatusCode.BadRequest, $"Unknown {nameof(userId)}:'{userId}'");
             }
         }
 
@@ -25,12 +25,12 @@ namespace Mindr.Api.Services.PersonalCredentials
         {
             if (id == null)
             {
-                throw new HttpException(HttpStatusCode.BadRequest, $"Connector id '{id}' is null");
+                throw new HttpException<string>(HttpStatusCode.BadRequest, $"Connector id '{id}' is null");
             }
 
             if (connector == null)
             {
-                throw new HttpException(HttpStatusCode.NotFound, $"Can't find connector on {nameof(id)}:'{id}' that is public");
+                throw new HttpException<string>(HttpStatusCode.NotFound, $"Can't find connector on {nameof(id)}:'{id}' that is public");
             }
         }
 

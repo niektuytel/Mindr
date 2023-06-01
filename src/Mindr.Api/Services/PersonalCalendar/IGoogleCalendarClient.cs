@@ -6,8 +6,8 @@ namespace Mindr.Api.Services.CalendarEvents
 {
     public interface IGoogleCalendarClient
     {
-        Task<string> GetAccessToken(string refreshToken);
-        Task<IEnumerable<PersonalCalendar>> GetCalendars(string userId, PersonalCredential credential);
-        Task<IEnumerable<CalendarEvent>?> GetCalendarEvents(string refreshToken, string calendarId, DateTime startDateTime, DateTime endDateTime);
+        Task<string> GetAccessToken(PersonalCredential credential);
+        Task<IEnumerable<PersonalCalendar>> GetCalendars(PersonalCredential credential, string userId);
+        Task<IEnumerable<CalendarEvent>?> GetCalendarEvents(PersonalCredential credential, DateTime startDateTime, DateTime endDateTime, string calendarId);
     }
 }

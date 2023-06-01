@@ -25,11 +25,11 @@ public partial class ConnectorDeleteDialog
     {
         IsLoading = true;
         var response = await ConnectorClient.Delete(Overview.Id.ToString());
-        (_, var error) = response.AsTuple();
         IsLoading = false;
 
-        if (!string.IsNullOrEmpty(error))
+        if (response.IsError())
         {
+            var error = response.GetContent();
             Snackbar.Add(error, Severity.Error);
             return;
         }

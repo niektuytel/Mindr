@@ -33,15 +33,15 @@ public partial class ConnectorOverview
     public async Task HandleOnSave()
     {
         if (Overview == null) return;
-
         DataHasChanged = false;
+
         IsLoading = true;
         var response = await ConnectorClient.UpdateOverview(Overview);
-        (_, var error) = response.AsTuple();
         IsLoading = false;
 
-        if (!string.IsNullOrEmpty(error))
+        if(response.IsError())
         {
+            var error = response.GetContent();
             Snackbar.Add(error, Severity.Error);
         }
     }

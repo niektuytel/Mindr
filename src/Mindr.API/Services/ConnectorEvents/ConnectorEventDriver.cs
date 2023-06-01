@@ -64,7 +64,7 @@ namespace Mindr.Api.Services.ConnectorEvents
             }
             else if (datetime < DateTime.Now)
             {
-                throw new Api.Exceptions.HttpException(HttpStatusCode.BadRequest, "Scheduled datetime must be in the future.");
+                throw new Api.Exceptions.HttpException<string>(HttpStatusCode.BadRequest, "Scheduled datetime must be in the future.");
             }
 
             var connector = await GetConnectorAsync(entity.ConnectorId);
@@ -99,7 +99,7 @@ namespace Mindr.Api.Services.ConnectorEvents
 
             if (connector == null)
             {
-                throw new Api.Exceptions.HttpException(HttpStatusCode.BadRequest, $"connector on id: '{connectorId}' is unknown");
+                throw new Api.Exceptions.HttpException<string>(HttpStatusCode.BadRequest, $"connector on id: '{connectorId}' is unknown");
             }
 
             return connector;

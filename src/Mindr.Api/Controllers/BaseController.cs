@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 using Mindr.Api.Persistence;
 using Mindr.Api.Exceptions;
+using Mindr.Domain.Models.DTO.Personal;
+using Mindr.Api.Models;
 
 namespace Mindr.Api.Controllers;
 
@@ -24,9 +26,13 @@ public class BaseController : ControllerBase
             await onFunction();
             return Ok();
         }
-        catch (HttpException ex)
+        catch (HttpException<string> ex)
         {
-            return StatusCode((int)ex.StatusCode, ex.Message);
+            return StatusCode((int)ex.StatusCode, ex.GetErrorMessage());
+        }
+        catch (HttpException<PersonalCredential> ex)
+        {
+            return StatusCode((int)ex.StatusCode, ex.Body);
         }
     }
 
@@ -43,9 +49,13 @@ public class BaseController : ControllerBase
             var response = await onFunction();
             return Ok(response);
         }
-        catch (HttpException ex)
+        catch (HttpException<string> ex)
         {
-            return StatusCode((int)ex.StatusCode, ex.Message);
+            return StatusCode((int)ex.StatusCode, ex.GetErrorMessage());
+        }
+        catch (HttpException<PersonalCredential> ex)
+        {
+            return StatusCode((int)ex.StatusCode, ex.Body);
         }
     }
 }

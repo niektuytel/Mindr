@@ -21,7 +21,7 @@ namespace Mindr.Api.Services.Connectors
         {
             if (string.IsNullOrEmpty(userId))
             {
-                throw new Api.Exceptions.HttpException(HttpStatusCode.BadRequest, $"Unknown {nameof(userId)}:'{userId}'");
+                throw new Api.Exceptions.HttpException<string>(HttpStatusCode.BadRequest, $"Unknown {nameof(userId)}:'{userId}'");
             }
         }
 
@@ -29,7 +29,7 @@ namespace Mindr.Api.Services.Connectors
         {
             if (string.IsNullOrEmpty(query))
             {
-                throw new HttpException(HttpStatusCode.BadRequest, $"Unknown {nameof(query)}:'{query}'");
+                throw new HttpException<string>(HttpStatusCode.BadRequest, $"Unknown {nameof(query)}:'{query}'");
             }
         }
 
@@ -37,12 +37,12 @@ namespace Mindr.Api.Services.Connectors
         {
             if (id == null)
             {
-                throw new Api.Exceptions.HttpException(HttpStatusCode.BadRequest, $"Connector id '{id}' is null");
+                throw new Api.Exceptions.HttpException<string>(HttpStatusCode.BadRequest, $"Connector id '{id}' is null");
             }
 
             if (connector == null)
             {
-                throw new Api.Exceptions.HttpException(HttpStatusCode.NotFound, $"Can't find connector on {nameof(id)}:'{id}' that is public");
+                throw new Api.Exceptions.HttpException<string>(HttpStatusCode.NotFound, $"Can't find connector on {nameof(id)}:'{id}' that is public");
             }
         }
 
@@ -50,7 +50,7 @@ namespace Mindr.Api.Services.Connectors
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new HttpException(HttpStatusCode.BadRequest, $"Unknown {nameof(name)}:'{name}'");
+                throw new HttpException<string>(HttpStatusCode.BadRequest, $"Unknown {nameof(name)}:'{name}'");
             }
 
             var entity = await _context.Connectors.FirstOrDefaultAsync(item => 
@@ -59,7 +59,7 @@ namespace Mindr.Api.Services.Connectors
             );
             if (entity != null)
             {
-                throw new HttpException(HttpStatusCode.BadRequest, $"Connector for {{{nameof(userId)}:'{userId}',{nameof(name)}:'{name}'}} already exists");
+                throw new HttpException<string>(HttpStatusCode.BadRequest, $"Connector for {{{nameof(userId)}:'{userId}',{nameof(name)}:'{name}'}} already exists");
             }
         }
     }

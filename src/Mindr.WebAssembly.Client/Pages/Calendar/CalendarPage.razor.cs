@@ -73,32 +73,28 @@ public partial class CalendarPage
         string? calendarId = null;
 
         var response = await CalendarClient.GetAllEvents(start, end, calendarId);
-        (Events, var error) = response.AsTuple();
-
-        if (!string.IsNullOrEmpty(error))
+        if (response.IsError())
         {
-            var isHandled = await GoogleAuthentication!.HandleConsent();
-            if (isHandled)
+            var credential = response.GetContent<PersonalCredential>();
+            await GoogleAuthentication!.HandleConsent(credential);
+        }
+        else if (response.IsSuccessful())
+        {
+            Events = response.GetContent<IEnumerable<CalendarEvent>>();
+            if (Calendars?.Any() == false)
             {
-                Snackbar.Add("Ask consent", Severity.Success);
-            }
-            else
-            {
-                Snackbar.Add(error, Severity.Error);
+                var response2 = await CalendarClient.GetAllCalendars();
+                if (response.IsError())
+                {
+                    var error = response.GetContent();
+                    Snackbar.Add(error, Severity.Error);
+                }
+                else if (response.IsSuccessful())
+                {
+                    Calendars = response2.GetContent<IEnumerable<PersonalCalendar>>();
+                }
             }
         }
-
-        if(Calendars?.Any() == false)
-        {
-            var response2 = await CalendarClient.GetAllCalendars();
-            (Calendars, error) = response2.AsTuple();
-            if (!string.IsNullOrEmpty(error))
-            {
-                Snackbar.Add(error, Severity.Error);
-            }
-        }
-
-
     }
 
     public async Task OnAppointmentClicked(CalendarEvent app)

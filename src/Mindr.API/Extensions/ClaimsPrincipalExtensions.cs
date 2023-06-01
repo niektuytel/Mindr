@@ -24,7 +24,7 @@ public static class ClaimsPrincipalExtensions
         var identity = claims.Identities.FirstOrDefault();
         if (identity == null)
         {
-            throw new HttpException(HttpStatusCode.BadRequest, "No user identity found on given bearer token");
+            throw new HttpException<string>(HttpStatusCode.BadRequest, "No user identity found on given bearer token");
         }
 
         // Get the "sub" claim value from the current user
@@ -40,7 +40,7 @@ public static class ClaimsPrincipalExtensions
             return userId;
         }
 
-        throw new HttpException(HttpStatusCode.BadRequest, "Missing user unique identifier on bearer token");
+        throw new HttpException<string>(HttpStatusCode.BadRequest, "Missing user unique identifier on bearer token");
 
     }
 }
