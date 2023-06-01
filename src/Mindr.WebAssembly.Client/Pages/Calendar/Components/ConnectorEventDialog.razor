@@ -1,0 +1,39 @@
+﻿@using Mindr.Domain.Models.DTO.Connector;
+@using Mindr.WebAssembly.Client.Components
+@using MudBlazor;
+
+@namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
+@inherits LayoutComponentBase
+
+<MudDialog>
+    <DialogContent>
+        <MudForm @bind-IsValid="@success" FieldChanged="@((args) => DataHasChanged = true)" Class="overflow-auto">
+            <MudAutocomplete T="ConnectorEvent"
+                Placeholder="Whatsapp message..."
+                Variant="Variant.Outlined"
+                Margin="Margin.Dense"
+                Label="@Label"
+                Required="true"
+                SelectOnClick="true"
+                SelectValueOnTab="true"
+                ShowProgressIndicator="true" 
+                Value="@Item"
+                ValueChanged="OnSelect"
+                ToStringFunc="@(e => e.ConnectorName)"
+                SearchFuncWithCancel="@Search" 
+            />
+            <MudGrid Spacing="0">
+                @foreach(var variable in Item.ConnectorVariables)
+                {
+                    <MudItem xs="12">@variable.Key @variable.Value</MudItem>
+                }
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudStack Row="true">
+            <MudButton @onclick="HandleOnConfirm" Disabled="@(!DataHasChanged || !success)">Confirm</MudButton>
+            <MudButton @onclick="HandleOnCancel">Cancel</MudButton>
+        </MudStack>
+    </DialogActions>
+</MudDialog>

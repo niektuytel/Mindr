@@ -34,7 +34,7 @@ namespace Mindr.Api.Services.CalendarEvents
             _context = context;
         }
 
-        public async Task<IEnumerable<CalendarEvent>> GetEventsOnCalendarId(string userId, string calendarId, DateTime startDateTime, DateTime endDateTime)
+        public async Task<IEnumerable<CalendarAppointment>> GetAppointmentsOnCalendarId(string userId, string calendarId, DateTime startDateTime, DateTime endDateTime)
         {
             _validator.ThrowOnInvalidUserId(userId);
 
@@ -46,28 +46,28 @@ namespace Mindr.Api.Services.CalendarEvents
 
             if (calendar!.From == Domain.Enums.CalendarFrom.Google)
             {
-                var events = await _googleClient.GetCalendarEvents(credential!, startDateTime, endDateTime, calendarId);
+                var events = await _googleClient.GetCalendarAppointment(credential!, startDateTime, endDateTime, calendarId);
                 if (events != null)
                 {
                     return events;
                 }
             }
 
-            return new List<CalendarEvent>();
+            return new List<CalendarAppointment>();
         }
 
-        public async Task<IEnumerable<CalendarEvent>> GetEvents(string userId, DateTime startDateTime, DateTime endDateTime)
+        public async Task<IEnumerable<CalendarAppointment>> GetAppointments(string userId, DateTime startDateTime, DateTime endDateTime)
         {
             _validator.ThrowOnInvalidUserId(userId);
 
-            var events = await GetEventsFromGoogle(userId, startDateTime, endDateTime);
+            var events = await GetAppointmentsFromGoogle(userId, startDateTime, endDateTime);
 
             return events;
         }
         
-        private async Task<IEnumerable<CalendarEvent>> GetEventsFromGoogle(string userId, DateTime startDateTime, DateTime endDateTime)
+        private async Task<IEnumerable<CalendarAppointment>> GetAppointmentsFromGoogle(string userId, DateTime startDateTime, DateTime endDateTime)
         {
-            var events = new List<CalendarEvent>();
+            var events = new List<CalendarAppointment>();
             
             var calendars = await _context.PersonalCalendars.Where(item => item.From == Domain.Enums.CalendarFrom.Google).ToListAsync();
             foreach (var calendar in calendars)
@@ -75,7 +75,7 @@ namespace Mindr.Api.Services.CalendarEvents
                 var credential = await _context.PersonalCredentials.FirstOrDefaultAsync(item => item.UserId == userId && item.Id == calendar.CredentialId);
                 _validator.ThrowOnNullPersonalCredential(userId, calendar.CalendarId, credential);
 
-                var response = await _googleClient.GetCalendarEvents(credential!, startDateTime, endDateTime, calendar.CalendarId);
+                var response = await _googleClient.GetCalendarAppointment(credential!, startDateTime, endDateTime, calendar.CalendarId);
                 if(response == null)
                 {
                     continue;

@@ -37,7 +37,7 @@ namespace Mindr.Domain.Models.DTO.Connector
         public string EventId { get; set; }
 
         [JsonPropertyName("event_parameters")]
-        public IEnumerable<ConnectorEventVariable> EventParameters { get; set; }
+        public IEnumerable<ConnectorEventVariable> EventParameters { get; set; } = new List<ConnectorEventVariable>();
 
         [JsonPropertyName("connector_id")]
         public Guid? ConnectorId { get; set; } = null;

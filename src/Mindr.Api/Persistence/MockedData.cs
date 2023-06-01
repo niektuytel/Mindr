@@ -152,7 +152,7 @@ namespace Mindr.Api.Persistence
         public static ConnectorEvent GetConnectorEvent1()
         {
             var connector1 = GetConnector1();
-            var event1 = new ConnectorEvent(UserId, "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", connector1);
+            var event1 = new ConnectorEvent(UserId, "nt5tj9n1jon8qhli9ndtnu258k", connector1);
             var events1 = new List<ConnectorEventVariable>()
             {
                 new ConnectorEventVariable()
@@ -170,7 +170,7 @@ namespace Mindr.Api.Persistence
         public static ConnectorEvent GetConnectorEvent2()
         {
             var connector2 = GetConnector2();
-            var event2 = new ConnectorEvent(UserId, "AQMkADAwATMwMAItNTllZC1hMzFlLTAwAi0wMAoARgAAA2qB3dgu8NBIiZJXcEtOu1YHAK-kNuNXZP9CkLYI4D7saB4AAAIBDQAAAK-kNuNXZP9CkLYI4D7saB4AAAKbMAAAAA==", connector2);
+            var event2 = new ConnectorEvent(UserId, "nt5tj9n1jon8qhli9ndtnu258k", connector2);
             var events2 = new List<ConnectorEventVariable>()
             {
                 new ConnectorEventVariable()

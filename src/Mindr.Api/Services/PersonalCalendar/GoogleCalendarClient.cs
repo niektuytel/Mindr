@@ -99,7 +99,7 @@ namespace Mindr.Api.Services.CalendarEvents
             throw new Exception($"Failed getting calendars from credentials({credential.Id}) [Code:{response.StatusCode}]");
         }
 
-        public async Task<IEnumerable<CalendarEvent>?> GetCalendarEvents(PersonalCredential credential, DateTime startDateTime, DateTime endDateTime, string calendarId)
+        public async Task<IEnumerable<CalendarAppointment>?> GetCalendarAppointment(PersonalCredential credential, DateTime startDateTime, DateTime endDateTime, string calendarId)
         {   
             var accessToken = await GetAccessToken(credential);
             var timespan = $"timeMin={startDateTime.Year}-{startDateTime.Month}-{startDateTime.Day}T00%3A00%3A00-00%3A00&timeMax={endDateTime.Year}-{endDateTime.Month}-{endDateTime.Day}T23%3A59%3A59-00%3A00";
@@ -110,7 +110,7 @@ namespace Mindr.Api.Services.CalendarEvents
             request.Headers.Add("Accept", "application/json");
             var response = await _httpClient.SendAsync(request);
 
-            var events = new List<CalendarEvent>();
+            var appointments = new List<CalendarAppointment>();
             if (response.IsSuccessStatusCode)
             {
                 var jsonString = await response.Content.ReadAsStringAsync();
@@ -139,20 +139,26 @@ namespace Mindr.Api.Services.CalendarEvents
                         end = DateTime.Parse(item.End.Date);
                     }
 
-                    var eventItem = new CalendarEvent(
+                    var events = _context.ConnectorEvents.Where(i =>
+                        i.UserId == credential.UserId &&
+                        i.EventId == item.Id
+                    ).AsEnumerable();
+
+                    var appointment = new CalendarAppointment(
                         item.Id,
                         item.Summary,
                         start,
                         item?.Start?.TimeZone,
                         end,
                         item?.End?.TimeZone,
+                        events,
                         item?.ColorId
                     );
 
-                    events.Add(eventItem);
+                    appointments.Add(appointment);
                 }
 
-                return events;
+                return appointments;
             }
 
             throw new Exception($"Failed getting events from calendar({calendarId}) [Code:{response.StatusCode}]");

@@ -57,6 +57,18 @@ public class ApiConnectorClient : ApiClientBase, IApiConnectorClient
         return response;
     }
 
+    public async Task<JsonResponse<IEnumerable<ConnectorEvent>>> GetAllAsEvent(string query = "")
+    {
+        if (!string.IsNullOrEmpty(query))
+        {
+            query = $"&query={query}";
+        }
+
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{Path}/asevent?{query}");
+        var response = await ApiRequest<IEnumerable<ConnectorEvent>>(request);
+        return response;
+    }
+
     public async Task<JsonResponse<ConnectorOverviewDTO>> GetOverview(string connectorId)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"{Path}/personal/{connectorId}/overview");

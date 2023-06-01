@@ -1,17 +1,20 @@
+using Mindr.Domain.Models.DTO.Connector;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Mindr.Domain.Models.DTO.Calendar
 {
-    public class CalendarEvent
+    public class CalendarAppointment
     {
 
-        public CalendarEvent()
+        public CalendarAppointment()
         {
 
         }
 
-        public CalendarEvent(string id, string subject, DateTime? dateTimeStart, string dateTimeStartZone, DateTime? dateTimeEnd, string dateTimeEndZone, string color="#ffffff")
+        public CalendarAppointment(string id, string subject, DateTime? dateTimeStart, string dateTimeStartZone, DateTime? dateTimeEnd, string dateTimeEndZone, IEnumerable<ConnectorEvent> connectorEvents, string color="#ffffff")
         {
             Id = id;
             Subject = subject;
@@ -35,6 +38,7 @@ namespace Mindr.Domain.Models.DTO.Calendar
             }
 
             Color = color;
+            ConnectorEvents = connectorEvents;
         }
 
         [JsonPropertyName("id")]
@@ -48,6 +52,9 @@ namespace Mindr.Domain.Models.DTO.Calendar
 
         [JsonPropertyName("end")]
         public CalendarEventDateTime? EndDate { get; set; } = null;
+
+        [JsonPropertyName("connector_events")]
+        public IEnumerable<ConnectorEvent> ConnectorEvents { get; set; } = new List<ConnectorEvent>();
 
         public string Color { get; set; } = "#000000";
     }

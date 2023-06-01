@@ -78,6 +78,20 @@ namespace Mindr.Api.Services.Connectors
             return items;
         }
 
+        public async Task<IEnumerable<ConnectorEvent>> GetAllAsEvent(string userId, int limit=10)
+        {
+            _connectorValidator.ThrowOnInvalidUserId(userId);
+
+            var items = await _context.Connectors
+                .Include(item => item.Variables)
+                .Where(item => (item.IsPublic || item.CreatedBy == userId))
+                .Select(item => item.AsEvent(userId, item.CreatedBy))
+                .Take(limit)
+                .ToListAsync();
+
+            return items;
+        }
+
         public async Task<IEnumerable<ConnectorBriefDTO>> GetAllByQuery(string userId, string? query)
         {
             _connectorValidator.ThrowOnInvalidQuery(query);
@@ -98,6 +112,21 @@ namespace Mindr.Api.Services.Connectors
             }
 
             var items = _mapper.Map<IEnumerable<Connector>, IEnumerable<ConnectorBriefDTO>>(entities);
+            return items;
+        }
+
+        public async Task<IEnumerable<ConnectorEvent>> GetAllByQueryAsEvent(string userId, string? query, int limit = 10)
+        {
+            _connectorValidator.ThrowOnInvalidQuery(query);
+
+            var items = await _context.Connectors
+                .Include(item => item.Variables)
+                .Where(item => (item.IsPublic || item.CreatedBy == userId))
+                .Where(item => item.Name.ToLower().Contains(query!))
+                .Take(limit)
+                .Select(item => item.AsEvent(userId, item.CreatedBy))
+                .ToListAsync();
+
             return items;
         }
 

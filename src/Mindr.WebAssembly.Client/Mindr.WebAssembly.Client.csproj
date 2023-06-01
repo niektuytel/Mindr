@@ -9,9 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\Agenda\**" />
     <Compile Remove="Shared\Header\**" />
+    <Content Remove="Pages\Agenda\**" />
     <Content Remove="Shared\Header\**" />
+    <EmbeddedResource Remove="Pages\Agenda\**" />
     <EmbeddedResource Remove="Shared\Header\**" />
+    <None Remove="Pages\Agenda\**" />
     <None Remove="Shared\Header\**" />
   </ItemGroup>
 
@@ -21,9 +25,7 @@
     <Compile Remove="Components\NavMenuLink.razor.cs" />
     <Compile Remove="Components\ProfileButton.razor.cs" />
     <Compile Remove="Components\Stack.razor.cs" />
-    <Compile Remove="Pages\Agenda\Components\AgendaDay.razor.cs" />
-    <Compile Remove="Pages\Agenda\Components\AgendaEventItem.razor.cs" />
-    <Compile Remove="Pages\Agenda\Components\ConnectorEventDialog.razor.cs" />
+    <Compile Remove="Pages\Calendar\Dialogs\EditAppointmentDialog.razor.cs" />
     <Compile Remove="Pages\Connectors\Components\Dropzone.razor.cs" />
     <Compile Remove="Pages\Connectors\Components\HttpItemCard.razor.cs" />
     <Compile Remove="Pages\Index.razor.cs" />
@@ -35,13 +37,11 @@
     <Content Remove="Components\NavMenuLink.razor" />
     <Content Remove="Components\ProfileButton.razor" />
     <Content Remove="Components\Stack.razor" />
-    <Content Remove="Pages\Agenda\Components\AgendaDay.razor" />
-    <Content Remove="Pages\Agenda\Components\AgendaEventItem.razor" />
-    <Content Remove="Pages\Agenda\Components\ConnectorEventDialog.razor" />
     <Content Remove="Pages\Calendar\AppointmentTemplating.razor" />
     <Content Remove="Pages\Calendar\Basic.razor" />
     <Content Remove="Pages\Calendar\Configuration.razor" />
     <Content Remove="Pages\Calendar\DayTemplating.razor" />
+    <Content Remove="Pages\Calendar\Dialogs\EditAppointmentDialog.razor" />
     <Content Remove="Pages\Calendar\HeaderTemplating.razor" />
     <Content Remove="Pages\Connectors\Components\Collection.razor" />
     <Content Remove="Pages\Connectors\Components\CollectionItem.razor" />
@@ -57,7 +57,6 @@
   <ItemGroup>
     <None Remove="Components\Devider.razor.css" />
     <None Remove="Components\Stack.razor.css" />
-    <None Remove="Pages\Agenda\Components\ConnectorEventDialog.razor.css" />
     <None Remove="Pages\Calendar\Components\GoogleCalendarDialog.razor.css" />
     <None Remove="Pages\Connectors\Components\ConnectorDialog.razor.css" />
     <None Remove="Pages\Connectors\Components\HttpItemCard.razor.css" />

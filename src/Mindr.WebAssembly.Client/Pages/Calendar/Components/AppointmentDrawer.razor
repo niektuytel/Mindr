@@ -1,0 +1,44 @@
+﻿@using DemoApp.Models
+@using Mindr.Domain.Models.DTO.Calendar
+@using Mindr.WebAssembly.Client.Pages.Calendar.Components
+@using MudBlazor
+
+@namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
+
+<MudDrawer @bind-Open="@Open" Anchor="Anchor.End" Elevation="1" Variant="@DrawerVariant.Temporary" Width="700px" Style="padding:5px;height:100%">
+    <MudDrawerHeader>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.CalendarToday" Class="mr-3" /> @Appointment.Subject
+        </MudText>
+    </MudDrawerHeader>
+    <MudForm @bind-IsValid="@success" FieldChanged="@((args) => DataHasChanged = true)" Class="overflow-auto" Style="height: inherit;">
+        <MudTextField T="string" Label="Title" @bind-Text="Appointment.Subject" />
+        <MudDateRangePicker Label="When" @bind-DateRange="_dateRange" />
+        <MudColorPicker Label="Color" @bind-Text="Appointment.Color" Style="@($"color: {Appointment.Color};")" />
+
+
+    </MudForm>
+    <MudGrid Justify="Justify.FlexStart" Spacing="0">
+        @foreach (var connectorEvent in Appointment.ConnectorEvents)
+        {
+            <MudItem>
+                <MudChip Style=@($"border-color: {connectorEvent.ConnectorColor};border-style: solid;border-width: 2px;")
+                     OnClick="() => OnConnectorEventClicked(connectorEvent)"
+                     OnClose="() => OnConnectorEventRemove(connectorEvent)">
+                    @connectorEvent.ConnectorName
+                </MudChip>
+            </MudItem>
+        }
+        <MudItem>
+            <MudChip Color="Color.Tertiary" OnClick="() => OnConnectorEventClicked()">
+                <b>+</b>
+            </MudChip>
+        </MudItem>
+    </MudGrid>
+    <MudStack Row="true">
+        <MudButton @onclick="OnConfirm" Disabled="@(!DataHasChanged || !success)">Confirm</MudButton>
+        <MudButton @onclick="OnCancel">Close</MudButton>
+    </MudStack>
+</MudDrawer>
+
+

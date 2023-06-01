@@ -1,6 +1,5 @@
 ﻿using Microsoft.Fast.Components.FluentUI;
 using Mindr.WebAssembly.Client.Models;
-using Mindr.WebAssembly.Client.Pages.Agenda.Components;
 using System;
 using System.Collections.Generic;
 

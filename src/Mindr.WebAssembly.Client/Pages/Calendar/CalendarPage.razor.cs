@@ -43,11 +43,13 @@ public partial class CalendarPage
 
     public GoogleAuthentication? GoogleAuthentication { get; set; } = default!;
 
+    private AppointmentDrawer? AppointmentDrawer = default!;
+
     public string RedirectUri => $"{NavigationManager.BaseUri[..^1]}/calendar";
 
     public IEnumerable<PersonalCalendar> Calendars = new List<PersonalCalendar>();
 
-    public IEnumerable<CalendarEvent> Events = new List<CalendarEvent>();
+    public IEnumerable<CalendarAppointment> Appointments = new List<CalendarAppointment>();
 
     private bool IsLoading = false;
 
@@ -72,7 +74,7 @@ public partial class CalendarPage
     {
         string? calendarId = null;
 
-        var response = await CalendarClient.GetAllEvents(start, end, calendarId);
+        var response = await CalendarClient.GetAllAppointments(start, end, calendarId);
         if (response.IsError())
         {
             var credential = response.GetContent<PersonalCredential>();
@@ -80,7 +82,7 @@ public partial class CalendarPage
         }
         else if (response.IsSuccessful())
         {
-            Events = response.GetContent<IEnumerable<CalendarEvent>>();
+            Appointments = response.GetContent<IEnumerable<CalendarAppointment>>();
             if (Calendars?.Any() == false)
             {
                 var response2 = await CalendarClient.GetAllCalendars();
@@ -97,15 +99,12 @@ public partial class CalendarPage
         }
     }
 
-    public async Task OnAppointmentClicked(CalendarEvent app)
+    public Task OnAppointmentClicked(CalendarAppointment appointment)
     {
-        var dialog = DialogService.Show<EditAppointmentDialog>("Edit Appointment", new DialogParameters
-        {
-            ["Appointment"] = app,
-        });
-        await dialog.Result;
+        AppointmentDrawer!.OnOpen(appointment);
+        base.StateHasChanged();
 
-        StateHasChanged();
+        return Task.CompletedTask;
     }
 
     Task OnAddingNewAppointment(DateTime start, DateTime end)
@@ -115,7 +114,7 @@ public partial class CalendarPage
         return Task.CompletedTask;
     }
 
-    Task HandleReschedule(CalendarEvent appointment, DateTime newStart, DateTime newEnd)
+    Task HandleReschedule(CalendarAppointment appointment, DateTime newStart, DateTime newEnd)
     {
         appointment.StartDate.DateTime = newStart;
         appointment.EndDate.DateTime = newEnd;
@@ -127,7 +126,7 @@ public partial class CalendarPage
     {
         var dialog = DialogService.Show<OverflowAppointmentDialog>($"Appointments for {day.ToShortDateString()}", new DialogParameters
         {
-            ["Appointments"] = Events,
+            ["Appointments"] = Appointments,
             ["SelectedDate"] = day,
         });
         await dialog.Result;

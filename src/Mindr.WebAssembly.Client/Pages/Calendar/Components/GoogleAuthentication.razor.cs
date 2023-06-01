@@ -155,8 +155,8 @@ public partial class GoogleAuthentication
 
             // Request consent
             var consentUri = $"{BaseUri}/v2/auth?scope={Scopes}&response_type={ResponseType}&access_type={AccessType}&redirect_uri={RedirectUri}&client_id={ClientId}&prompt=select_account";
-            await JSRuntime.InvokeAsync<object>("open", consentUri);//, "_blank");// Ok but need to be as iframe than
-
+            //await JSRuntime.InvokeAsync<object>("open", consentUri);//, "_blank");// Ok but need to be as iframe than
+            await JSRuntime.InvokeVoidAsync("window.open", consentUri, "_blank", "noopener,noreferrer");
             return true;
         }
 

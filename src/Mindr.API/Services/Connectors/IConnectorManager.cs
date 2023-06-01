@@ -8,7 +8,9 @@ namespace Mindr.Api.Services.Connectors
     {
         Task<Connector> GetById(string userId, Guid id);
         Task<IEnumerable<ConnectorBriefDTO>> GetAll(string userId);
+        Task<IEnumerable<ConnectorEvent>> GetAllAsEvent(string userId, int limit = 10);
         Task<IEnumerable<ConnectorBriefDTO>> GetAllByQuery(string userId, string? query);
+        Task<IEnumerable<ConnectorEvent>> GetAllByQueryAsEvent(string userId, string query, int limit=10);
         Task<IEnumerable<ConnectorBriefDTO>> GetAllByEventId(string userId, string eventId);
         Task<Connector> Create(string userId, ConnectorOnCreate input);
         Task<ConnectorOverviewDTO> GetOverview(string userId, Guid connectorId);

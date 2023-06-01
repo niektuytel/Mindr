@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using System.Linq;
 
 namespace Mindr.Domain.Models.DTO.Connector
 {
@@ -47,6 +48,28 @@ namespace Mindr.Domain.Models.DTO.Connector
             string[] colors = new[] { "magenta", "yellow", "green", "pink", "red" };
             var random = new Random();
             return colors[random.Next(0, colors.Length)];
+        }
+
+        public ConnectorEvent AsEvent(string userId, string createdBy)
+        {
+            var variables = Variables.Select(item =>
+            {
+                if(userId == createdBy)
+                {
+                    item.Value = "";
+                }
+
+                return item;
+            });
+
+
+            return new ConnectorEvent()
+            {
+                ConnectorId = Id,
+                ConnectorName = Name,
+                ConnectorVariables = variables,
+                ConnectorColor = Color,
+            };
         }
 
     }

@@ -54,6 +54,30 @@ public class ConnectorController : BaseController
     }
 
     /// <remarks>
+    /// Retrieves all available connectors as connector event, optionally filtered by query string.
+    /// </remarks>
+    /// <credentials code="200">Success</credentials>
+    /// <credentials code="400">Invalid credentials</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
+    [HttpGet("asevent")]
+    [ProducesResponseType(typeof(IEnumerable<ConnectorEvent>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    public async Task<IActionResult> GetAllAsEvent([FromQuery] string? query = null)
+    {
+        var response = await HandleRequest(async () => {
+            var userId = User.GetUserId();
+            if (!string.IsNullOrEmpty(query))
+            {
+                return await _connectorManager.GetAllByQueryAsEvent(userId, query);
+            }
+
+            return await _connectorManager.GetAllAsEvent(userId);
+        });
+
+        return response;
+    }
+
+    /// <remarks>
     /// Creates a new connector.
     /// </remarks>
     /// <credentials code="200">Success</credentials>
