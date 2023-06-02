@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 
 namespace Mindr.WebAssembly.Client.Pages.Calendar.Components;
 
-// Usefull to use? https://www.postman.com/cs-demo/workspace/public-rest-apis/overview
 public partial class ConnectorEventDialog
 {
     [CascadingParameter]
@@ -21,9 +20,6 @@ public partial class ConnectorEventDialog
 
     [Parameter, EditorRequired]
     public ConnectorEvent Item { get; set; } = default!;
-
-    [Parameter, EditorRequired]
-    public string Label { get; set; } = default!;
 
     [Inject]
     public IApiConnectorClient ConnectorClient { get; set; } = default!;
@@ -36,13 +32,6 @@ public partial class ConnectorEventDialog
     private bool DataHasChanged = false;
 
     private bool success;
-
-    private string _state;
-
-    protected override void OnInitialized()
-    {
-        _state = Item.ConnectorName;
-    }
 
     private async Task<IEnumerable<ConnectorEvent>> Search(string value, CancellationToken token)
     {
@@ -71,7 +60,7 @@ public partial class ConnectorEventDialog
 
     public void HandleOnCancel()
     {
-        MudDialog.Close(DialogResult.Ok(true));
+        MudDialog.Close(DialogResult.Cancel());
     }
 
 }

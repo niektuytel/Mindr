@@ -99,9 +99,9 @@ namespace Mindr.Api.Services.CalendarEvents
             throw new Exception($"Failed getting calendars from credentials({credential.Id}) [Code:{response.StatusCode}]");
         }
 
-        public async Task<IEnumerable<CalendarAppointment>?> GetCalendarAppointment(PersonalCredential credential, DateTime startDateTime, DateTime endDateTime, string calendarId)
-        {   
-            var accessToken = await GetAccessToken(credential);
+        public async Task<IEnumerable<CalendarAppointment>> GetCalendarAppointment(PersonalCredential personalCredential, string calendarId, DateTime startDateTime, DateTime endDateTime)
+        {
+            var accessToken = await GetAccessToken(personalCredential);
             var timespan = $"timeMin={startDateTime.Year}-{startDateTime.Month}-{startDateTime.Day}T00%3A00%3A00-00%3A00&timeMax={endDateTime.Year}-{endDateTime.Month}-{endDateTime.Day}T23%3A59%3A59-00%3A00";
             var uri = $"https://www.googleapis.com/calendar/v3/calendars/{calendarId}/events?{timespan}";
 
@@ -140,12 +140,13 @@ namespace Mindr.Api.Services.CalendarEvents
                     }
 
                     var events = _context.ConnectorEvents.Where(i =>
-                        i.UserId == credential.UserId &&
+                        i.UserId == personalCredential.UserId &&
                         i.EventId == item.Id
                     ).AsEnumerable();
 
                     var appointment = new CalendarAppointment(
                         item.Id,
+                        calendarId,
                         item.Summary,
                         start,
                         item?.Start?.TimeZone,
@@ -164,6 +165,25 @@ namespace Mindr.Api.Services.CalendarEvents
             throw new Exception($"Failed getting events from calendar({calendarId}) [Code:{response.StatusCode}]");
         }
 
+        public async Task<CalendarAppointment> InsertCalendarAppointment(PersonalCredential personalCredential, string calendarId, object appointmentId, CalendarAppointment input)
+        {
+            var accessToken = await GetAccessToken(personalCredential);
+            // TODO: Insert appointment for google calendar
+            return input;
+        }
 
+        public async Task<CalendarAppointment> UpdateCalendarAppointment(PersonalCredential personalCredential, string calendarId, string appointmentId, CalendarAppointment input)
+        {
+            var accessToken = await GetAccessToken(personalCredential);
+            // TODO: Update appointment for google calendar
+            return input;
+        }
+
+        public async Task<CalendarAppointment> DeleteCalendarAppointment(PersonalCredential personalCredential, string calendarId, string appointmentId)
+        {
+            var accessToken = await GetAccessToken(personalCredential);
+            // TODO: Delete appointment for google calendar
+            return new CalendarAppointment() { CalendarId = calendarId, Id = appointmentId };
+        }
     }
 }

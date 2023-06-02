@@ -99,7 +99,7 @@ public partial class CalendarPage
         }
     }
 
-    public Task OnAppointmentClicked(CalendarAppointment appointment)
+    public Task OnAppointmentClicked(CalendarAppointment? appointment)
     {
         AppointmentDrawer!.OnOpen(appointment);
         base.StateHasChanged();

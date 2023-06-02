@@ -24,7 +24,7 @@ public partial class ConnectorCreateDialog
     public async Task HandleOnCreate()
     {
         IsLoading = true;
-        var response = await ConnectorClient.Create(Connector);
+        var response = await ConnectorClient.Insert(Connector);
         IsLoading = false;
 
         if(response.IsError())

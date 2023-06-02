@@ -66,7 +66,7 @@ public class ConnectorEventController : BaseController
     {
         var response = await HandleRequest(async () => {
             var userId = User.GetUserId();
-            return await _connectorEventManager.GetById(userId, id);
+            return await _connectorEventManager.Get(userId, id);
         });
 
         return response;
@@ -87,7 +87,7 @@ public class ConnectorEventController : BaseController
     {
         var response = await HandleRequest(async () => {
             var userId = User.GetUserId();
-            return await _connectorEventManager.Create(userId, input);
+            return await _connectorEventManager.Insert(userId, input);
         });
 
         return response;
@@ -107,7 +107,7 @@ public class ConnectorEventController : BaseController
     {
         var response = await HandleRequest(async () => {
             var userId = User.GetUserId();
-            return await _connectorEventManager.UpdateById(userId, id, input);
+            return await _connectorEventManager.Update(userId, id, input);
         });
 
         return response;
@@ -128,7 +128,7 @@ public class ConnectorEventController : BaseController
     {
         var response = await HandleRequest(async () => {
             var userId = User.GetUserId();
-            return await _connectorEventManager.DeleteById(userId, id);
+            return await _connectorEventManager.Delete(userId, id);
         });
 
         return response;

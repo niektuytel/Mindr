@@ -22,30 +22,27 @@ using Mindr.WebAssembly.Client.Pages.Calendar.Components;
 using BlazorScheduler;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Mindr.WebAssembly.Client.Pages.Calendar.Dialogs;
+using Mindr.WebAssembly.Client.Services;
+using Mindr.Domain.HttpRunner.Models;
 
 namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 {
     public partial class AppointmentDrawer
     {
         [Inject]
+        public IApiPersonalCalendarClient CalendarClient { get; set; } = default!;
+
+        [Inject]
+        public ISnackbar Snackbar { get; set; } = default!;
+
+        [Inject]
         public IDialogService DialogService { get; set; } = default!;
 
         public CalendarAppointment Appointment { get; set; } = new();
 
-        DateRange __dateRange;
-        DateRange _dateRange
-        {
-            get
-            {
-                return __dateRange;
-            }
+        public bool IsLoading = false;
 
-            set
-            {
-                (Appointment.StartDate.DateTime, Appointment.EndDate.DateTime) = (value.Start ?? Appointment.StartDate.DateTime, value.End ?? Appointment.EndDate.DateTime);
-                (__dateRange.Start, __dateRange.End) = (value.Start, value.End);
-            }
-        }
+        DateRange _dateRange;
 
         private bool DataHasChanged = false;
 
@@ -53,9 +50,14 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 
         private bool success;
 
+        private bool isInsert;
+
         void OnConnectorEventRemove(ConnectorEvent connectorEvent)
         {
             Appointment.ConnectorEvents = Appointment.ConnectorEvents.Where(item => item.Id != connectorEvent.Id);
+
+            DataHasChanged = true;
+            base.StateHasChanged();
         }
 
         void OnConnectorEventUpsert(DialogResult result, bool isCreate)
@@ -84,38 +86,68 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
         public async Task OnConnectorEventClicked(ConnectorEvent? connectorEvent = null)
         {
             var isCreate = connectorEvent == null;
-            var action = isCreate ? "Create" : "Edit";
             var parameters = new DialogParameters
             {
-                ["Item"] = connectorEvent ?? new ConnectorEvent(),
-                ["Label"] = $"{action} connector",
+                ["Item"] = connectorEvent ?? new ConnectorEvent()
             };
-            var maxWidth = new DialogOptions() 
+            var options = new DialogOptions() 
             { 
                 MaxWidth = MaxWidth.Medium, 
-                FullWidth = true 
+                FullWidth = true,
+                CloseOnEscapeKey = true,
+                NoHeader = true
             };
 
-            var dialog = DialogService.Show<ConnectorEventDialog>($"{action} Connector Event", parameters, maxWidth);
+            var dialog = DialogService.Show<ConnectorEventDialog>("", parameters, options);
             var result = await dialog.Result;
 
             OnConnectorEventUpsert(result, isCreate);
         }
 
-        public Task OnOpen(CalendarAppointment appointment)
+        public Task OnOpen(CalendarAppointment? appointment = null)
         {
-            Appointment = appointment;
-            __dateRange = new DateRange(Appointment.StartDate?.DateTime, Appointment.EndDate?.DateTime);
+            isInsert = appointment == null;
+            Appointment = appointment ?? new CalendarAppointment();
+            _dateRange = new DateRange(Appointment.StartDate?.DateTime, Appointment.EndDate?.DateTime);
 
+            DataHasChanged = false;
             Open = true;
             base.StateHasChanged();
             return Task.CompletedTask;
         }
 
-        public void OnConfirm()
+        public async Task OnConfirm()
         {
-            // TODO: Upsert the appointment (with loading on this button)
+            IsLoading = true;
+            if (isInsert)
+            {
+                var response = await CalendarClient.InsertAppointment(Appointment.CalendarId, Appointment);
+                if (response.IsError())
+                {
+                    var error = response.GetContent();
+                    Snackbar.Add(error, Severity.Error);
+                }
+                else if (response.IsSuccessful())
+                {
+                    Appointment = response.GetContent<CalendarAppointment>();
+                }
+            }
+            else
+            {
+                // Update
+                var response = await CalendarClient.UpdateAppointment(Appointment.CalendarId, Appointment);
+                if (response.IsError())
+                {
+                    var error = response.GetContent();
+                    Snackbar.Add(error, Severity.Error);
+                }
+                else if (response.IsSuccessful())
+                {
+                    Appointment = response.GetContent<CalendarAppointment>();
+                }
+            }
 
+            IsLoading = false;
             Open = false;
             base.StateHasChanged();
         }

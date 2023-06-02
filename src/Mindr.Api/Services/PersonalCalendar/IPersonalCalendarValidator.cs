@@ -7,7 +7,8 @@ namespace Mindr.Api.Services.CalendarEvents
     public interface IPersonalCalendarValidator
     {
         void ThrowOnInvalidUserId(string userId);
-        void ThrowOnNullPersonalCredential(string userId, string calendarId, PersonalCredential? entity);
-        void ThrowOnNullPersonalCalendar(string userId, string calendarId, PersonalCalendar? entity);
+        void ThrowOnNullPersonalCredential(string userId, string? calendarId, PersonalCredential? entity);
+        void ThrowOnNullPersonalCalendar(string userId, string? calendarId, PersonalCalendar? entity);
+        void ThrowOnNullPersonalCalendars(string userId, string? calendarId, IEnumerable<PersonalCalendar>? entities);
     }
 }

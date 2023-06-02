@@ -24,7 +24,7 @@ public interface IApiConnectorClient
 
     Task<JsonResponse<IEnumerable<HttpItem>>> UpdatePipeline(string connectorId, IEnumerable<HttpItem> pipeline);
 
-    Task<JsonResponse<Connector>> Create(Connector connector);
+    Task<JsonResponse<Connector>> Insert(Connector connector);
 
     Task<JsonResponse<Connector>> Delete(string connectorId);
 }

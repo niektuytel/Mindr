@@ -26,7 +26,7 @@ public class ConnectorEventManager : IConnectorEventManager
         _context = context;
     }
 
-    public async Task<ConnectorEvent> GetById(string userId, Guid id)
+    public async Task<ConnectorEvent> Get(string userId, Guid id)
     {
         var entity = await _context.ConnectorEvents
             .Include(x => x.EventParameters)
@@ -93,7 +93,20 @@ public class ConnectorEventManager : IConnectorEventManager
         return items;
     }
 
-    public async Task<ConnectorEvent> UpdateById(string userId, Guid id, ConnectorEventOnUpdate input)
+    public async Task<ConnectorEvent> Upsert(string userId, ConnectorEvent input)
+    {
+        var entity = await _context.ConnectorEvents
+            .FirstOrDefaultAsync(x => x.UserId == userId && x.Id == input.Id);
+
+        if(entity == null)
+        {
+            return await Insert(userId, new ConnectorEventOnCreate(input));
+        }
+
+        return await Update(userId, input.Id, new ConnectorEventOnUpdate(entity));
+    }
+
+    public async Task<ConnectorEvent> Update(string userId, Guid id, ConnectorEventOnUpdate input)
     {
         _connectorEventValidator.ThrowOnInvalidConnectorVariables(input.ConnectorVariables);
         _connectorEventValidator.ThrowOnInvalidConnectorId(input.ConnectorId);
@@ -130,7 +143,7 @@ public class ConnectorEventManager : IConnectorEventManager
         return entity;
     }
 
-    public async Task<ConnectorEvent> Create(string userId, ConnectorEventOnCreate input)
+    public async Task<ConnectorEvent> Insert(string userId, ConnectorEventOnCreate input)
     {
         _connectorEventValidator.ThrowOnInvalidUserId(userId);
         _connectorEventValidator.ThrowOnInvalidEventId(input.EventId);
@@ -155,7 +168,7 @@ public class ConnectorEventManager : IConnectorEventManager
         return entity;
     }
 
-    public async Task<ConnectorEvent> DeleteById(string userId, Guid id)
+    public async Task<ConnectorEvent> Delete(string userId, Guid id)
     {
         var entity = _context.ConnectorEvents
                 .Include(x => x.EventParameters)

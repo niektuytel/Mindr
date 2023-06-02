@@ -232,7 +232,7 @@ namespace Mindr.Api.Services.Connectors
             var events = await _eventClient.GetAllByConnectorId(userId, id);
             foreach (var item in events)
             {
-                await _eventClient.DeleteById(userId, item.Id);
+                await _eventClient.Delete(userId, item.Id);
             }
 
             // delete entity

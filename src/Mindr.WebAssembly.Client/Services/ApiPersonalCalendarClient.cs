@@ -34,13 +34,6 @@ public class ApiPersonalCalendarClient : ApiClientBase, IApiPersonalCalendarClie
     {
     }
 
-    public async Task<JsonResponse<IEnumerable<CalendarAppointment>>> GetAllAppointments(DateTime dateStart, DateTime dateEnd, string calendarId)
-    {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{Path}/appointments?dateTimeStart={dateStart}&dateTimeEnd={dateEnd}&calendarId={calendarId}");
-        var response = await ApiRequest<IEnumerable<CalendarAppointment>>(request);
-        return response;
-    }
-
     public async Task<JsonResponse<IEnumerable<PersonalCalendar>>> GetAllCalendars()
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"{Path}");
@@ -48,7 +41,7 @@ public class ApiPersonalCalendarClient : ApiClientBase, IApiPersonalCalendarClie
         return response;
     }
 
-    public async Task<JsonResponse<PersonalCalendar>> Create(PersonalCalendarWithCredential calendar)
+    public async Task<JsonResponse<PersonalCalendar>> Insert(PersonalCalendarWithCredential calendar)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, $"{Path}");
         request.Headers.Add("accept", "*/*");
@@ -67,4 +60,46 @@ public class ApiPersonalCalendarClient : ApiClientBase, IApiPersonalCalendarClie
         return response;
     }
 
+    public async Task<JsonResponse<IEnumerable<CalendarAppointment>>> GetAllAppointments(DateTime dateStart, DateTime dateEnd, string calendarId)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{Path}/appointments?calendarId={calendarId}&dateTimeStart={dateStart}&dateTimeEnd={dateEnd}");
+        var response = await ApiRequest<IEnumerable<CalendarAppointment>>(request);
+        return response;
+    }
+
+    public async Task<JsonResponse<CalendarAppointment>> InsertAppointment(string calendarId, CalendarAppointment appointment)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, $"{Path}/{calendarId}/appointment");
+        request.Headers.Add("accept", "*/*");
+
+        var content = JsonSerializer.Serialize(appointment);
+        request.Content = new StringContent(content, Encoding.UTF8, "application/json");
+
+        var response = await ApiRequest<CalendarAppointment>(request);
+        return response;
+    }
+
+    public async Task<JsonResponse<CalendarAppointment>> UpdateAppointment(string calendarId, CalendarAppointment appointment)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Put, $"{Path}/{calendarId}/appointment/{appointment.Id}");
+        request.Headers.Add("accept", "*/*");
+
+        var content = JsonSerializer.Serialize(appointment);
+        request.Content = new StringContent(content, Encoding.UTF8, "application/json");
+
+        var response = await ApiRequest<CalendarAppointment>(request);
+        return response;
+    }
+
+    public async Task<JsonResponse<CalendarAppointment>> DeleteAppointment(string calendarId, CalendarAppointment appointment)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Delete, $"{Path}/{calendarId}/appointment/{appointment.Id}");
+        request.Headers.Add("accept", "*/*");
+
+        var content = JsonSerializer.Serialize(appointment);
+        request.Content = new StringContent(content, Encoding.UTF8, "application/json");
+
+        var response = await ApiRequest<CalendarAppointment>(request);
+        return response;
+    }
 }

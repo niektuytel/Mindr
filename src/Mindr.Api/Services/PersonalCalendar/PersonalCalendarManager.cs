@@ -14,6 +14,8 @@ using Mindr.Api.Models.Connectors;
 using Mindr.Domain.Models.DTO.Connector;
 using Mindr.Domain.Models.DTO.Personal;
 using Mindr.Domain.Models.DTO.Calendar;
+using System;
+using Mindr.Api.Models.ConnectorEvents;
 
 namespace Mindr.Api.Services.CalendarEvents
 {
@@ -21,72 +23,21 @@ namespace Mindr.Api.Services.CalendarEvents
     {
         private readonly HttpClient _httpClient;
         private readonly IGoogleCalendarClient _googleClient;
+        private readonly IConnectorEventManager _connectorEventManager;
         private readonly IPersonalCalendarValidator _validator;
         private readonly IMapper _mapper;
         private readonly ApplicationContext _context;
 
-        public PersonalCalendarManager(IHttpClientFactory factory, IGoogleCalendarClient googleCalendarClient, IPersonalCalendarValidator connectorValidator, IMapper mapper, ApplicationContext context)
+        public PersonalCalendarManager(IHttpClientFactory factory, IGoogleCalendarClient googleCalendarClient, IConnectorEventManager connectorEventManager, IPersonalCalendarValidator connectorValidator, IMapper mapper, ApplicationContext context)
         {
             _httpClient = factory.CreateClient(nameof(PersonalCalendarManager));
             _googleClient = googleCalendarClient;
+            _connectorEventManager = connectorEventManager;
             _validator = connectorValidator;
             _mapper = mapper;
             _context = context;
         }
 
-        public async Task<IEnumerable<CalendarAppointment>> GetAppointmentsOnCalendarId(string userId, string calendarId, DateTime startDateTime, DateTime endDateTime)
-        {
-            _validator.ThrowOnInvalidUserId(userId);
-
-            var calendar = await _context.PersonalCalendars.FirstOrDefaultAsync(item => item.UserId == userId && item.CalendarId == calendarId);
-            _validator.ThrowOnNullPersonalCalendar(userId, calendarId, calendar);
-
-            var credential = await _context.PersonalCredentials.FirstOrDefaultAsync(item => item.Id == calendar!.CredentialId);
-            _validator.ThrowOnNullPersonalCredential(userId, calendarId, credential);
-
-            if (calendar!.From == Domain.Enums.CalendarFrom.Google)
-            {
-                var events = await _googleClient.GetCalendarAppointment(credential!, startDateTime, endDateTime, calendarId);
-                if (events != null)
-                {
-                    return events;
-                }
-            }
-
-            return new List<CalendarAppointment>();
-        }
-
-        public async Task<IEnumerable<CalendarAppointment>> GetAppointments(string userId, DateTime startDateTime, DateTime endDateTime)
-        {
-            _validator.ThrowOnInvalidUserId(userId);
-
-            var events = await GetAppointmentsFromGoogle(userId, startDateTime, endDateTime);
-
-            return events;
-        }
-        
-        private async Task<IEnumerable<CalendarAppointment>> GetAppointmentsFromGoogle(string userId, DateTime startDateTime, DateTime endDateTime)
-        {
-            var events = new List<CalendarAppointment>();
-            
-            var calendars = await _context.PersonalCalendars.Where(item => item.From == Domain.Enums.CalendarFrom.Google).ToListAsync();
-            foreach (var calendar in calendars)
-            {
-                var credential = await _context.PersonalCredentials.FirstOrDefaultAsync(item => item.UserId == userId && item.Id == calendar.CredentialId);
-                _validator.ThrowOnNullPersonalCredential(userId, calendar.CalendarId, credential);
-
-                var response = await _googleClient.GetCalendarAppointment(credential!, startDateTime, endDateTime, calendar.CalendarId);
-                if(response == null)
-                {
-                    continue;
-                }
-
-                events.AddRange(response);
-            }
-
-            return events;
-        }
-        
         public async Task<IEnumerable<PersonalCalendar>> GetCalendars(string userId)
         {
             var personalCalendars = new List<PersonalCalendar>();
@@ -195,69 +146,128 @@ namespace Mindr.Api.Services.CalendarEvents
             return calendar!;
         }
 
+        public async Task<IEnumerable<CalendarAppointment>> GetAppointments(string userId, DateTime dateTimeStart, DateTime dateTimeEnd, string? calendarId = null)
+        {
+            _validator.ThrowOnInvalidUserId(userId);
 
-        //public async Task<CalendarEvent> GetById(string userId, Guid id)
-        //{
-        //    _connectorValidator.ThrowOnInvalidUserId(userId);
+            var calendars = _context.PersonalCalendars.Where(item => 
+                item.UserId == userId && 
+                (string.IsNullOrEmpty(calendarId) || item.CalendarId == calendarId)// when not null, use
+            );
 
-        //    var entity = await _context.CalendarEvents
-        //        .Where(item => item.UserId == userId)
-        //        .Where(item => item.Id == id)
-        //        .FirstOrDefaultAsync();
+            foreach (var calendar in calendars)
+            {
+                var credential = await _context.PersonalCredentials.FirstOrDefaultAsync(item => item.Id == calendar!.CredentialId);
+                _validator.ThrowOnNullPersonalCredential(userId, calendarId, credential);
 
-        //    _connectorValidator.ThrowOnNullCalendarEvent(id, entity);
+                return calendar.From switch
+                {
+                    Domain.Enums.CalendarFrom.Mindr => throw new NotImplementedException("Calendar Mindr not implemented"),
+                    Domain.Enums.CalendarFrom.Google => await _googleClient.GetCalendarAppointment(credential!, calendar.CalendarId, dateTimeStart, dateTimeEnd),
+                    Domain.Enums.CalendarFrom.Microsoft => throw new NotImplementedException("Calendar Microsoft not implemented"),
+                    _ => throw new NotImplementedException($"Unknown Calendar type:{calendar.From}"),
+                };
+            }
 
-        //    return entity!;
-        //}
+            _validator.ThrowOnNullPersonalCalendars(userId, calendarId, calendars);
+            return Enumerable.Empty<CalendarAppointment>();
+        }
 
+        public async Task<CalendarAppointment> InsertAppointment(string userId, string calendarId, CalendarAppointment input)
+        {
+            _validator.ThrowOnInvalidUserId(userId);
 
-        //public async Task<CalendarEvent> Create(string userId, CalendarEventDTO input)
-        //{
-        //    _connectorValidator.ThrowOnInvalidUserId(userId);
-        //    var entity = new CalendarEvent(userId, input);
+            var calendar = await _context.PersonalCalendars.FirstOrDefaultAsync(item =>
+                item.UserId == userId &&
+                item.CalendarId == calendarId
+            );
+            _validator.ThrowOnNullPersonalCalendar(userId, calendarId, calendar);
 
-        //    _context.CalendarEvents.Add(entity);
-        //    await _context.SaveChangesAsync();
+            var credential = await _context.PersonalCredentials.FirstOrDefaultAsync(item =>
+                item.Id == calendar!.CredentialId
+            );
+            _validator.ThrowOnNullPersonalCredential(userId, calendarId, credential);
 
-        //    return entity!;
-        //}
+            var appointment = calendar!.From switch
+            {
+                Domain.Enums.CalendarFrom.Mindr => throw new NotImplementedException("Calendar Mindr not implemented"),
+                Domain.Enums.CalendarFrom.Google => await _googleClient.InsertCalendarAppointment(credential!, calendar.CalendarId, input.Id, input),
+                Domain.Enums.CalendarFrom.Microsoft => throw new NotImplementedException("Calendar Microsoft not implemented"),
+                _ => throw new NotImplementedException($"Unknown Calendar type:{calendar.From}"),
+            };
 
-        //public async Task<CalendarEvent> Update(string userId, Guid id, CalendarEventDTO input)
-        //{
-        //    _connectorValidator.ThrowOnInvalidUserId(userId);
-        //    var entity = await _context.CalendarEvents
-        //        .Where(item => item.UserId == userId)
-        //        .FirstOrDefaultAsync(x => x.Id == id);
+            // Finally insert all connector events
+            foreach (var connectorEvent in appointment.ConnectorEvents)
+            {
+                await _connectorEventManager.Insert(userId, new ConnectorEventOnCreate(connectorEvent));
+            }
 
-        //    _connectorValidator.ThrowOnNullCalendarEvent(id, entity);
+            return appointment;
+        }
 
-        //    //entity!.AccessToken = input.AccessToken;
-        //    //entity!.ExpiresIn = input.ExpiresIn;
-        //    //entity!.RefreshToken = input.RefreshToken;
-        //    //entity!.Scope = input.Scope;
-        //    //entity!.TokenType = input.TokenType;
+        public async Task<CalendarAppointment> UpdateAppointment(string userId, string calendarId, string appointmentId, CalendarAppointment input)
+        {
+            _validator.ThrowOnInvalidUserId(userId);
 
-        //    _context.CalendarEvents.Update(entity!);
-        //    await _context.SaveChangesAsync();
+            var calendar = await _context.PersonalCalendars.FirstOrDefaultAsync(item =>
+                item.UserId == userId &&
+                item.CalendarId == calendarId
+            );
+            _validator.ThrowOnNullPersonalCalendar(userId, calendarId, calendar);
 
-        //    return entity!;
-        //}
+            var credential = await _context.PersonalCredentials.FirstOrDefaultAsync(item =>
+                item.Id == calendar!.CredentialId
+            );
+            _validator.ThrowOnNullPersonalCredential(userId, calendarId, credential);
 
-        //public async Task<CalendarEvent> Delete(string userId, Guid id)
-        //{
-        //    _connectorValidator.ThrowOnInvalidUserId(userId);
-        //    var entity = await _context.CalendarEvents
-        //        .Where(item => item.UserId == userId)
-        //        .FirstOrDefaultAsync(x => x.Id == id);
+            var appointment = calendar!.From switch
+            {
+                Domain.Enums.CalendarFrom.Mindr => throw new NotImplementedException("Calendar Mindr not implemented"),
+                Domain.Enums.CalendarFrom.Google => await _googleClient.UpdateCalendarAppointment(credential!, calendar.CalendarId, appointmentId, input),
+                Domain.Enums.CalendarFrom.Microsoft => throw new NotImplementedException("Calendar Microsoft not implemented"),
+                _ => throw new NotImplementedException($"Unknown Calendar type:{calendar.From}"),
+            };
 
-        //    _connectorValidator.ThrowOnNullCalendarEvent(id, entity);
+            // Finally upsert all connector events
+            foreach (var connectorEvent in appointment.ConnectorEvents)
+            {
+                await _connectorEventManager.Upsert(userId, connectorEvent);
+            }
 
-        //    // delete entity
-        //    _context.CalendarEvents.Remove(entity!);
-        //    await _context.SaveChangesAsync();
+            return appointment;
+        }
 
-        //    return entity!;
-        //}
+        public async Task<CalendarAppointment> DeleteAppointment(string userId, string calendarId, string appointmentId)
+        {
+            _validator.ThrowOnInvalidUserId(userId);
+
+            var calendar = await _context.PersonalCalendars.FirstOrDefaultAsync(item =>
+                item.UserId == userId &&
+                item.CalendarId == calendarId
+            );
+            _validator.ThrowOnNullPersonalCalendar(userId, calendarId, calendar);
+
+            var credential = await _context.PersonalCredentials.FirstOrDefaultAsync(item => 
+                item.Id == calendar!.CredentialId
+            );
+            _validator.ThrowOnNullPersonalCredential(userId, calendarId, credential);
+
+            var appointment = calendar!.From switch
+            {
+                Domain.Enums.CalendarFrom.Mindr => throw new NotImplementedException("Calendar Mindr not implemented"),
+                Domain.Enums.CalendarFrom.Google => await _googleClient.DeleteCalendarAppointment(credential!, calendar.CalendarId, appointmentId),
+                Domain.Enums.CalendarFrom.Microsoft => throw new NotImplementedException("Calendar Microsoft not implemented"),
+                _ => throw new NotImplementedException($"Unknown Calendar type:{calendar.From}"),
+            };
+
+            // Finally delete all connector events
+            foreach (var connectorEvent in appointment.ConnectorEvents)
+            {
+                await _connectorEventManager.Delete(userId, connectorEvent.Id);
+            }
+
+            return appointment;
+        }
 
     }
 }

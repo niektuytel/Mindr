@@ -10,6 +10,17 @@ namespace Mindr.Api.Models.ConnectorEvents
 {
     public class ConnectorEventOnCreate
     {
+        public ConnectorEventOnCreate()
+        { }
+
+        public ConnectorEventOnCreate(ConnectorEvent connectorEvent)
+        {
+            EventId = connectorEvent.EventId;
+            EventVariables = connectorEvent.EventParameters;
+            ConnectorId = connectorEvent.ConnectorId;
+            ConnectorVariables = connectorEvent.ConnectorVariables;
+        }
+
         [JsonPropertyName("event_id")]
         public string EventId { get; set; }
 

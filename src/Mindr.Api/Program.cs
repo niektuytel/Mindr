@@ -27,18 +27,16 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        var dbConnection = builder.Configuration.GetConnectionString("SqlDatabase");
 
         // External Services
-        builder.Services
-            .AddDbContext<IApplicationContext, ApplicationContext>(options => {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("SqlDatabase"));
-            });
+        builder.Services.AddDbContext<IApplicationContext, ApplicationContext>(options => options.UseSqlServer(dbConnection));
         builder.Services
             .AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings()
-                .UseSqlServerStorage(builder.Configuration.GetConnectionString("HangfireConnection"), new SqlServerStorageOptions
+                .UseSqlServerStorage(dbConnection, new SqlServerStorageOptions
                     {
                         CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
                         SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
@@ -48,6 +46,7 @@ public class Program
                     }
                 )
             );
+
         builder.Services.AddHangfireServer();// Scoped service!
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         if (builder.Environment.IsDevelopment())

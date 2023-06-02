@@ -8,6 +8,10 @@ namespace Mindr.Api.Services.CalendarEvents
     {
         Task<string> GetAccessToken(PersonalCredential credential);
         Task<IEnumerable<PersonalCalendar>> GetCalendars(PersonalCredential credential, string userId);
-        Task<IEnumerable<CalendarAppointment>?> GetCalendarAppointment(PersonalCredential credential, DateTime startDateTime, DateTime endDateTime, string calendarId);
+
+        Task<IEnumerable<CalendarAppointment>> GetCalendarAppointment(PersonalCredential personalCredential, string calendarId, DateTime startDateTime, DateTime endDateTime);
+        Task<CalendarAppointment> InsertCalendarAppointment(PersonalCredential personalCredential, string calendarId, object appointmentId, CalendarAppointment input);
+        Task<CalendarAppointment> UpdateCalendarAppointment(PersonalCredential personalCredential, string calendarId, string appointmentId, CalendarAppointment input);
+        Task<CalendarAppointment> DeleteCalendarAppointment(PersonalCredential personalCredential, string calendarId, string appointmentId);
     }
 }

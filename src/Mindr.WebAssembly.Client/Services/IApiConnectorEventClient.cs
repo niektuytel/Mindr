@@ -15,7 +15,7 @@ public interface IApiConnectorEventClient
 
     Task<JsonResponse<IEnumerable<ConnectorEvent>>> GetAll(string query = "", string eventId = "");
 
-    Task<JsonResponse<ConnectorEvent>> Create(ConnectorEvent connectorEvent);
+    Task<JsonResponse<ConnectorEvent>> Insert(ConnectorEvent connectorEvent);
 
     Task<JsonResponse<ConnectorEvent>> Update(Guid eventid, ConnectorEvent connectorEvent);
 

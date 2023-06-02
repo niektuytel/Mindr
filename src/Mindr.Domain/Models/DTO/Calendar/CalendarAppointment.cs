@@ -14,9 +14,10 @@ namespace Mindr.Domain.Models.DTO.Calendar
 
         }
 
-        public CalendarAppointment(string id, string subject, DateTime? dateTimeStart, string dateTimeStartZone, DateTime? dateTimeEnd, string dateTimeEndZone, IEnumerable<ConnectorEvent> connectorEvents, string color="#ffffff")
+        public CalendarAppointment(string id, string calendarId, string subject, DateTime? dateTimeStart, string dateTimeStartZone, DateTime? dateTimeEnd, string dateTimeEndZone, IEnumerable<ConnectorEvent> connectorEvents, string color="#ffffff")
         {
             Id = id;
+            CalendarId = calendarId;
             Subject = subject;
 
             if(dateTimeStart != null)
@@ -43,6 +44,9 @@ namespace Mindr.Domain.Models.DTO.Calendar
 
         [JsonPropertyName("id")]
         public string Id { get; set; }
+
+        [JsonPropertyName("calendar_id")]
+        public string CalendarId { get; set; }
 
         [JsonPropertyName("subject")]
         public string Subject { get; set; }

@@ -25,35 +25,6 @@ public class PersonalCalendarController : BaseController
     }
 
     /// <remarks>
-    /// Retrieves all personal calendar events by id for the authenticated user.
-    /// </remarks>
-    /// <credentials code="200">Success</credentials>
-    /// <credentials code="400">Invalid credentials</credentials>
-    /// <credentials code="401">Unauthorized</credentials>
-    /// <credentials code="404">Not Found</credentials>
-    [HttpGet("appointments")]
-    [ProducesResponseType(typeof(IEnumerable<CalendarAppointment>), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(PersonalCredential), (int)HttpStatusCode.NotFound)]
-    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> GetPersonalCalendarAppointments([FromQuery] DateTime dateTimeStart, [FromQuery] DateTime dateTimeEnd, [FromQuery] string? calendarId = null)
-    {
-        var response = await HandleRequest(async () => {
-            var userId = User.GetUserId();
-
-            if(!string.IsNullOrEmpty(calendarId))
-            {
-                return await _manager.GetAppointmentsOnCalendarId(userId, calendarId, dateTimeStart, dateTimeEnd);
-            }
-
-            return await _manager.GetAppointments(userId, dateTimeStart, dateTimeEnd);
-        });
-
-        return response;
-    }
-
-
-    /// <remarks>
     /// Retrieves all personal calendars by id for the authenticated user.
     /// </remarks>
     /// <credentials code="200">Success</credentials>
@@ -112,6 +83,108 @@ public class PersonalCalendarController : BaseController
         {
             var userId = User.GetUserId();
             return await _manager.DeleteCalendar(userId, calendarId);
+        });
+
+        return response;
+    }
+
+
+    /// <remarks>
+    /// Retrieves all personal calendar events by id for the authenticated user.
+    /// </remarks>
+    /// <credentials code="200">Success</credentials>
+    /// <credentials code="400">Invalid credentials</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
+    /// <credentials code="404">Not Found</credentials>
+    [HttpGet("appointments")]
+    [ProducesResponseType(typeof(IEnumerable<CalendarAppointment>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(PersonalCredential), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> GetCalendarAppointments(
+        [FromQuery] DateTime dateTimeStart, 
+        [FromQuery] DateTime dateTimeEnd, 
+        [FromQuery] string? calendarId = null
+    )
+    {
+        var response = await HandleRequest(async () => {
+            var userId = User.GetUserId();
+            return await _manager.GetAppointments(userId, dateTimeStart, dateTimeEnd, calendarId);
+        });
+
+        return response;
+    }
+
+    /// <remarks>
+    /// Insert a new personal calendar event by id for the authenticated user.
+    /// </remarks>
+    /// <credentials code="200">Success</credentials>
+    /// <credentials code="400">Invalid credentials</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
+    /// <credentials code="404">Not Found</credentials>
+    [HttpPost("{calendarId}/appointment")]
+    [ProducesResponseType(typeof(CalendarAppointment), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(PersonalCredential), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> InsertCalendarAppointments(
+        [FromRoute] string calendarId,
+        [FromBody] CalendarAppointment input 
+    ){
+        var response = await HandleRequest(async () => {
+            var userId = User.GetUserId();
+            return await _manager.InsertAppointment(userId, calendarId, input);
+        });
+
+        return response;
+    }
+
+    /// <remarks>
+    /// Update personal calendar event by id for the authenticated user.
+    /// </remarks>
+    /// <credentials code="200">Success</credentials>
+    /// <credentials code="400">Invalid credentials</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
+    /// <credentials code="404">Not Found</credentials>
+    [HttpPut("{calendarId}/appointment/{appointmentI}")]
+    [ProducesResponseType(typeof(CalendarAppointment), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(PersonalCredential), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> UpdateCalendarAppointments(
+        [FromRoute] string calendarId,
+        [FromRoute] string appointmentId, 
+        [FromBody] CalendarAppointment input
+    ){
+        var response = await HandleRequest(async () => {
+            var userId = User.GetUserId();
+            return await _manager.UpdateAppointment(userId, calendarId, appointmentId, input);
+        });
+
+        return response;
+    }
+
+
+    /// <remarks>
+    /// Delete personal calendar event by id for the authenticated user.
+    /// </remarks>
+    /// <credentials code="200">Success</credentials>
+    /// <credentials code="400">Invalid credentials</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
+    /// <credentials code="404">Not Found</credentials>
+    [HttpPut("{calendarId}/appointment/{appointmentId}")]
+    [ProducesResponseType(typeof(CalendarAppointment), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(PersonalCredential), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> DeleteCalendarAppointments(
+        [FromRoute] string calendarId,
+        [FromRoute] string appointmentId
+    )
+    {
+        var response = await HandleRequest(async () => {
+            var userId = User.GetUserId();
+            return await _manager.DeleteAppointment(userId, calendarId, appointmentId);
         });
 
         return response;

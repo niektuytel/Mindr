@@ -25,19 +25,31 @@ namespace Mindr.Api.Services.CalendarEvents
             }
         }
 
-        public void ThrowOnNullPersonalCalendar(string userId, string calendarId, PersonalCalendar? entity)
+        public void ThrowOnNullPersonalCalendar(string userId, string? calendarId, PersonalCalendar? entity)
         {
-            if (entity == null)
+            if (entity != null)
             {
-                throw new HttpException<string>(HttpStatusCode.NotFound, $"Can't find calendar:{calendarId} on User:{userId}");
+                return;
             }
+
+            throw new HttpException<string>(HttpStatusCode.NotFound, $"Can't find calendar on User:{userId} (calendarId:{calendarId})");
         }
 
-        public void ThrowOnNullPersonalCredential(string userId, string calendarId, PersonalCredential? entity)
+        public void ThrowOnNullPersonalCalendars(string userId, string? calendarId, IEnumerable<PersonalCalendar>? entities)
+        {
+            if (entities?.Any() == true)
+            {
+                return;
+            }
+
+            throw new HttpException<string>(HttpStatusCode.NotFound, $"Can't find calendars on User:{userId} (calendarId:{calendarId})");
+        }
+
+        public void ThrowOnNullPersonalCredential(string userId, string? calendarId, PersonalCredential? entity)
         {
             if (entity == null)
             {
-                throw new HttpException<string>(HttpStatusCode.NotFound, $"Can't find credential for calendar:{calendarId} on User:{userId}");
+                throw new HttpException<string>(HttpStatusCode.NotFound, $"Can't find calendar credential on User:{userId} (calendarId:{calendarId})");
             }
         }
 

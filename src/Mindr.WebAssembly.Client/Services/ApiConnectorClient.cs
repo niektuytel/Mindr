@@ -101,7 +101,7 @@ public class ApiConnectorClient : ApiClientBase, IApiConnectorClient
         return response;
     }
 
-    public async Task<JsonResponse<Connector>> Create(Connector connector)
+    public async Task<JsonResponse<Connector>> Insert(Connector connector)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, $"{Path}/personal");
         request.Headers.Add("accept", "*/*");

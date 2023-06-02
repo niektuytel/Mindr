@@ -9,10 +9,11 @@
     <DialogContent>
         <MudForm @bind-IsValid="@success" FieldChanged="@((args) => DataHasChanged = true)" Class="overflow-auto">
             <MudAutocomplete T="ConnectorEvent"
-                Placeholder="Whatsapp message..."
+                Placeholder="Send whatsapp message ..."
                 Variant="Variant.Outlined"
                 Margin="Margin.Dense"
-                Label="@Label"
+                Label="What type of action do you prefer?"
+                Style="padding-top: 5px;" 
                 Required="true"
                 SelectOnClick="true"
                 SelectValueOnTab="true"
@@ -20,20 +21,30 @@
                 Value="@Item"
                 ValueChanged="OnSelect"
                 ToStringFunc="@(e => e.ConnectorName)"
-                SearchFuncWithCancel="@Search" 
+                SearchFuncWithCancel="@Search"
             />
             <MudGrid Spacing="0">
                 @foreach(var variable in Item.ConnectorVariables)
                 {
-                    <MudItem xs="12">@variable.Key @variable.Value</MudItem>
+                    if(!variable.IsPublic) continue;
+
+                    <MudItem xs="12">
+                        <MudTextField @bind-Value="@variable.Value"
+                            title="@variable.Key"
+                            Label="@variable.Description" 
+                            Variant="@Variant.Text" 
+                            Clearable 
+                            Required
+                        />
+                    </MudItem>
                 }
             </MudGrid>
         </MudForm>
     </DialogContent>
     <DialogActions>
         <MudStack Row="true">
-            <MudButton @onclick="HandleOnConfirm" Disabled="@(!DataHasChanged || !success)">Confirm</MudButton>
             <MudButton @onclick="HandleOnCancel">Cancel</MudButton>
+            <MudButton @onclick="HandleOnConfirm" Disabled="@(!DataHasChanged || !success)">Confirm</MudButton>
         </MudStack>
     </DialogActions>
 </MudDialog>

@@ -50,7 +50,7 @@ public class ApiConnectorEventClient : ApiClientBase, IApiConnectorEventClient
         return response;
     }
 
-    public async Task<JsonResponse<ConnectorEvent>> Create(ConnectorEvent connectorEvent)
+    public async Task<JsonResponse<ConnectorEvent>> Insert(ConnectorEvent connectorEvent)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, Path);
         request.Headers.Add("accept", "*/*");
