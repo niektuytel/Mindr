@@ -86,10 +86,10 @@ public class Startup
                 // Allow the OpenIddict client to negotiate the authorization code flow.
                 options.AllowAuthorizationCodeFlow();
 
-                // Register the signing and encryption credentials used to protect
-                // sensitive data like the state tokens produced by OpenIddict.
-                options.AddEphemeralEncryptionKey()
-                       .AddEphemeralSigningKey();
+                //TODO: // Register the signing and encryption credentials used to protect
+                //// sensitive data like the state tokens produced by OpenIddict.
+                //options.AddEphemeralEncryptionKey()
+                //       .AddEphemeralSigningKey();
 
                 //options.AddDevelopmentEncryptionCertificate()()
                 //       .AddDevelopmentSigningCertificate();
