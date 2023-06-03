@@ -88,8 +88,11 @@ public class Startup
 
                 // Register the signing and encryption credentials used to protect
                 // sensitive data like the state tokens produced by OpenIddict.
-                options.AddDevelopmentEncryptionCertificate()
-                       .AddDevelopmentSigningCertificate();
+                options.AddEphemeralEncryptionKey()
+                       .AddEphemeralSigningKey();
+
+                //options.AddDevelopmentEncryptionCertificate()()
+                //       .AddDevelopmentSigningCertificate();
 
                 // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
                 options.UseAspNetCore()
