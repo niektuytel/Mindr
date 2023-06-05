@@ -6,6 +6,7 @@
 	  <ImplicitUsings>enable</ImplicitUsings>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
 	<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+	<Configurations>Debug;Release;Debug_Local</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

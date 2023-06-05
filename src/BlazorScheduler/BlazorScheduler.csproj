@@ -11,6 +11,7 @@
     <PackageProjectUrl></PackageProjectUrl>
     <RepositoryUrl>https://github.com/valincius/BlazorScheduler</RepositoryUrl>
     <Version>4.3.2</Version>
+    <Configurations>Release;Debug_Local;Debug_Test</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
