@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
+using Mindr.Api.Options;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Reflection;
 
@@ -11,9 +12,9 @@ public static class SwaggerConfiguration
 {
     public static void AddSwaggerTools(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddEndpointsApiExplorer();
-        //services.AddSwaggerGenNewtonsoftSupport();
+        var oidcAuthority = configuration[$"{nameof(IdentityServer)}:Authority"];
 
+        services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
         {
             options.SwaggerDoc("v1", new OpenApiInfo
@@ -30,8 +31,8 @@ public static class SwaggerConfiguration
                 {
                     AuthorizationCode = new OpenApiOAuthFlow
                     {
-                        AuthorizationUrl = new Uri("https://localhost:44319/connect/authorize"),
-                        TokenUrl = new Uri("https://localhost:44319/connect/token"),
+                        AuthorizationUrl = new Uri($"{oidcAuthority}/connect/authorize"),
+                        TokenUrl = new Uri($"{oidcAuthority}/connect/token"),
                         Scopes = new Dictionary<string, string>
                         {
                             { "api1", "resource server scope" }

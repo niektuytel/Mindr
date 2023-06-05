@@ -2,7 +2,7 @@
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
 		<CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
-		<Configurations>Debug;Release;Debug_Local</Configurations>
+		<Configurations>Release;Debug_Local;Debug_Test</Configurations>
     </PropertyGroup>
     <ItemGroup>
 	    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.16" />

@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-Mindr.Api-c7f9f5b4-834b-4219-b599-40b75c819b1a</UserSecretsId>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	<Configurations>Debug;Release;Debug_Local</Configurations>
+	<Configurations>Release;Debug_Local;Debug_Test</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

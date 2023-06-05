@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Configurations>Debug;Release;Debug_Local</Configurations>
+	  <Configurations>Release;Debug_Local;Debug_Test</Configurations>
   </PropertyGroup>
 
 	<ItemGroup>

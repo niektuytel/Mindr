@@ -19,15 +19,22 @@ using OpenIddict.Validation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Mindr.Api.Services.PersonalCredentials;
 using Mindr.Api.Services.CalendarEvents;
+using Microsoft.Graph.ExternalConnectors;
+using Mindr.Api.Options;
 
 namespace Mindr.Api;
 
-public class Program
+public static class Program
 {
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        builder.PrepareAppsettings();
+
         var dbConnection = builder.Configuration.GetConnectionString("SqlDatabase");
+        var oidcAuthority = builder.Configuration[$"{nameof(IdentityServer)}:Authority"];
+
+
 
         // External Services
         builder.Services.AddDbContext<IApplicationContext, ApplicationContext>(options => options.UseSqlServer(dbConnection));
@@ -45,14 +52,15 @@ public class Program
                         DisableGlobalLocks = true
                     }
                 )
-            );
+            )
+            .AddHangfireServer();// Scoped service!
 
-        builder.Services.AddHangfireServer();// Scoped service!
-        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         if (builder.Environment.IsDevelopment())
         {
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
         }
+
+        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         builder.Services.AddControllers();//.AddNewtonsoftJson();
         builder.Services.AddSwaggerTools(builder.Configuration);
         builder.Services.AddHealthChecks();
@@ -81,7 +89,7 @@ public class Program
             {
                 // Note: the validation handler uses OpenID Connect discovery
                 // to retrieve the address of the introspection endpoint.
-                options.SetIssuer("https://localhost:44319/");
+                options.SetIssuer(oidcAuthority);
                 options.AddAudiences("resource_server_1");
 
                 options.AddEncryptionKey(new SymmetricSecurityKey(
@@ -99,7 +107,7 @@ public class Program
         {
             options.AddPolicy("All", builder =>
             {
-                builder.WithOrigins("https://localhost:7163", "https://localhost:44348", "https://localhost:44319")
+                builder.WithOrigins("https://localhost:7163", "https://localhost:44348", oidcAuthority)
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();
@@ -148,4 +156,20 @@ public class Program
         app.UseHealthChecks("/healthy");
         app.Run();
     }
+
+    private static void PrepareAppsettings(this WebApplicationBuilder builder)
+    {
+        builder.Configuration.SetDevelopmentAppsettings(builder.Environment.EnvironmentName);
+        builder.Services.Configure<IdentityServer>(builder.Configuration.GetSection(nameof(IdentityServer)));
+    }
+
+    private static void SetDevelopmentAppsettings(this ConfigurationManager configurationManager, string environment)
+    {
+#if DEBUG_LOCAL
+            configurationManager.AddJsonFile($"appsettings.{environment}_Local.json", optional: true, reloadOnChange: true);
+#elif DEBUG_TEST
+        configurationManager.AddJsonFile($"appsettings.{environment}_Test.json", optional: true, reloadOnChange: true);
+#endif
+    }
+
 }
