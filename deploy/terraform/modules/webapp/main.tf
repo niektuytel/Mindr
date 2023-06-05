@@ -7,6 +7,7 @@ resource "azurerm_service_plan" "this" {
   sku_name            = "B1"
 }
 
+# TODO: Only https configuration
 resource "azurerm_linux_web_app" "oidc" {
   name                = var.app_oidc_name
   resource_group_name = var.resource_group_name

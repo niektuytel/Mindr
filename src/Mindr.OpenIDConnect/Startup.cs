@@ -12,6 +12,10 @@ using static OpenIddict.Abstractions.OpenIddictConstants;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using Microsoft.AspNetCore.Authentication.Google;
+using OpenIddict.Abstractions;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Mindr.Server;
 
@@ -39,10 +43,9 @@ public class Startup
         services.AddAuthentication()
             .AddGoogle(googleOptions =>
             {
-                //    .SetRedirectUri();
-                googleOptions.ClientId = "889842565350-hmf83o017dfqpg6akp35c941ocj5arha.apps.googleusercontent.com";
-                googleOptions.ClientSecret = "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";
-                googleOptions.CallbackPath = "/callback/login/google";
+                googleOptions.ClientId = Configuration[$"{nameof(GoogleOptions)}:ClientId"];
+                googleOptions.ClientSecret = Configuration[$"{nameof(GoogleOptions)}:ClientSecret"];
+                googleOptions.CallbackPath = Configuration[$"{nameof(GoogleOptions)}:CallbackPath"];
             });
 
         services.AddDatabaseDeveloperPageExceptionFilter();
@@ -67,8 +70,6 @@ public class Startup
         services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
 
         services.AddOpenIddict()
-
-            // Register the OpenIddict core components.
             .AddCore(options =>
             {
                 // Configure OpenIddict to use the Entity Framework Core stores and models.
@@ -76,11 +77,8 @@ public class Startup
                 options.UseEntityFrameworkCore()
                        .UseDbContext<ApplicationDbContext>();
 
-                // Enable Quartz.NET integration.
                 options.UseQuartz();
             })
-
-            // Register the OpenIddict client components.
             .AddClient(options =>
             {
                 // Allow the OpenIddict client to negotiate the authorization code flow.
@@ -99,19 +97,11 @@ public class Startup
                 options.UseWebProviders()
                         .UseGoogle(options =>
                         {
-                            options.SetClientId("889842565350-hmf83o017dfqpg6akp35c941ocj5arha.apps.googleusercontent.com")
-                                .SetClientSecret("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")
-                                .SetRedirectUri("callback/login/google");
-                        })
-                       .UseGitHub(options =>
-                       {
-                           options.SetClientId("c4ade52327b01ddacff3")
-                                  .SetClientSecret("da6bed851b75e317bf6b2cb67013679d9467c122")
-                                  .SetRedirectUri("callback/login/github");
-                       });
+                            options.SetClientId(Configuration[$"{nameof(GoogleOptions)}:ClientId"])
+                                .SetClientSecret(Configuration[$"{nameof(GoogleOptions)}:ClientSecret"])
+                                .SetRedirectUri(Configuration[$"{nameof(GoogleOptions)}:CallbackPath"]);
+                        });
             })
-
-            // Register the OpenIddict server components.
             .AddServer(options =>
             {
                 // Enable the authorization, logout, token and userinfo endpoints.
@@ -144,8 +134,6 @@ public class Startup
                        .EnableUserinfoEndpointPassthrough()
                        .EnableStatusCodePagesIntegration();
             })
-
-            // Register the OpenIddict validation components.
             .AddValidation(options =>
             {
                 // Import the configuration from the local OpenIddict server instance.
@@ -159,12 +147,13 @@ public class Startup
         // Note: in a real world application, this step should be part of a setup script.
         services.AddHostedService<Worker>();
 
+        // HACK: This can cause security risks!
         services.AddCors(options =>
         {
             options.AddDefaultPolicy(policy =>
             {
-                policy.WithOrigins("https://localhost:7155")
-                    .AllowAnyHeader();
+                policy.SetIsOriginAllowed(_ => true)
+                      .AllowAnyHeader();
             });
         });
     }
@@ -206,4 +195,5 @@ public class Startup
             endpoints.MapRazorPages();
         });
     }
+
 }
