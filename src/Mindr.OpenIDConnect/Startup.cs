@@ -86,13 +86,10 @@ public class Startup
                 // Allow the OpenIddict client to negotiate the authorization code flow.
                 options.AllowAuthorizationCodeFlow();
 
-                //TODO: // Register the signing and encryption credentials used to protect
-                //// sensitive data like the state tokens produced by OpenIddict.
-                //options.AddEphemeralEncryptionKey()
-                //       .AddEphemeralSigningKey();
-
-                //options.AddDevelopmentEncryptionCertificate()()
-                //       .AddDevelopmentSigningCertificate();
+                // Register the signing and encryption credentials used to protect
+                // sensitive data like the state tokens produced by OpenIddict.
+                options.AddEphemeralEncryptionKey()
+                       .AddEphemeralSigningKey();
 
                 // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
                 options.UseAspNetCore()
@@ -129,15 +126,15 @@ public class Startup
                 options.RegisterScopes(Scopes.Email, Scopes.Profile, Scopes.Roles);
 
                 options.AddEncryptionKey(new SymmetricSecurityKey(
-                    Convert.FromBase64String("DRjd/GnduI3Efzen9V9BvbNUfc/VKgXltV7Kbk9sMkY=")));
+                   Convert.FromBase64String("DRjd/GnduI3Efzen9V9BvbNUfc/VKgXltV7Kbk9sMkY=")));
 
                 // Note: this sample only uses the authorization code flow but you can enable
                 // the other flows if you need to support implicit, password or client credentials.
                 options.AllowAuthorizationCodeFlow();
 
                 // Register the signing and encryption credentials.
-                options.AddDevelopmentEncryptionCertificate()
-                       .AddDevelopmentSigningCertificate();
+                options.AddEphemeralEncryptionKey()
+                       .AddEphemeralSigningKey();
 
                 // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
                 options.UseAspNetCore()
