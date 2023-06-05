@@ -6,9 +6,13 @@ namespace Mindr.WebAssembly.Server;
 public static class Program
 {
     public static void Main(string[] args) =>
-        CreateHostBuilder(args).Build().Run();
-
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(builder => builder.UseStartup<Startup>());
+        .ConfigureAppConfiguration((hostingContext, config) =>
+        {
+            config.SetDevelopmentAppsettings(hostingContext.HostingEnvironment.EnvironmentName);
+        })
+        .ConfigureWebHostDefaults(builder => builder.UseStartup<Startup>())
+        .Build()
+        .Run();
+
 }

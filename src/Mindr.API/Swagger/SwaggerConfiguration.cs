@@ -84,7 +84,7 @@ public static class SwaggerConfiguration
             // Enable OAuth2.0 authentication in Swagger UI
             c.OAuthClientId("mindr-api-client");
             c.OAuthClientSecret("901564A5-E7FE-42CB-B10D-61EF6A8F3654");
-            //c.OAuthScopes(new[] { "mindr_api_access" });
+            c.OAuthScopes(new[] { "mindr_api_access" });
         });
     }
 }
