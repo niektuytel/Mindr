@@ -123,7 +123,7 @@ public class Startup
 
                     ClientId = "blazorcodeflowpkceclient",
                     ClientSecret = "codeflow_pkce_client_secret",
-                    Scopes = { Scopes.Profile, "api1" },
+                    Scopes = { Scopes.Profile, "mindr_api_access" },
 
                     // Note: to mitigate mix-up attacks, it's recommended to use a unique redirection endpoint
                     // URI per provider, unless all the registered providers support returning a special "iss"

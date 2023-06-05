@@ -82,7 +82,7 @@ public class Worker : IHostedService
                     Permissions.Scopes.Email,
                     Permissions.Scopes.Profile,
                     Permissions.Scopes.Roles,
-                    Permissions.Prefixes.Scope + "api1"
+                    Permissions.Prefixes.Scope + "mindr_api_access"
                 },
                 Requirements =
                 {

@@ -35,7 +35,7 @@ public static class SwaggerConfiguration
                         TokenUrl = new Uri($"{oidcAuthority}/connect/token"),
                         Scopes = new Dictionary<string, string>
                         {
-                            { "api1", "resource server scope" }
+                            { "mindr_api_access", "resource server scope" }
                         }
                     },
                 }
@@ -82,8 +82,9 @@ public static class SwaggerConfiguration
             c.DocExpansion(DocExpansion.None);//This will not expand all the API's.
 
             // Enable OAuth2.0 authentication in Swagger UI
-            c.OAuthClientId("web-client");
+            c.OAuthClientId("mindr-api-client");
             c.OAuthClientSecret("901564A5-E7FE-42CB-B10D-61EF6A8F3654");
+            //c.OAuthScopes(new[] { "mindr_api_access" });
         });
     }
 }

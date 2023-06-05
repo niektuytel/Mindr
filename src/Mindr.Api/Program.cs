@@ -33,6 +33,7 @@ public static class Program
 
         var dbConnection = builder.Configuration.GetConnectionString("SqlDatabase");
         var oidcAuthority = builder.Configuration[$"{nameof(IdentityServer)}:Authority"];
+        var oidcAudience = builder.Configuration[$"{nameof(IdentityServer)}:Audience"];
 
 
 
@@ -90,7 +91,7 @@ public static class Program
                 // Note: the validation handler uses OpenID Connect discovery
                 // to retrieve the address of the introspection endpoint.
                 options.SetIssuer(oidcAuthority);
-                options.AddAudiences("resource_server_1");
+                options.AddAudiences(oidcAudience);
 
                 options.AddEncryptionKey(new SymmetricSecurityKey(
                     Convert.FromBase64String("DRjd/GnduI3Efzen9V9BvbNUfc/VKgXltV7Kbk9sMkY=")));
