@@ -56,7 +56,7 @@ public class Worker : IHostedService
         }
 
         // Blazor Hosted
-        if (await manager.FindByClientIdAsync("blazorcodeflowpkceclient") is null)
+        if (await manager.FindByClientIdAsync("blazorcodeflowpkceclient") == null)
         {
             await manager.CreateAsync(new OpenIddictApplicationDescriptor
             {

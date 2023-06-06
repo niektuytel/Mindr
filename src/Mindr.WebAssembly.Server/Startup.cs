@@ -30,8 +30,7 @@ public class Startup
     {
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            // Configure the context to use sqlite.
-            options.UseSqlite($"Filename={Path.Combine(Path.GetTempPath(), "openiddict-dantooine-webassembly-server.sqlite3")}");
+            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
 
             // Register the entity sets needed by OpenIddict.
             // Note: use the generic overload if you need
@@ -101,8 +100,8 @@ public class Startup
 
                 // Register the signing and encryption credentials used to protect
                 // sensitive data like the state tokens produced by OpenIddict.
-                options.AddDevelopmentEncryptionCertificate()
-                       .AddDevelopmentSigningCertificate();
+                options.AddEphemeralEncryptionKey()
+                       .AddEphemeralSigningKey();
 
                 // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
                 options.UseAspNetCore()
@@ -173,6 +172,13 @@ public class Startup
         {
             app.UseDeveloperExceptionPage();
             app.UseWebAssemblyDebugging();
+
+            app.UseMigrationsEndPoint();
+
+            // https://jasonwatmore.com/post/2022/02/01/net-6-execute-ef-database-migrations-from-code-on-startup
+            using var scope = app.ApplicationServices.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var created = context.Database.EnsureCreated();
         }
         else
         {
