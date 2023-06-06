@@ -54,43 +54,6 @@ public class Worker : IHostedService
 
             await manager.CreateAsync(app, cancellationToken);
         }
-
-        // Blazor Hosted
-        if (await manager.FindByClientIdAsync("blazorcodeflowpkceclient") == null)
-        {
-            await manager.CreateAsync(new OpenIddictApplicationDescriptor
-            {
-                ClientId = "blazorcodeflowpkceclient",
-                ConsentType = ConsentTypes.Explicit,
-                DisplayName = "Blazor code PKCE",
-                PostLogoutRedirectUris =
-                {
-                    new Uri("https://localhost:44348/callback/logout/local")
-                },
-                RedirectUris =
-                {
-                    new Uri("https://localhost:44348/callback/login/local")
-                },
-                ClientSecret = "codeflow_pkce_client_secret",
-                Permissions =
-                {
-                    Permissions.Endpoints.Authorization,
-                    Permissions.Endpoints.Logout,
-                    Permissions.Endpoints.Token,
-                    Permissions.GrantTypes.AuthorizationCode,
-                    Permissions.ResponseTypes.Code,
-                    Permissions.Scopes.Email,
-                    Permissions.Scopes.Profile,
-                    Permissions.Scopes.Roles,
-                    Permissions.Prefixes.Scope + "mindr_api_access"
-                },
-                Requirements =
-                {
-                    Requirements.Features.ProofKeyForCodeExchange
-                }
-            });
-        }
-
     }
 
     private static async Task RegisterScopesAsync(IConfiguration configuration, IServiceProvider provider, CancellationToken cancellationToken)
