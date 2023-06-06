@@ -16,6 +16,9 @@ using Quartz;
 using Yarp.ReverseProxy.Transforms;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 using static OpenIddict.Client.AspNetCore.OpenIddictClientAspNetCoreConstants;
+using OpenIddict.Abstractions;
+using System.Collections.Generic;
+using System.Configuration;
 
 namespace Mindr.WebAssembly.Server;
 
@@ -28,9 +31,14 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        var dbConnection = Configuration.GetConnectionString("DefaultConnection");
+        var oidcAuthority = Configuration[$"OpenIddictClientRegistration:Authority"];
+        var oidcClientId = Configuration[$"OpenIddictClientRegistration:ClientId"];
+        var oidcClientSecret = Configuration[$"OpenIddictClientRegistration:ClientSecret"];
+
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            options.UseSqlServer(dbConnection);
 
             // Register the entity sets needed by OpenIddict.
             // Note: use the generic overload if you need
@@ -38,28 +46,24 @@ public class Startup
             options.UseOpenIddict();
         });
 
-        // Configure the antiforgery stack to allow extracting
-        // antiforgery tokens from the X-XSRF-TOKEN header.
         services.AddAntiforgery(options =>
-        {
-            options.HeaderName = "X-XSRF-TOKEN";
-            options.Cookie.Name = "__Host-X-XSRF-TOKEN";
-            options.Cookie.SameSite = SameSiteMode.Strict;
-            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-        });
-
-        services.AddAuthentication(options =>
-        {
-            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        })
-
-        .AddCookie(options =>
-        {
-            options.LoginPath = "/login";
-            options.LogoutPath = "/logout";
-            options.ExpireTimeSpan = TimeSpan.FromMinutes(50);
-            options.SlidingExpiration = false;
-        });
+            {
+                options.HeaderName = "X-XSRF-TOKEN";
+                options.Cookie.Name = "__Host-X-XSRF-TOKEN";
+                options.Cookie.SameSite = SameSiteMode.Strict;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            })
+                .AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/login";
+                    options.LogoutPath = "/logout";
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(50);
+                    options.SlidingExpiration = false;
+                });
 
         // OpenIddict offers native integration with Quartz.NET to perform scheduled tasks
         // (like pruning orphaned authorizations from the database) at regular intervals.
@@ -115,13 +119,19 @@ public class Startup
                 options.UseSystemNetHttp()
                        .SetProductInformation(typeof(Startup).Assembly);
 
+
+                // Retrieve the array of application descriptors from configuration.
+                var registeredApplication = Configuration
+                    .GetSection("OpenIddictClientRegistration")
+                    .Get<OpenIddictClientRegistration>();
+
+
                 // Add a client registration matching the client application definition in the server project.
                 options.AddRegistration(new OpenIddictClientRegistration
                 {
-                    Issuer = new Uri("https://localhost:44319/", UriKind.Absolute),
-
-                    ClientId = "blazorcodeflowpkceclient",
-                    ClientSecret = "codeflow_pkce_client_secret",
+                    Issuer = new Uri(oidcAuthority, UriKind.Absolute),
+                    ClientId = oidcClientId,
+                    ClientSecret = oidcClientSecret,
                     Scopes = { Scopes.Profile, "mindr_api_access" },
 
                     // Note: to mitigate mix-up attacks, it's recommended to use a unique redirection endpoint
