@@ -17,8 +17,9 @@
     {
         <MudProgressLinear Color="Color.Info" Indeterminate="true" />
     }
-
-    <MudGrid Justify="@Justify.FlexStart" Spacing="1">
+    else
+    {
+        <MudGrid Justify="@Justify.FlexStart" Spacing="1">
         <MudItem xs="6">
             <MudDropContainer T="DropItem" Items="@Items" @ref="Container" Class="d-flex flex-wrap flex-grow-1" ItemsSelector="@((item,column) => item.Identifier == column)" ItemDropped="ItemDropped">
                 <ChildContent>
@@ -84,6 +85,7 @@
             }
         </MudItem>
     </MudGrid>
+    }
 </MudStack>
 <HttpItemDrawer @ref="ItemDrawer" OnCreate="@HandleOnCreateItem" OnUpdate="HandleOnUpdateItem"/>
 

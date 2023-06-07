@@ -24,19 +24,17 @@ public partial class Breadcrumb
 
     protected override void OnInitialized()
     {
-        //NavigationManager.LocationChanged += HandleLocationChanged;
-
         var path = $"/{NavigationManager.ToBaseRelativePath(NavigationManager.Uri).ToLower()}";
         HandlePath(path);
     }
 
-    //private void HandleLocationChanged(object sender, LocationChangedEventArgs e)
-    //{
-    //    var path = $"/{NavigationManager.ToBaseRelativePath(NavigationManager.Uri).ToLower()}";
-    //    HandlePath(path);
+    private void HandleLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        var path = $"/{NavigationManager.ToBaseRelativePath(NavigationManager.Uri).ToLower()}";
+        HandlePath(path);
 
-    //    base.StateHasChanged();
-    //}
+        base.StateHasChanged();
+    }
 
     private void HandlePath(string fullpath)
     {

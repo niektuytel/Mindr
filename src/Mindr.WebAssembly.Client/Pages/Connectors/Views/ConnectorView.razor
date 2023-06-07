@@ -11,8 +11,15 @@
 @attribute [Authorize]
 @inherits LayoutComponentBase
 
-<MudStack>
-    <Breadcrumb DisplayValue="@(Overview != null ? Overview.Name : "loading...")" />
+<MudStack Spacing="0">
+    @if (IsLoading)
+    {
+        <Breadcrumb DisplayValue="loading..." />
+    }
+    else
+    {
+        <Breadcrumb DisplayValue="@(Overview.Name)" />
+    }
     <MudStack Row="true" Style="margin-right:10px">
         <ConnectorNavMenu ConnectorId="@ConnectorId"/>
         @if(IsLoading)
@@ -29,5 +36,4 @@
         }
     </MudStack>
 </MudStack>
-
 

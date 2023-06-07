@@ -24,6 +24,7 @@ namespace Mindr.WebAssembly.Server;
 
 public class Startup
 {
+    // dotnet watch --project .\Mindr.WebAssembly.Server.csproj
     public Startup(IConfiguration configuration)
         => Configuration = configuration;
 
@@ -118,12 +119,6 @@ public class Startup
                 // providers that use the user agent as a way to throttle requests (e.g Reddit).
                 options.UseSystemNetHttp()
                        .SetProductInformation(typeof(Startup).Assembly);
-
-
-                // Retrieve the array of application descriptors from configuration.
-                var registeredApplication = Configuration
-                    .GetSection("OpenIddictClientRegistration")
-                    .Get<OpenIddictClientRegistration>();
 
 
                 // Add a client registration matching the client application definition in the server project.

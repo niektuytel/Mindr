@@ -23,7 +23,7 @@ public partial class ConnectorView
 
     private bool IsLoading = false;
 
-    private ConnectorOverviewDTO Overview = new ConnectorOverviewDTO();
+    private ConnectorOverviewDTO Overview { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {

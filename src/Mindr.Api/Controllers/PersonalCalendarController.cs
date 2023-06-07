@@ -146,7 +146,7 @@ public class PersonalCalendarController : BaseController
     /// <credentials code="400">Invalid credentials</credentials>
     /// <credentials code="401">Unauthorized</credentials>
     /// <credentials code="404">Not Found</credentials>
-    [HttpPut("{calendarId}/appointment/{appointmentI}")]
+    [HttpPut("{calendarId}/appointment/{appointmentId}")]
     [ProducesResponseType(typeof(CalendarAppointment), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(PersonalCredential), (int)HttpStatusCode.NotFound)]
@@ -172,7 +172,7 @@ public class PersonalCalendarController : BaseController
     /// <credentials code="400">Invalid credentials</credentials>
     /// <credentials code="401">Unauthorized</credentials>
     /// <credentials code="404">Not Found</credentials>
-    [HttpPut("{calendarId}/appointment/{appointmentId}")]
+    [HttpDelete("{calendarId}/appointment/{appointmentId}")]
     [ProducesResponseType(typeof(CalendarAppointment), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(PersonalCredential), (int)HttpStatusCode.NotFound)]
