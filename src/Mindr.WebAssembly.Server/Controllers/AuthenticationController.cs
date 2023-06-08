@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using OpenIddict.Client.AspNetCore;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
@@ -13,6 +14,13 @@ namespace Mindr.WebAssembly.Server.Controllers;
 
 public class AuthenticationController : Controller
 {
+    private readonly IConfiguration _configuration;
+
+    public AuthenticationController(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
     [HttpGet("~/login")]
     public ActionResult LogIn(string returnUrl)
     {
@@ -20,7 +28,7 @@ public class AuthenticationController : Controller
         {
             // Note: when only one client is registered in the client options,
             // setting the issuer property is not required and can be omitted.
-            [OpenIddictClientAspNetCoreConstants.Properties.Issuer] = "https://localhost:44319/"
+            [OpenIddictClientAspNetCoreConstants.Properties.Issuer] = _configuration["OpenIddictClientRegistration:Authority"]
         })
         {
             // Only allow local return URLs to prevent open redirect attacks.
@@ -50,7 +58,7 @@ public class AuthenticationController : Controller
         {
             // Note: when only one client is registered in the client options,
             // setting the issuer property is not required and can be omitted.
-            [OpenIddictClientAspNetCoreConstants.Properties.Issuer] = "https://localhost:44319/",
+            [OpenIddictClientAspNetCoreConstants.Properties.Issuer] = _configuration["OpenIddictClientRegistration:Authority"],
 
             // While not required, the specification encourages sending an id_token_hint
             // parameter containing an identity token returned by the server for this user.

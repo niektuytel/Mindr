@@ -57,6 +57,7 @@ namespace Mindr.Api.Services.PersonalCredentials
         {
             input.UserId = userId;
             _connectorValidator.ThrowOnInvalidUserId(userId);
+            _connectorValidator.ThrowOnInvalidTarget(input.Target);
 
             var entity = await _context.PersonalCredentials
                 .Where(item => item.UserId == userId)

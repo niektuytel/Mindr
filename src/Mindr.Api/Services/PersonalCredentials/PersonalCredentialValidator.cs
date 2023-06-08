@@ -5,6 +5,8 @@ using System.Net;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Mindr.Domain.Models.DTO.Connector;
 using Mindr.Domain.Models.DTO.Personal;
+using Mindr.Domain.Enums;
+using Microsoft.Graph;
 
 namespace Mindr.Api.Services.PersonalCredentials
 {
@@ -12,6 +14,15 @@ namespace Mindr.Api.Services.PersonalCredentials
     {
         public PersonalCredentialValidator()
         { }
+
+        public void ThrowOnInvalidTarget(CredentialTarget target)
+        {
+            switch (target)
+            {
+                case CredentialTarget.GoogleCalendar: return;
+                default: throw new HttpException<string>(HttpStatusCode.BadRequest, $"Unknown CredentialTarget:{{{nameof(target)}:'{target}'}}");
+            }
+        }
 
         public void ThrowOnInvalidUserId(string userId)
         {

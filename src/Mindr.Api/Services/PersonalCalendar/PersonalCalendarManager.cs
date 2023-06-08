@@ -149,7 +149,7 @@ namespace Mindr.Api.Services.CalendarEvents
         public async Task<IEnumerable<CalendarAppointment>> GetAppointments(string userId, DateTime dateTimeStart, DateTime dateTimeEnd, string? calendarId = null)
         {
             _validator.ThrowOnInvalidUserId(userId);
-
+            
             var calendars = _context.PersonalCalendars.Where(item => 
                 item.UserId == userId && 
                 (string.IsNullOrEmpty(calendarId) || item.CalendarId == calendarId)// when not null, use
@@ -168,6 +168,8 @@ namespace Mindr.Api.Services.CalendarEvents
                     _ => throw new NotImplementedException($"Unknown Calendar type:{calendar.From}"),
                 };
             }
+
+            // TODO: check if i have no credentials, return message
 
             _validator.ThrowOnNullPersonalCalendars(userId, calendarId, calendars);
             return Enumerable.Empty<CalendarAppointment>();

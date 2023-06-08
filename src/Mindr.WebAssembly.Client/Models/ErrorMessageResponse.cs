@@ -1,4 +1,6 @@
-﻿namespace Mindr.Api.Models
+﻿using System.Text.Json;
+
+namespace Mindr.WebAssembly.Client.Models
 {
     public class ErrorMessageResponse
     {
@@ -14,5 +16,15 @@
         public string Type { get; }
 
         public string Content { get; }
+
+        public T GetContent<T>()
+        {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+
+            return JsonSerializer.Deserialize<T>(Content, options)!;
+        }
     }
 }

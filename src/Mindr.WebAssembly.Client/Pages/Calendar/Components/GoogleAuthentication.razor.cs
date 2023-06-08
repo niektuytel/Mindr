@@ -137,6 +137,10 @@ public partial class GoogleAuthentication
         if (response.IsSuccessful())
         {
             Snackbar.Add("Successfully bind google account", Severity.Success);
+
+            // remove _code & _scope
+            var emptyUrl = NavigationManager.Uri.Split("?")[0];
+            NavigationManager.NavigateTo(emptyUrl);
         }
         else if (response.IsError())
         {

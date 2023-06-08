@@ -88,7 +88,6 @@ public class PersonalCalendarController : BaseController
         return response;
     }
 
-
     /// <remarks>
     /// Retrieves all personal calendar events by id for the authenticated user.
     /// </remarks>
@@ -98,7 +97,6 @@ public class PersonalCalendarController : BaseController
     /// <credentials code="404">Not Found</credentials>
     [HttpGet("appointments")]
     [ProducesResponseType(typeof(IEnumerable<CalendarAppointment>), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(PersonalCredential), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> GetCalendarAppointments(
@@ -125,7 +123,6 @@ public class PersonalCalendarController : BaseController
     [HttpPost("{calendarId}/appointment")]
     [ProducesResponseType(typeof(CalendarAppointment), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(PersonalCredential), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> InsertCalendarAppointments(
         [FromRoute] string calendarId,
@@ -149,7 +146,6 @@ public class PersonalCalendarController : BaseController
     [HttpPut("{calendarId}/appointment/{appointmentId}")]
     [ProducesResponseType(typeof(CalendarAppointment), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(PersonalCredential), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> UpdateCalendarAppointments(
         [FromRoute] string calendarId,
@@ -164,7 +160,6 @@ public class PersonalCalendarController : BaseController
         return response;
     }
 
-
     /// <remarks>
     /// Delete personal calendar event by id for the authenticated user.
     /// </remarks>
@@ -175,7 +170,6 @@ public class PersonalCalendarController : BaseController
     [HttpDelete("{calendarId}/appointment/{appointmentId}")]
     [ProducesResponseType(typeof(CalendarAppointment), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(PersonalCredential), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> DeleteCalendarAppointments(
         [FromRoute] string calendarId,

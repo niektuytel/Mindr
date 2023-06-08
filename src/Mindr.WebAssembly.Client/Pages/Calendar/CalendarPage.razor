@@ -1,4 +1,4 @@
-﻿@attribute [Route($"/calendar")]
+﻿@attribute [Route("/calendar/{CalendarId?}")]
 @using BlazorScheduler
 @using DemoApp.Models;
 @using DemoApp;
@@ -13,6 +13,7 @@
 @namespace Mindr.WebAssembly.Client.Pages.Calendar
 
 
+@* // TODO: Menu with personal calendars and agenda binded connectors*@
 
 <GoogleAuthentication @ref="GoogleAuthentication" RedirectUri="@RedirectUri" ClientId="@Constants.GoogleAgendaClientId" ClientSecret="@Constants.GoogleAgendaClientSecret" Scopes="@Constants.GoogleAgendaScopes" AccessType="offline">
     <AuthenticatedView>

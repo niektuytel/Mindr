@@ -7,7 +7,7 @@ namespace Mindr.WebAssembly.Client;
 
 internal static class Constants
 {
-    public static readonly int COUNT_DAYS_IN_CALENDAR = 42; //todo: must do better. enum instead?
+    public static readonly int COUNT_DAYS_IN_CALENDAR = 42; //TODO: must do better. enum instead?
 
     public static List<Page> ConnectorPage = new()
     {

@@ -41,6 +41,9 @@ public partial class CalendarPage
     [Inject]
     public NavigationManager NavigationManager { get; set; } = default!;
 
+    [Parameter]
+    public string? CalendarId { get; set; } = null;
+
     public GoogleAuthentication? GoogleAuthentication { get; set; } = default!;
 
     private AppointmentDrawer? AppointmentDrawer = default!;
@@ -53,6 +56,26 @@ public partial class CalendarPage
 
     private bool IsLoading = false;
 
+    // TODO: On menu, Set user calendars
+    //if (errorMessage.Type == typeof(string).Name)
+    //{
+    //    // TODO: message Pop-Up that select calendar
+    //    //var credential = errorMessage.GetContent<PersonalCredential>();
+    //    //await GoogleAuthentication!.HandleConsent(credential);
+    //}
+    //if (Calendars?.Any() == false)
+    //{
+    //    var response2 = await CalendarClient.GetAllCalendars();
+    //    if (response.IsError())
+    //    {
+    //        var error = response.GetContent();
+    //        Snackbar.Add(error, Severity.Error);
+    //    }
+    //    else if (response.IsSuccessful())
+    //    {
+    //        Calendars = response2.GetContent<IEnumerable<PersonalCalendar>>();
+    //    }
+    //}
 
     protected override async Task OnInitializedAsync()
     {
@@ -72,30 +95,16 @@ public partial class CalendarPage
 
     public async Task OnRequestNewData(DateTime start, DateTime end)
     {
-        string? calendarId = null;
-
-        var response = await CalendarClient.GetAllAppointments(start, end, calendarId);
+        var response = await CalendarClient.GetAllAppointments(start, end, CalendarId);
         if (response.IsError())
         {
-            var credential = response.GetContent<PersonalCredential>();
-            await GoogleAuthentication!.HandleConsent(credential);
+            var errorMessage = response.GetContent<ErrorMessageResponse>();
+            Snackbar.Add(errorMessage.Content, Severity.Error);
+            Console.WriteLine(errorMessage.Content);
         }
         else if (response.IsSuccessful())
         {
             Appointments = response.GetContent<IEnumerable<CalendarAppointment>>();
-            if (Calendars?.Any() == false)
-            {
-                var response2 = await CalendarClient.GetAllCalendars();
-                if (response.IsError())
-                {
-                    var error = response.GetContent();
-                    Snackbar.Add(error, Severity.Error);
-                }
-                else if (response.IsSuccessful())
-                {
-                    Calendars = response2.GetContent<IEnumerable<PersonalCalendar>>();
-                }
-            }
         }
     }
 
