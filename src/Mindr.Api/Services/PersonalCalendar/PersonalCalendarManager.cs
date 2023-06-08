@@ -43,6 +43,14 @@ namespace Mindr.Api.Services.CalendarEvents
             var personalCalendars = new List<PersonalCalendar>();
             _validator.ThrowOnInvalidUserId(userId);
 
+            return _context.PersonalCalendars.Where(item => item.UserId == userId);
+        }
+
+        public async Task<IEnumerable<PersonalCalendar>> GetExternalCalendars(string userId)
+        {
+            var personalCalendars = new List<PersonalCalendar>();
+            _validator.ThrowOnInvalidUserId(userId);
+
             var credentials = await _context.PersonalCredentials
                 .Where(item => item.UserId == userId)
                 .ToListAsync();
@@ -62,9 +70,10 @@ namespace Mindr.Api.Services.CalendarEvents
             return personalCalendars;
         }
 
-        public async Task<PersonalCalendar> CreateCalendar(string userId, PersonalCalendarWithCredential input)
+        public async Task<PersonalCalendar> InsertCalendar(string userId, PersonalCalendar input)
         {
             _validator.ThrowOnInvalidUserId(userId);
+            input.UserId = userId;
 
             var calendar = await _context.PersonalCalendars.FirstOrDefaultAsync(item =>
                 item.UserId == userId && 
@@ -81,46 +90,11 @@ namespace Mindr.Api.Services.CalendarEvents
                 item.Target == Domain.Enums.CredentialTarget.GoogleCalendar
             );
 
-            if (credential == null)
-            {
-                // Create
-                credential = new PersonalCredential(
-                    userId,
-                    Domain.Enums.CredentialTarget.GoogleCalendar,
-                    input.AccessToken,
-                    input.RefreshToken,
-                    input.Scope,
-                    input.TokenType,
-                    input.ExpiresIn
-                );
+            _validator.ThrowOnNullPersonalCredential(userId, input.CalendarId, credential);
 
-                await _context.PersonalCredentials.AddAsync(credential);
-                await _context.SaveChangesAsync();
-
-            }
-            else
-            {
-                // Update
-                credential.ExpiresIn = input.ExpiresIn;
-                credential.AccessToken = input.AccessToken;
-                credential.RefreshToken = input.RefreshToken;
-                credential.Scope = input.Scope;
-                credential.TokenType = input.TokenType;
-
-                _context.PersonalCredentials.Update(credential);
-                await _context.SaveChangesAsync();
-            }
-
-            calendar = new PersonalCalendar(
-                userId, 
-                input.CalendarId, 
-                credential.Id, 
-                input.CalendarFrom
-            );
-
-            _context.PersonalCalendars.Add(calendar);
+            _context.PersonalCalendars.Add(input);
             await _context.SaveChangesAsync();
-            return calendar;
+            return input;
         }
 
         public async Task<PersonalCalendar> DeleteCalendar(string userId, string calendarId)
@@ -169,9 +143,6 @@ namespace Mindr.Api.Services.CalendarEvents
                 };
             }
 
-            // TODO: check if i have no credentials, return message
-
-            _validator.ThrowOnNullPersonalCalendars(userId, calendarId, calendars);
             return Enumerable.Empty<CalendarAppointment>();
         }
 

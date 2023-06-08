@@ -34,20 +34,27 @@ public class ApiPersonalCalendarClient : ApiClientBase, IApiPersonalCalendarClie
     {
     }
 
-    public async Task<JsonResponse<IEnumerable<PersonalCalendar>>> GetAllCalendars()
+    public async Task<JsonResponse<IEnumerable<PersonalCalendar>>> GetCalendars()
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"{Path}");
         var response = await ApiRequest<IEnumerable<PersonalCalendar>>(request);
         return response;
     }
 
-    public async Task<JsonResponse<PersonalCalendar>> Insert(PersonalCalendarWithCredential calendar)
+    public async Task<JsonResponse<IEnumerable<PersonalCalendar>>> GetExternalCalendars()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{Path}/external");
+        var response = await ApiRequest<IEnumerable<PersonalCalendar>>(request);
+        return response;
+    }
+
+    public async Task<JsonResponse<PersonalCalendar>> InsertCalendar(PersonalCalendar calendar)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, $"{Path}");
         request.Headers.Add("accept", "*/*");
 
         var content = JsonSerializer.Serialize(calendar);
-        request.Content = new StringContent(content, Encoding.UTF8, "application/content");
+        request.Content = new StringContent(content, Encoding.UTF8, "application/json");
 
         var response = await ApiRequest<PersonalCalendar>(request);
         return response;

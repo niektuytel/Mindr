@@ -63,7 +63,7 @@ namespace Mindr.Domain.Models.DTO.Personal
         [JsonPropertyName("user_id")]
         public string UserId { get; set; }
 
-        [JsonIgnore]
+        [JsonPropertyName("target")]
         public CredentialTarget Target { get; set; }
 
         [JsonPropertyName("access_token")]

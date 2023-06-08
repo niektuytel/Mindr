@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Mindr.Api.Extensions;
@@ -46,6 +47,27 @@ public class PersonalCalendarController : BaseController
     }
 
     /// <remarks>
+    /// Retrieves all personal external calendars for the authenticated user.
+    /// </remarks>
+    /// <credentials code="200">Success</credentials>
+    /// <credentials code="400">Invalid credentials</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
+    /// <credentials code="404">Not Found</credentials>
+    [HttpGet("external")]
+    [ProducesResponseType(typeof(IEnumerable<PersonalCalendar>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> GetPersonalExternalCalendars()
+    {
+        var response = await HandleRequest(async () => {
+            var userId = User.GetUserId();
+            return await _manager.GetExternalCalendars(userId);
+        });
+
+        return response;
+    }
+
+    /// <remarks>
     /// Create a new personal calendar by id for the authenticated user.
     /// </remarks>
     /// <credentials code="200">Success</credentials>
@@ -55,12 +77,12 @@ public class PersonalCalendarController : BaseController
     [HttpPost]
     [ProducesResponseType(typeof(PersonalCalendar), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
-    public async Task<IActionResult> AddPersonalCalendar([FromBody] PersonalCalendarWithCredential input)
+    public async Task<IActionResult> InsertPersonalCalendar([FromBody] PersonalCalendar input)
     {
         var response = await HandleRequest(async () =>
         {
             var userId = User.GetUserId();
-            return await _manager.CreateCalendar(userId, input);
+            return await _manager.InsertCalendar(userId, input);
         });
 
         return response;

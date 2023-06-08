@@ -13,6 +13,7 @@ using static MudBlazor.CategoryTypes;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System;
+using System.Net;
 
 namespace Mindr.WebAssembly.Client.Pages.Calendar.Components;
 
@@ -23,6 +24,9 @@ public partial class GoogleAuthentication
     private string? _code { get; set; }
 
     private string? _scope { get; set; }
+
+    [Parameter, EditorRequired]
+    public Func<Task> OnSuccess { get; set; } = default!;
 
     [Parameter, EditorRequired]
     public RenderFragment? AuthenticatedView { get; set; } = default!;
@@ -97,9 +101,9 @@ public partial class GoogleAuthentication
 
             var httpClient = HttpClientFactory.CreateClient();
             var response = await httpClient.SendAsync(request);
+            var jsonString = await response.Content.ReadAsStringAsync();
             response.EnsureSuccessStatusCode();
 
-            var jsonString = await response.Content.ReadAsStringAsync();
             //{
             //    "access_token": "ya29.a0AWY7CklqaLHr3A6x_du7-JrtifzPBVTMAapV6zjTEJgPZWiGcdbAPoGYs9m8h4dXC5tM5eAZPMys2ooPrs-EYUd25wXKPS8uLg3TdSpmKKWLPH0YghddBj60ZxbhUGYGfxMytqFMMJt0f71oa12g4I7m1WAraCgYKATQSARESFQG1tDrpZu-pcnhWAKCbDk_1Gv31CA0163",
             //    "expires_in": 3599,
@@ -125,6 +129,10 @@ public partial class GoogleAuthentication
             Credential = await LocalStorage.GetItemAsync<PersonalCredential>($"{nameof(PersonalCredential)}");
             await LocalStorage.RemoveItemAsync($"{nameof(PersonalCredential)}");
         }
+        else
+        {
+            Credential = new PersonalCredential();
+        }
 
         Credential.Target = Domain.Enums.CredentialTarget.GoogleCalendar;
         Credential.AccessToken = AccessToken;
@@ -137,10 +145,12 @@ public partial class GoogleAuthentication
         if (response.IsSuccessful())
         {
             Snackbar.Add("Successfully bind google account", Severity.Success);
+            await LocalStorage.SetItemAsync($"{nameof(PersonalCredential)}", Credential);
 
             // remove _code & _scope
             var emptyUrl = NavigationManager.Uri.Split("?")[0];
             NavigationManager.NavigateTo(emptyUrl);
+            await OnSuccess();
         }
         else if (response.IsError())
         {
@@ -151,12 +161,10 @@ public partial class GoogleAuthentication
         base.StateHasChanged();
     }
 
-    public async Task<bool> HandleConsent(PersonalCredential credential)
+    public async Task<bool> HandleConsent()//PersonalCredential credential)
     {
         if (string.IsNullOrEmpty(_code) || string.IsNullOrEmpty(_scope))
         {
-            await LocalStorage.SetItemAsync($"{nameof(PersonalCredential)}", credential);
-
             // Request consent
             var consentUri = $"{BaseUri}/v2/auth?scope={Scopes}&response_type={ResponseType}&access_type={AccessType}&redirect_uri={RedirectUri}&client_id={ClientId}&prompt=select_account";
             //await JSRuntime.InvokeAsync<object>("open", consentUri);//, "_blank");// Ok but need to be as iframe than

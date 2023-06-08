@@ -7,7 +7,8 @@ namespace Mindr.Api.Services.CalendarEvents
     public interface IPersonalCalendarManager
     {
         Task<IEnumerable<PersonalCalendar>> GetCalendars(string userId);
-        Task<PersonalCalendar> CreateCalendar(string userId, PersonalCalendarWithCredential input);
+        Task<IEnumerable<PersonalCalendar>> GetExternalCalendars(string userId);
+        Task<PersonalCalendar> InsertCalendar(string userId, PersonalCalendar input);
         Task<PersonalCalendar> DeleteCalendar(string userId, string calendarId);
 
         Task<IEnumerable<CalendarAppointment>> GetAppointments(string userId, DateTime dateTimeStart, DateTime dateTimeEnd, string? calendarId = null);

@@ -31,7 +31,7 @@ namespace Mindr.Domain.Models.DTO.Personal
 
         public string CalendarId { get; set; }
 
-        public string Description { get; set; }
+        public string Description { get; set; } = ""; 
 
         public string Summary { get; set; }
 

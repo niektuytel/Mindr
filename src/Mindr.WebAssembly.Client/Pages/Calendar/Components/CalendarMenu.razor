@@ -1,0 +1,68 @@
+﻿@using MudBlazor
+@namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
+
+<CalendarDrawer @ref="Drawer" AddCalendarAction="AddCalendar"/>
+<MudDrawerContainer Class="mud-height-full">
+    <MudDrawer @bind-Open="@open" Elevation="0" Variant="@DrawerVariant.Persistent" Style="@($"background: {Colors.Grey.Lighten5};")">
+        <MudDrawerHeader Style="align-self: end">
+            <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Inherit" Edge="Edge.End" OnClick="@ToggleDrawer" />
+        </MudDrawerHeader>
+        <MudList Clickable="true">
+            <MudListItem Icon="@Icons.Material.Filled.Today" OnClick=@(() => ViewChanged("/calendar"))>
+                Today
+            </MudListItem>
+            <MudListItem Icon="@Icons.Material.Filled.CalendarViewWeek" OnClick=@(() => ViewChanged("/calendar/week"))>
+                This Week
+            </MudListItem>
+            <MudListItem Icon="@Icons.Material.Filled.CalendarViewMonth" OnClick=@(() => ViewChanged("/calendar/month"))>
+                This Month
+            </MudListItem>
+            <MudDivider />
+            <MudListItem Icon="@Icons.Material.Filled.Groups3" Text="Calendars" InitiallyExpanded="true">
+                <NestedList>
+                    @if(IsLoading || Calendars == null)
+                    {
+                        <MudListItem>
+                            <MudProgressCircular Color="Color.Default" Size="Size.Small" Indeterminate="true" />
+                        </MudListItem>
+                    }
+                    else
+                    {
+                        @if (Calendars.Any())
+                        {
+                            <MudCheckBox Checked="@(SelectedCalendar == "All")"
+                                @onclick="@(() => SelectedCalendar = "All")"
+                                Style="padding-left:20px"
+                                Color="Color.Warning"
+                                CheckedIcon="@Icons.Material.Filled.Group"
+                                UnCheckedColor="Color.Default"
+                                UncheckedIcon="@Icons.Material.Outlined.Group"
+                            >
+                                All
+                            </MudCheckBox>
+                        }
+                        foreach(var calendar in Calendars)
+                        {
+                            <MudCheckBox Checked="@(SelectedCalendar == calendar.Summary)"
+                                @onclick="@(() => SelectedCalendar = calendar.Summary)"
+                                Style="padding-left:20px"
+                                Color="Color.Warning"
+                                CheckedIcon="@Icons.Material.Filled.Person"
+                                UnCheckedColor="Color.Default"
+                                UncheckedIcon="@Icons.Material.Outlined.Person"
+                            >
+                                @calendar.Summary
+                            </MudCheckBox>
+                        }
+                    }
+                    <MudListItem OnClick=@(async () => await Drawer!.OnOpen())>
+                        <MudStack Row="true">
+                            <MudIcon Icon="@Icons.Material.Filled.Add" Title="Add calendar" />
+                            <MudText>Add</MudText>
+                        </MudStack>
+                    </MudListItem>
+                </NestedList>
+            </MudListItem>
+        </MudList>
+    </MudDrawer>
+</MudDrawerContainer>
