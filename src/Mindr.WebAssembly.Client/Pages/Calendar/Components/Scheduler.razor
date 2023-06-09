@@ -83,7 +83,7 @@
         <div class="month">
             <div class="week header">
                 @{
-                    string dayName = CultureInfo.CurrentCulture.DateTimeFormat.DayNames[CurrentDate.DayOfWeek];
+                    string dayName = CultureInfo.CurrentCulture.DateTimeFormat.DayNames[CurrentDate.Day];
                     <div class="day-of-month">
                         <span class="full-dayname">@dayName</span>
                         <span class="short-dayname">@dayName.Substring(0, 3)</span>
