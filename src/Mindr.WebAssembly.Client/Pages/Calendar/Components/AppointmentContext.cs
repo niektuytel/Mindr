@@ -1,4 +1,4 @@
-﻿namespace BlazorScheduler
+﻿namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 {
     public class AppointmentContext
     {

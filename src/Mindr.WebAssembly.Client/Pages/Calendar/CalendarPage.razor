@@ -1,9 +1,7 @@
-﻿@attribute [Route("/calendar/{CalendarId?}")]
-@using BlazorScheduler
+﻿@attribute [Route("/calendar/{ViewType?}/{CalendarId?}")]
 @using DemoApp.Models;
 @using DemoApp;
 @using Microsoft.AspNetCore.Authorization;
-@using Mindr.WebAssembly.Client.Pages.Calendar.Dialogs;
 @using Mindr.WebAssembly.Client.Pages.Calendar.Components;
 @using MudBlazor;
 
@@ -12,14 +10,18 @@
 @inject AppointmentService AppointmentService
 @namespace Mindr.WebAssembly.Client.Pages.Calendar
 
-<CalendarMenu @ref="Menu"/>
+<CalendarMenu @ref="Menu" />
 <MudStack Spacing="0">
-    <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@Menu!.ToggleDrawer" />
     <Scheduler
+        ViewType="@ViewType"
         OnRequestNewData="OnRequestNewData"
         OnAddingNewAppointment="OnAddingNewAppointment"
         OnOverflowAppointmentClick="OnOverflowAppointmentClick"
-        EnableRescheduling="true">
+        EnableRescheduling="true"
+    >
+        <Header>
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@Menu!.ToggleDrawer" />
+        </Header>
         <Appointments>
             @foreach (var element in Appointments)
             {

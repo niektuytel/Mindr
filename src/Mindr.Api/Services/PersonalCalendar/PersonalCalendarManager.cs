@@ -124,14 +124,19 @@ namespace Mindr.Api.Services.CalendarEvents
         {
             _validator.ThrowOnInvalidUserId(userId);
             
-            var calendars = _context.PersonalCalendars.Where(item => 
-                item.UserId == userId && 
-                (string.IsNullOrEmpty(calendarId) || item.CalendarId == calendarId)// when not null, use
-            );
+            var calendars = await _context.PersonalCalendars
+                .Where(item => 
+                    item.UserId == userId && 
+                    (string.IsNullOrEmpty(calendarId) || item.CalendarId == calendarId)// when not null, use
+                )
+                .ToArrayAsync();
 
             foreach (var calendar in calendars)
             {
-                var credential = await _context.PersonalCredentials.FirstOrDefaultAsync(item => item.Id == calendar!.CredentialId);
+                var credential = await _context.PersonalCredentials
+                    .FirstOrDefaultAsync(item => 
+                        item.Id == calendar!.CredentialId
+                    );
                 _validator.ThrowOnNullPersonalCredential(userId, calendarId, credential);
 
                 return calendar.From switch

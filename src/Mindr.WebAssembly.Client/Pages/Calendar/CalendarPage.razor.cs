@@ -5,7 +5,6 @@ using Mindr.WebAssembly.Client.Models;
 using System.Text.Json.Nodes;
 using System.Text.Json;
 using DemoApp.Models;
-using Mindr.WebAssembly.Client.Pages.Calendar.Dialogs;
 using MudBlazor;
 using Mindr.Domain.HttpRunner.Services;
 using Mindr.WebAssembly.Client.Services;
@@ -15,6 +14,7 @@ using Mindr.Domain.Models.DTO.Personal;
 using Mindr.Domain.Models.DTO.Calendar;
 using Mindr.WebAssembly.Client.Pages.Connectors.Components;
 using Mindr.WebAssembly.Client.Pages.Calendar.Components;
+using Mindr.WebAssembly.Client.Pages.Calendar.Editors;
 
 namespace Mindr.WebAssembly.Client.Pages.Calendar;
 
@@ -41,14 +41,15 @@ public partial class CalendarPage
     [Inject]
     public NavigationManager NavigationManager { get; set; } = default!;
 
-    public CalendarMenu? Menu { get; set; } = default!;
+    [Parameter]
+    public string? ViewType { get; set; } = "week";
 
     [Parameter]
     public string? CalendarId { get; set; } = null;
 
     private AppointmentDrawer? AppointmentDrawer = default!;
 
-
+    public CalendarMenu? Menu { get; set; } = default!;
 
     public IEnumerable<PersonalCalendar> Calendars = new List<PersonalCalendar>();
 
@@ -74,7 +75,7 @@ public partial class CalendarPage
 
     public async Task OnRequestNewData(DateTime start, DateTime end)
     {
-        var response = await CalendarClient.GetAllAppointments(start, end, CalendarId);
+        var response = await CalendarClient.GetAppointments(start, end, CalendarId);
         if (response.IsError())
         {
             var errorMessage = response.GetContent<ErrorMessageResponse>();

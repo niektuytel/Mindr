@@ -8,8 +8,17 @@
 	<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
 	  <Configurations>Release;Debug_Local;Debug_Test</Configurations>
   </PropertyGroup>
+	
+	<ItemGroup>
+		<SupportedPlatform Include="browser" />
+	</ItemGroup>
 
-  <ItemGroup>
+	<!--<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0" />
+	</ItemGroup>-->
+
+
+	<ItemGroup>
     <Compile Remove="Pages\Agenda\**" />
     <Compile Remove="Shared\Header\**" />
     <Content Remove="Pages\Agenda\**" />
@@ -26,7 +35,7 @@
     <Compile Remove="Components\NavMenuLink.razor.cs" />
     <Compile Remove="Components\ProfileButton.razor.cs" />
     <Compile Remove="Components\Stack.razor.cs" />
-    <Compile Remove="Pages\Calendar\Dialogs\EditAppointmentDialog.razor.cs" />
+    <Compile Remove="Pages\Calendar\Editors\EditAppointmentDialog.razor.cs" />
     <Compile Remove="Pages\Connectors\Components\Dropzone.razor.cs" />
     <Compile Remove="Pages\Connectors\Components\HttpItemCard.razor.cs" />
     <Compile Remove="Pages\Index.razor.cs" />
@@ -42,7 +51,7 @@
     <Content Remove="Pages\Calendar\Basic.razor" />
     <Content Remove="Pages\Calendar\Configuration.razor" />
     <Content Remove="Pages\Calendar\DayTemplating.razor" />
-    <Content Remove="Pages\Calendar\Dialogs\EditAppointmentDialog.razor" />
+    <Content Remove="Pages\Calendar\Editors\EditAppointmentDialog.razor" />
     <Content Remove="Pages\Calendar\HeaderTemplating.razor" />
     <Content Remove="Pages\Connectors\Components\Collection.razor" />
     <Content Remove="Pages\Connectors\Components\CollectionItem.razor" />
@@ -79,7 +88,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\BlazorScheduler\BlazorScheduler.csproj" />
 	  <ProjectReference Include="..\Mindr.Domain\Mindr.Domain.csproj" />
 	</ItemGroup>
 

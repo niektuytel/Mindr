@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Components.Web;
 using System.Threading.Tasks;
 
-namespace BlazorScheduler.Internal.Components
+namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 {
     public partial class SchedulerDay
     {

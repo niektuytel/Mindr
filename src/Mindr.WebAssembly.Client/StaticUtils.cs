@@ -20,7 +20,7 @@ namespace Mindr.WebAssembly.Client
                 Target = Enums.NavBarTarget.MainNavBar,
                 Name = "Calendar",
                 Icon = @Icons.Material.Filled.CalendarMonth,
-                Href = "/calendar",
+                Href = "/calendar/week",
             },
             new ()
             {

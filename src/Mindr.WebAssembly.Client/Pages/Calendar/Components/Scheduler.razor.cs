@@ -1,5 +1,4 @@
-﻿using BlazorScheduler.Internal.Components;
-using BlazorScheduler.Internal.Extensions;
+﻿using Mindr.WebAssembly.Client.Pages.Calendar.Extensions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System;
@@ -8,12 +7,16 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BlazorScheduler
+namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 {
     public partial class Scheduler : IAsyncDisposable
     {
+        [Parameter, EditorRequired] public string ViewType { get; set; } = default!;
+        [Parameter, EditorRequired] public RenderFragment Header { get; set; } = default!;
+
+
+
         [Parameter] public RenderFragment Appointments { get; set; } = null!;
-        [Parameter] public RenderFragment<Scheduler>? HeaderTemplate { get; set; }
         [Parameter] public RenderFragment<DateTime>? DayTemplate { get; set; }
 
         [Parameter] public Func<DateTime, DateTime, Task>? OnRequestNewData { get; set; }
@@ -31,10 +34,15 @@ namespace BlazorScheduler
         [Parameter] public string TodayButtonText { get; set; } = "Today";
         [Parameter] public string PlusOthersText { get; set; } = "+ {n} others";
         [Parameter] public string NewAppointmentText { get; set; } = "New Appointment";
+
+        public Appointment? DraggingAppointment { get; private set; }
+        //public CalendarMenu Menu { get; set; } = default!;
+
         #endregion
 
         public DateTime CurrentDate { get; private set; }
-        public (DateTime Start, DateTime End) CurrentRange
+
+        public (DateTime Start, DateTime End) CurrentMonthRange
         {
             get
             {
@@ -46,18 +54,52 @@ namespace BlazorScheduler
             }
         }
 
-        public Appointment? DraggingAppointment { get; private set; }
-
-        private string MonthDisplay
+        public (DateTime Start, DateTime End) CurrentWeekRange
         {
             get
             {
-                var res = CurrentDate.ToString("MMMM");
-                if (AlwaysShowYear || CurrentDate.Year != DateTime.Today.Year)
+                var startDate = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day).GetPrevious(StartDayOfWeek);
+                var endDate = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day).GetNext((DayOfWeek)((int)(StartDayOfWeek - 1 + 7) % 7));
+
+                return (startDate, endDate);
+            }
+        }
+
+        public (DateTime Start, DateTime End) CurrentDayRange
+        {
+            get
+            {
+                var startDate = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day);
+                var endDate = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day).AddDays(1);
+
+                return (startDate, endDate);
+            }
+        }
+
+        private string DateDisplay
+        {
+            get
+            {
+                if (ViewType == "month")
                 {
-                    return res += CurrentDate.ToString(" yyyy");
+                    var res = CurrentDate.ToString("MMMM");
+                    if (CurrentDate.Year != DateTime.Today.Year)
+                    {
+                        return res += CurrentDate.ToString(" yyyy");
+                    }
+
+                    return res;
                 }
-                return res;
+                else if (ViewType == "day")
+                {
+                    var res = CurrentDate.Day.ToString();
+                    return res += CurrentDate.ToString(" MMMM");
+                }
+                else // week or default
+                {
+                    var res = $"{CurrentWeekRange.Start.Day}-{CurrentWeekRange.End.Day}";
+                    return res += CurrentDate.ToString(" MMMM");
+                }
             }
         }
 
@@ -72,7 +114,19 @@ namespace BlazorScheduler
         protected override async Task OnInitializedAsync()
         {
             _objReference = DotNetObjectReference.Create(this);
-            await SetCurrentMonth(DateTime.Today, true);
+
+            if (ViewType == "month")
+            {
+                await SetCurrentMonth(DateTime.Today, true);
+            }
+            else if (ViewType == "day")
+            {
+                await SetCurrentDay(DateTime.Today, true);
+            }
+            else // week or default
+            {
+                await SetCurrentWeek(DateTime.Today, true);
+            }
 
             await base.OnInitializedAsync();
         }
@@ -98,15 +152,53 @@ namespace BlazorScheduler
             StateHasChanged();
         }
 
-        public async Task SetCurrentMonth(DateTime date, bool skipJsInvoke = false)
+        public async Task SetCurrentMonth(DateTime today, bool skipJsInvoke = false)
         {
-            CurrentDate = date;
+            CurrentDate = today;
             if (!skipJsInvoke)
             {
                 await AttachMouseHandler();
             }
 
-            var (start, end) = CurrentRange;
+            var (start, end) = CurrentMonthRange;
+            if (OnRequestNewData != null)
+            {
+                _loading = true;
+                StateHasChanged();
+                await OnRequestNewData(start, end);
+                _loading = false;
+            }
+            StateHasChanged();
+        }
+
+        private async Task SetCurrentWeek(DateTime today, bool skipJsInvoke = false)
+        {
+            CurrentDate = today;
+            if (!skipJsInvoke)
+            {
+                await AttachMouseHandler();
+            }
+
+            var (start, end) = CurrentWeekRange;
+            if (OnRequestNewData != null)
+            {
+                _loading = true;
+                StateHasChanged();
+                await OnRequestNewData(start, end);
+                _loading = false;
+            }
+            StateHasChanged();
+        }
+
+        private async Task SetCurrentDay(DateTime today, bool skipJsInvoke = false)
+        {
+            CurrentDate = today;
+            if (!skipJsInvoke)
+            {
+                await AttachMouseHandler();
+            }
+
+            var (start, end) = CurrentDayRange;
             if (OnRequestNewData != null)
             {
                 _loading = true;
@@ -121,22 +213,52 @@ namespace BlazorScheduler
         {
             await jsRuntime.InvokeVoidAsync("BlazorScheduler.attachSchedulerMouseEventsHandler", _objReference);
         }
+
         private async Task DestroyMouseHandler()
         {
             await jsRuntime.InvokeVoidAsync("BlazorScheduler.destroySchedulerMouseEventsHandler");
         }
 
-        private async Task ChangeMonth(int months = 0)
+        private async Task ChangeDate(int change = 0)
         {
-            await SetCurrentMonth(months == 0 ? DateTime.Today : CurrentDate.AddMonths(months));
+            if (ViewType == "month")
+            {
+                await SetCurrentMonth(change == 0 ? DateTime.Today : CurrentDate.AddMonths(change));
+            }
+            else if (ViewType == "day")
+            {
+                await SetCurrentDay(change == 0 ? DateTime.Today : CurrentDate.AddDays(change));
+            }
+            else // week or default
+            {
+                await SetCurrentWeek(change == 0 ? DateTime.Today : CurrentDate.AddDays(change * 7));
+            }
         }
 
         private IEnumerable<DateTime> GetDaysInRange()
         {
-            var (start, end) = CurrentRange;
-            return Enumerable
-                .Range(0, 1 + end.Subtract(start).Days)
-                .Select(offset => start.AddDays(offset));
+            if (ViewType == "month")
+            {
+                var (start, end) = CurrentMonthRange;
+                return Enumerable
+                    .Range(0, 1 + end.Subtract(start).Days)
+                    .Select(offset => start.AddDays(offset));
+            }
+            else if (ViewType == "day")
+            {
+                var (start, end) = CurrentDayRange;
+                return Enumerable
+                    .Range(0, 1 + end.Subtract(start).Days)
+                    .Select(offset => start.AddDays(offset));
+            }
+            else // week or default
+            {
+                var (start, end) = CurrentWeekRange;
+                return Enumerable
+                    .Range(0, 1 + end.Subtract(start).Days)
+                    .Select(offset => start.AddDays(offset));
+            }
+
         }
 
         private IEnumerable<Appointment> GetAppointmentsInRange(DateTime start, DateTime end)

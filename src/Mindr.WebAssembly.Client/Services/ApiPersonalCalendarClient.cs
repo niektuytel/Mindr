@@ -60,14 +60,14 @@ public class ApiPersonalCalendarClient : ApiClientBase, IApiPersonalCalendarClie
         return response;
     }
 
-    public async Task<JsonResponse<PersonalCalendar>> Delete(string calendarId)
+    public async Task<JsonResponse<PersonalCalendar>> DeleteCalendar(string calendarId)
     {
         var request = new HttpRequestMessage(HttpMethod.Delete, $"{Path}/{calendarId}");
         var response = await ApiRequest<PersonalCalendar>(request);
         return response;
     }
 
-    public async Task<JsonResponse<IEnumerable<CalendarAppointment>>> GetAllAppointments(DateTime dateStart, DateTime dateEnd, string calendarId)
+    public async Task<JsonResponse<IEnumerable<CalendarAppointment>>> GetAppointments(DateTime dateStart, DateTime dateEnd, string calendarId)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"{Path}/appointments?calendarId={calendarId}&dateTimeStart={dateStart}&dateTimeEnd={dateEnd}");
         var response = await ApiRequest<IEnumerable<CalendarAppointment>>(request);

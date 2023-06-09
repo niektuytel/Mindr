@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using System.Collections.Generic;
 
-namespace BlazorScheduler.Internal.Components
+namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 {
 	public partial class SchedulerAppointment
 	{

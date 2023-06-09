@@ -38,7 +38,7 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 
 
 
-        bool open = true;
+        bool open = false;
 
         public bool IsLoading { get; set; } = true;
 

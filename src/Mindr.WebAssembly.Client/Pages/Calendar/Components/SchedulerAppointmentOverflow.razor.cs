@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System;
 
-namespace BlazorScheduler.Internal.Components
+namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 {
 	public partial class SchedulerAppointmentOverflow
 	{

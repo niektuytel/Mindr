@@ -1,10 +1,10 @@
-﻿using BlazorScheduler.Internal.Extensions;
+﻿using Mindr.WebAssembly.Client.Pages.Calendar.Extensions;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BlazorScheduler.Internal.Components
+namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 {
 	public partial class SchedulerWeek
     {

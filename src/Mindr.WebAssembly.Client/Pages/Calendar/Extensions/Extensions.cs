@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BlazorScheduler.Internal.Extensions
+namespace Mindr.WebAssembly.Client.Pages.Calendar.Extensions
 {
 	internal static class Extensions
 	{
