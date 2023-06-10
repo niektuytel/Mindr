@@ -22,7 +22,7 @@
       "launchBrowser": true,
       "hotReloadEnabled": true,
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
-      "applicationUrl": "https://localhost:44348/",
+      "applicationUrl": "https://localhost:44348",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

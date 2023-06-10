@@ -8,19 +8,6 @@
             <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Inherit" Edge="Edge.End" OnClick="@ToggleDrawer" />
         </MudDrawerHeader>
         <MudList Clickable="true">
-            <MudListItem Icon="@Icons.Material.Filled.ViewModule" Text="View" InitiallyExpanded="true">
-                <NestedList>
-                    <MudListItem Icon="@Icons.Material.Filled.Today" OnClick=@(() => ViewChanged("/calendar/day"))>
-                        Today
-                    </MudListItem>
-                    <MudListItem Icon="@Icons.Material.Filled.CalendarViewWeek" OnClick=@(() => ViewChanged("/calendar/week"))>
-                        This Week
-                    </MudListItem>
-                    <MudListItem Icon="@Icons.Material.Filled.CalendarViewMonth" OnClick=@(() => ViewChanged("/calendar/month"))>
-                        This Month
-                    </MudListItem>
-                </NestedList>
-            </MudListItem>
             <MudDivider />
             <MudListItem Icon="@Icons.Material.Filled.Groups3" Text="Calendars" InitiallyExpanded="true">
                 <NestedList>

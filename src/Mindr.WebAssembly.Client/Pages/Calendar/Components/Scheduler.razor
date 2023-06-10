@@ -7,155 +7,119 @@
 
 @inject IJSRuntime jsRuntime
 
-<div class="scheduler">
-    <div class="header">
-        <div class="actions">
-            @Header
-            <button class="btn today" @onclick="() => ChangeDate()">@TodayButtonText</button>
-            <div class="navigation">
-                <button class="btn icon-btn" @onclick="() => ChangeDate(-1)">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M24 0v24H0V0h24z" fill="none"/>
-                        <path d="M14 7l-5 5 5 5V7z"/>
-                    </svg>
-                </button>
-                <span class="selected-month">@DateDisplay</span>
-                <button class="btn icon-btn" @onclick="() => ChangeDate(+1)">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M0 0h24v24H0V0z" fill="none"/>
-                        <path d="M10 17l5-5-5-5v10z"/>
-                    </svg>
-                </button>
-            </div>
-            @if (_loading)
-            {
-                <div class="scheduler-loader" style="--size: 25px; --color1: #666; --color2: #ccc;"></div>
-            }
-            else
-            {
-                <span></span>
-            }
-        </div>
-    </div>
-    @if(ViewType == "month")
+<MudToolBar>
+    <MudStack Row="true" Spacing="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@OnHamburgerClick" />
+        <MudSelect 
+            @bind-Value="@ViewType" 
+            Style="width: 100px;" 
+            Variant="Variant.Outlined"
+            Margin="Margin.Dense"
+        >
+            <MudSelectItem Value="@("day")">Day</MudSelectItem>
+            <MudSelectItem Value="@("week")">Week</MudSelectItem>
+            <MudSelectItem Value="@("month")">Month</MudSelectItem>
+        </MudSelect>
+    </MudStack>
+    <MudSpacer />
+    <MudStack Row="true" Spacing="1">
+        <MudIconButton Icon="@Icons.Material.Filled.KeyboardArrowLeft" Color="Color.Inherit" OnClick="@(() => HandleViewType(-1))" />
+        <MudText Typo="Typo.h6" Align="Align.Center" Style="align-self: center;">@_dateDisplay</MudText>
+        <MudIconButton Icon="@Icons.Material.Filled.KeyboardArrowRight" Color="Color.Inherit" OnClick="@(() => HandleViewType(+1))" />
+    </MudStack>
+    <MudSpacer />
+    @if (_loading)
     {
-        <div class="month">
-            <div class="week header">
-                @for (int d=0;d<7;d++)
+        <MudProgressCircular Color="Color.Default" Size="Size.Small" Indeterminate="true" />
+    }
+    else
+    {
+        <div style="width:24px"/>
+    }
+</MudToolBar>
+<div class="scheduler">
+    <CascadingValue IsFixed="true" Value="this">
+        @Appointments
+        @if (_draggingStart is not null && _draggingEnd is not null)
+        {
+            @if (_showNewAppointment)
+            {
+                <Appointment @ref="DraggingAppointment" Start="_draggingStart.Value" End="_draggingEnd.Value" Color="@ThemeColor">
+                    @NewAppointmentText
+                </Appointment>
+            }
+
+            @if (_reschedulingAppointment is not null)
+            {
+                <Appointment @ref="DraggingAppointment" Start="_draggingStart.Value" End="_draggingEnd.Value" Color="@_reschedulingAppointment.Color">
+                    @_reschedulingAppointment?.RenderChildContent()
+                </Appointment>
+            }
+        }
+
+        @if (ViewType == "day")
+        {
+            <div class="month">
+                <div class="week header">
+                    @{
+                        string dayName = CultureInfo.CurrentCulture.DateTimeFormat.DayNames[CurrentDate.Day];
+                        <div class="day-of-month">
+                            <span class="full-dayname">@dayName</span>
+                            <span class="short-dayname">@dayName.Substring(0, 3)</span>
+                        </div>
+                    }
+                </div>
+
+                @foreach (var week in GetDaysInRange().Chunk(1))
                 {
-                    int dayNumber = (int)(StartDayOfWeek + d) % 7;
-                    string dayName = CultureInfo.CurrentCulture.DateTimeFormat.DayNames[dayNumber];
-                    <div class="day-of-month">
-                        <span class="full-dayname">@dayName</span>
-                        <span class="short-dayname">@dayName.Substring(0, 3)</span>
-                    </div>
+                    var (start, end) = (week.First(), week.Last());
+                    <SchedulerWeek Start="start" End="end" Appointments="GetAppointmentsInRange(start, end)" @key="week" />
                 }
             </div>
-            <CascadingValue IsFixed="true" Value="this">
-                @Appointments
-                @if (_draggingStart is not null && _draggingEnd is not null)
-                {
-                    @if (_showNewAppointment)
+        }
+        else if (ViewType == "week")
+        {
+            <div class="month">
+                <div class="week header">
+                    @for (int d = 0; d < 7; d++)
                     {
-                        <Appointment @ref="DraggingAppointment" Start="_draggingStart.Value" End="_draggingEnd.Value" Color="@ThemeColor">
-                            @NewAppointmentText
-                        </Appointment>
+                        int dayNumber = (int)(StartDayOfWeek + d) % 7;
+                        string dayName = CultureInfo.CurrentCulture.DateTimeFormat.DayNames[dayNumber];
+                        <div class="day-of-month">
+                            <span class="full-dayname">@dayName</span>
+                            <span class="short-dayname">@dayName.Substring(0, 3)</span>
+                        </div>
                     }
-
-                    @if (_reschedulingAppointment is not null)
-                    {
-                        <Appointment @ref="DraggingAppointment" Start="_draggingStart.Value" End="_draggingEnd.Value" Color="@_reschedulingAppointment.Color">
-                            @_reschedulingAppointment?.RenderChildContent()
-                        </Appointment>
-                    }
-                }
+                </div>
 
                 @foreach (var week in GetDaysInRange().Chunk(7))
                 {
                     var (start, end) = (week.First(), week.Last());
                     <SchedulerWeek Start="start" End="end" Appointments="GetAppointmentsInRange(start, end)" @key="week" />
                 }
-            </CascadingValue>
-        </div>
-    }
-    else if(ViewType == "day")
-    {
-        <div class="month">
-            <div class="week header">
-                @{
-                    string dayName = CultureInfo.CurrentCulture.DateTimeFormat.DayNames[CurrentDate.Day];
-                    <div class="day-of-month">
-                        <span class="full-dayname">@dayName</span>
-                        <span class="short-dayname">@dayName.Substring(0, 3)</span>
-                    </div>
-                }
             </div>
-            <CascadingValue IsFixed="true" Value="this">
-                @Appointments
-                @if (_draggingStart is not null && _draggingEnd is not null)
-                {
-                    @if (_showNewAppointment)
+        }
+        else if(ViewType == "month")
+        {
+            <div class="month">
+                <div class="week header">
+                    @for (int d=0;d<7;d++)
                     {
-                        <Appointment @ref="DraggingAppointment" Start="_draggingStart.Value" End="_draggingEnd.Value" Color="@ThemeColor">
-                            @NewAppointmentText
-                        </Appointment>
+                        int dayNumber = (int)(StartDayOfWeek + d) % 7;
+                        string dayName = CultureInfo.CurrentCulture.DateTimeFormat.DayNames[dayNumber];
+                        <div class="day-of-month">
+                            <span class="full-dayname">@dayName</span>
+                            <span class="short-dayname">@dayName.Substring(0, 3)</span>
+                        </div>
                     }
+                </div>
 
-                    @if (_reschedulingAppointment is not null)
-                    {
-                        <Appointment @ref="DraggingAppointment" Start="_draggingStart.Value" End="_draggingEnd.Value" Color="@_reschedulingAppointment.Color">
-                            @_reschedulingAppointment?.RenderChildContent()
-                        </Appointment>
-                    }
-                }
-
-                @{
-                    <div class="days">
-                        <SchedulerDay Day="CurrentDate"/>
-                    </div>
-                }
-            </CascadingValue>
-        </div>
-    }
-    else
-    {
-        <div class="month">
-            <div class="week header">
-                @for (int d = 0; d < 7; d++)
+                @foreach (var week in GetDaysInRange().Chunk(7))
                 {
-                    int dayNumber = (int)(StartDayOfWeek + d) % 7;
-                    string dayName = CultureInfo.CurrentCulture.DateTimeFormat.DayNames[dayNumber];
-                    <div class="day-of-month">
-                        <span class="full-dayname">@dayName</span>
-                        <span class="short-dayname">@dayName.Substring(0, 3)</span>
-                    </div>
-                }
-            </div>
-            <CascadingValue IsFixed="true" Value="this">
-                @Appointments
-                @if (_draggingStart is not null && _draggingEnd is not null)
-                {
-                    @if (_showNewAppointment)
-                    {
-                        <Appointment @ref="DraggingAppointment" Start="_draggingStart.Value" End="_draggingEnd.Value" Color="@ThemeColor">
-                            @NewAppointmentText
-                        </Appointment>
-                    }
-
-                    @if (_reschedulingAppointment is not null)
-                    {
-                        <Appointment @ref="DraggingAppointment" Start="_draggingStart.Value" End="_draggingEnd.Value" Color="@_reschedulingAppointment.Color">
-                            @_reschedulingAppointment?.RenderChildContent()
-                        </Appointment>
-                    }
-                }
-                
-                @{
-                    var week = GetDaysInRange();
                     var (start, end) = (week.First(), week.Last());
                     <SchedulerWeek Start="start" End="end" Appointments="GetAppointmentsInRange(start, end)" @key="week" />
                 }
-            </CascadingValue>
-        </div>
-    }
+            </div>
+        }
+    </CascadingValue>
 </div>

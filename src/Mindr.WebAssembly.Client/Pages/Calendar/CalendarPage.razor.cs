@@ -15,6 +15,7 @@ using Mindr.Domain.Models.DTO.Calendar;
 using Mindr.WebAssembly.Client.Pages.Connectors.Components;
 using Mindr.WebAssembly.Client.Pages.Calendar.Components;
 using Mindr.WebAssembly.Client.Pages.Calendar.Editors;
+using Microsoft.JSInterop;
 
 namespace Mindr.WebAssembly.Client.Pages.Calendar;
 
@@ -39,10 +40,13 @@ public partial class CalendarPage
     public ISnackbar Snackbar { get; set; } = default!;
 
     [Inject]
+    public Blazored.LocalStorage.ILocalStorageService LocalStorage { get; set; } = default!;
+
+    [Inject]
     public NavigationManager NavigationManager { get; set; } = default!;
 
     [Parameter]
-    public string? ViewType { get; set; } = "week";
+    public string? ViewType { get; set; } = null;
 
     [Parameter]
     public string? CalendarId { get; set; } = null;
@@ -57,19 +61,22 @@ public partial class CalendarPage
 
     private bool IsLoading = false;
 
+    // TODO: Fix this, it's not working correctly
     protected override async Task OnInitializedAsync()
     {
-        // TODO: Get selected calendar from user cookies
-        //IsLoading = true;
-        //var response = await CalendarClient.GetAllCalendars();
-        //(Calendars, var error) = response.AsTuple();
-        //IsLoading = false;
+        var exists = await LocalStorage.ContainKeyAsync($"ViewType");
+        if (exists && string.IsNullOrEmpty(ViewType))
+        {
+            ViewType = await LocalStorage.GetItemAsync<string>($"ViewType") ?? "month";
+        }
 
-        //if (!string.IsNullOrEmpty(error))
-        //{
-        //    Snackbar.Add(error, Severity.Error);
-        //}
-       
+        exists = await LocalStorage.ContainKeyAsync($"CalendarId");
+        if (exists && string.IsNullOrEmpty(CalendarId))
+        {
+            CalendarId = await LocalStorage.GetItemAsync<string>($"CalendarId") ?? "All";
+        }
+
+
         base.StateHasChanged();
     }
 

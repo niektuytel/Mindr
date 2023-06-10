@@ -17,11 +17,16 @@ using MudBlazor;
 using Mindr.WebAssembly.Client.Services;
 using Mindr.Domain.Models.DTO.Personal;
 using Mindr.WebAssembly.Client.Models;
+using System.Net;
+using System.Globalization;
 
 namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 {
     public partial class CalendarMenu
     {
+        [Parameter, EditorRequired]
+        public string ViewType { get; set; } = default!;
+
         [Inject]
         public IApiPersonalCalendarClient CalendarClient { get; set; } = default!;
 
@@ -30,6 +35,9 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 
         [Inject]
         public ISnackbar Snackbar { get; set; } = default!;
+
+        [Inject]
+        public Blazored.LocalStorage.ILocalStorageService LocalStorage { get; set; } = default!;
 
         [Inject]
         public NavigationManager NavigationManager { get; set; } = default!;
@@ -44,13 +52,26 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 
         public IEnumerable<PersonalCalendar>? Calendars { get; set; } = null;
 
-        public string SelectedCalendar { get; set; } = "All";
+
+        private string _selectedCalendar = "All";
+
+        [Parameter]
+        public string SelectedCalendar
+        {
+            get => _selectedCalendar;
+            set
+            {
+                if (_selectedCalendar != value)
+                {
+                    _selectedCalendar = value;
+                    SelectedCalendarChanged(_selectedCalendar);
+                }
+            }
+        }
 
         protected override async Task OnInitializedAsync()
         {
             IsLoading = true;
-            // TODO: Get selected/stored calendar (from cookies)
-
             var response = await CalendarClient.GetCalendars();
             if(response.IsSuccessful())
             {
@@ -73,22 +94,16 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
             NavigationManager.NavigateTo(path);
         }
 
-        public void ToggleDrawer()
+        public async Task ToggleDrawer()
         {
             open = !open;
         }
 
-        private async Task SelectedCalendarChanged(string calendar)
+        private async void SelectedCalendarChanged(string calendarId)
         {
-            if(SelectedCalendar != calendar)
-            {
-                SelectedCalendar = calendar;
-                // TODO: Set selected/stored calendar (from cookies)
-                // TODO: Get calendar appointments
-
-                open = false;
-            }
-
+            await LocalStorage.SetItemAsync($"CalendarId", calendarId);
+            NavigationManager.NavigateTo($"/calendar/{ViewType}/{calendarId}");
+            open = false;
         }
 
 
@@ -104,7 +119,7 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
             }
 
             Calendars = Calendars.Append(calendar);
-            await SelectedCalendarChanged(calendar.Summary);
+            SelectedCalendar = calendar.Summary;
         }
 
 

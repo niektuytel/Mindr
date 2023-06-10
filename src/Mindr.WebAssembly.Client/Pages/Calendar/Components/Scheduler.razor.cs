@@ -6,13 +6,21 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 {
     public partial class Scheduler : IAsyncDisposable
     {
-        [Parameter, EditorRequired] public string ViewType { get; set; } = default!;
-        [Parameter, EditorRequired] public RenderFragment Header { get; set; } = default!;
+        [Parameter, EditorRequired] public Func<Task> OnHamburgerClick { get; set; } = default!;
+
+        [Parameter, EditorRequired] public string SelectedCalendar { get; set; } = default!;
+
+        [Inject]
+        public NavigationManager NavigationManager { get; set; } = default!;
+
+        [Inject]
+        public Blazored.LocalStorage.ILocalStorageService LocalStorage { get; set; } = default!;
 
 
 
@@ -76,7 +84,7 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
             }
         }
 
-        private string DateDisplay
+        private string _dateDisplay
         {
             get
             {
@@ -103,6 +111,24 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
             }
         }
 
+        private string _viewType = "";
+
+        [Parameter, EditorRequired]
+        public string ViewType
+        {
+            get => _viewType;
+            set
+            {
+                if(_viewType != value)
+                {
+                    _viewType = value;
+                    HandleViewType(changedViewType: true);
+                }
+            }
+        }
+
+
+
         private readonly ObservableCollection<Appointment> _appointments = new();
         private DotNetObjectReference<Scheduler> _objReference = null!;
         private bool _loading = false;
@@ -115,20 +141,7 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
         {
             _objReference = DotNetObjectReference.Create(this);
 
-            if (ViewType == "month")
-            {
-                await SetCurrentMonth(DateTime.Today, true);
-            }
-            else if (ViewType == "day")
-            {
-                await SetCurrentDay(DateTime.Today, true);
-            }
-            else // week or default
-            {
-                await SetCurrentWeek(DateTime.Today, true);
-            }
-
-            await base.OnInitializedAsync();
+            base.StateHasChanged();
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -219,19 +232,25 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
             await jsRuntime.InvokeVoidAsync("BlazorScheduler.destroySchedulerMouseEventsHandler");
         }
 
-        private async Task ChangeDate(int change = 0)
+        private async void HandleViewType(int change = 0, bool changedViewType = false)
         {
-            if (ViewType == "month")
+            switch (_viewType)
             {
-                await SetCurrentMonth(change == 0 ? DateTime.Today : CurrentDate.AddMonths(change));
+                case "day":
+                    await SetCurrentDay(change == 0 ? DateTime.Today : CurrentDate.AddDays(change), true);
+                    break;
+                case "week":
+                    await SetCurrentWeek(change == 0 ? DateTime.Today : CurrentDate.AddDays(change * 7), true);
+                    break;
+                case "month":
+                    await SetCurrentMonth(change == 0 ? DateTime.Today : CurrentDate.AddMonths(change), true);
+                    break;
             }
-            else if (ViewType == "day")
+
+            if(changedViewType)
             {
-                await SetCurrentDay(change == 0 ? DateTime.Today : CurrentDate.AddDays(change));
-            }
-            else // week or default
-            {
-                await SetCurrentWeek(change == 0 ? DateTime.Today : CurrentDate.AddDays(change * 7));
+                await LocalStorage.SetItemAsync($"ViewType", _viewType);
+                NavigationManager.NavigateTo($"calendar/{_viewType}/{SelectedCalendar}");
             }
         }
 
