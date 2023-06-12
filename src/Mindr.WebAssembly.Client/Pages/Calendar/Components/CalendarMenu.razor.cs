@@ -19,13 +19,23 @@ using Mindr.Domain.Models.DTO.Personal;
 using Mindr.WebAssembly.Client.Models;
 using System.Net;
 using System.Globalization;
+using Mindr.WebAssembly.Client.Pages.Calendar.Services;
 
 namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 {
     public partial class CalendarMenu
     {
-        [Parameter, EditorRequired]
-        public string ViewType { get; set; } = default!;
+        [Inject]
+        public CalendarService CalendarService { get; set; } = default!;
+
+        [Inject]
+        public CalendarViewTypeService CalendarViewTypeService { get; set; } = default!;
+
+        //public string? ViewType { get; set; } = null;
+
+        //public string? CalendarId { get; set; } = null;
+
+        bool _open = false;
 
         [Inject]
         public IApiPersonalCalendarClient CalendarClient { get; set; } = default!;
@@ -46,28 +56,10 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 
 
 
-        bool open = false;
 
         public bool IsLoading { get; set; } = true;
 
         public IEnumerable<PersonalCalendar>? Calendars { get; set; } = null;
-
-
-        private string _selectedCalendar = "All";
-
-        [Parameter]
-        public string SelectedCalendar
-        {
-            get => _selectedCalendar;
-            set
-            {
-                if (_selectedCalendar != value)
-                {
-                    _selectedCalendar = value;
-                    SelectedCalendarChanged(_selectedCalendar);
-                }
-            }
-        }
 
         protected override async Task OnInitializedAsync()
         {
@@ -90,20 +82,19 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 
         private void ViewChanged(string path)
         {
-            open = false;
+            _open = false;
             NavigationManager.NavigateTo(path);
         }
 
         public async Task ToggleDrawer()
         {
-            open = !open;
+            _open = !_open;
         }
 
-        private async void SelectedCalendarChanged(string calendarId)
+        private async Task ChangeCalendarId(string? calendarId)
         {
-            await LocalStorage.SetItemAsync($"CalendarId", calendarId);
-            NavigationManager.NavigateTo($"/calendar/{ViewType}/{calendarId}");
-            open = false;
+            await CalendarService.SetOnAction(calendarId);
+            _open = false;
         }
 
 
@@ -119,7 +110,7 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
             }
 
             Calendars = Calendars.Append(calendar);
-            SelectedCalendar = calendar.Summary;
+            await ChangeCalendarId(calendar.Summary);
         }
 
 

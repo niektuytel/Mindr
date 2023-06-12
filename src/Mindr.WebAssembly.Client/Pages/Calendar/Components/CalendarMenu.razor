@@ -3,7 +3,7 @@
 
 <CalendarDrawer @ref="Drawer" AddCalendarAction="AddCalendar"/>
 <MudDrawerContainer Class="mud-height-full">
-    <MudDrawer @bind-Open="@open" Elevation="0" Variant="@DrawerVariant.Persistent" Style="@($"background: {Colors.Grey.Lighten5};")">
+    <MudDrawer @bind-Open="@_open" Elevation="0" Variant="@DrawerVariant.Persistent" Style="@($"background: {Colors.Grey.Lighten5};")">
         <MudDrawerHeader Style="align-self: end">
             <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Inherit" Edge="Edge.End" OnClick="@ToggleDrawer" />
         </MudDrawerHeader>
@@ -21,8 +21,8 @@
                     {
                         @if (Calendars.Any())
                         {
-                            <MudCheckBox Checked="@(SelectedCalendar == "All")"
-                                @onclick="@(() => SelectedCalendar = "All")"
+                            <MudCheckBox Checked="@(CalendarService.Value == "All")"
+                                 @onclick="@(async () => await ChangeCalendarId("All"))"
                                 Style="padding-left:20px"
                                 Color="Color.Warning"
                                 CheckedIcon="@Icons.Material.Filled.Group"
@@ -34,8 +34,8 @@
                         }
                         foreach(var calendar in Calendars)
                         {
-                            <MudCheckBox Checked="@(SelectedCalendar == calendar.Summary)"
-                                @onclick="@(() => SelectedCalendar = calendar.Summary)"
+                            <MudCheckBox Checked="@(CalendarService.Value == calendar.Summary)"
+                                 @onclick="@(async () => await ChangeCalendarId(calendar.Summary))"
                                 Style="padding-left:20px"
                                 Color="Color.Warning"
                                 CheckedIcon="@Icons.Material.Filled.Person"

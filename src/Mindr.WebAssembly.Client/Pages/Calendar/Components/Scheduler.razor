@@ -11,7 +11,9 @@
     <MudStack Row="true" Spacing="1">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@OnHamburgerClick" />
         <MudSelect 
-            @bind-Value="@ViewType" 
+            T="string"
+            Value="CalendarViewTypeService.Value"
+            ValueChanged="CalendarViewTypeService.SetOnAction"
             Style="width: 100px;" 
             Variant="Variant.Outlined"
             Margin="Margin.Dense"
@@ -23,9 +25,9 @@
     </MudStack>
     <MudSpacer />
     <MudStack Row="true" Spacing="1">
-        <MudIconButton Icon="@Icons.Material.Filled.KeyboardArrowLeft" Color="Color.Inherit" OnClick="@(() => HandleViewType(-1))" />
+        <MudIconButton Icon="@Icons.Material.Filled.KeyboardArrowLeft" Color="Color.Inherit" OnClick="@(async () => await LoadDateRangeData(-1))" />
         <MudText Typo="Typo.h6" Align="Align.Center" Style="align-self: center;">@_dateDisplay</MudText>
-        <MudIconButton Icon="@Icons.Material.Filled.KeyboardArrowRight" Color="Color.Inherit" OnClick="@(() => HandleViewType(+1))" />
+        <MudIconButton Icon="@Icons.Material.Filled.KeyboardArrowRight" Color="Color.Inherit" OnClick="@(async () => await LoadDateRangeData(+1))" />
     </MudStack>
     <MudSpacer />
     @if (_loading)
@@ -57,7 +59,7 @@
             }
         }
 
-        @if (ViewType == "day")
+        @if (CalendarViewTypeService.IsDay())
         {
             <div class="month">
                 <div class="week header">
@@ -77,7 +79,7 @@
                 }
             </div>
         }
-        else if (ViewType == "week")
+        else if (CalendarViewTypeService.IsWeek())
         {
             <div class="month">
                 <div class="week header">
@@ -99,11 +101,11 @@
                 }
             </div>
         }
-        else if(ViewType == "month")
+        else if (CalendarViewTypeService.IsMonth())
         {
             <div class="month">
                 <div class="week header">
-                    @for (int d=0;d<7;d++)
+                    @for (int d = 0; d < 7; d++)
                     {
                         int dayNumber = (int)(StartDayOfWeek + d) % 7;
                         string dayName = CultureInfo.CurrentCulture.DateTimeFormat.DayNames[dayNumber];
@@ -121,5 +123,10 @@
                 }
             </div>
         }
+        else
+        {
+            throw new NotImplementedException();
+        }
+
     </CascadingValue>
 </div>

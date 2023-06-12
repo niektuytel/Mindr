@@ -1,7 +1,9 @@
 ﻿@attribute [Route($"/")]
+@attribute [Authorize]
 @inherits LayoutComponentBase
 
 @namespace Mindr.WebAssembly.Client.Pages.Calendar
+@using Microsoft.AspNetCore.Authorization;
 @using MudBlazor
 
 <MudMainContent>

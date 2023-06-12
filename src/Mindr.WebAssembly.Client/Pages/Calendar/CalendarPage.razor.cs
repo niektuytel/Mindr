@@ -16,11 +16,29 @@ using Mindr.WebAssembly.Client.Pages.Connectors.Components;
 using Mindr.WebAssembly.Client.Pages.Calendar.Components;
 using Mindr.WebAssembly.Client.Pages.Calendar.Editors;
 using Microsoft.JSInterop;
+using Mindr.WebAssembly.Client.Pages.Calendar.Services;
 
 namespace Mindr.WebAssembly.Client.Pages.Calendar;
 
-public partial class CalendarPage
+public partial class CalendarPage: IDisposable
 {
+    [Parameter]
+    public string CalendarId { get; set; } = default!;
+
+    [Parameter]
+    public string CalendarViewType { get; set; } = default!;
+
+    [Inject]
+    public CalendarService CalendarService { get; set; } = default!;
+
+    [Inject]
+    public CalendarViewTypeService CalendarViewTypeService { get; set; } = default!;
+
+
+
+    public CalendarMenu? CalendarMenu { get; set; } = default!;
+    //public CalendarView? CalendarView { get; set; } = default!;
+
     [Inject]
     public IApiPersonalCalendarClient CalendarClient { get; set; } = default!;
 
@@ -45,15 +63,9 @@ public partial class CalendarPage
     [Inject]
     public NavigationManager NavigationManager { get; set; } = default!;
 
-    [Parameter]
-    public string? ViewType { get; set; } = null;
-
-    [Parameter]
-    public string? CalendarId { get; set; } = null;
 
     private AppointmentDrawer? AppointmentDrawer = default!;
 
-    public CalendarMenu? Menu { get; set; } = default!;
 
     public IEnumerable<PersonalCalendar> Calendars = new List<PersonalCalendar>();
 
@@ -61,28 +73,20 @@ public partial class CalendarPage
 
     private bool IsLoading = false;
 
-    // TODO: Fix this, it's not working correctly
     protected override async Task OnInitializedAsync()
     {
-        var exists = await LocalStorage.ContainKeyAsync($"ViewType");
-        if (exists && string.IsNullOrEmpty(ViewType))
-        {
-            ViewType = await LocalStorage.GetItemAsync<string>($"ViewType") ?? "month";
-        }
-
-        exists = await LocalStorage.ContainKeyAsync($"CalendarId");
-        if (exists && string.IsNullOrEmpty(CalendarId))
-        {
-            CalendarId = await LocalStorage.GetItemAsync<string>($"CalendarId") ?? "All";
-        }
-
+        await CalendarService.InitializeAsync();
+        await CalendarViewTypeService.InitializeAsync();
 
         base.StateHasChanged();
     }
 
+
+
+
     public async Task OnRequestNewData(DateTime start, DateTime end)
     {
-        var response = await CalendarClient.GetAppointments(start, end, CalendarId);
+        var response = await CalendarClient.GetAppointments(start, end, CalendarService.Value);
         if (response.IsError())
         {
             var errorMessage = response.GetContent<ErrorMessageResponse>();
@@ -128,6 +132,10 @@ public partial class CalendarPage
         await dialog.Result;
 
         StateHasChanged();
+    }
+
+    public void Dispose()
+    {
     }
 }
 

@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Globalization;
+using Mindr.WebAssembly.Client.Pages.Calendar.Services;
 
 namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 {
@@ -14,7 +15,11 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
     {
         [Parameter, EditorRequired] public Func<Task> OnHamburgerClick { get; set; } = default!;
 
-        [Parameter, EditorRequired] public string SelectedCalendar { get; set; } = default!;
+        [Inject]
+        public CalendarService CalendarService { get; set; } = default!;
+
+        [Inject]
+        public CalendarViewTypeService CalendarViewTypeService { get; set; } = default!;
 
         [Inject]
         public NavigationManager NavigationManager { get; set; } = default!;
@@ -48,7 +53,7 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 
         #endregion
 
-        public DateTime CurrentDate { get; private set; }
+        public DateTime CurrentDate { get; private set; } = DateTime.Now;
 
         public (DateTime Start, DateTime End) CurrentMonthRange
         {
@@ -88,7 +93,17 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
         {
             get
             {
-                if (ViewType == "month")
+                if (CalendarViewTypeService.IsDay())
+                {
+                    var res = CurrentDate.Day.ToString();
+                    return res += CurrentDate.ToString(" MMMM");
+                }
+                else if (CalendarViewTypeService.IsWeek())
+                {
+                    var res = $"{CurrentWeekRange.Start.Day}-{CurrentWeekRange.End.Day}";
+                    return res += CurrentDate.ToString(" MMMM");
+                }
+                else if (CalendarViewTypeService.IsMonth())
                 {
                     var res = CurrentDate.ToString("MMMM");
                     if (CurrentDate.Year != DateTime.Today.Year)
@@ -98,35 +113,12 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 
                     return res;
                 }
-                else if (ViewType == "day")
+                else
                 {
-                    var res = CurrentDate.Day.ToString();
-                    return res += CurrentDate.ToString(" MMMM");
-                }
-                else // week or default
-                {
-                    var res = $"{CurrentWeekRange.Start.Day}-{CurrentWeekRange.End.Day}";
-                    return res += CurrentDate.ToString(" MMMM");
+                    throw new NotImplementedException();
                 }
             }
         }
-
-        private string _viewType = "";
-
-        [Parameter, EditorRequired]
-        public string ViewType
-        {
-            get => _viewType;
-            set
-            {
-                if(_viewType != value)
-                {
-                    _viewType = value;
-                    HandleViewType(changedViewType: true);
-                }
-            }
-        }
-
 
 
         private readonly ObservableCollection<Appointment> _appointments = new();
@@ -139,6 +131,8 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 
         protected override async Task OnInitializedAsync()
         {
+            CalendarService.OnChange += StateHasChanged;
+            CalendarViewTypeService.OnChange += StateHasChanged;
             _objReference = DotNetObjectReference.Create(this);
 
             base.StateHasChanged();
@@ -149,6 +143,7 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
             if (firstRender)
             {
                 await AttachMouseHandler();
+                await LoadDateRangeData();
             }
             base.OnAfterRender(firstRender);
         }
@@ -232,50 +227,53 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
             await jsRuntime.InvokeVoidAsync("BlazorScheduler.destroySchedulerMouseEventsHandler");
         }
 
-        private async void HandleViewType(int change = 0, bool changedViewType = false)
+        private async Task LoadDateRangeData(int change = 0)
         {
-            switch (_viewType)
+            if (CalendarViewTypeService.IsDay())
             {
-                case "day":
-                    await SetCurrentDay(change == 0 ? DateTime.Today : CurrentDate.AddDays(change), true);
-                    break;
-                case "week":
-                    await SetCurrentWeek(change == 0 ? DateTime.Today : CurrentDate.AddDays(change * 7), true);
-                    break;
-                case "month":
-                    await SetCurrentMonth(change == 0 ? DateTime.Today : CurrentDate.AddMonths(change), true);
-                    break;
+                await SetCurrentDay(change == 0 ? DateTime.Today : CurrentDate.AddDays(change), true);
             }
-
-            if(changedViewType)
+            else if (CalendarViewTypeService.IsWeek())
             {
-                await LocalStorage.SetItemAsync($"ViewType", _viewType);
-                NavigationManager.NavigateTo($"calendar/{_viewType}/{SelectedCalendar}");
+                await SetCurrentWeek(change == 0 ? DateTime.Today : CurrentDate.AddDays(change * 7), true);
+            }
+            else if (CalendarViewTypeService.IsMonth())
+            {
+                await SetCurrentMonth(change == 0 ? DateTime.Today : CurrentDate.AddMonths(change), true);
+            }
+            else
+            {
+                throw new NotImplementedException();
             }
         }
 
         private IEnumerable<DateTime> GetDaysInRange()
         {
-            if (ViewType == "month")
-            {
-                var (start, end) = CurrentMonthRange;
-                return Enumerable
-                    .Range(0, 1 + end.Subtract(start).Days)
-                    .Select(offset => start.AddDays(offset));
-            }
-            else if (ViewType == "day")
+
+            if (CalendarViewTypeService.IsDay())
             {
                 var (start, end) = CurrentDayRange;
                 return Enumerable
                     .Range(0, 1 + end.Subtract(start).Days)
                     .Select(offset => start.AddDays(offset));
             }
-            else // week or default
+            else if (CalendarViewTypeService.IsWeek())
             {
                 var (start, end) = CurrentWeekRange;
                 return Enumerable
                     .Range(0, 1 + end.Subtract(start).Days)
                     .Select(offset => start.AddDays(offset));
+            }
+            else if (CalendarViewTypeService.IsMonth())
+            {
+                var (start, end) = CurrentMonthRange;
+                return Enumerable
+                    .Range(0, 1 + end.Subtract(start).Days)
+                    .Select(offset => start.AddDays(offset));
+            }
+            else
+            {
+                throw new NotImplementedException();
             }
 
         }
@@ -380,6 +378,8 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 
         public async ValueTask DisposeAsync()
         {
+            CalendarService.OnChange -= StateHasChanged;
+            CalendarViewTypeService.OnChange -= StateHasChanged;
             await DestroyMouseHandler();
             _objReference.Dispose();
             GC.SuppressFinalize(this);

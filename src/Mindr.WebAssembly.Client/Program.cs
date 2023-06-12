@@ -17,6 +17,7 @@ using Mindr.WebAssembly.Client.Providers;
 using DemoApp;
 using MudBlazor.Services;
 using Blazored.LocalStorage;
+using Mindr.WebAssembly.Client.Pages.Calendar.Services;
 
 namespace Mindr.WebAssembly.Client;
 
@@ -39,6 +40,13 @@ public static class Program
         builder.Services.AddAuthorizationCore();
         builder.Services.TryAddSingleton<AuthenticationStateProvider, HostAuthenticationStateProvider>();
         builder.Services.TryAddSingleton(provider => (HostAuthenticationStateProvider) provider.GetRequiredService<AuthenticationStateProvider>());
+
+        // Calendar
+        builder.Services.AddSingleton<CalendarService>();
+        builder.Services.AddSingleton<CalendarViewTypeService>();
+
+
+
 
         // HTTP connections
         builder.Services.AddHttpClient("default", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));

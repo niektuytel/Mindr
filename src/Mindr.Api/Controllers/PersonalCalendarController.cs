@@ -127,8 +127,14 @@ public class PersonalCalendarController : BaseController
         [FromQuery] string? calendarId = null
     )
     {
+        if (calendarId?.ToLower() == "all")
+        {
+            calendarId = null;
+        }
+
         var response = await HandleRequest(async () => {
             var userId = User.GetUserId();
+
             return await _manager.GetAppointments(userId, dateTimeStart, dateTimeEnd, calendarId);
         });
 

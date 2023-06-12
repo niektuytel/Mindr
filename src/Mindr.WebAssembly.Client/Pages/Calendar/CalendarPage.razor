@@ -1,9 +1,5 @@
-﻿@attribute [Route("/calendar/{ViewType?}/{CalendarId?}")]
-@*
-    ?calendarId=primary
-    ?startTime=primary
-    ?endTime=primary
-*@
+﻿@attribute [Route("/calendar/{CalendarId?}/{CalendarViewType?}")]
+
 @using DemoApp.Models;
 @using DemoApp;
 @using Microsoft.AspNetCore.Authorization;
@@ -15,12 +11,13 @@
 @inject AppointmentService AppointmentService
 @namespace Mindr.WebAssembly.Client.Pages.Calendar
 
-<CalendarMenu @ref="Menu" ViewType="@ViewType" SelectedCalendar="@CalendarId" />
+
+
+
+<CalendarMenu @ref="CalendarMenu"/>
 <MudStack Spacing="0" Style="height:100%">
     <Scheduler
-        ViewType="@ViewType"
-        SelectedCalendar="@CalendarId"
-        OnHamburgerClick="@Menu!.ToggleDrawer"
+        OnHamburgerClick="@CalendarMenu!.ToggleDrawer"
         OnRequestNewData="OnRequestNewData"
         OnAddingNewAppointment="OnAddingNewAppointment"
         OnOverflowAppointmentClick="OnOverflowAppointmentClick"
@@ -37,4 +34,3 @@
     </Scheduler>
 </MudStack>
 <AppointmentDrawer @ref="AppointmentDrawer" />
-
