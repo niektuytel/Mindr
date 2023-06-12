@@ -43,7 +43,7 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Services
             }
         }
 
-        public async Task<bool> TrySetValue(string? calendarViewType)
+        private async Task<bool> TrySetValue(string? calendarViewType)
         {
             if (string.IsNullOrEmpty(calendarViewType))
             {

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Globalization;
 using Mindr.WebAssembly.Client.Pages.Calendar.Services;
+using DemoApp;
 
 namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 {
@@ -20,6 +21,9 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 
         [Inject]
         public CalendarViewTypeService CalendarViewTypeService { get; set; } = default!;
+
+        [Inject]
+        public CalendarAppointmentsService CalendarAppointmentsService { get; set; } = default!;
 
         [Inject]
         public NavigationManager NavigationManager { get; set; } = default!;
@@ -133,6 +137,7 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
         {
             CalendarService.OnChange += StateHasChanged;
             CalendarViewTypeService.OnChange += StateHasChanged;
+            CalendarAppointmentsService.OnChange += StateHasChanged;
             _objReference = DotNetObjectReference.Create(this);
 
             base.StateHasChanged();
@@ -278,17 +283,6 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 
         }
 
-        private IEnumerable<Appointment> GetAppointmentsInRange(DateTime start, DateTime end)
-        {
-            var appointmentsInTimeframe = _appointments
-                .Where(x => x.IsVisible)
-                .Where(x => (start, end).Overlaps((x.Start.Date, x.End.Date)));
-
-            return appointmentsInTimeframe
-                .OrderBy(x => x.Start)
-                .ThenByDescending(x => (x.End - x.Start).Days);
-        }
-
         private Appointment? _reschedulingAppointment;
         public void BeginDrag(Appointment appointment)
         {
@@ -380,6 +374,8 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
         {
             CalendarService.OnChange -= StateHasChanged;
             CalendarViewTypeService.OnChange -= StateHasChanged;
+            CalendarAppointmentsService.OnChange -= StateHasChanged;
+
             await DestroyMouseHandler();
             _objReference.Dispose();
             GC.SuppressFinalize(this);

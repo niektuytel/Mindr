@@ -75,7 +75,7 @@
                 @foreach (var week in GetDaysInRange().Chunk(1))
                 {
                     var (start, end) = (week.First(), week.Last());
-                    <SchedulerWeek Start="start" End="end" Appointments="GetAppointmentsInRange(start, end)" @key="week" />
+                    <SchedulerWeek Start="start" End="end" Appointments="CalendarAppointmentsService.GetInDateRange(start, end)" @key="week" />
                 }
             </div>
         }

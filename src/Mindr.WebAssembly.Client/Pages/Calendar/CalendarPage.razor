@@ -8,7 +8,7 @@
 
 @attribute [Authorize]
 @inherits LayoutComponentBase
-@inject AppointmentService AppointmentService
+@inject CalendarAppointmentsService AppointmentService
 @namespace Mindr.WebAssembly.Client.Pages.Calendar
 
 
@@ -24,7 +24,7 @@
         EnableRescheduling="true"
     >
         <Appointments>
-            @foreach (var element in Appointments)
+            @foreach (var element in CalendarAppointmentsService.Values)
             {
                 <Appointment Start="@element.StartDate.DateTime" End="@element.EndDate.DateTime" Color="@element.Color" OnClick="() => OnAppointmentClicked(element)" OnReschedule="(start, end) => HandleReschedule(element, start, end)">
                     @element.Subject
