@@ -29,7 +29,7 @@ public static class Program
         builder.RootComponents.Add<App>("#app");
         builder.RootComponents.Add<HeadOutlet>("head::after");
 
-        builder.Services.AddSingleton<CalendarAppointmentsService>();
+        builder.Services.AddSingleton<AppointmentService>();
 
         builder.Services.AddOptions();
         builder.Services.AddHttpClient();

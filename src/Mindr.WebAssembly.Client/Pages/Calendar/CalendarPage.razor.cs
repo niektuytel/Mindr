@@ -17,7 +17,6 @@ using Mindr.WebAssembly.Client.Pages.Calendar.Components;
 using Mindr.WebAssembly.Client.Pages.Calendar.Editors;
 using Microsoft.JSInterop;
 using Mindr.WebAssembly.Client.Pages.Calendar.Services;
-using DemoApp;
 
 namespace Mindr.WebAssembly.Client.Pages.Calendar;
 
@@ -34,9 +33,6 @@ public partial class CalendarPage: IDisposable
 
     [Inject]
     public CalendarViewTypeService CalendarViewTypeService { get; set; } = default!;
-
-    [Inject]
-    public CalendarAppointmentsService CalendarAppointmentsService { get; set; } = default!;
 
 
 
@@ -73,13 +69,14 @@ public partial class CalendarPage: IDisposable
 
     public IEnumerable<PersonalCalendar> Calendars = new List<PersonalCalendar>();
 
+    public IEnumerable<CalendarAppointment> Appointments = new List<CalendarAppointment>();
+
     private bool IsLoading = false;
 
     protected override async Task OnInitializedAsync()
     {
         await CalendarService.InitializeAsync();
         await CalendarViewTypeService.InitializeAsync();
-        await CalendarAppointmentsService.InitializeAsync();
 
         base.StateHasChanged();
     }
@@ -98,8 +95,7 @@ public partial class CalendarPage: IDisposable
         }
         else if (response.IsSuccessful())
         {
-            var appointments = response.GetContent<IEnumerable<CalendarAppointment>>();
-            await CalendarAppointmentsService.SetOnAction(appointments);
+            Appointments = response.GetContent<IEnumerable<CalendarAppointment>>();
         }
     }
 
@@ -130,7 +126,7 @@ public partial class CalendarPage: IDisposable
     {
         var dialog = DialogService.Show<OverflowAppointmentDialog>($"Appointments for {day.ToShortDateString()}", new DialogParameters
         {
-            //TODO: ["Appointments"] = Appointments,
+            ["Appointments"] = Appointments,
             ["SelectedDate"] = day,
         });
         await dialog.Result;
