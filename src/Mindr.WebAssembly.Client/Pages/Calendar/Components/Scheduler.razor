@@ -1,6 +1,7 @@
 ﻿@namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 
 @using Microsoft.JSInterop
+@using Mindr.Domain.Models.DTO.Calendar;
 @using Mindr.WebAssembly.Client.Pages.Calendar.Components
 @using System.Globalization
 @using MudBlazor
@@ -18,7 +19,7 @@
             Variant="Variant.Outlined"
             Margin="Margin.Dense"
         >
-            <MudSelectItem Value="@("day")">Day</MudSelectItem>
+            @*<MudSelectItem Value="@("day")">Day</MudSelectItem>*@
             <MudSelectItem Value="@("week")">Week</MudSelectItem>
             <MudSelectItem Value="@("month")">Month</MudSelectItem>
         </MudSelect>
@@ -44,42 +45,30 @@
         @Appointments
         @if (_draggingStart is not null && _draggingEnd is not null)
         {
+            var data = new CalendarAppointment()
+            {
+                StartDate = new() { DateTime = _draggingStart.Value }, 
+                EndDate = new() { DateTime = _draggingEnd.Value }, 
+                Color = ThemeColor
+            };
+
             @if (_showNewAppointment)
             {
-                <Appointment @ref="DraggingAppointment" Start="_draggingStart.Value" End="_draggingEnd.Value" Color="@ThemeColor">
+                <Appointment @ref="DraggingAppointment" Data="data">
                     @NewAppointmentText
                 </Appointment>
             }
 
             @if (_reschedulingAppointment is not null)
             {
-                <Appointment @ref="DraggingAppointment" Start="_draggingStart.Value" End="_draggingEnd.Value" Color="@_reschedulingAppointment.Color">
+                data.Color = _reschedulingAppointment.Data.Color;
+                <Appointment @ref="DraggingAppointment" Data="data">
                     @_reschedulingAppointment?.RenderChildContent()
                 </Appointment>
             }
         }
 
-        @if (CalendarViewTypeService.IsDay())
-        {
-            <div class="month">
-                <div class="week header">
-                    @{
-                        string dayName = CultureInfo.CurrentCulture.DateTimeFormat.DayNames[CurrentDate.Day];
-                        <div class="day-of-month">
-                            <span class="full-dayname">@dayName</span>
-                            <span class="short-dayname">@dayName.Substring(0, 3)</span>
-                        </div>
-                    }
-                </div>
-
-                @foreach (var week in GetDaysInRange().Chunk(1))
-                {
-                    var (start, end) = (week.First(), week.Last());
-                    <SchedulerWeek Start="start" End="end" Appointments="GetAppointmentsInRange(start, end)" @key="week" />
-                }
-            </div>
-        }
-        else if (CalendarViewTypeService.IsWeek())
+        @if (CalendarViewTypeService.IsWeek())
         {
             <div class="month">
                 <div class="week header">
@@ -94,10 +83,9 @@
                     }
                 </div>
 
-                @foreach (var week in GetDaysInRange().Chunk(7))
-                {
-                    var (start, end) = (week.First(), week.Last());
-                    <SchedulerWeek Start="start" End="end" Appointments="GetAppointmentsInRange(start, end)" @key="week" />
+                @{
+                    var week = GetDaysInRange();
+                    <SchedulerWeek Start="week.First()" End="week.Last()" Appointments="_appointments" @key="week" />
                 }
             </div>
         }
@@ -119,7 +107,7 @@
                 @foreach (var week in GetDaysInRange().Chunk(7))
                 {
                     var (start, end) = (week.First(), week.Last());
-                    <SchedulerWeek Start="start" End="end" Appointments="GetAppointmentsInRange(start, end)" @key="week" />
+                    <SchedulerWeek FullHeight="false" Start="start" End="end" Appointments="GetAppointmentsInRange(start, end)" @key="week" />
                 }
             </div>
         }

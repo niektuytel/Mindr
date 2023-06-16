@@ -282,11 +282,11 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
         {
             var appointmentsInTimeframe = _appointments
                 .Where(x => x.IsVisible)
-                .Where(x => (start, end).Overlaps((x.Start.Date, x.End.Date)));
+                .Where(x => (start, end).Overlaps((x.Data.StartDate.DateTime.Date, x.Data.EndDate.DateTime.Date)));
 
             return appointmentsInTimeframe
-                .OrderBy(x => x.Start)
-                .ThenByDescending(x => (x.End - x.Start).Days);
+                .OrderBy(x => x.Data.StartDate.DateTime)
+                .ThenByDescending(x => (x.Data.EndDate.DateTime - x.Data.StartDate.DateTime).Days);
         }
 
         private Appointment? _reschedulingAppointment;
@@ -298,8 +298,8 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
             appointment.IsVisible = false;
 
             _reschedulingAppointment = appointment;
-            _draggingStart = appointment.Start;
-            _draggingEnd = appointment.End;
+            _draggingStart = appointment.Data.StartDate.DateTime;
+            _draggingEnd = appointment.Data.EndDate.DateTime;
             _draggingAppointmentAnchor = null;
 
             StateHasChanged();
@@ -369,8 +369,8 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 
                 var diff = (day - _draggingAppointmentAnchor.Value).Days;
 
-                _draggingStart = _reschedulingAppointment.Start.AddDays(diff);
-                _draggingEnd = _reschedulingAppointment.End.AddDays(diff);
+                _draggingStart = _reschedulingAppointment.Data.StartDate.DateTime.AddDays(diff);
+                _draggingEnd = _reschedulingAppointment.Data.EndDate.DateTime.AddDays(diff);
 
                 StateHasChanged();
             }

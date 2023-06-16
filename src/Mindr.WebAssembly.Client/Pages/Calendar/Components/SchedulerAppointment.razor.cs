@@ -11,7 +11,7 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 		[Parameter] public Appointment Appointment { get; set; } = null!;
 		[Parameter] public int Order { get; set; }
 
-		private int Start => (int)Appointment.Start.DayOfWeek;
+		private int Start => (int)Appointment.Data.StartDate.DateTime.DayOfWeek;
 
 		private IEnumerable<string> Classes
 		{

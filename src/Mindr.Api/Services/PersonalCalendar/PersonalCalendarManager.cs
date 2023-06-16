@@ -131,24 +131,28 @@ namespace Mindr.Api.Services.CalendarEvents
                 )
                 .ToArrayAsync();
 
+            var appointments = new List<CalendarAppointment>();
             foreach (var calendar in calendars)
             {
                 var credential = await _context.PersonalCredentials
                     .FirstOrDefaultAsync(item => 
                         item.Id == calendar!.CredentialId
                     );
+
                 _validator.ThrowOnNullPersonalCredential(userId, calendarId, credential);
 
-                return calendar.From switch
+                var items = calendar.From switch
                 {
                     Domain.Enums.CalendarFrom.Mindr => throw new NotImplementedException("Calendar Mindr not implemented"),
                     Domain.Enums.CalendarFrom.Google => await _googleClient.GetCalendarAppointment(credential!, calendar.CalendarId, dateTimeStart, dateTimeEnd),
                     Domain.Enums.CalendarFrom.Microsoft => throw new NotImplementedException("Calendar Microsoft not implemented"),
                     _ => throw new NotImplementedException($"Unknown Calendar type:{calendar.From}"),
                 };
+
+                appointments.AddRange(items);
             }
 
-            return Enumerable.Empty<CalendarAppointment>();
+            return appointments;
         }
 
         public async Task<CalendarAppointment> InsertAppointment(string userId, string calendarId, CalendarAppointment input)

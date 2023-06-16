@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Mindr.Domain.Models.DTO.Calendar;
 using System;
 using System.Threading.Tasks;
 
@@ -13,10 +14,7 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 
         [Parameter] public Func<Task>? OnClick { get; set; }
         [Parameter] public Func<DateTime, DateTime, Task>? OnReschedule { get; set; }
-
-        [Parameter] public DateTime Start { get; set; }
-        [Parameter] public DateTime End { get; set; }
-        [Parameter] public string? Color { get; set; }
+        [Parameter, EditorRequired] public CalendarAppointment Data { get; set; } = new();
 
         private bool _isVisible = true;
         public bool IsVisible
@@ -35,7 +33,7 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
         protected override void OnInitialized()
         {
             Scheduler.AddAppointment(this);
-            Color ??= Scheduler.ThemeColor;
+            Data.Color ??= Scheduler.ThemeColor;
 
             base.OnInitialized();
         }

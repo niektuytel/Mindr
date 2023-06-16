@@ -86,6 +86,7 @@ public partial class CalendarPage: IDisposable
 
     public async Task OnRequestNewData(DateTime start, DateTime end)
     {
+        //IsLoading = true;
         var response = await CalendarClient.GetAppointments(start, end, CalendarService.Value);
         if (response.IsError())
         {
@@ -97,6 +98,8 @@ public partial class CalendarPage: IDisposable
         {
             Appointments = response.GetContent<IEnumerable<CalendarAppointment>>();
         }
+
+        //IsLoading = false;
     }
 
     public Task OnAppointmentClicked(CalendarAppointment? appointment)

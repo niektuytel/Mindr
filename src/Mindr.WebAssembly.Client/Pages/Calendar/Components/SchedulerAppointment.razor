@@ -2,6 +2,6 @@
 @using Mindr.WebAssembly.Client.Pages.Calendar.Extensions;
 
 <div class="appointment appointment-timed @Classes.AsString()" style="--start: @Start; --order: @Order;" @onmousedown="OnMouseDown" @onmouseup="OnMouseUp" @onmousemove="OnMouseMove">
-    <span class="dot" style="background-color: @Appointment.Color;"></span>
+    <span class="dot" style="background-color: @Appointment.Data.Color;"></span>
     @Appointment.RenderChildContent()
 </div>

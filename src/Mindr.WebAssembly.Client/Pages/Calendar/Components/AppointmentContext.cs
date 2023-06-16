@@ -4,7 +4,7 @@
     {
         private readonly Appointment _appointment;
 
-        public bool IsTimed => _appointment.Start.Date == _appointment.End.Date && _appointment.Start != _appointment.End;
+        public bool IsTimed => _appointment.Data.StartDate.DateTime.Date == _appointment.Data.EndDate.DateTime.Date && _appointment.Data.StartDate.DateTime != _appointment.Data.EndDate.DateTime;
 
         public AppointmentContext(Appointment appointment)
         {
