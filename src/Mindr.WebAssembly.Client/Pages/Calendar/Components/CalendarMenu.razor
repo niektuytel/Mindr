@@ -34,8 +34,8 @@
                         }
                         foreach(var calendar in Calendars)
                         {
-                            <MudCheckBox Checked="@(CalendarService.Value == calendar.Summary)"
-                                 @onclick="@(async () => await ChangeCalendarId(calendar.Summary))"
+                            <MudCheckBox Checked="@(CalendarService.Value == calendar.CalendarId)"
+                                 @onclick="@(async () => await ChangeCalendarId(calendar.CalendarId))"
                                 Style="padding-left:20px"
                                 Color="Color.Warning"
                                 CheckedIcon="@Icons.Material.Filled.Person"

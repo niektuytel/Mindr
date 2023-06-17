@@ -127,7 +127,7 @@ namespace Mindr.Api.Services.CalendarEvents
             var calendars = await _context.PersonalCalendars
                 .Where(item => 
                     item.UserId == userId && 
-                    (string.IsNullOrEmpty(calendarId) || item.CalendarId == calendarId)// when not null, use
+                    (string.IsNullOrEmpty(calendarId) || item.CalendarId.ToLower() == calendarId.ToLower())// when not null, use
                 )
                 .ToArrayAsync();
 

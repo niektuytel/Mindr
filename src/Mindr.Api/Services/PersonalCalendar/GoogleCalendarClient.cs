@@ -214,10 +214,10 @@ namespace Mindr.Api.Services.CalendarEvents
 
                 }
 
-                return appointments;
             }
 
-            throw new Exception($"Failed getting events from calendar({calendarId}) [Code:{response.StatusCode}]");
+            Console.Error.WriteLine($"Failed getting events from calendar({calendarId}) [Code:{response.StatusCode}]");
+            return appointments;
         }
 
         public async Task<CalendarAppointment> InsertCalendarAppointment(PersonalCredential personalCredential, string calendarId, object appointmentId, CalendarAppointment input)

@@ -2,12 +2,27 @@
 @using Mindr.WebAssembly.Client.Pages.Calendar.Extensions;
 
 <div class="week">
-    <div class="days" style="--maxAppointments: @MaxVisibleAppointmentsThisWeek;@(FullHeight ? "height: 75vh" : "")">
-        @for (var dt = Start; dt <= End; dt = dt.AddDays(1))
-        {
-            <SchedulerDay Day="dt" @key="dt" />
-        }
-    </div>
+
+    @if(CalendarViewTypeService.IsMonth())
+    {
+        <div class="days" style="--maxAppointments: @MaxVisibleAppointmentsThisWeek">
+            @for (var dt = Start; dt <= End; dt = dt.AddDays(1))
+            {
+                <SchedulerDay Day="dt" @key="dt" />
+            }
+        </div>
+    }
+    else if (CalendarViewTypeService.IsWeek())
+    {
+        <div class="days" style="height: 75vh">
+            @for (var dt = Start; dt <= End; dt = dt.AddDays(1))
+            {
+                <SchedulerDay Day="dt" @key="dt" />
+            }
+        </div>
+    }
+    // TODO: make week overview
+    // TODO: fix create, update and delete api
 
     <div class="appointments">
         @foreach (var (appointment, order) in _orderings)

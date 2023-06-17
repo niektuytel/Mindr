@@ -3,6 +3,7 @@
 @using DemoApp.Models;
 @using DemoApp;
 @using Microsoft.AspNetCore.Authorization;
+@using Mindr.Domain.Models.DTO.Calendar;
 @using Mindr.WebAssembly.Client.Pages.Calendar.Components;
 @using MudBlazor;
 
@@ -23,6 +24,26 @@
         OnOverflowAppointmentClick="OnOverflowAppointmentClick"
         EnableRescheduling="true"
     >
+        @*<DayTemplate>
+            @if (CalendarViewTypeService.IsMonth())
+            {
+                <SchedulerDay Day="context" @key="context" />
+            }
+            else if (CalendarViewTypeService.IsWeek())
+            {
+                <div style="height: 100%; background-color: @GetBGColorForDate(context);">
+                    <span>@context.Date.ToString("dd")</span>
+                    <div class="d-inline float-right">
+                        @if (GetAppointmentsForDay(context).Count() >= 3)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Class="mr-1" OnClick="() => ClearDay(context)" @onmousedown:stopPropagation="true" />
+                        }
+                        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="() => AddApp(context)" @onmousedown:stopPropagation="true" />
+                    </div>
+                </div>
+            }
+
+        </DayTemplate>*@
         <Appointments>
             @foreach (var element in Appointments)
             {
@@ -32,10 +53,13 @@
                         @element.Subject
                     </Appointment>
                 }
-                else
+                else if (CalendarViewTypeService.IsWeek())
                 {
                     <Appointment Data="@element" OnClick="() => OnAppointmentClicked(element)" OnReschedule="(start, end) => HandleReschedule(element, start, end)">
-                        @element.Subject
+                        <div style="font-weight: bold; color: green; border: 1px solid black; border-radius: 4px; padding-left: 3px;height:100px">
+                            <span class="oi oi-book" aria-hidden="true"></span>
+                            @string.Join(", ", element.ConnectorEvents.Select(x => x.ConnectorName))
+                        </div>
                     </Appointment>
                 }
             }
@@ -43,3 +67,54 @@
     </Scheduler>
 </MudStack>
 <AppointmentDrawer @ref="AppointmentDrawer" />
+
+
+@code {
+    //private List<AppointmentDto> _appointments = new();
+
+    //protected override void OnInitialized()
+    //{
+    //    for (int i = 1; i < DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month); i++)
+    //    {
+    //        var app = new AppointmentDto
+    //            {
+    //                Title = "Appointment",
+    //                Start = new DateTime(DateTime.Today.Year, DateTime.Today.Month, i),
+    //                End = new DateTime(DateTime.Today.Year, DateTime.Today.Month, i),
+    //                Color = "aqua"
+    //            };
+    //        _appointments.AddRange(Enumerable.Repeat(app, new Random().Next(0, 5)));
+    //    }
+    //    base.OnInitialized();
+    //}
+
+    //Task OnAddingNewAppointment(DateTime start, DateTime end)
+    //{
+    //    _appointments.Add(new AppointmentDto { Start = start, End = end, Title = "A newly added appointment!", Color = "aqua" });
+    //    return Task.CompletedTask;
+    //}
+
+    void ClearDay(DateTime day)
+    {
+        //Appointments.RemoveAll(x => x.Start.Date <= day && x.End.Date >= day);
+    }
+    void AddApp(DateTime day)
+    {
+        //Appointments.Add(new AppointmentDto { Start = day, End = day, Title = "A newly added appointment!", Color = "pink" });
+    }
+
+    string GetBGColorForDate(DateTime day)
+    {
+        var appsForToday = GetAppointmentsForDay(day);
+        return appsForToday.Count() switch
+        {
+            >= 3 => "#ff5b5b",
+            2 => "#ffc04a",
+            1 => "#f8ffc4",
+            <= 0 => "white",
+        };
+    }
+
+    IEnumerable<CalendarAppointment> GetAppointmentsForDay(DateTime day) => Appointments;
+    //_appointments.Where(x => x.Start.Date <= day && x.End.Date >= day);
+}
