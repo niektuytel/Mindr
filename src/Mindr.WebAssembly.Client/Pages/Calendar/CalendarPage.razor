@@ -24,26 +24,6 @@
         OnOverflowAppointmentClick="OnOverflowAppointmentClick"
         EnableRescheduling="true"
     >
-        @*<DayTemplate>
-            @if (CalendarViewTypeService.IsMonth())
-            {
-                <SchedulerDay Day="context" @key="context" />
-            }
-            else if (CalendarViewTypeService.IsWeek())
-            {
-                <div style="height: 100%; background-color: @GetBGColorForDate(context);">
-                    <span>@context.Date.ToString("dd")</span>
-                    <div class="d-inline float-right">
-                        @if (GetAppointmentsForDay(context).Count() >= 3)
-                        {
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Class="mr-1" OnClick="() => ClearDay(context)" @onmousedown:stopPropagation="true" />
-                        }
-                        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="() => AddApp(context)" @onmousedown:stopPropagation="true" />
-                    </div>
-                </div>
-            }
-
-        </DayTemplate>*@
         <Appointments>
             @foreach (var element in Appointments)
             {
@@ -57,7 +37,7 @@
                 {
                     <Appointment Data="@element" OnClick="() => OnAppointmentClicked(element)" OnReschedule="(start, end) => HandleReschedule(element, start, end)">
                         <div style="font-weight: bold; color: green; border: 1px solid black; border-radius: 4px; padding-left: 3px;height:100px">
-                            <span class="oi oi-book" aria-hidden="true"></span>
+                            <span class="oi oi-book" aria-hidden="true">@element.Subject</span>
                             @string.Join(", ", element.ConnectorEvents.Select(x => x.ConnectorName))
                         </div>
                     </Appointment>
