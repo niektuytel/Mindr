@@ -13,8 +13,7 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 
         [Inject]
         public CalendarViewTypeService CalendarViewTypeService { get; set; } = default!;
-
-        [Parameter] public bool FullHeight { get; set; } = true;
+        
         [Parameter] public DateTime Start { get; set; }
         [Parameter] public DateTime End { get; set; }
         [Parameter] public IEnumerable<Appointment> Appointments { get; set; } = null!;
@@ -62,22 +61,21 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
             DayOfWeek schedStart = Scheduler.StartDayOfWeek;
             DayOfWeek start = schedStart, end = schedStart + 6;
 
-            //if (!(appointment.Data.StartDate.DateTime.Date, appointment.Data.EndDate.DateTime.Date).Overlaps((Start, End)))
-            //    return ((int)appointment.Data.StartDate.DateTime.DayOfWeek, (int)appointment.Data.EndDate.DateTime.DayOfWeek);
+            if (!(appointment.Data.StartDate.DateTime.Date, appointment.Data.EndDate.DateTime.Date).Overlaps((Start, End)))
+                return ((int)appointment.Data.StartDate.DateTime.DayOfWeek, (int)appointment.Data.EndDate.DateTime.DayOfWeek);
 
-            //if (appointment.Data.StartDate.DateTime.Date.Between(Start, End))
-            //{
-            //    start = appointment.Data.StartDate.DateTime.DayOfWeek;
-            //    end = appointment.Data.EndDate.DateTime.Date.Between(Start, End) ? appointment.Data.EndDate.DateTime.DayOfWeek : schedStart - 1;
-            //}
-            //else if (appointment.Data.EndDate.DateTime.Date.Between(Start, End))
-            //{
-            //    start = schedStart;
-            //    end = appointment.Data.EndDate.DateTime.DayOfWeek;
-            //}
+            if (appointment.Data.StartDate.DateTime.Date.Between(Start, End))
+            {
+                start = appointment.Data.StartDate.DateTime.DayOfWeek;
+                end = appointment.Data.EndDate.DateTime.Date.Between(Start, End) ? appointment.Data.EndDate.DateTime.DayOfWeek : schedStart - 1;
+            }
+            else if (appointment.Data.EndDate.DateTime.Date.Between(Start, End))
+            {
+                start = schedStart;
+                end = appointment.Data.EndDate.DateTime.DayOfWeek;
+            }
 
-            return ((int)appointment.Data.StartDate.DateTime.DayOfWeek, (int)appointment.Data.EndDate.DateTime.DayOfWeek-1);
-            //return ((start - schedStart + 7) % 7, (end - schedStart + 7) % 7);
+            return ((start - schedStart + 7) % 7, (end - schedStart + 7) % 7);
         }
 
         private int GetBestOrderingForAppointment(Appointment appointment)

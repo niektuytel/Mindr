@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Mindr.WebAssembly.Client.Pages.Calendar.Services;
 using System.Collections.Generic;
 
 namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
@@ -8,8 +9,12 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 	{
 		[CascadingParameter] public Scheduler Scheduler { get; set; } = null!;
 
-		[Parameter] public Appointment Appointment { get; set; } = null!;
-		[Parameter] public int Order { get; set; }
+        [Inject]
+        public CalendarViewTypeService CalendarViewTypeService { get; set; } = default!;
+
+        [Parameter] public Appointment Appointment { get; set; } = null!;
+        [Parameter] public DateTime Day { get; set; } = default!;
+        [Parameter] public int Order { get; set; }
 
 		private int Start => (int)Appointment.Data.StartDate.DateTime.DayOfWeek;
 

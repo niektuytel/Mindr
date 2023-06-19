@@ -1,8 +1,30 @@
 ﻿@namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
+@using Mindr.WebAssembly.Client.Extensions;
 @using Mindr.WebAssembly.Client.Pages.Calendar.Extensions;
 
-<div class="appointment @Classes.AsString()"
-    style="--start: @Start; --end: @End; --order: @Order; background-color: @Appointment.Data.Color;"
-    @onmousedown="OnMouseDown" @onmouseup="OnMouseUp" @onmousemove="OnMouseMove">
-    @Appointment.RenderChildContent()
-</div>
+
+
+@if (CalendarViewTypeService.IsMonth())
+{
+    <div class="appointment @Classes.AsString()"
+        style="--start: @Start; --end: @End; --order: @Order; background-color: @Appointment.Data.Color;"
+        @onmousedown="OnMouseDown" @onmouseup="OnMouseUp" @onmousemove="OnMouseMove"
+    >
+        @Appointment.RenderChildContent()
+    </div>
+}
+else if (CalendarViewTypeService.IsWeek())
+{
+    <div class="week-appointment @Classes.AsString()"
+         style="
+            --startDayIndex: @Start;
+            --startMinute : @Appointment.Data.StartDate.DateTime.GetTotalMinutesFromBeginThisDay();
+            background-color: @($"{Appointment.Data.Color}");
+            border-radius: 4px; 
+            height: @Appointment.Data.Time24HourProcentageSpan()%;
+         "
+        @onmousedown="OnMouseDown" @onmouseup="OnMouseUp" @onmousemove="OnMouseMove"
+    >
+        @Appointment.RenderChildContent()
+    </div>
+}

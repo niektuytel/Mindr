@@ -131,8 +131,8 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 
         protected override async Task OnInitializedAsync()
         {
-            CalendarService.OnChange += StateHasChanged;
-            CalendarViewTypeService.OnChange += StateHasChanged;
+            CalendarService.OnChange += CalendarStateChanged;
+            CalendarViewTypeService.OnChange += CalendarStateChanged;
             _objReference = DotNetObjectReference.Create(this);
 
             base.StateHasChanged();
@@ -145,7 +145,17 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
                 await AttachMouseHandler();
                 await LoadDateRangeData();
             }
+
             base.OnAfterRender(firstRender);
+        }
+
+        private async void CalendarStateChanged()
+        {
+            // This will trigger LoadDateRangeData
+            await LoadDateRangeData();
+
+            // And then trigger a re-render of the UI
+            StateHasChanged();
         }
 
         internal void AddAppointment(Appointment appointment)

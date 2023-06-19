@@ -81,9 +81,6 @@ public partial class CalendarPage: IDisposable
         base.StateHasChanged();
     }
 
-
-
-
     public async Task OnRequestNewData(DateTime start, DateTime end)
     {
         //IsLoading = true;

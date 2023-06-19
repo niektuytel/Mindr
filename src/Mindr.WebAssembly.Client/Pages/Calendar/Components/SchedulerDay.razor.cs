@@ -3,12 +3,16 @@ using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components.Web;
 using System.Threading.Tasks;
+using Mindr.WebAssembly.Client.Pages.Calendar.Services;
 
 namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 {
     public partial class SchedulerDay
     {
         [CascadingParameter] public Scheduler Scheduler { get; set; } = null!;
+
+        [Inject]
+        public CalendarViewTypeService CalendarViewTypeService { get; set; } = default!;
 
         [Parameter] public DateTime Day { get; set; }
         [Parameter] public Func<DateTime, Task>? OnClick { get; set; }

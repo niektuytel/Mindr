@@ -20,8 +20,8 @@
             Margin="Margin.Dense"
         >
             @*<MudSelectItem Value="@("day")">Day</MudSelectItem>*@
-            <MudSelectItem Value="@("week")">Week</MudSelectItem>
             <MudSelectItem Value="@("month")">Month</MudSelectItem>
+            <MudSelectItem Value="@("week")">Week</MudSelectItem>
         </MudSelect>
     </MudStack>
     <MudSpacer />
@@ -68,28 +68,7 @@
             }
         }
 
-        @if (CalendarViewTypeService.IsWeek())
-        {
-            <div class="month">
-                <div class="week header">
-                    @for (int d = 0; d < 7; d++)
-                    {
-                        int dayNumber = (int)(StartDayOfWeek + d) % 7;
-                        string dayName = CultureInfo.CurrentCulture.DateTimeFormat.DayNames[dayNumber];
-                        <div class="day-of-month">
-                            <span class="full-dayname">@dayName</span>
-                            <span class="short-dayname">@dayName.Substring(0, 3)</span>
-                        </div>
-                    }
-                </div>
-
-                @{
-                    var week = GetDaysInRange();
-                    <SchedulerWeek Start="week.First()" End="week.Last()" Appointments="_appointments" @key="week" />
-                }
-            </div>
-        }
-        else if (CalendarViewTypeService.IsMonth())
+        @if (CalendarViewTypeService.IsMonth())
         {
             <div class="month">
                 <div class="week header">
@@ -107,7 +86,28 @@
                 @foreach (var week in GetDaysInRange().Chunk(7))
                 {
                     var (start, end) = (week.First(), week.Last());
-                    <SchedulerWeek FullHeight="false" Start="start" End="end" Appointments="GetAppointmentsInRange(start, end)" @key="week" />
+                    <SchedulerWeek Start="start" End="end" Appointments="GetAppointmentsInRange(start, end)" @key="week" />
+                }
+            </div>
+        }
+        else if (CalendarViewTypeService.IsWeek())
+        {
+            <div class="month">
+                <div class="week header">
+                    @for (int d = 0; d < 7; d++)
+                    {
+                        int dayNumber = (int)(StartDayOfWeek + d) % 7;
+                        string dayName = CultureInfo.CurrentCulture.DateTimeFormat.DayNames[dayNumber];
+                        <div class="day-of-month">
+                            <span class="full-dayname">@dayName</span>
+                            <span class="short-dayname">@dayName.Substring(0, 3)</span>
+                        </div>
+                    }
+                </div>
+
+                @{
+                    var week = GetDaysInRange();
+                    <SchedulerWeek Start="week.First()" End="week.Last()" Appointments="_appointments" @key="week" />
                 }
             </div>
         }

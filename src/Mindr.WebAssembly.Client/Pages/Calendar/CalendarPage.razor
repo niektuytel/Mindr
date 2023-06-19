@@ -15,7 +15,7 @@
 
 
 
-<CalendarMenu @ref="CalendarMenu"/>
+<CalendarMenu @ref="CalendarMenu" />
 <MudStack Spacing="0" Style="height:100%">
     <Scheduler
         OnHamburgerClick="@CalendarMenu!.ToggleDrawer"
@@ -27,21 +27,9 @@
         <Appointments>
             @foreach (var element in Appointments)
             {
-                if (CalendarViewTypeService.IsMonth())
-                {
-                    <Appointment Data="@element" OnClick="() => OnAppointmentClicked(element)" OnReschedule="(start, end) => HandleReschedule(element, start, end)">
-                        @element.Subject
-                    </Appointment>
-                }
-                else if (CalendarViewTypeService.IsWeek())
-                {
-                    <Appointment Data="@element" OnClick="() => OnAppointmentClicked(element)" OnReschedule="(start, end) => HandleReschedule(element, start, end)">
-                        <div style="font-weight: bold; color: green; border: 1px solid black; border-radius: 4px; padding-left: 3px;height:100px">
-                            <span class="oi oi-book" aria-hidden="true">@element.Subject</span>
-                            @string.Join(", ", element.ConnectorEvents.Select(x => x.ConnectorName))
-                        </div>
-                    </Appointment>
-                }
+                <Appointment Data="@element" OnClick="() => OnAppointmentClicked(element)" OnReschedule="(start, end) => HandleReschedule(element, start, end)">
+                    @element.Subject
+                </Appointment>
             }
         </Appointments>
     </Scheduler>
