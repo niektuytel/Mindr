@@ -58,10 +58,10 @@
         <div class="appointments">
             @foreach (var (appointment, timespan) in _startsAndEnds)
             {
-                for (var i = timespan.Item1; i <= timespan.Item2; i++)
-                {
-                    <SchedulerAllDayAppointment Appointment="appointment" Start="i" End="0" @key="appointment" />
-                }
+                @*for (var i = timespan.Item1; i <= timespan.Item2; i++)
+                {*@
+                    <SchedulerAllDayAppointment Appointment="appointment" Start="timespan.Item1" End="0" @key="appointment" />
+                @*}*@
             }
         </div>
     }
