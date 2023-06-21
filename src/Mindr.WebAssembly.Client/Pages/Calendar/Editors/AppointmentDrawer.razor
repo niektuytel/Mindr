@@ -15,6 +15,7 @@
     <MudForm @bind-IsValid="@success" FieldChanged="@((args) => DataHasChanged = true)"Style="margin:10px;height: inherit;">
         <MudTextField T="string" Label="Title" @bind-Text="Appointment.Subject" />
         <MudDateRangePicker Label="When" @bind-DateRange="_dateRange" />
+        @*//TODO: set date picker including clock*@
         <MudColorPicker Label="Color" @bind-Text="Appointment.Color" Style="@($"color: {Appointment.Color};")" />
     </MudForm>
     <MudGrid Justify="Justify.FlexStart" Spacing="0">

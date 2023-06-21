@@ -35,6 +35,10 @@
     {
         <MudProgressCircular Color="Color.Default" Size="Size.Small" Indeterminate="true" />
     }
+    else if (OnAddingNewAppointment != null)
+    {
+        <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Inherit" Edge="Edge.End" OnClick="@(async () => await OnAddingNewAppointment.Invoke(DraggedAppointment))" Size="Size.Small" />
+    }
     else
     {
         <div style="width:24px"/>

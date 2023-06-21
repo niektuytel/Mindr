@@ -107,10 +107,13 @@ public partial class CalendarPage: IDisposable
         return Task.CompletedTask;
     }
 
-    Task OnAddingNewAppointment(DateTime start, DateTime end)
+    Task OnAddingNewAppointment(CalendarAppointment? appointment = null)
     {
-        // TODO: POST to a database so it's persisted
-        //_appointments.Add(new CalendarEvent { Start = start, End = end, Title = "A newly added appointment!", Color = "aqua" });
+        appointment ??= new CalendarAppointment();
+
+        AppointmentDrawer!.OnOpen(appointment);
+        base.StateHasChanged();
+
         return Task.CompletedTask;
     }
 

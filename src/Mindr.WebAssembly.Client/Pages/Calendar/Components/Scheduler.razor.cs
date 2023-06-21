@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Globalization;
 using Mindr.WebAssembly.Client.Pages.Calendar.Services;
+using Mindr.Domain.Models.DTO.Calendar;
 
 namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 {
@@ -33,7 +34,7 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
         [Parameter] public RenderFragment<DateTime>? DayTemplate { get; set; }
 
         [Parameter] public Func<DateTime, DateTime, Task>? OnRequestNewData { get; set; }
-        [Parameter] public Func<DateTime, DateTime, Task>? OnAddingNewAppointment { get; set; }
+        [Parameter] public Func<CalendarAppointment?, Task>? OnAddingNewAppointment { get; set; }
         [Parameter] public Func<DateTime, Task>? OnOverflowAppointmentClick { get; set; }
 
         #region Config
@@ -49,6 +50,7 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
         [Parameter] public string NewAppointmentText { get; set; } = "New Appointment";
 
         public Appointment? DraggingAppointment { get; private set; }
+        public CalendarAppointment? DraggedAppointment { get; private set; }
         //public CalendarMenu Menu { get; set; } = default!;
 
         #endregion
@@ -339,7 +341,20 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
                 {
                     _showNewAppointment = false;
                     if (OnAddingNewAppointment is not null)
-                        await OnAddingNewAppointment.Invoke(_draggingStart.Value, _draggingEnd.Value);
+                    {
+                        DraggedAppointment = new CalendarAppointment
+                        {
+                            StartDate = new CalendarEventDateTime
+                            {
+                                DateTime = _draggingStart.Value
+                            },
+                            EndDate = new CalendarEventDateTime
+                            {
+                                DateTime = _draggingEnd.Value
+                            }
+                        };
+                        await OnAddingNewAppointment.Invoke(DraggedAppointment);
+                    }
 
                     StateHasChanged();
                 }
