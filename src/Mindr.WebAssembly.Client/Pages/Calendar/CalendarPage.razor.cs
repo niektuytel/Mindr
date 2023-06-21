@@ -111,7 +111,7 @@ public partial class CalendarPage: IDisposable
     {
         appointment ??= new CalendarAppointment();
 
-        AppointmentDrawer!.OnOpen(appointment);
+        AppointmentDrawer!.OnOpen(appointment, isInsert: true);
         base.StateHasChanged();
 
         return Task.CompletedTask;

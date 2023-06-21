@@ -173,7 +173,7 @@ namespace Mindr.Api.Services.CalendarEvents
             var appointment = calendar!.From switch
             {
                 Domain.Enums.CalendarFrom.Mindr => throw new NotImplementedException("Calendar Mindr not implemented"),
-                Domain.Enums.CalendarFrom.Google => await _googleClient.InsertCalendarAppointment(credential!, calendar.CalendarId, input.Id, input),
+                Domain.Enums.CalendarFrom.Google => await _googleClient.InsertCalendarAppointment(credential!, calendar.CalendarId, input),
                 Domain.Enums.CalendarFrom.Microsoft => throw new NotImplementedException("Calendar Microsoft not implemented"),
                 _ => throw new NotImplementedException($"Unknown Calendar type:{calendar.From}"),
             };

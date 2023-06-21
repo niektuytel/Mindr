@@ -8,6 +8,8 @@ using Microsoft.Graph.TermStore;
 using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 using Microsoft.IdentityModel.Tokens;
 using Mindr.Api.Exceptions;
+using Mindr.Api.Extensions;
+using Mindr.Api.Models.PersonalCalendar;
 using Mindr.Api.Persistence;
 using Mindr.Domain.Models.DTO.Calendar;
 using Mindr.Domain.Models.DTO.Personal;
@@ -15,6 +17,7 @@ using Newtonsoft.Json;
 using System.Data.SqlTypes;
 using System.Globalization;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -31,6 +34,40 @@ namespace Mindr.Api.Services.CalendarEvents
             _httpClient = httpClientFactory.CreateClient(nameof(GoogleCalendarClient));
             _context = context;
             _configuration = configuration;
+        }
+
+        private HashSet<Occurrence> GetNextEvents(CalendarEventDateTime start, CalendarEventDateTime end, DateTime batchStart, DateTime batchEnd, string rrule)
+        {
+            if (start.DateTime == null || end.DateTime == null)
+            {
+                var startDate = DateTime.Parse(start.Date);
+                var endDate = DateTime.Parse(end.Date);
+
+                var calendarEvent = new CalendarEvent
+                {
+                    Start = new CalDateTime(startDate),
+                    End = new CalDateTime(endDate),
+                    RecurrenceRules = new List<Ical.Net.DataTypes.RecurrencePattern> { new Ical.Net.DataTypes.RecurrencePattern(rrule) }
+                };
+
+                var occurrence = calendarEvent.GetOccurrences(new CalDateTime(batchStart), new CalDateTime(batchEnd));
+                return ()
+                
+                //nextEvent.Period.StartTime.Value,
+                //item?.Start?.TimeZone,
+                //nextEvent.Period.EndTime.Value,
+            }
+            else
+            {
+                var calendarEvent = new CalendarEvent
+                {
+                    Start = new CalDateTime(start.DateTime!.Value),
+                    End = new CalDateTime(end.DateTime!.Value),
+                    RecurrenceRules = new List<Ical.Net.DataTypes.RecurrencePattern> { new Ical.Net.DataTypes.RecurrencePattern(rrule) }
+                };
+
+                return calendarEvent.GetOccurrences(new CalDateTime(batchStart), new CalDateTime(batchEnd));
+            }
         }
 
         public async Task<string?> GetAccessToken(PersonalCredential credential)
@@ -103,26 +140,11 @@ namespace Mindr.Api.Services.CalendarEvents
             throw new Exception($"Failed getting calendars from credentials({credential.Id}) [Code:{response.StatusCode}]");
         }
 
-
-        public HashSet<Occurrence> GetNextEvents(DateTime start, DateTime end, DateTime batchStart, DateTime batchEnd, string rrule)
-        {
-            var calendarEvent = new CalendarEvent
-            {
-                Start = new CalDateTime(start),
-                End = new CalDateTime(end),
-                RecurrenceRules = new List<Ical.Net.DataTypes.RecurrencePattern> { new Ical.Net.DataTypes.RecurrencePattern(rrule) }
-            };
-
-            return calendarEvent.GetOccurrences(new CalDateTime(batchStart), new CalDateTime(batchEnd));
-        }
-
         public async Task<IEnumerable<CalendarAppointment>> GetCalendarAppointment(PersonalCredential personalCredential, string calendarId, DateTime startDateTime, DateTime endDateTime)
         {
-
             var accessToken = await GetAccessToken(personalCredential);
             var timespan = $"timeMin={startDateTime.Year}-{startDateTime.Month}-{startDateTime.Day}T00%3A00%3A00-00%3A00&timeMax={endDateTime.Year}-{endDateTime.Month}-{endDateTime.Day}T23%3A59%3A59-00%3A00";
             var uri = $"https://www.googleapis.com/calendar/v3/calendars/{calendarId}/events?{timespan}";
-
 
             var request = new HttpRequestMessage(HttpMethod.Get, uri);
             request.Headers.Add("Authorization", $"Bearer {accessToken}");
@@ -146,23 +168,20 @@ namespace Mindr.Api.Services.CalendarEvents
                     if (string.IsNullOrEmpty(item.Id)) continue;
                     if (item.Status == "cancelled") continue;
 
-
-                    var start = item.Start.DateTime;
-                    if (start == null)
-                    {
-                        start = DateTime.Parse(item.Start.Date);
-                    }
-
-                    var end = item.End.DateTime;
-                    if (end == null)
-                    {
-                        end = DateTime.Parse(item.End.Date);
-                    }
-
                     var events = _context.ConnectorEvents.Where(i =>
                         i.UserId == personalCredential.UserId &&
                         i.EventId == item.Id
                     ).AsEnumerable();
+
+                    var appointment = new CalendarAppointment(
+                        item.Id,
+                        calendarId,
+                        item.Summary,
+                        item.Start.AsCalendarEventDateTime(),
+                        item.End.AsCalendarEventDateTime(),
+                        events,
+                        item?.ColorId
+                    );
 
                     // set recurrence date
                     if (item.Recurrence != null && item.Recurrence.Any())
@@ -170,9 +189,10 @@ namespace Mindr.Api.Services.CalendarEvents
                         try
                         {
                             // TODO: Oppassen Milou failed hier
-                            var nextEvents = GetNextEvents((DateTime)start, (DateTime) end, startDateTime, endDateTime, item.Recurrence[0]);
+                            var nextEvents = GetNextEvents(appointment.StartDate, appointment.EndDate, startDateTime, endDateTime, item.Recurrence[0]);
                             foreach (var nextEvent in nextEvents)
                             {
+                                appointment.
                                 var appointment = new CalendarAppointment(
                                     item.Id,
                                     calendarId,
@@ -197,18 +217,6 @@ namespace Mindr.Api.Services.CalendarEvents
                     else
                     {
                         // None recurrence date
-                        var appointment = new CalendarAppointment(
-                            item.Id,
-                            calendarId,
-                            item.Summary,
-                            start,
-                            item?.Start?.TimeZone,
-                            end,
-                            item?.End?.TimeZone,
-                            events,
-                            item?.ColorId
-                        );
-                        
                         appointments.Add(appointment);
                     }
 
@@ -220,9 +228,23 @@ namespace Mindr.Api.Services.CalendarEvents
             return appointments;
         }
 
-        public async Task<CalendarAppointment> InsertCalendarAppointment(PersonalCredential personalCredential, string calendarId, object appointmentId, CalendarAppointment input)
+        public async Task<CalendarAppointment> InsertCalendarAppointment(PersonalCredential personalCredential, string calendarId, CalendarAppointment input)
         {
+            var uri = $"https://www.googleapis.com/calendar/v3/calendars/{calendarId}/events";
+            var json = System.Text.Json.JsonSerializer.Serialize(new GoogleAppointmentOnCreate(input));
             var accessToken = await GetAccessToken(personalCredential);
+
+            var request = new HttpRequestMessage(HttpMethod.Post, uri);
+            request.Headers.Add("Authorization", $"Bearer {accessToken}");
+            request.Headers.Add("Accept", "application/json");
+            request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.SendAsync(request);
+            if(response.IsSuccessStatusCode)
+            {
+
+            }
+
             // TODO: Insert appointment for google calendar
 
             //          curl --request POST \
@@ -271,7 +293,21 @@ namespace Mindr.Api.Services.CalendarEvents
 
         public async Task<CalendarAppointment> UpdateCalendarAppointment(PersonalCredential personalCredential, string calendarId, string appointmentId, CalendarAppointment input)
         {
+            var uri = $"https://www.googleapis.com/calendar/v3/calendars/{calendarId}/events/{appointmentId}";
+            var json = System.Text.Json.JsonSerializer.Serialize(new GoogleAppointmentOnUpdate(input));
             var accessToken = await GetAccessToken(personalCredential);
+
+            var request = new HttpRequestMessage(HttpMethod.Put, uri);
+            request.Headers.Add("Authorization", $"Bearer {accessToken}");
+            request.Headers.Add("Accept", "application/json");
+            request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.SendAsync(request);
+            if (response.IsSuccessStatusCode)
+            {
+
+            }
+
             // TODO: Update appointment for google calendar
 
             //          curl--request PUT \

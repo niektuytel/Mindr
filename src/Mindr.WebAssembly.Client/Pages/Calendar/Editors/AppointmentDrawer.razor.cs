@@ -22,6 +22,7 @@ using Mindr.WebAssembly.Client.Pages.Calendar.Components;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Mindr.WebAssembly.Client.Services;
 using Mindr.Domain.HttpRunner.Models;
+using Mindr.WebAssembly.Client.Pages.Calendar.Services;
 
 namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 {
@@ -36,6 +37,9 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
         [Inject]
         public IDialogService DialogService { get; set; } = default!;
 
+        [Inject]
+        public CalendarService CalendarService { get; set; } = default!;
+
         public CalendarAppointment Appointment { get; set; } = new();
 
         public bool IsLoading = false;
@@ -43,12 +47,13 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
         DateRange _dateRange;
 
         private bool DataHasChanged = false;
+        
+        public bool IsInsert = false;
 
         private bool Open = false;
 
         private bool success;
 
-        private bool isInsert;
 
         void OnConnectorEventRemove(ConnectorEvent connectorEvent)
         {
@@ -102,10 +107,10 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
             OnConnectorEventUpsert(result, isCreate);
         }
 
-        public Task OnOpen(CalendarAppointment? appointment = null)
+        public Task OnOpen(CalendarAppointment appointment, bool isInsert = false)
         {
-            isInsert = appointment == null;
-            Appointment = appointment ?? new CalendarAppointment();
+            IsInsert = isInsert;
+            Appointment = appointment;
             _dateRange = new DateRange(Appointment.StartDate?.DateTime, Appointment.EndDate?.DateTime);
 
             DataHasChanged = false;
@@ -116,8 +121,11 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 
         public async Task OnConfirm()
         {
+            // set calendar id
+            Appointment.CalendarId = CalendarService.Value;
+
             IsLoading = true;
-            if (isInsert)
+            if (IsInsert)
             {
                 var response = await CalendarClient.InsertAppointment(Appointment.CalendarId, Appointment);
                 if (response.IsError())

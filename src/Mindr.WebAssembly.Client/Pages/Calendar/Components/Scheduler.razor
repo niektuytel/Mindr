@@ -37,7 +37,7 @@
     }
     else if (OnAddingNewAppointment != null)
     {
-        <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Inherit" Edge="Edge.End" OnClick="@(async () => await OnAddingNewAppointment.Invoke(DraggedAppointment))" Size="Size.Small" />
+        <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Inherit" Edge="Edge.End" OnClick="@(async () => await OnAddingNewAppointment.Invoke(DraggedAppointment))" Size="Size.Medium" />
     }
     else
     {

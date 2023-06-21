@@ -14,58 +14,24 @@ namespace Mindr.Domain.Models.DTO.Calendar
 
         }
 
-        public CalendarAppointment(CalendarAppointment data, DateTime? dateTimeStart, DateTime? dateTimeEnd, string color = "#ffffff")
+        public CalendarAppointment(CalendarAppointment data, CalendarEventDateTime? start, CalendarEventDateTime? end, string color = "#ffffff")
         {
             Id = data.Id;
             CalendarId = data.CalendarId;
             Subject = data.Subject;
-
-            if (dateTimeStart != null)
-            {
-                StartDate = new CalendarEventDateTime()
-                {
-                    DateTime = (DateTime)dateTimeStart!,
-                    TimeZone = data.StartDate.TimeZone
-                };
-            }
-
-            if (dateTimeEnd != null)
-            {
-                EndDate = new CalendarEventDateTime()
-                {
-                    DateTime = (DateTime)dateTimeEnd!,
-                    TimeZone = data.EndDate.TimeZone
-                };
-            }
-
-            Color = color;
+            StartDate = start;
+            EndDate = end;
             ConnectorEvents = data.ConnectorEvents;
+            Color = color;
         }
 
-        public CalendarAppointment(string id, string calendarId, string subject, DateTime? dateTimeStart, string dateTimeStartZone, DateTime? dateTimeEnd, string dateTimeEndZone, IEnumerable<ConnectorEvent> connectorEvents, string color="#ffffff")
+        public CalendarAppointment(string id, string calendarId, string subject, CalendarEventDateTime start, CalendarEventDateTime end, IEnumerable<ConnectorEvent> connectorEvents, string color="#ffffff")
         {
             Id = id;
             CalendarId = calendarId;
             Subject = subject;
-
-            if(dateTimeStart != null)
-            {
-                StartDate = new CalendarEventDateTime()
-                {
-                    DateTime = (DateTime)dateTimeStart!,
-                    TimeZone = dateTimeStartZone
-                };
-            }
-
-            if(dateTimeEnd != null)
-            {
-                EndDate = new CalendarEventDateTime()
-                {
-                    DateTime = (DateTime)dateTimeEnd!,
-                    TimeZone = dateTimeEndZone
-                };
-            }
-
+            StartDate = start;
+            EndDate = end;
             Color = color;
             ConnectorEvents = connectorEvents;
         }
