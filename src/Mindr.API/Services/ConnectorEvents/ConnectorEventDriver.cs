@@ -42,7 +42,7 @@ namespace Mindr.Api.Services.ConnectorEvents
 
         private async Task<string?> EnqueueConnectorEventAsync(ConnectorEvent entity)
         {
-            if (entity.EventParameters.Any())
+            if (entity.EventSteps.Any())
             {
                 return null;
             }
@@ -57,7 +57,7 @@ namespace Mindr.Api.Services.ConnectorEvents
 
         private async Task<string?> ScheduleConnectorEventAsync(ConnectorEvent entity)
         {
-            var schedule = entity.EventParameters.FirstOrDefault(item => item.Key == EventType.OnDateTime)?.Value;
+            var schedule = entity.EventSteps.FirstOrDefault(item => item.Key == EventType.OnDateTime)?.Value;
             if (string.IsNullOrEmpty(schedule) || !DateTime.TryParse(schedule, out var datetime))
             {
                 return null;

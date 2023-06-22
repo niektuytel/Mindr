@@ -16,6 +16,7 @@ using Mindr.Domain.Models.DTO.Personal;
 using Mindr.Domain.Models.DTO.Calendar;
 using System;
 using Mindr.Api.Models.ConnectorEvents;
+using Mindr.Api.Migrations;
 
 namespace Mindr.Api.Services.CalendarEvents
 {
@@ -120,6 +121,7 @@ namespace Mindr.Api.Services.CalendarEvents
             return calendar!;
         }
 
+
         public async Task<IEnumerable<CalendarAppointment>> GetAppointments(string userId, DateTime dateTimeStart, DateTime dateTimeEnd, string? calendarId = null)
         {
             _validator.ThrowOnInvalidUserId(userId);
@@ -144,7 +146,7 @@ namespace Mindr.Api.Services.CalendarEvents
                 var items = calendar.From switch
                 {
                     Domain.Enums.CalendarFrom.Mindr => throw new NotImplementedException("Calendar Mindr not implemented"),
-                    Domain.Enums.CalendarFrom.Google => await _googleClient.GetCalendarAppointment(credential!, calendar.CalendarId, dateTimeStart, dateTimeEnd),
+                    Domain.Enums.CalendarFrom.Google => await _googleClient.GetCalendarAppointments(credential!, calendar.CalendarId, dateTimeStart, dateTimeEnd),
                     Domain.Enums.CalendarFrom.Microsoft => throw new NotImplementedException("Calendar Microsoft not implemented"),
                     _ => throw new NotImplementedException($"Unknown Calendar type:{calendar.From}"),
                 };
@@ -249,6 +251,94 @@ namespace Mindr.Api.Services.CalendarEvents
             }
 
             return appointment;
+        }
+
+
+        public async Task<IEnumerable<ConnectorEvent>> GetConnectorEvents(string userId, string? calendarId)
+        {
+            _validator.ThrowOnInvalidUserId(userId);
+
+            var calendars = await _context.PersonalCalendars
+                .Where(item =>
+                    item.UserId == userId &&
+                    (string.IsNullOrEmpty(calendarId) || item.CalendarId.ToLower() == calendarId.ToLower())// when not null, use
+                )
+                .ToArrayAsync();
+
+            var connectorEvents = new List<ConnectorEvent>();
+            foreach (var calendar in calendars)
+            {
+                var events = await _connectorEventManager.GetAllByEventId(userId, calendarId);
+                connectorEvents.AddRange(events);
+            }   
+
+            return connectorEvents;
+        }
+
+        public async Task<ConnectorEvent> InsertConnectorEvent(string userId, string calendarId, ConnectorEvent input)
+        {
+            _validator.ThrowOnInvalidUserId(userId);
+
+            var calendar = await _context.PersonalCalendars.FirstOrDefaultAsync(item =>
+                item.UserId == userId &&
+                item.CalendarId == calendarId
+            );
+
+            // TODO: Define Event steps
+            // {
+                //EventVariables = new List<ConnectorEventVa>()
+            //    {
+            //        new ConnectorEventVariable()
+            //        {
+            //            Key = Domain.Enums.EventType.OnRecurring,
+            //            StepIndex = 0,
+            //        },
+            //        new ConnectorEventVariable()
+            //        {
+            //            Key = Domain.Enums.EventType.OnDateTime,
+            //            StepIndex = 1
+            //        }
+            //    }
+            //};
+
+
+            var onCreateItem = new ConnectorEventOnCreate(input);
+            onCreateItem.EventId = calendarId;
+
+            return await _connectorEventManager.Insert(userId, onCreateItem);
+        }
+
+        public async Task<ConnectorEvent> DeleteConnectorEvent(string userId, Guid connectorEventId)
+        {
+            _validator.ThrowOnInvalidUserId(userId);
+            return await _connectorEventManager.Delete(userId, connectorEventId);
+        }
+
+        public async Task<ConnectorEvent> UpdateConnectorEvent(string userId, Guid connectorEventId, ConnectorEvent input)
+        {
+            _validator.ThrowOnInvalidUserId(userId);
+
+            var onUpdateItem = new ConnectorEventOnUpdate(input);
+
+
+            // TODO: Define Event steps
+            // {
+            //EventVariables = new List<ConnectorEventVa>()
+            //    {
+            //        new ConnectorEventVariable()
+            //        {
+            //            Key = Domain.Enums.EventType.OnRecurring,
+            //            StepIndex = 0,
+            //        },
+            //        new ConnectorEventVariable()
+            //        {
+            //            Key = Domain.Enums.EventType.OnDateTime,
+            //            StepIndex = 1
+            //        }
+            //    }
+            //};
+
+            return await _connectorEventManager.Update(userId, connectorEventId, onUpdateItem);
         }
 
     }

@@ -14,7 +14,11 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 {
     public partial class Scheduler : IAsyncDisposable
     {
-        [Parameter, EditorRequired] public Func<Task> OnHamburgerClick { get; set; } = default!;
+        [Parameter, EditorRequired] 
+        public Func<Task> OnHamburgerClick { get; set; } = default!;
+
+        [Parameter, EditorRequired] 
+        public Func<Task> OnOpenConnectorEvents { get; set; } = default!;
 
         [Inject]
         public CalendarService CalendarService { get; set; } = default!;
@@ -34,7 +38,7 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
         [Parameter] public RenderFragment<DateTime>? DayTemplate { get; set; }
 
         [Parameter] public Func<DateTime, DateTime, Task>? OnRequestNewData { get; set; }
-        [Parameter] public Func<CalendarAppointment?, Task>? OnAddingNewAppointment { get; set; }
+        [Parameter] public Func<CalendarAppointment, Task>? OnAddingNewAppointment { get; set; }
         [Parameter] public Func<DateTime, Task>? OnOverflowAppointmentClick { get; set; }
 
         #region Config
@@ -294,11 +298,11 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
         {
             var appointmentsInTimeframe = _appointments
                 .Where(x => x.IsVisible)
-                .Where(x => (start, end).Overlaps((x.Data.StartDate.DateTime.Date, x.Data.EndDate.DateTime.Date)));
+                .Where(x => (start, end).Overlaps((x.Data.StartDate.GetDateTime().Date, x.Data.EndDate.GetDateTime().Date)));
 
             return appointmentsInTimeframe
-                .OrderBy(x => x.Data.StartDate.DateTime)
-                .ThenByDescending(x => (x.Data.EndDate.DateTime - x.Data.StartDate.DateTime).Days);
+                .OrderBy(x => x.Data.StartDate.GetDateTime())
+                .ThenByDescending(x => (x.Data.EndDate.GetDateTime() - x.Data.StartDate.GetDateTime()).Days);
         }
 
         private Appointment? _reschedulingAppointment;
@@ -310,8 +314,8 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
             appointment.IsVisible = false;
 
             _reschedulingAppointment = appointment;
-            _draggingStart = appointment.Data.StartDate.DateTime;
-            _draggingEnd = appointment.Data.EndDate.DateTime;
+            _draggingStart = appointment.Data.StartDate.GetDateTime();
+            _draggingEnd = appointment.Data.EndDate.GetDateTime();
             _draggingAppointmentAnchor = null;
 
             StateHasChanged();
@@ -394,8 +398,8 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 
                 var diff = (day - _draggingAppointmentAnchor.Value).Days;
 
-                _draggingStart = _reschedulingAppointment.Data.StartDate.DateTime.AddDays(diff);
-                _draggingEnd = _reschedulingAppointment.Data.EndDate.DateTime.AddDays(diff);
+                _draggingStart = _reschedulingAppointment.Data.StartDate.GetDateTime().AddDays(diff);
+                _draggingEnd = _reschedulingAppointment.Data.EndDate.GetDateTime().AddDays(diff);
 
                 StateHasChanged();
             }

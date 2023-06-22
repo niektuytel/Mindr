@@ -14,7 +14,7 @@ namespace Mindr.Domain.Models.DTO.Calendar
 
         }
 
-        public CalendarAppointment(CalendarAppointment data, CalendarEventDateTime? start, CalendarEventDateTime? end, string color = "#ffffff")
+        public CalendarAppointment(CalendarAppointment data, CalendarEventDateTime start, CalendarEventDateTime end, string color = "#ffffff")
         {
             Id = data.Id;
             CalendarId = data.CalendarId;

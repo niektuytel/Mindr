@@ -1,4 +1,5 @@
-﻿using Hangfire;
+﻿using AutoMapper.Internal;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Mindr.Api.Models.ConnectorEvents;
@@ -29,7 +30,7 @@ public class ConnectorEventManager : IConnectorEventManager
     public async Task<ConnectorEvent> Get(string userId, Guid id)
     {
         var entity = await _context.ConnectorEvents
-            .Include(x => x.EventParameters)
+            .Include(x => x.EventSteps)
             .Include(x => x.ConnectorVariables)
             .FirstOrDefaultAsync(x => x.UserId == userId && x.Id == id);
 
@@ -43,7 +44,7 @@ public class ConnectorEventManager : IConnectorEventManager
         _connectorEventValidator.ThrowOnInvalidUserId(userId);
 
         var items = await _context.ConnectorEvents
-            .Include(x => x.EventParameters)
+            .Include(x => x.EventSteps)
             .Include(x => x.ConnectorVariables)
             .Where(x => x.UserId == userId)
             .ToListAsync();
@@ -57,7 +58,7 @@ public class ConnectorEventManager : IConnectorEventManager
         _connectorEventValidator.ThrowOnInvalidEventId(eventId);
 
         var items = await _context.ConnectorEvents
-            .Include(x => x.EventParameters)
+            .Include(x => x.EventSteps)
             .Include(x => x.ConnectorVariables)
             .Where(x => x.UserId == userId && x.EventId == eventId)
             .ToListAsync();
@@ -71,7 +72,7 @@ public class ConnectorEventManager : IConnectorEventManager
         _connectorEventValidator.ThrowOnInvalidConnectorId(connectorId);
 
         var items = await _context.ConnectorEvents
-            .Include(x => x.EventParameters)
+            .Include(x => x.EventSteps)
             .Include(x => x.ConnectorVariables)
             .Where(x => x.UserId == userId && x.ConnectorId == connectorId)
             .ToListAsync();
@@ -85,7 +86,7 @@ public class ConnectorEventManager : IConnectorEventManager
         _connectorEventValidator.ThrowOnInvalidQuery(query);
 
         var items = await _context.ConnectorEvents
-            .Include(x => x.EventParameters)
+            .Include(x => x.EventSteps)
             .Include(x => x.ConnectorVariables)
             .Where(x => x.UserId == userId && x.ConnectorName.ToLower().Contains(query))
             .ToListAsync();
@@ -113,7 +114,7 @@ public class ConnectorEventManager : IConnectorEventManager
         var connector = await _context.Connectors.FirstOrDefaultAsync(item => item.Id == input.ConnectorId);
 
         var entity = await _context.ConnectorEvents
-                .Include(x => x.EventParameters)
+                .Include(x => x.EventSteps)
                 .Include(x => x.ConnectorVariables)
                 .FirstOrDefaultAsync(x => x.UserId == userId && x.Id == id);
 
@@ -147,8 +148,11 @@ public class ConnectorEventManager : IConnectorEventManager
     {
         _connectorEventValidator.ThrowOnInvalidUserId(userId);
         _connectorEventValidator.ThrowOnInvalidEventId(input.EventId);
-        _connectorEventValidator.ThrowOnInvalidEventParameters(input.EventVariables);
+        _connectorEventValidator.ThrowOnInvalidEventParameters(input.EventSteps);
         _connectorEventValidator.ThrowOnInvalidConnectorVariables(input.ConnectorVariables);
+
+        // Ensure unique ids
+        input.ConnectorVariables.ForAll(x => x.Id = new Guid());
         _connectorEventValidator.ThrowOnNotUniqueConnectorVariables(input.ConnectorVariables);
 
         var connector = await _context.Connectors.FirstOrDefaultAsync(item => item.IsPublic && item.Id == input.ConnectorId);
@@ -171,7 +175,7 @@ public class ConnectorEventManager : IConnectorEventManager
     public async Task<ConnectorEvent> Delete(string userId, Guid id)
     {
         var entity = _context.ConnectorEvents
-                .Include(x => x.EventParameters)
+                .Include(x => x.EventSteps)
                 .Include(x => x.ConnectorVariables)
                 .FirstOrDefault(x => x.Id == id && x.UserId == userId);
 

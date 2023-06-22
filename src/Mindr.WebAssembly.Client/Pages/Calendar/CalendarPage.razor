@@ -15,10 +15,13 @@
 
 
 
+<AppointmentDrawer @ref="AppointmentDrawer" />
+<ConnectorEventsDrawer @ref="ConnectorEventsDrawer" />
 <CalendarMenu @ref="CalendarMenu" />
 <MudStack Spacing="0" Style="height:100%">
     <Scheduler
         OnHamburgerClick="@CalendarMenu!.ToggleDrawer"
+        OnOpenConnectorEvents="ConnectorEventsDrawer.OnOpen"
         OnRequestNewData="OnRequestNewData"
         OnAddingNewAppointment="OnAddingNewAppointment"
         OnOverflowAppointmentClick="OnOverflowAppointmentClick"
@@ -34,7 +37,6 @@
         </Appointments>
     </Scheduler>
 </MudStack>
-<AppointmentDrawer @ref="AppointmentDrawer" />
 
 
 @code {

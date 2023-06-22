@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Mindr.Api.Persistence;
 
@@ -11,9 +12,10 @@ using Mindr.Api.Persistence;
 namespace Mindr.Api.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20230622225851_Add eventsteps")]
+    partial class Addeventsteps
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -352,7 +354,7 @@ namespace Mindr.Api.Migrations
                     b.ToTable("ConnectorEvents");
                 });
 
-            modelBuilder.Entity("Mindr.Domain.Models.DTO.Connector.ConnectorEventStep", b =>
+            modelBuilder.Entity("Mindr.Domain.Models.DTO.Connector.ConnectorEventSteps", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -374,7 +376,7 @@ namespace Mindr.Api.Migrations
 
                     b.HasIndex("ConnectorEventId");
 
-                    b.ToTable("ConnectorEventStep");
+                    b.ToTable("ConnectorEventSteps");
                 });
 
             modelBuilder.Entity("Mindr.Domain.Models.DTO.Connector.ConnectorVariable", b =>
@@ -575,7 +577,7 @@ namespace Mindr.Api.Migrations
                         .HasForeignKey("HttpResponseId");
                 });
 
-            modelBuilder.Entity("Mindr.Domain.Models.DTO.Connector.ConnectorEventStep", b =>
+            modelBuilder.Entity("Mindr.Domain.Models.DTO.Connector.ConnectorEventSteps", b =>
                 {
                     b.HasOne("Mindr.Domain.Models.DTO.Connector.ConnectorEvent", null)
                         .WithMany("EventSteps")

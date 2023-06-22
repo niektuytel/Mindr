@@ -1,16 +1,20 @@
 ﻿using Azure.Core;
 using Google.Apis.Calendar.v3.Data;
+using Ical.Net;
 using Ical.Net.CalendarComponents;
 using Ical.Net.DataTypes;
+using Microsoft.Build.Tasks.Deployment.Bootstrapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
 using Microsoft.Graph.TermStore;
 using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 using Microsoft.IdentityModel.Tokens;
 using Mindr.Api.Exceptions;
 using Mindr.Api.Extensions;
-using Mindr.Api.Models.PersonalCalendar;
+using Mindr.Api.Migrations;
 using Mindr.Api.Persistence;
+using Mindr.Api.Services.ConnectorEvents;
 using Mindr.Domain.Models.DTO.Calendar;
 using Mindr.Domain.Models.DTO.Personal;
 using Newtonsoft.Json;
@@ -25,49 +29,59 @@ namespace Mindr.Api.Services.CalendarEvents
 {
     public class GoogleCalendarClient : IGoogleCalendarClient
     {
+        private readonly IConnectorEventManager _connectorEventManager;
         private readonly IConfiguration _configuration;
         private readonly ApplicationContext _context;
         private readonly HttpClient _httpClient;
 
-        public GoogleCalendarClient(IHttpClientFactory httpClientFactory, ApplicationContext context, IConfiguration configuration)
+        public GoogleCalendarClient(IConnectorEventManager connectorEventManager, IHttpClientFactory httpClientFactory, ApplicationContext context, IConfiguration configuration)
         {
+            _connectorEventManager = connectorEventManager;
             _httpClient = httpClientFactory.CreateClient(nameof(GoogleCalendarClient));
             _context = context;
             _configuration = configuration;
         }
 
-        private HashSet<Occurrence> GetNextEvents(CalendarEventDateTime start, CalendarEventDateTime end, DateTime batchStart, DateTime batchEnd, string rrule)
+        private HashSet<CalendarAppointment> GetRecurringAppointments(CalendarAppointment appointment, DateTime batchStart, DateTime batchEnd, string rrule)
         {
-            if (start.DateTime == null || end.DateTime == null)
+            var recurrenceRules = new List<Ical.Net.DataTypes.RecurrencePattern> { new Ical.Net.DataTypes.RecurrencePattern(rrule) };
+            var appointments = new HashSet<CalendarAppointment>();
+            if (appointment.StartDate.DateTime == null || appointment.EndDate.DateTime == null)
             {
-                var startDate = DateTime.Parse(start.Date);
-                var endDate = DateTime.Parse(end.Date);
-
                 var calendarEvent = new CalendarEvent
                 {
-                    Start = new CalDateTime(startDate),
-                    End = new CalDateTime(endDate),
-                    RecurrenceRules = new List<Ical.Net.DataTypes.RecurrencePattern> { new Ical.Net.DataTypes.RecurrencePattern(rrule) }
+                    Start = new CalDateTime(appointment.StartDate.Date!.Value),
+                    End = new CalDateTime(appointment.EndDate.Date!.Value),
+                    RecurrenceRules = recurrenceRules
                 };
 
-                var occurrence = calendarEvent.GetOccurrences(new CalDateTime(batchStart), new CalDateTime(batchEnd));
-                return ()
-                
-                //nextEvent.Period.StartTime.Value,
-                //item?.Start?.TimeZone,
-                //nextEvent.Period.EndTime.Value,
+                var occurrences = calendarEvent.GetOccurrences(new CalDateTime(batchStart), new CalDateTime(batchEnd));
+                foreach (var occurrence in occurrences)
+                {
+                    appointment.StartDate.Date = occurrence.Period.StartTime.Value.Date;
+                    appointment.EndDate.Date = occurrence.Period.EndTime.Value.Date;
+                    appointments.Add(appointment);
+                }
             }
             else
             {
                 var calendarEvent = new CalendarEvent
                 {
-                    Start = new CalDateTime(start.DateTime!.Value),
-                    End = new CalDateTime(end.DateTime!.Value),
-                    RecurrenceRules = new List<Ical.Net.DataTypes.RecurrencePattern> { new Ical.Net.DataTypes.RecurrencePattern(rrule) }
+                    Start = new CalDateTime(appointment.StartDate.DateTime!.Value),
+                    End = new CalDateTime(appointment.EndDate.DateTime!.Value),
+                    RecurrenceRules = recurrenceRules
                 };
 
-                return calendarEvent.GetOccurrences(new CalDateTime(batchStart), new CalDateTime(batchEnd));
+                var occurrences = calendarEvent.GetOccurrences(new CalDateTime(batchStart), new CalDateTime(batchEnd));
+                foreach (var occurrence in occurrences)
+                {
+                    appointment.StartDate.DateTime = occurrence.Period.StartTime.Value;
+                    appointment.EndDate.DateTime = occurrence.Period.EndTime.Value;
+                    appointments.Add(appointment);
+                }
             }
+
+            return appointments;
         }
 
         public async Task<string?> GetAccessToken(PersonalCredential credential)
@@ -140,9 +154,9 @@ namespace Mindr.Api.Services.CalendarEvents
             throw new Exception($"Failed getting calendars from credentials({credential.Id}) [Code:{response.StatusCode}]");
         }
 
-        public async Task<IEnumerable<CalendarAppointment>> GetCalendarAppointment(PersonalCredential personalCredential, string calendarId, DateTime startDateTime, DateTime endDateTime)
+        public async Task<IEnumerable<CalendarAppointment>> GetCalendarAppointments(PersonalCredential credential, string calendarId, DateTime startDateTime, DateTime endDateTime)
         {
-            var accessToken = await GetAccessToken(personalCredential);
+            var accessToken = await GetAccessToken(credential);
             var timespan = $"timeMin={startDateTime.Year}-{startDateTime.Month}-{startDateTime.Day}T00%3A00%3A00-00%3A00&timeMax={endDateTime.Year}-{endDateTime.Month}-{endDateTime.Day}T23%3A59%3A59-00%3A00";
             var uri = $"https://www.googleapis.com/calendar/v3/calendars/{calendarId}/events?{timespan}";
 
@@ -168,10 +182,12 @@ namespace Mindr.Api.Services.CalendarEvents
                     if (string.IsNullOrEmpty(item.Id)) continue;
                     if (item.Status == "cancelled") continue;
 
-                    var events = _context.ConnectorEvents.Where(i =>
-                        i.UserId == personalCredential.UserId &&
-                        i.EventId == item.Id
-                    ).AsEnumerable();
+                    var events = await _connectorEventManager.GetAllByEventId(credential.UserId, item.Id);
+                    if(events.Any())
+                    {
+                        await Console.Out.WriteLineAsync(   );
+                    }
+
 
                     var appointment = new CalendarAppointment(
                         item.Id,
@@ -183,30 +199,14 @@ namespace Mindr.Api.Services.CalendarEvents
                         item?.ColorId
                     );
 
-                    // set recurrence date
-                    if (item.Recurrence != null && item.Recurrence.Any())
+                    // Handle recurring date
+                    if (item?.Recurrence != null && item.Recurrence.Any())
                     {
                         try
                         {
                             // TODO: Oppassen Milou failed hier
-                            var nextEvents = GetNextEvents(appointment.StartDate, appointment.EndDate, startDateTime, endDateTime, item.Recurrence[0]);
-                            foreach (var nextEvent in nextEvents)
-                            {
-                                appointment.
-                                var appointment = new CalendarAppointment(
-                                    item.Id,
-                                    calendarId,
-                                    item.Summary,
-                                    nextEvent.Period.StartTime.Value,
-                                    item?.Start?.TimeZone,
-                                    nextEvent.Period.EndTime.Value,
-                                    item?.End?.TimeZone,
-                                    events,
-                                    item?.ColorId
-                                );
-
-                                appointments.Add(appointment);
-                            }
+                            var recurrentAppointments = GetRecurringAppointments(appointment, startDateTime, endDateTime, item.Recurrence[0]);
+                            appointments.AddRange(recurrentAppointments);
                         }
                         catch (Exception ex)
                         {
@@ -216,7 +216,6 @@ namespace Mindr.Api.Services.CalendarEvents
                     }
                     else
                     {
-                        // None recurrence date
                         appointments.Add(appointment);
                     }
 
@@ -228,143 +227,62 @@ namespace Mindr.Api.Services.CalendarEvents
             return appointments;
         }
 
-        public async Task<CalendarAppointment> InsertCalendarAppointment(PersonalCredential personalCredential, string calendarId, CalendarAppointment input)
+        public async Task<CalendarAppointment> InsertCalendarAppointment(PersonalCredential credential, string calendarId, CalendarAppointment input)
         {
             var uri = $"https://www.googleapis.com/calendar/v3/calendars/{calendarId}/events";
-            var json = System.Text.Json.JsonSerializer.Serialize(new GoogleAppointmentOnCreate(input));
-            var accessToken = await GetAccessToken(personalCredential);
+            var json = Google.Apis.Json.NewtonsoftJsonSerializer.Instance.Serialize(input.AsGoogleEvent());
 
+            var accessToken = await GetAccessToken(credential);
             var request = new HttpRequestMessage(HttpMethod.Post, uri);
             request.Headers.Add("Authorization", $"Bearer {accessToken}");
             request.Headers.Add("Accept", "application/json");
             request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.SendAsync(request);
-            if(response.IsSuccessStatusCode)
+            var response = await _httpClient.SendAsync(request);// Has created content as response
+            if (response.IsSuccessStatusCode)
             {
-
+                return input;
             }
 
-            // TODO: Insert appointment for google calendar
-
-            //          curl --request POST \
-            //'https://www.googleapis.com/calendar/v3/calendars/a38067012fae80d9b938b59ff0be170eed5d4dc0109d438bebb6273a83eb1301%40group.calendar.google.com/events?key=[YOUR_API_KEY]' \
-            //--header 'Authorization: Bearer [YOUR_ACCESS_TOKEN]' \
-            //--header 'Accept: application/json' \
-            //--header 'Content-Type: application/json' \
-            //--data '{"end":{"dateTime":"2023-06-19T23:04:00.324Z","timeZone":""},"start":{"dateTime":"2023-06-18T23:04:00.324Z"}}' \
-            //--compressed
-
-            // RESPONSE: {
-            // "kind": "calendar#event",
-            // "etag": "\"3373913399416000\"",
-            // "id": "t01d9e26vdfpvvdq4n7a2v3e1s",
-            // "status": "confirmed",
-            // "htmlLink": "https://www.google.com/calendar/event?eid=dDAxZDllMjZ2ZGZwdnZkcTRuN2EydjNlMXMgYTM4MDY3MDEyZmFlODBkOWI5MzhiNTlmZjBiZTE3MGVlZDVkNGRjMDEwOWQ0MzhiZWJiNjI3M2E4M2ViMTMwMUBn",
-            // "created": "2023-06-16T23:04:59.000Z",
-            // "updated": "2023-06-16T23:04:59.708Z",
-            // "creator": {
-            //  "email": "tuytelniek@gmail.com"
-            // },
-            // "organizer": {
-            //  "email": "a38067012fae80d9b938b59ff0be170eed5d4dc0109d438bebb6273a83eb1301@group.calendar.google.com",
-            //  "displayName": "Agenda Niek & Angelique",
-            //  "self": true
-            // },
-            // "start": {
-            //  "dateTime": "2023-06-19T01:04:00+02:00",
-            //  "timeZone": "Europe/Amsterdam"
-            // },
-            // "end": {
-            //  "dateTime": "2023-06-20T01:04:00+02:00",
-            //  "timeZone": "Europe/Amsterdam"
-            // },
-            // "iCalUID": "t01d9e26vdfpvvdq4n7a2v3e1s@google.com",
-            // "sequence": 0,
-            // "reminders": {
-            //  "useDefault": true
-            // },
-            // "eventType": "default"
-            //}
-
-
-            return input;
+            throw new Exception($"Failed inserting calendar event: {json} from credentials({credential.Id}) [Code:{response.StatusCode}]");
         }
 
-        public async Task<CalendarAppointment> UpdateCalendarAppointment(PersonalCredential personalCredential, string calendarId, string appointmentId, CalendarAppointment input)
+        public async Task<CalendarAppointment> UpdateCalendarAppointment(PersonalCredential credential, string calendarId, string appointmentId, CalendarAppointment input)
         {
             var uri = $"https://www.googleapis.com/calendar/v3/calendars/{calendarId}/events/{appointmentId}";
-            var json = System.Text.Json.JsonSerializer.Serialize(new GoogleAppointmentOnUpdate(input));
-            var accessToken = await GetAccessToken(personalCredential);
+            var json = Google.Apis.Json.NewtonsoftJsonSerializer.Instance.Serialize(input.AsGoogleEvent());
 
+            var accessToken = await GetAccessToken(credential);
             var request = new HttpRequestMessage(HttpMethod.Put, uri);
             request.Headers.Add("Authorization", $"Bearer {accessToken}");
             request.Headers.Add("Accept", "application/json");
             request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.SendAsync(request);
+            var response = await _httpClient.SendAsync(request);// Has updated content as response
             if (response.IsSuccessStatusCode)
             {
-
+                return input;
             }
 
-            // TODO: Update appointment for google calendar
-
-            //          curl--request PUT \
-            //'https://www.googleapis.com/calendar/v3/calendars/a38067012fae80d9b938b59ff0be170eed5d4dc0109d438bebb6273a83eb1301%40group.calendar.google.com/events/t01d9e26vdfpvvdq4n7a2v3e1s?key=[YOUR_API_KEY]' \
-            //--header 'Authorization: Bearer [YOUR_ACCESS_TOKEN]' \
-            //--header 'Accept: application/json' \
-            //--header 'Content-Type: application/json' \
-            //--data '{"end":{"dateTime":"2023-06-19T01:04:00+02:00"},"start":{"dateTime":"2023-06-12T01:04:00+02:00"}}' \
-            //--compressed
-
-            // RESPONSE: {
-            // "kind": "calendar#event",
-            // "etag": "\"3373915061220000\"",
-            // "id": "t01d9e26vdfpvvdq4n7a2v3e1s",
-            // "status": "confirmed",
-            // "htmlLink": "https://www.google.com/calendar/event?eid=dDAxZDllMjZ2ZGZwdnZkcTRuN2EydjNlMXMgYTM4MDY3MDEyZmFlODBkOWI5MzhiNTlmZjBiZTE3MGVlZDVkNGRjMDEwOWQ0MzhiZWJiNjI3M2E4M2ViMTMwMUBn",
-            // "created": "2023-06-16T23:04:59.000Z",
-            // "updated": "2023-06-16T23:18:50.610Z",
-            // "creator": {
-            //                "email": "tuytelniek@gmail.com"
-            // },
-            // "organizer": {
-            //                "email": "a38067012fae80d9b938b59ff0be170eed5d4dc0109d438bebb6273a83eb1301@group.calendar.google.com",
-            //  "displayName": "Agenda Niek & Angelique",
-            //  "self": true
-            // },
-            // "start": {
-            //                "dateTime": "2023-06-12T01:04:00+02:00",
-            //  "timeZone": "Europe/Amsterdam"
-            // },
-            // "end": {
-            //                "dateTime": "2023-06-19T01:04:00+02:00",
-            //  "timeZone": "Europe/Amsterdam"
-            // },
-            // "iCalUID": "t01d9e26vdfpvvdq4n7a2v3e1s@google.com",
-            // "sequence": 1,
-            // "reminders": {
-            //                "useDefault": true
-            // },
-            // "eventType": "default"
-            //}
-            return input;
+            throw new Exception($"Failed undating calendar event: {json} from credentials({credential.Id}) [Code:{response.StatusCode}]");
         }
 
-        public async Task<CalendarAppointment> DeleteCalendarAppointment(PersonalCredential personalCredential, string calendarId, string appointmentId)
+        public async Task<CalendarAppointment> DeleteCalendarAppointment(PersonalCredential credential, string calendarId, string appointmentId)
         {
-            var accessToken = await GetAccessToken(personalCredential);
-            // TODO: Delete appointment for google calendar
+            var uri = $"https://www.googleapis.com/calendar/v3/calendars/{calendarId}/events/{appointmentId}";
 
-            //          curl --request DELETE \
-            //'https://www.googleapis.com/calendar/v3/calendars/a38067012fae80d9b938b59ff0be170eed5d4dc0109d438bebb6273a83eb1301%40group.calendar.google.com/events/t01d9e26vdfpvvdq4n7a2v3e1s?key=[YOUR_API_KEY]' \
-            //--header 'Authorization: Bearer [YOUR_ACCESS_TOKEN]' \
-            //--header 'Accept: application/json' \
-            //--compressed
+            var accessToken = await GetAccessToken(credential);
+            var request = new HttpRequestMessage(HttpMethod.Delete, uri);
+            request.Headers.Add("Authorization", $"Bearer {accessToken}");
+            request.Headers.Add("Accept", "application/json");
 
-            // RESPONSE : 204
-            return new CalendarAppointment() { CalendarId = calendarId, Id = appointmentId };
+            var response = await _httpClient.SendAsync(request);// Has 204 as response
+            if (response.IsSuccessStatusCode)
+            {
+                return new CalendarAppointment() { CalendarId = calendarId, Id = appointmentId };
+            }
+
+            throw new Exception($"Failed deleting calendar event: {appointmentId} from credentials({credential.Id}) [Code:{response.StatusCode}]");
         }
     }
 }

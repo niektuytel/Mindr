@@ -9,7 +9,7 @@ namespace Mindr.Domain.Models.DTO.Calendar
         // Summary:
         //     The date, in the format "yyyy-mm-dd", if this is an all-day event.
         [JsonPropertyName("date")]
-        public virtual string Date { get; set; }
+        public virtual DateTime? Date { get; set; } = null;
 
         //
         // Summary:
@@ -52,5 +52,15 @@ namespace Mindr.Domain.Models.DTO.Calendar
         // Summary:
         //     The ETag of the item.
         public virtual string ETag { get; set; }
+
+        public DateTime GetDateTime()
+        {
+            if (DateTime == null)
+            {
+                return Date.Value;
+            }
+
+            return DateTime.Value;
+        }
     }
 }

@@ -38,6 +38,8 @@
     <MudStack Row="true">
         <MudButton @onclick="OnConfirm" Disabled="@(!DataHasChanged || !success)">Confirm</MudButton>
         <MudButton @onclick="OnCancel">Close</MudButton>
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.DeleteForever" Color="Color.Inherit" OnClick="@(async () => await OnDelete())" Size="Size.Medium" />
     </MudStack>
 </MudDrawer>
 

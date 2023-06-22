@@ -1,0 +1,61 @@
+﻿@using DemoApp.Models
+@using Mindr.Domain.Models.DTO.Calendar
+@using Mindr.Domain.Models.DTO.Connector;
+@using Mindr.WebAssembly.Client.Pages.Calendar.Components
+@using MudBlazor
+
+@namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
+
+<MudDrawer @bind-Open="@Open" Anchor="Anchor.End" Elevation="1" Variant="@DrawerVariant.Temporary" Width="700px" Style="height:100%">
+    <MudDrawerHeader >
+        <MudText Typo="Typo.h4">
+            <MudIcon Icon="@Icons.Material.Filled.DatasetLinked" Class="mr-3" /> 
+            Connector events
+        </MudText>
+    </MudDrawerHeader>
+    <MudStack Row="true" Spacing="0">
+        <MudButton StartIcon="@Icons.Material.Filled.Add" IconColor="Color.Primary" Size="Size.Medium" @onclick="async () => await OpenConnectorEventDialog(null)" Disabled="@IsLoading">Add</MudButton>
+        <MudButton StartIcon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" Size="Size.Medium" @onclick="async () => await OpenConnectorEventDialog(SelectedItem!)" Disabled="@(SelectedItem == null || IsLoading)">Edit</MudButton>
+        <MudButton StartIcon="@Icons.Material.Filled.Delete" IconColor="Color.Primary" Size="Size.Medium" @onclick="async () => await RemoveConnectorEvent()" Disabled="@(SelectedItem == null || IsLoading)">Delete</MudButton>
+    </MudStack>
+    <MudTable 
+        T="ConnectorEvent" 
+        Items="@ConnectorEvents" 
+        SelectedItem="SelectedItem"
+        OnRowClick="async (value) => await SelectConnectorEvent(value.Item)"
+        Hover="true" 
+        Breakpoint="Breakpoint.Sm" 
+        Loading="@IsLoading" 
+        LoadingProgressColor="Color.Info" 
+    >
+        @*<HeaderContent>
+            <MudTh>Name</MudTh>
+        </HeaderContent>*@
+        <RowTemplate>
+            <MudTd DataLabel="Name">@context.ConnectorName</MudTd>
+        </RowTemplate>
+    </MudTable>
+   @* <MudGrid Justify="Justify.FlexStart" Spacing="0">
+        @foreach (var connectorEvent in ConnectorEvents)
+        {
+            <MudItem>
+                <MudChip Style=@($"border-color: {connectorEvent.ConnectorColor};border-style: solid;border-width: 2px;")
+                     OnClick="() => OnConnectorEventClicked(connectorEvent)"
+                     OnClose="() => OnConnectorEventRemove(connectorEvent)">
+                    @connectorEvent.ConnectorName
+                </MudChip>
+            </MudItem>
+        }
+        <MudItem>
+            <MudChip Color="Color.Tertiary" OnClick="() => OnConnectorEventClicked()">
+                <b>+</b>
+            </MudChip>
+        </MudItem>
+    </MudGrid>*@
+    <MudStack Row="true">
+        @*<MudButton @onclick="OnConfirm" Disabled="@(!DataHasChanged || !success)">Confirm</MudButton>*@
+        <MudButton @onclick="OnCancel">Close</MudButton>
+    </MudStack>
+</MudDrawer>
+
+

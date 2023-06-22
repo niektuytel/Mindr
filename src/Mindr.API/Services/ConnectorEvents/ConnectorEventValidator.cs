@@ -59,7 +59,7 @@ namespace Mindr.Api.Services.ConnectorEvents
             }
         }
 
-        public void ThrowOnInvalidEventParameters(IEnumerable<ConnectorEventVariable> eventParameters)
+        public void ThrowOnInvalidEventParameters(IEnumerable<ConnectorEventStep> eventParameters)
         {
             foreach (var parameter in eventParameters)
             {

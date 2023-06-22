@@ -153,15 +153,15 @@ namespace Mindr.Api.Persistence
         {
             var connector1 = GetConnector1();
             var event1 = new ConnectorEvent(UserId, "nt5tj9n1jon8qhli9ndtnu258k", connector1);
-            var events1 = new List<ConnectorEventVariable>()
+            var events1 = new List<ConnectorEventStep>()
             {
-                new ConnectorEventVariable()
+                new ConnectorEventStep()
                 {
                     Key = Domain.Enums.EventType.OnDateTime,
                     Value = DateTime.Now.AddDays(1).ToLongDateString()
                 }
             };
-            event1.EventParameters = events1;
+            event1.EventSteps = events1;
             event1.ConnectorColor = connector1.Color;
 
             return event1;
@@ -171,15 +171,15 @@ namespace Mindr.Api.Persistence
         {
             var connector2 = GetConnector2();
             var event2 = new ConnectorEvent(UserId, "nt5tj9n1jon8qhli9ndtnu258k", connector2);
-            var events2 = new List<ConnectorEventVariable>()
+            var events2 = new List<ConnectorEventStep>()
             {
-                new ConnectorEventVariable()
+                new ConnectorEventStep()
                 {
                     Key = Domain.Enums.EventType.OnDateTime,
                     Value = DateTime.Now.AddDays(1).ToLongDateString()
                 }
             };
-            event2.EventParameters = events2;
+            event2.EventSteps = events2;
             event2.ConnectorColor = connector2.Color;
 
             return event2;

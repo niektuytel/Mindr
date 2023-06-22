@@ -111,7 +111,7 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
         {
             IsInsert = isInsert;
             Appointment = appointment;
-            _dateRange = new DateRange(Appointment.StartDate?.DateTime, Appointment.EndDate?.DateTime);
+            _dateRange = new DateRange(Appointment.StartDate.GetDateTime(), Appointment.EndDate.GetDateTime());
 
             DataHasChanged = false;
             Open = true;
@@ -160,6 +160,28 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 
         public void OnCancel()
         {
+            Open = false;
+            base.StateHasChanged();
+        }
+
+        public async Task OnDelete()
+        {
+            // set calendar id
+            Appointment.CalendarId = CalendarService.Value;
+
+            IsLoading = true;
+            var response = await CalendarClient.DeleteAppointment(Appointment.CalendarId, Appointment);
+            if (response.IsError())
+            {
+                var error = response.GetContent();
+                Snackbar.Add(error, Severity.Error);
+            }
+            else if (response.IsSuccessful())
+            {
+                Appointment = response.GetContent<CalendarAppointment>();
+            }
+
+            IsLoading = false;
             Open = false;
             base.StateHasChanged();
         }

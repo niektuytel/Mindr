@@ -69,12 +69,12 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
             isInsert = calendar == null;
             Calendar = calendar ?? new PersonalCalendar();
 
-            if(Calendars?.Any() != true)
+            if (Calendars?.Any() != true)
             {
                 await LoadExternalCalendars();
 
                 if (Calendars?.Any() != true)
-                { 
+                {
                     await GoogleAuthentication!.HandleConsent();
                 }
             }

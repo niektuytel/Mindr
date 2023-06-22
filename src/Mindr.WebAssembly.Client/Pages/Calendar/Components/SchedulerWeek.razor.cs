@@ -26,7 +26,7 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
                 int max = 0;
                 for(var dt = Start; dt <= End; dt = dt.AddDays(1))
                 {
-                    var appCount = Appointments.Where(x => dt.Between(x.Data.StartDate.DateTime.Date, x.Data.EndDate.DateTime.Date)).Count();
+                    var appCount = Appointments.Where(x => dt.Between(x.Data.StartDate.GetDateTime().Date, x.Data.EndDate.GetDateTime().Date)).Count();
                     max = Math.Max(max, appCount);
                 }
                 return Math.Min(max, MaxNumOfAppointmentsPerDay);
@@ -61,18 +61,18 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
             DayOfWeek schedStart = Scheduler.StartDayOfWeek;
             DayOfWeek start = schedStart, end = schedStart + 6;
 
-            if (!(appointment.Data.StartDate.DateTime.Date, appointment.Data.EndDate.DateTime.Date).Overlaps((Start, End)))
-                return ((int)appointment.Data.StartDate.DateTime.DayOfWeek, (int)appointment.Data.EndDate.DateTime.DayOfWeek);
+            if (!(appointment.Data.StartDate.GetDateTime().Date, appointment.Data.EndDate.GetDateTime().Date).Overlaps((Start, End)))
+                return ((int)appointment.Data.StartDate.GetDateTime().DayOfWeek, (int)appointment.Data.EndDate.GetDateTime().DayOfWeek);
 
-            if (appointment.Data.StartDate.DateTime.Date.Between(Start, End))
+            if (appointment.Data.StartDate.GetDateTime().Date.Between(Start, End))
             {
-                start = appointment.Data.StartDate.DateTime.DayOfWeek;
-                end = appointment.Data.EndDate.DateTime.Date.Between(Start, End) ? appointment.Data.EndDate.DateTime.DayOfWeek : schedStart - 1;
+                start = appointment.Data.StartDate.GetDateTime().DayOfWeek;
+                end = appointment.Data.EndDate.GetDateTime().Date.Between(Start, End) ? appointment.Data.EndDate.GetDateTime().DayOfWeek : schedStart - 1;
             }
-            else if (appointment.Data.EndDate.DateTime.Date.Between(Start, End))
+            else if (appointment.Data.EndDate.GetDateTime().Date.Between(Start, End))
             {
                 start = schedStart;
-                end = appointment.Data.EndDate.DateTime.DayOfWeek;
+                end = appointment.Data.EndDate.GetDateTime().DayOfWeek;
             }
 
             return ((start - schedStart + 7) % 7, (end - schedStart + 7) % 7);

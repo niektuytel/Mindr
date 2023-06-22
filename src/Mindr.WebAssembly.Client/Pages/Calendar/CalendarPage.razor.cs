@@ -35,6 +35,11 @@ public partial class CalendarPage: IDisposable
     public CalendarViewTypeService CalendarViewTypeService { get; set; } = default!;
 
 
+    private AppointmentDrawer? AppointmentDrawer = default!;
+
+    private ConnectorEventsDrawer? ConnectorEventsDrawer = default!;
+
+
 
     public CalendarMenu? CalendarMenu { get; set; } = default!;
     //public CalendarView? CalendarView { get; set; } = default!;
@@ -63,8 +68,6 @@ public partial class CalendarPage: IDisposable
     [Inject]
     public NavigationManager NavigationManager { get; set; } = default!;
 
-
-    private AppointmentDrawer? AppointmentDrawer = default!;
 
 
     public IEnumerable<PersonalCalendar> Calendars = new List<PersonalCalendar>();
@@ -99,7 +102,7 @@ public partial class CalendarPage: IDisposable
         //IsLoading = false;
     }
 
-    public Task OnAppointmentClicked(CalendarAppointment? appointment)
+    public Task OnAppointmentClicked(CalendarAppointment appointment)
     {
         AppointmentDrawer!.OnOpen(appointment);
         base.StateHasChanged();
@@ -107,10 +110,8 @@ public partial class CalendarPage: IDisposable
         return Task.CompletedTask;
     }
 
-    Task OnAddingNewAppointment(CalendarAppointment? appointment = null)
+    Task OnAddingNewAppointment(CalendarAppointment appointment)
     {
-        appointment ??= new CalendarAppointment();
-
         AppointmentDrawer!.OnOpen(appointment, isInsert: true);
         base.StateHasChanged();
 
@@ -334,8 +335,8 @@ public partial class CalendarPage: IDisposable
 //    {
 //        CurrentEvents = Events?.Where(item =>
 //            item != null &&
-//            date.Date >= item.StartDate.DateTime.Date &&
-//            date.Date <= item.EndDate.DateTime.Date
+//            date.Date >= item.StartDate.GetDateTime().Date &&
+//            date.Date <= item.EndDate.GetDateTime().Date
 //        );
 
 //        SelectedDate = date;

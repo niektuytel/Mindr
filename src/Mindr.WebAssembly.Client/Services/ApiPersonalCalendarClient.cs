@@ -21,6 +21,8 @@ using Mindr.Domain.Models.DTO.Connector;
 using Mindr.WebAssembly.Client.Models;
 using Mindr.Domain.Models.DTO.Personal;
 using Mindr.Domain.Models.DTO.Calendar;
+using Mindr.WebAssembly.Client.Pages.Calendar.Components;
+using System.Globalization;
 
 namespace Mindr.WebAssembly.Client.Services;
 
@@ -33,6 +35,7 @@ public class ApiPersonalCalendarClient : ApiClientBase, IApiPersonalCalendarClie
         : base(JSRuntime, factory.CreateClient(HttpClientName))
     {
     }
+
 
     public async Task<JsonResponse<IEnumerable<PersonalCalendar>>> GetCalendars()
     {
@@ -66,6 +69,7 @@ public class ApiPersonalCalendarClient : ApiClientBase, IApiPersonalCalendarClie
         var response = await ApiRequest<PersonalCalendar>(request);
         return response;
     }
+
 
     public async Task<JsonResponse<IEnumerable<CalendarAppointment>>> GetAppointments(DateTime dateStart, DateTime dateEnd, string calendarId)
     {
@@ -107,6 +111,47 @@ public class ApiPersonalCalendarClient : ApiClientBase, IApiPersonalCalendarClie
         request.Content = new StringContent(content, Encoding.UTF8, "application/json");
 
         var response = await ApiRequest<CalendarAppointment>(request);
+        return response;
+    }
+
+
+    public async Task<JsonResponse<IEnumerable<ConnectorEvent>>> GetConnectorEvents(string? calendarId)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{Path}/connectorEvents/{calendarId}");
+        var response = await ApiRequest<IEnumerable<ConnectorEvent>>(request);
+        return response;
+    }
+
+    public async Task<JsonResponse<ConnectorEvent>> InsertConnectorEvent(string? calendarId, ConnectorEvent connectorEvent)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, $"{Path}/connectorEvents/{calendarId}");
+        request.Headers.Add("accept", "*/*");
+
+        var content = JsonSerializer.Serialize(connectorEvent);
+        request.Content = new StringContent(content, Encoding.UTF8, "application/json");
+
+        var response = await ApiRequest<ConnectorEvent>(request);
+        return response;
+    }
+
+    public async Task<JsonResponse<ConnectorEvent>> UpdateConnectorEvent(ConnectorEvent connectorEvent)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Put, $"{Path}/connectorEvents/{connectorEvent.Id}");
+        request.Headers.Add("accept", "*/*");
+
+        var content = JsonSerializer.Serialize(connectorEvent);
+        request.Content = new StringContent(content, Encoding.UTF8, "application/json");
+
+        var response = await ApiRequest<ConnectorEvent>(request);
+        return response;
+    }
+
+    public async Task<JsonResponse<ConnectorEvent>> DeleteConnectorEvent(Guid connectorEventId)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Delete, $"{Path}/connectorEvents/{connectorEventId}");
+        request.Headers.Add("accept", "*/*");
+
+        var response = await ApiRequest<ConnectorEvent>(request);
         return response;
     }
 }

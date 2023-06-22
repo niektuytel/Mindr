@@ -9,6 +9,7 @@ using Mindr.Domain.Enums;
 
 using Mindr.Domain.HttpRunner.Models;
 using Mindr.Domain.Models.DTO.Calendar;
+using Mindr.Domain.Models.DTO.Connector;
 using Mindr.Domain.Models.DTO.Personal;
 using System.Net;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -211,5 +212,102 @@ public class PersonalCalendarController : BaseController
 
         return response;
     }
+
+    /// <remarks>
+    /// Retrieves all personal calendar connector events by id for the authenticated user.
+    /// </remarks>
+    /// <credentials code="200">Success</credentials>
+    /// <credentials code="400">Invalid credentials</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
+    /// <credentials code="404">Not Found</credentials>
+    [HttpGet("connectorevents/{calendarId}")]
+    [ProducesResponseType(typeof(IEnumerable<ConnectorEvent>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> GetCalendarConnectorEvents(
+        [FromRoute] string? calendarId
+    ){
+        if (calendarId?.ToLower() == "all")
+        {
+            calendarId = null;
+        }
+
+        var response = await HandleRequest(async () => {
+            var userId = User.GetUserId();
+
+            return await _manager.GetConnectorEvents(userId, calendarId);
+        });
+
+        return response;
+    }
+
+    /// <remarks>
+    /// Insert a new personal calendar connector event by id for the authenticated user.
+    /// </remarks>
+    /// <credentials code="200">Success</credentials>
+    /// <credentials code="400">Invalid credentials</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
+    /// <credentials code="404">Not Found</credentials>
+    [HttpPost("connectorevents/{calendarId}")]
+    [ProducesResponseType(typeof(ConnectorEvent), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> InsertCalendarConnectorEvents(
+        [FromRoute] string calendarId,
+        [FromBody] ConnectorEvent input
+    ){
+        var response = await HandleRequest(async () => {
+            var userId = User.GetUserId();
+            return await _manager.InsertConnectorEvent(userId, calendarId, input);
+        });
+
+        return response;
+    }
+
+    /// <remarks>
+    /// Update personal calendar connector event by id for the authenticated user.
+    /// </remarks>
+    /// <credentials code="200">Success</credentials>
+    /// <credentials code="400">Invalid credentials</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
+    /// <credentials code="404">Not Found</credentials>
+    [HttpPut("connectorevents/{connectorEventId}")]
+    [ProducesResponseType(typeof(ConnectorEvent), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> UpdateConnectorEvent(
+        [FromRoute] Guid connectorEventId,
+        [FromBody] ConnectorEvent input
+    ){
+        var response = await HandleRequest(async () => {
+            var userId = User.GetUserId();
+            return await _manager.UpdateConnectorEvent(userId, connectorEventId, input);
+        });
+
+        return response;
+    }
+
+    /// <remarks>
+    /// Delete personal calendar connector event by id for the authenticated user.
+    /// </remarks>
+    /// <credentials code="200">Success</credentials>
+    /// <credentials code="400">Invalid credentials</credentials>
+    /// <credentials code="401">Unauthorized</credentials>
+    /// <credentials code="404">Not Found</credentials>
+    [HttpDelete("connectorevents/{connectorEventId}")]
+    [ProducesResponseType(typeof(ConnectorEvent), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ErrorMessageResponse), (int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> DeleteConnectorEvent(
+        [FromRoute] Guid connectorEventId
+    ){
+        var response = await HandleRequest(async () => {
+            var userId = User.GetUserId();
+            return await _manager.DeleteConnectorEvent(userId, connectorEventId);
+        });
+
+        return response;
+    }
+
 
 }

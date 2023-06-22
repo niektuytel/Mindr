@@ -16,7 +16,7 @@ else if (CalendarViewTypeService.IsWeek())
     <div class="week-appointment appointment-timed @Classes.AsString()" 
         style="
             --start: @Start;
-            --startMinute : @Appointment.Data.StartDate.DateTime.GetTotalMinutesFromBeginThisDay();
+            --startMinute : @Appointment.Data.StartDate.GetDateTime().GetTotalMinutesFromBeginThisDay();
             border: 1px @($"{Appointment.Data.Color}") solid;
             border-radius: 4px;
             height: @Appointment.Data.Time24HourProcentageSpan()%

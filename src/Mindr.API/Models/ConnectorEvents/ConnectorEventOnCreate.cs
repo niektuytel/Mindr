@@ -16,7 +16,7 @@ namespace Mindr.Api.Models.ConnectorEvents
         public ConnectorEventOnCreate(ConnectorEvent connectorEvent)
         {
             EventId = connectorEvent.EventId;
-            EventVariables = connectorEvent.EventParameters;
+            EventSteps = connectorEvent.EventSteps;
             ConnectorId = connectorEvent.ConnectorId;
             ConnectorVariables = connectorEvent.ConnectorVariables;
         }
@@ -24,8 +24,8 @@ namespace Mindr.Api.Models.ConnectorEvents
         [JsonPropertyName("event_id")]
         public string EventId { get; set; }
 
-        [JsonPropertyName("event_params")]
-        public IEnumerable<ConnectorEventVariable> EventVariables { get; set; } = new List<ConnectorEventVariable>();
+        [JsonPropertyName("event_steps")]
+        public IEnumerable<ConnectorEventStep> EventSteps { get; set; } = new List<ConnectorEventStep>();
 
         [JsonPropertyName("connector_id")]
         public Guid? ConnectorId { get; set; } = null;
@@ -39,7 +39,7 @@ namespace Mindr.Api.Models.ConnectorEvents
             {
                 UserId = userId,
                 EventId = EventId,
-                EventParameters = EventVariables,
+                EventSteps = EventSteps,
                 ConnectorVariables = ConnectorVariables,
                 ConnectorId = connector.Id,
                 ConnectorName = connector.Name,

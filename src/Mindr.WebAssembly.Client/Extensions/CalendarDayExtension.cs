@@ -26,10 +26,10 @@ public static class CalendarDayExtension
 
     public static int Time24HourProcentageSpan(this CalendarAppointment appointment)
     {
-        var appointmentStart = appointment.StartDate.DateTime;
+        var appointmentStart = appointment.StartDate.GetDateTime();
 
         var endOfTheDay = appointmentStart.AddDays(1);
-        var appointmentEnd = appointment.EndDate.DateTime < endOfTheDay ? appointment.EndDate.DateTime : endOfTheDay;
+        var appointmentEnd = appointment.EndDate.GetDateTime() < endOfTheDay ? appointment.EndDate.GetDateTime() : endOfTheDay;
 
         var total = 1440.0; // min in a day
         var diff = (appointmentEnd - appointmentStart).TotalMinutes;
