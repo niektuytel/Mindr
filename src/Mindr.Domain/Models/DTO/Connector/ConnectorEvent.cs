@@ -51,5 +51,12 @@ namespace Mindr.Domain.Models.DTO.Connector
         [JsonPropertyName("connector_color")]
         public string ConnectorColor { get; set; } = "#000000";
 
+        public void Update(ConnectorEvent connectorEvent)
+        {
+            ConnectorId = connectorEvent.ConnectorId;
+            ConnectorName = connectorEvent.ConnectorName;
+            ConnectorVariables = connectorEvent.ConnectorVariables;
+            ConnectorColor = connectorEvent.ConnectorColor;
+        }
     }
 }

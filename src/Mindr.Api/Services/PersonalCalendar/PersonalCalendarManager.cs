@@ -23,13 +23,13 @@ namespace Mindr.Api.Services.CalendarEvents
     public class PersonalCalendarManager : IPersonalCalendarManager
     {
         private readonly HttpClient _httpClient;
-        private readonly IGoogleCalendarClient _googleClient;
+        private readonly ICalendarClient _googleClient;
         private readonly IConnectorEventManager _connectorEventManager;
         private readonly IPersonalCalendarValidator _validator;
         private readonly IMapper _mapper;
         private readonly ApplicationContext _context;
 
-        public PersonalCalendarManager(IHttpClientFactory factory, IGoogleCalendarClient googleCalendarClient, IConnectorEventManager connectorEventManager, IPersonalCalendarValidator connectorValidator, IMapper mapper, ApplicationContext context)
+        public PersonalCalendarManager(IHttpClientFactory factory, ICalendarClient googleCalendarClient, IConnectorEventManager connectorEventManager, IPersonalCalendarValidator connectorValidator, IMapper mapper, ApplicationContext context)
         {
             _httpClient = factory.CreateClient(nameof(PersonalCalendarManager));
             _googleClient = googleCalendarClient;
@@ -211,6 +211,18 @@ namespace Mindr.Api.Services.CalendarEvents
                 Domain.Enums.CalendarFrom.Microsoft => throw new NotImplementedException("Calendar Microsoft not implemented"),
                 _ => throw new NotImplementedException($"Unknown Calendar type:{calendar.From}"),
             };
+
+            // TODO: Define Event steps
+            // {
+            //var eventSteps = new List<ConnectorEventStep>()
+            //{
+            //    new ConnectorEventStep()
+            //    {
+            //        Key = Domain.Enums.EventType.OnDateTime,
+            //        StepIndex = 1
+            //    }
+            //};
+            //};
 
             // Finally upsert all connector events
             foreach (var connectorEvent in appointment.ConnectorEvents)

@@ -1,15 +1,9 @@
 ﻿using Azure.Core;
+using Force.DeepCloner;
 using Google.Apis.Calendar.v3.Data;
 using Ical.Net;
 using Ical.Net.CalendarComponents;
 using Ical.Net.DataTypes;
-using Microsoft.Build.Tasks.Deployment.Bootstrapper;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.Graph;
-using Microsoft.Graph.TermStore;
-using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
-using Microsoft.IdentityModel.Tokens;
 using Mindr.Api.Exceptions;
 using Mindr.Api.Extensions;
 using Mindr.Api.Migrations;
@@ -27,7 +21,7 @@ using System.Text.Json.Nodes;
 
 namespace Mindr.Api.Services.CalendarEvents
 {
-    public class GoogleCalendarClient : IGoogleCalendarClient
+    public class GoogleCalendarClient : ICalendarClient
     {
         private readonly IConnectorEventManager _connectorEventManager;
         private readonly IConfiguration _configuration;
@@ -60,7 +54,7 @@ namespace Mindr.Api.Services.CalendarEvents
                 {
                     appointment.StartDate.Date = occurrence.Period.StartTime.Value.Date;
                     appointment.EndDate.Date = occurrence.Period.EndTime.Value.Date;
-                    appointments.Add(appointment);
+                    appointments.Add(appointment.DeepClone());
                 }
             }
             else
@@ -77,7 +71,7 @@ namespace Mindr.Api.Services.CalendarEvents
                 {
                     appointment.StartDate.DateTime = occurrence.Period.StartTime.Value;
                     appointment.EndDate.DateTime = occurrence.Period.EndTime.Value;
-                    appointments.Add(appointment);
+                    appointments.Add(appointment.DeepClone());
                 }
             }
 
@@ -183,12 +177,6 @@ namespace Mindr.Api.Services.CalendarEvents
                     if (item.Status == "cancelled") continue;
 
                     var events = await _connectorEventManager.GetAllByEventId(credential.UserId, item.Id);
-                    if(events.Any())
-                    {
-                        await Console.Out.WriteLineAsync(   );
-                    }
-
-
                     var appointment = new CalendarAppointment(
                         item.Id,
                         calendarId,

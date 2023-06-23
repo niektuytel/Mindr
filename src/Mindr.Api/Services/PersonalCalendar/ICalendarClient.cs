@@ -4,7 +4,7 @@ using Mindr.Domain.Models.DTO.Personal;
 
 namespace Mindr.Api.Services.CalendarEvents
 {
-    public interface IGoogleCalendarClient
+    public interface ICalendarClient
     {
         Task<string> GetAccessToken(PersonalCredential credential);
         Task<IEnumerable<PersonalCalendar>> GetCalendars(PersonalCredential credential, string userId);

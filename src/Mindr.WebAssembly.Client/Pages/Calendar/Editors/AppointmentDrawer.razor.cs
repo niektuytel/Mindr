@@ -68,6 +68,8 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
             if (result.Canceled == true) return;
 
             var connectorEvent = result.Data as ConnectorEvent;
+            connectorEvent!.EventId = Appointment.Id;
+
             if (isCreate)
             {
                 // Insert
@@ -78,7 +80,6 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
             }
             else
             {
-                // Update
                 Appointment.ConnectorEvents = Appointment.ConnectorEvents.Select(item => item.Id == connectorEvent!.Id ? connectorEvent : item);
             }
 

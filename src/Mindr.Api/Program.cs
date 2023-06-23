@@ -80,7 +80,7 @@ public static class Program
         builder.Services.AddScoped<IPersonalCredentialValidator, PersonalCredentialValidator>();
         builder.Services.AddScoped<IPersonalCredentialManager, PersonalCredentialManager>();
 
-        builder.Services.AddScoped<IGoogleCalendarClient, GoogleCalendarClient>();
+        builder.Services.AddScoped<ICalendarClient, GoogleCalendarClient>();
         builder.Services.AddScoped<IPersonalCalendarValidator, PersonalCalendarValidator>();
         builder.Services.AddScoped<IPersonalCalendarManager, PersonalCalendarManager>();
 

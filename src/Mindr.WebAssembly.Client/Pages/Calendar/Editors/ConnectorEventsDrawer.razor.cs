@@ -64,10 +64,9 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
         async Task OpenConnectorEventDialog(ConnectorEvent? connectorEvent)
         {
             var isCreate = connectorEvent == null;
-            var parameters = new DialogParameters
-            {
-                ["Item"] = connectorEvent ?? new ConnectorEvent()
-            };
+
+            connectorEvent ??= new ConnectorEvent();
+            var parameters = new DialogParameters{ ["Item"] = connectorEvent };
             var options = new DialogOptions()
             {
                 MaxWidth = MaxWidth.Medium,
@@ -79,7 +78,7 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
             var dialog = DialogService.Show<ConnectorEventDialog>("", parameters, options);
             var result = await dialog.Result;
 
-            UpsertConnectorEvent(result, isCreate);
+            await UpsertConnectorEvent(result, isCreate);
         }
 
         private async Task GetAllConnectorEvents()
@@ -128,6 +127,7 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
 
         private async Task UpsertConnectorEvent(DialogResult result, bool onInsert = true)
         {
+            if (SelectedItem == null) return;
             if (result.Canceled == true) return;
 
             var connectorEvent = result.Data as ConnectorEvent;
@@ -154,7 +154,8 @@ namespace Mindr.WebAssembly.Client.Pages.Calendar.Components
             }
             else
             {
-                var response = await CalendarClient.UpdateConnectorEvent(connectorEvent);
+                SelectedItem!.Update(connectorEvent);
+                var response = await CalendarClient.UpdateConnectorEvent(SelectedItem);
                 if (response.IsError())
                 {
                     var error = response.GetContent();

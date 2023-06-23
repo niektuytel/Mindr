@@ -59,8 +59,12 @@ namespace Mindr.Domain.Models.DTO.Calendar
             {
                 return Date.Value;
             }
+            else if (Date == null)
+            {
+                return DateTime.Value;
+            }
 
-            return DateTime.Value;
+            return System.DateTime.Now;
         }
     }
 }

@@ -43,7 +43,8 @@ public partial class ConnectorEventDialog
             return Enumerable.Empty<ConnectorEvent>();
         }
 
-        return SearchResults = response.GetContent<IEnumerable<ConnectorEvent>>();
+        SearchResults = response.GetContent<IEnumerable<ConnectorEvent>>();
+        return SearchResults;
     }
 
     private void OnSelect(ConnectorEvent value)

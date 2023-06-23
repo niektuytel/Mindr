@@ -131,6 +131,10 @@ public class ConnectorEventManager : IConnectorEventManager
         entity.ConnectorId = connector!.Id;
         entity.ConnectorName = connector.Name;
         entity.ConnectorColor = connector.Color;
+
+        // Ensure unique ids
+        input.ConnectorVariables.ForAll(x => x.Id = new Guid());
+        _connectorEventValidator.ThrowOnNotUniqueConnectorVariables(input.ConnectorVariables);
         entity.ConnectorVariables = input.ConnectorVariables;
 
         var jobId = await _connectorEventDriver.ProcessConnectorEventAsync(entity);
